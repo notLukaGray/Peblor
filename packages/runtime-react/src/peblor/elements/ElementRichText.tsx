@@ -9,8 +9,6 @@ import { getElementLayoutStyle } from "@pb/core/layout";
 import { sanitizeRichTextMarkup } from "@pb/runtime-react/core/lib/sanitize-rich-text";
 import { getBodyTypographyClass, DEFAULT_BODY_LEVEL } from "@pb/core/typography";
 
-import "highlight.js/styles/github-dark.min.css";
-
 type Props = Extract<ElementBlock, { type: "elementRichText" }>;
 
 function isExternalUrl(href: string | undefined): boolean {

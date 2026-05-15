@@ -93,16 +93,11 @@ function escapeAttr(value: string): string {
 
 function sanitizeHref(raw: string): string | null {
   const href = unquote(raw).trim();
-  const lowered = href.toLowerCase();
-  if (
-    lowered.startsWith("javascript:") ||
-    lowered.startsWith("data:") ||
-    lowered.startsWith("vbscript:")
-  ) {
-    return null;
-  }
-  return href;
+  const result = resolveAuthoredUrl(href, "any");
+  return result.ok ? result.url : null;
 }
+
+import { resolveAuthoredUrl } from "@pb/core/lib/url-policy";
 
 const STYLE_UNSAFE_RE = /[()"';]/g;
 const STYLE_UNSAFE_CHARS: Record<string, string> = {

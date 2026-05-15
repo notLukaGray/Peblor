@@ -14,6 +14,7 @@ const fixtures = {
 
 describe("sitemap page indexing filters", () => {
   beforeAll(async () => {
+    process.env.NEXT_PUBLIC_SITE_URL = "https://example.com";
     await fsPromises.mkdir(fixtures.protectedVisibility, { recursive: true });
     await fsPromises.writeFile(
       path.join(fixtures.protectedVisibility, "index.json"),

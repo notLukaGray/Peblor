@@ -14,6 +14,9 @@ export function validateRequiredRuntimeEnv(): void {
   const missing: string[] = [];
   if (isMissing(process.env.ACCESS_TOKEN_VERSION)) missing.push("ACCESS_TOKEN_VERSION");
   if (isMissing(process.env.RATE_LIMIT_SECRET)) missing.push("RATE_LIMIT_SECRET");
+  if (isMissing(process.env.NEXT_PUBLIC_SITE_URL) && isMissing(process.env.SITE_URL)) {
+    missing.push("NEXT_PUBLIC_SITE_URL or SITE_URL");
+  }
 
   if (missing.length > 0) {
     throw new Error(

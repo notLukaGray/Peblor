@@ -1,3 +1,5 @@
+import { resolveAuthoredUrl } from "@pb/core/lib/url-policy";
+
 const ALLOWED_TAGS = new Set([
   "span",
   "strong",
@@ -41,6 +43,30 @@ const ALLOWED_STYLE_PROPS = new Set([
 
 const SELF_CLOSING_TAGS = new Set(["br", "hr"]);
 
+const STYLE_DISALLOWED_TAGS = new Set([
+  "a",
+  "strong",
+  "em",
+  "s",
+  "table",
+  "thead",
+  "tbody",
+  "tr",
+  "th",
+  "td",
+  "blockquote",
+  "ul",
+  "ol",
+  "li",
+  "u",
+  "sup",
+  "sub",
+  "hr",
+  "br",
+  "code",
+  "pre",
+]);
+
 function unquote(value: string): string {
   if (
     (value.startsWith('"') && value.endsWith('"')) ||
@@ -61,15 +87,8 @@ function escapeAttr(value: string): string {
 
 function sanitizeHref(raw: string): string | null {
   const href = unquote(raw).trim();
-  const lowered = href.toLowerCase();
-  if (
-    lowered.startsWith("javascript:") ||
-    lowered.startsWith("data:") ||
-    lowered.startsWith("vbscript:")
-  ) {
-    return null;
-  }
-  return href;
+  const result = resolveAuthoredUrl(href, "any");
+  return result.ok ? result.url : null;
 }
 
 function sanitizeStyle(raw: string): string | null {
@@ -143,6 +162,7 @@ function sanitizeTagAttributes(tagName: string, attrsRaw: string): string {
     }
 
     if (attrName === "style") {
+      if (STYLE_DISALLOWED_TAGS.has(tagName)) continue;
       const style = sanitizeStyle(rawValue);
       if (!style) continue;
       safeAttrs.push(`style="${escapeAttr(style)}"`);

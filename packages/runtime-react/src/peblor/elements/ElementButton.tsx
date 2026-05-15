@@ -35,6 +35,7 @@ import { useModel3DReadyButtonExit } from "./ElementButton/use-model3d-ready-but
 import { SectionGlassEffect } from "@/peblor/section/stack/SectionGlassEffect";
 import { useDeviceType } from "@/core/hooks/use-device-type";
 import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
+import { resolveAuthoredUrl } from "@pb/core/lib/url-policy";
 import { resolveThemeString, resolveThemeValueDeep } from "@/peblor/theme/theme-string";
 import { coerceSectionEffects } from "@/peblor/elements/ElementModule/element-module-style-utils";
 
@@ -267,6 +268,10 @@ export function ElementButton({
     };
   }, [motion, exitPreset, model3DExit.exitDurationMs, model3DExit.exitEasing, themeMode]);
 
+  const policyMode = external ? "external" : "any";
+  const resolvedHrefResult = href != null ? resolveAuthoredUrl(href, policyMode) : null;
+  const safeHref = resolvedHrefResult?.ok ? resolvedHrefResult.url : null;
+
   const resolvedLabel = loading && loadingLabel != null ? loadingLabel : label;
   const hasLabel = resolvedLabel != null && resolvedLabel !== "";
   const hasVector = vectorBlock != null;
@@ -346,70 +351,82 @@ export function ElementButton({
     </span>
   );
 
-  const inner = hasLink ? (
-    isInternal ? (
-      <TransitionLink
-        href={href!}
+  const inner =
+    hasLink && safeHref ? (
+      isInternal ? (
+        <TransitionLink
+          href={safeHref}
+          className={linkClassName}
+          style={{ ...linkStyle, ...nakedSurfacePadding }}
+          aria-disabled={isDisabled || undefined}
+          aria-busy={loading || undefined}
+          tabIndex={isDisabled ? -1 : tabIndex}
+          download={download as string | undefined}
+          hrefLang={hreflang}
+          ping={ping}
+          referrerPolicy={referrerPolicy}
+          {...(ariaProps ? ariaProps : {})}
+          onClick={isDisabled ? handleDisabledLinkClick : undefined}
+        >
+          {content}
+        </TransitionLink>
+      ) : (
+        <a
+          href={safeHref}
+          className={linkClassName}
+          style={{ ...linkStyle, ...nakedSurfacePadding }}
+          target={resolvedTarget}
+          rel={resolvedRel}
+          download={download as string | boolean | undefined}
+          hrefLang={hreflang}
+          ping={ping}
+          referrerPolicy={referrerPolicy}
+          aria-disabled={isDisabled || undefined}
+          aria-busy={loading || undefined}
+          tabIndex={isDisabled ? -1 : tabIndex}
+          {...(ariaProps ? ariaProps : {})}
+          onClick={isDisabled ? handleDisabledLinkClick : undefined}
+        >
+          {content}
+          {resolvedTarget === "_blank" ? (
+            <span className="sr-only"> Opens in a new tab.</span>
+          ) : null}
+        </a>
+      )
+    ) : hasLink ? (
+      <span
         className={linkClassName}
         style={{ ...linkStyle, ...nakedSurfacePadding }}
-        aria-disabled={isDisabled || undefined}
-        aria-busy={loading || undefined}
-        tabIndex={isDisabled ? -1 : tabIndex}
-        download={download as string | undefined}
-        hrefLang={hreflang}
-        ping={ping}
-        referrerPolicy={referrerPolicy}
+        tabIndex={tabIndex}
         {...(ariaProps ? ariaProps : {})}
-        onClick={isDisabled ? handleDisabledLinkClick : undefined}
       >
         {content}
-      </TransitionLink>
+      </span>
+    ) : hasAction ? (
+      <button
+        type="button"
+        onClick={handleActionButtonClick}
+        onPointerDown={pointerDownAction ? handleActionPointerDown : undefined}
+        onPointerUp={pointerUpAction ? handleActionPointerUp : undefined}
+        disabled={isDisabled}
+        aria-busy={loading || undefined}
+        className={`inline-flex items-center justify-center ${isDisabled ? "cursor-not-allowed" : "cursor-pointer"}`}
+        style={{
+          appearance: "none",
+          background: "transparent",
+          border: "none",
+          color: "inherit",
+          font: "inherit",
+          textAlign: "inherit",
+          ...(hasWrapper ? { padding: 0 } : nakedSurfacePadding),
+          ...(isDisabled ? { opacity: 0.6 } : {}),
+        }}
+      >
+        {content}
+      </button>
     ) : (
-      <a
-        href={href!}
-        className={linkClassName}
-        style={{ ...linkStyle, ...nakedSurfacePadding }}
-        target={resolvedTarget}
-        rel={resolvedRel}
-        download={download as string | boolean | undefined}
-        hrefLang={hreflang}
-        ping={ping}
-        referrerPolicy={referrerPolicy}
-        aria-disabled={isDisabled || undefined}
-        aria-busy={loading || undefined}
-        tabIndex={isDisabled ? -1 : tabIndex}
-        {...(ariaProps ? ariaProps : {})}
-        onClick={isDisabled ? handleDisabledLinkClick : undefined}
-      >
-        {content}
-        {resolvedTarget === "_blank" ? <span className="sr-only"> Opens in a new tab.</span> : null}
-      </a>
-    )
-  ) : hasAction ? (
-    <button
-      type="button"
-      onClick={handleActionButtonClick}
-      onPointerDown={pointerDownAction ? handleActionPointerDown : undefined}
-      onPointerUp={pointerUpAction ? handleActionPointerUp : undefined}
-      disabled={isDisabled}
-      aria-busy={loading || undefined}
-      className={`inline-flex items-center justify-center ${isDisabled ? "cursor-not-allowed" : "cursor-pointer"}`}
-      style={{
-        appearance: "none",
-        background: "transparent",
-        border: "none",
-        color: "inherit",
-        font: "inherit",
-        textAlign: "inherit",
-        ...(hasWrapper ? { padding: 0 } : nakedSurfacePadding),
-        ...(isDisabled ? { opacity: 0.6 } : {}),
-      }}
-    >
-      {content}
-    </button>
-  ) : (
-    content
-  );
+      content
+    );
 
   const wrapperClassName = useMemo(
     () =>

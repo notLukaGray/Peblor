@@ -7,6 +7,8 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/dev", "/dev/", "/api/"],
     },
-    sitemap: `${process.env.NEXT_PUBLIC_SITE_URL || "https://example.com"}/sitemap.xml`,
+    ...(process.env.NEXT_PUBLIC_SITE_URL
+      ? { sitemap: `${process.env.NEXT_PUBLIC_SITE_URL}/sitemap.xml` }
+      : {}),
   };
 }

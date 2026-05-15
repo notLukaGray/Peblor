@@ -2,6 +2,7 @@ export {
   discoverAllPages,
   getPageAsync,
   getPeblorPropsAsync,
+  getPeblorPropsFromPage,
   getPageMetadataAsync,
   getPageVisibilityAsync,
   getModalProps,

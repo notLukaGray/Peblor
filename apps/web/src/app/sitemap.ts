@@ -102,7 +102,11 @@ async function discoverStaticAppRoutes(
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = siteUrl || process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
+  const base = siteUrl || process.env.NEXT_PUBLIC_SITE_URL;
+  if (!base) {
+    console.warn("[peblor] sitemap: NEXT_PUBLIC_SITE_URL is not set; sitemap will be empty.");
+    return [];
+  }
   const now = new Date();
   const entries: MetadataRoute.Sitemap = [
     {

@@ -14,12 +14,7 @@ import {
 } from "@/core/lib/forms";
 
 const rsvpSchema = z.object({
-  attending: z.union([
-    z.boolean(),
-    z.literal("yes"),
-    z.literal("no"),
-    z.string().transform((s) => s.toLowerCase() === "yes" || s === "1"),
-  ]),
+  attending: z.union([z.literal(true), z.literal(false)]),
   name: z.string().max(500).optional(),
   email: z.string().email("Invalid email").max(320).optional(),
   dietary: z.string().max(1000).optional(),
@@ -49,8 +44,14 @@ async function postHandler(request: NextRequest) {
   const accessNeeds =
     typeof parsed.payload.accessNeeds === "string" ? parsed.payload.accessNeeds.trim() : undefined;
 
+  if (attending === undefined) {
+    return withFormRateLimitCookie(
+      formErrorResponse("The attending field is required and must be yes or no.", 400),
+      rateLimit
+    );
+  }
   const result = rsvpSchema.safeParse({
-    attending: attending ?? false,
+    attending,
     name,
     email,
     dietary,

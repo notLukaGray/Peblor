@@ -171,7 +171,7 @@ describe("expandPeblor", () => {
     });
     const section = sections[0] as SectionBlock & { elements?: Array<{ id?: string }> };
     const resolvedIds = (section.elements ?? []).map((element: { id?: string }) => element.id);
-    expect(resolvedIds).toEqual(["hero:mobileEl"]);
+    expect(resolvedIds).toEqual(["hero:desktopEl", "hero:mobileEl"]);
   });
 
   it("resolves responsive elementOrder.desktop when viewport is at custom desktop breakpoint", () => {
@@ -206,7 +206,7 @@ describe("expandPeblor", () => {
     });
     const section = sections[0] as SectionBlock & { elements?: Array<{ id?: string }> };
     const resolvedIds = (section.elements ?? []).map((element: { id?: string }) => element.id);
-    expect(resolvedIds).toEqual(["hero:desktopEl"]);
+    expect(resolvedIds).toEqual(["hero:desktopEl", "hero:mobileEl"]);
   });
 
   it("produces identical output when called twice on the same definitions object", () => {

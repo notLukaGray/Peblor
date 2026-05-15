@@ -2,19 +2,14 @@ import { SECTION_TYPE_STRINGS, type Peblor, type SectionBlock, type bgBlock } fr
 import {
   applyElementIdsAndModules,
   buildDisplayOrder,
-  getElementOrder,
+  getUnionElementOrder,
   resolveElements,
 } from "./peblor-expand/element-resolution";
 import { applyColumnNamespace } from "./peblor-expand/column-namespacing";
 import { resolveSectionTriggerPayloads } from "./peblor-expand/trigger-payload-resolution";
 import type { DefinitionsMap, SectionWithElements } from "./peblor-expand/section-shapes";
 import { resolveTriggerPayloadUrls } from "./peblor-triggers";
-import {
-  DEFAULT_BREAKPOINTS,
-  isMobileViewportWidth,
-  resolveBreakpointDefinitions,
-  type BreakpointDefinitions,
-} from "./defaults/pb-breakpoint-defaults";
+import type { BreakpointDefinitions } from "./defaults/pb-breakpoint-defaults";
 
 export type ExpandPeblorOptions = {
   /** When set, trigger payloads get asset URLs resolved in the same pass (avoids second walk in getPage). */
@@ -69,13 +64,6 @@ export function expandPeblor(
   bg: bgBlock | null;
   sections: SectionBlock[];
 } {
-  const breakpoints = options?.breakpoints
-    ? resolveBreakpointDefinitions(options.breakpoints)
-    : DEFAULT_BREAKPOINTS;
-  const responsiveIsMobile =
-    typeof options?.viewportWidthPx === "number"
-      ? isMobileViewportWidth(options.viewportWidthPx, breakpoints)
-      : undefined;
   const defs = page.definitions;
   const displayOrder = buildDisplayOrder(page);
   const bgKey = page.bgKey ?? "bg";
@@ -109,7 +97,7 @@ export function expandPeblor(
           : element
       ) as typeof section.elements;
     }
-    const order = getElementOrder(section, responsiveIsMobile);
+    const order = getUnionElementOrder(section);
     if (order?.length) {
       const sectionDefs = (section as { definitions?: DefinitionsMap }).definitions;
       const defsForElements: DefinitionsMap =

@@ -5,6 +5,7 @@ import { verifyAccessTokenEdge } from "@/core/lib/access-cookie-edge";
 import { validateRequiredRuntimeEnv } from "@/core/lib/required-runtime-env";
 
 function buildCspHeader(nonce: string): string {
+  const isDev = process.env.NODE_ENV === "development";
   return [
     "default-src 'self'",
     "base-uri 'self'",
@@ -12,7 +13,7 @@ function buildCspHeader(nonce: string): string {
     "img-src 'self' data: blob: https:",
     "media-src 'self' data: blob: https:",
     "font-src 'self' data: https:",
-    `script-src 'unsafe-eval' 'strict-dynamic' 'nonce-${nonce}'`,
+    `script-src ${isDev ? "'unsafe-eval' " : ""}'strict-dynamic' 'nonce-${nonce}'`,
     "style-src 'self' 'unsafe-inline'",
     "connect-src 'self' https: wss:",
     "object-src 'none'",

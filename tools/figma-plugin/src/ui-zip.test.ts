@@ -61,11 +61,12 @@ describe("export zip packaging", () => {
     expect(zip.file("globals.json")).toBeNull();
   });
 
-  it("skips unsafe split-content paths while keeping canonical page export", async () => {
+  it("skips unsafe page keys in both canonical and split-content paths", async () => {
     const blob = await buildExportZip(
       {
         pages: {
           "../unsafe": { sectionOrder: ["hero"], definitions: { hero: { type: "contentBlock" } } },
+          safe: { sectionOrder: [], definitions: {} },
         },
         presets: {},
         modals: {},
@@ -80,9 +81,10 @@ describe("export zip packaging", () => {
       0
     );
     const zip = await JSZip.loadAsync(await blob.arrayBuffer());
-    const pagePaths = Object.keys(zip.files).filter((f) => f.startsWith("pages/"));
-    expect(pagePaths.length).toBe(1);
-    expect(pagePaths[0]).toBeTruthy();
+    const pagePaths = Object.keys(zip.files).filter(
+      (f) => f.startsWith("pages/") && !f.endsWith("/")
+    );
+    expect(pagePaths).toEqual(["pages/safe.json"]);
     expect(zip.file("content/pages/../unsafe/index.json")).toBeNull();
   });
 });

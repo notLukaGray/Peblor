@@ -10,6 +10,16 @@ import { generateExportNotes } from "./ui-export-notes";
 import { buildExportErrorsPayload } from "./ui-export-errors";
 import { SAFE_SEGMENT } from "./content-split-guards";
 
+function safeZipPath(path: string): string | null {
+  const segments = path.split("/");
+  for (const seg of segments) {
+    if (seg === "" || seg === "." || seg === "..") return null;
+    const base = seg.split(".")[0] ?? seg;
+    if (base.length > 0 && !SAFE_SEGMENT.test(base)) return null;
+  }
+  return path;
+}
+
 function appendSplitPageToZip(zip: JSZip, slug: string, page: unknown): void {
   if (!SAFE_SEGMENT.test(slug)) return;
   if (page == null || typeof page !== "object" || Array.isArray(page)) return;
@@ -34,17 +44,25 @@ export async function buildExportZip(
   const zip = new JSZip();
 
   for (const [key, page] of Object.entries(result.pages)) {
-    zip.file(`pages/${key}.json`, JSON.stringify(page, null, 2));
+    const safePath = safeZipPath(`pages/${key}.json`);
+    if (!safePath) continue;
+    zip.file(safePath, JSON.stringify(page, null, 2));
     appendSplitPageToZip(zip, key, page);
   }
   for (const [key, preset] of Object.entries(result.presets)) {
-    zip.file(`presets/${key}.json`, JSON.stringify(preset, null, 2));
+    const safePath = safeZipPath(`presets/${key}.json`);
+    if (!safePath) continue;
+    zip.file(safePath, JSON.stringify(preset, null, 2));
   }
   for (const [key, modal] of Object.entries(result.modals)) {
-    zip.file(`modals/${key}.json`, JSON.stringify(modal, null, 2));
+    const safePath = safeZipPath(`modals/${key}.json`);
+    if (!safePath) continue;
+    zip.file(safePath, JSON.stringify(modal, null, 2));
   }
   for (const [key, mod] of Object.entries(result.modules)) {
-    zip.file(`modules/${key}.json`, JSON.stringify(mod, null, 2));
+    const safePath = safeZipPath(`modules/${key}.json`);
+    if (!safePath) continue;
+    zip.file(safePath, JSON.stringify(mod, null, 2));
   }
 
   const hasGlobals =
@@ -73,7 +91,9 @@ export async function buildExportZip(
   }
 
   for (const asset of result.assets) {
-    zip.file(asset.filename, asset.data);
+    const safePath = safeZipPath(asset.filename);
+    if (!safePath) continue;
+    zip.file(safePath, asset.data);
   }
 
   return zip.generateAsync({ type: "blob" });

@@ -28,9 +28,14 @@ export default function bunnyImageLoader({
       return `${src.split("#")[0]}#w=${width}`;
     }
 
-    const url = new URL(cdnBase);
-    const origin = `${url.protocol}//${url.hostname}`;
-    const isCdn = src.startsWith(origin) || src.includes(url.hostname);
+    const cdnUrl = new URL(cdnBase);
+    let isCdn = false;
+    try {
+      const srcUrl = new URL(src);
+      isCdn = srcUrl.hostname === cdnUrl.hostname;
+    } catch {
+      isCdn = false;
+    }
     if (isCdn) {
       const parsed = new URL(src);
       // Pre-signed URL: width or class is part of the token; don't change query or the token breaks.

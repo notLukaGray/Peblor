@@ -54,20 +54,21 @@ export function rejectUntrustedFormPostOrigin(request: NextRequest): NextRespons
   const originHeader = request.headers.get("origin");
   const refererHeader = request.headers.get("referer");
 
-  let originMatches = false;
   if (originHeader) {
+    let originMatches = false;
     try {
       const origin = new URL(originHeader).origin;
       originMatches = bases.some((base) => origin === base);
     } catch {
       originMatches = false;
     }
+    return originMatches ? null : formErrorResponse("Forbidden.", 403);
   }
 
-  const refererMatches =
-    refererHeader != null && bases.some((base) => refererMatchesBase(refererHeader, base));
-
-  if (originMatches || refererMatches) return null;
+  if (refererHeader) {
+    const refererMatches = bases.some((base) => refererMatchesBase(refererHeader, base));
+    return refererMatches ? null : formErrorResponse("Forbidden.", 403);
+  }
 
   return formErrorResponse("Forbidden.", 403);
 }

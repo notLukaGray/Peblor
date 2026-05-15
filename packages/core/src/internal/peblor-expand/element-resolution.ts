@@ -5,6 +5,32 @@ export function buildDisplayOrder(page: Peblor): string[] {
   return [...(page.sectionOrder ?? []), ...(page.triggers ?? [])];
 }
 
+export function getUnionElementOrder(section: SectionWithElements): string[] | null {
+  if (Array.isArray(section.elementOrder)) return section.elementOrder;
+  const eo = section.elementOrder;
+  if (eo && typeof eo === "object" && ("mobile" in eo || "desktop" in eo)) {
+    const desktop = eo.desktop ?? [];
+    const mobile = eo.mobile ?? [];
+    const seen = new Set<string>();
+    const union: string[] = [];
+    for (const ref of [...desktop, ...mobile]) {
+      if (!seen.has(ref)) {
+        seen.add(ref);
+        union.push(ref);
+      }
+    }
+    return union.length > 0 ? union : null;
+  }
+  if (
+    Array.isArray(section.elements) &&
+    section.elements.length > 0 &&
+    typeof section.elements[0] === "string"
+  ) {
+    return section.elements as string[];
+  }
+  return null;
+}
+
 export function getElementOrder(
   section: SectionWithElements,
   isMobile: boolean | undefined

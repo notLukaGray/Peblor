@@ -20,7 +20,7 @@ import { isPageProtected } from "@/core/lib/page-protection";
 import { PROTECTED_PAGE_PATHS } from "@/core/lib/protected-slugs.generated";
 import {
   getPageAsync,
-  getPeblorPropsAsync,
+  getPeblorPropsFromPage,
   getPageMetadataAsync,
   discoverAllPages,
   loadPageMeta,
@@ -181,13 +181,7 @@ export default async function UniversalSlugPage({ params, searchParams }: Props)
   const isProtectedPage = isPageProtected(pageMeta);
   const headersList = await headers();
 
-  const needsCookies =
-    isUnlockRoute ||
-    isProtectedPage ||
-    hasUnlockQuery(query.unlock) ||
-    typeof getSingleQueryValue(query.unlock_redirect) === "string";
-
-  const cookieStore = needsCookies ? await cookies() : null;
+  const cookieStore = await cookies();
   const hasAccess = cookieStore
     ? verifyAccessToken(cookieStore.get(accessCookieName)?.value)
     : false;
@@ -251,7 +245,7 @@ export default async function UniversalSlugPage({ params, searchParams }: Props)
   const hasActiveFilters = Object.keys(activeFilters).length > 0;
   let props;
   try {
-    props = await getPeblorPropsAsync(slug, {
+    props = await getPeblorPropsFromPage(page, slug, {
       isMobile,
       ...(canonicalViewportWidth != null ? { viewportWidthPx: canonicalViewportWidth } : {}),
       ...(hasActiveFilters ? { activeFilters } : {}),
@@ -280,7 +274,7 @@ export default async function UniversalSlugPage({ params, searchParams }: Props)
       : pagePath;
 
   const unlockModalProps = await buildUnlockModalProps(unlockTarget, showUnlockModal);
-  const shouldRewriteProtectedLinks = needsCookies && !hasAccess && isUnlockEnabled();
+  const shouldRewriteProtectedLinks = !hasAccess && isUnlockEnabled();
   const sectionsForRenderBase = isUnlockRoute ? [] : (props.resolvedSections ?? []);
   const sectionsForRender = shouldRewriteProtectedLinks
     ? rewriteProtectedInternalLinks(sectionsForRenderBase, pagePath)

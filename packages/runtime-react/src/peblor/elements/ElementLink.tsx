@@ -15,6 +15,7 @@ import { resolveFontFamily } from "@pb/core/typography";
 import { resolveThemeString } from "@/peblor/theme/theme-string";
 import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
 import { InlineFormattedText } from "./Shared/InlineFormattedText";
+import { resolveAuthoredUrl } from "@pb/core/lib/url-policy";
 
 type Props = Extract<ElementBlock, { type: "elementLink" }>;
 
@@ -78,7 +79,10 @@ export function ElementLink({
 }: Props) {
   const themeMode = usePeblorThemeMode();
   const pathname = usePathname();
-  const isInternal = !external && href.startsWith("/");
+  const policyMode = external ? "external" : "any";
+  const resolvedHrefResult = resolveAuthoredUrl(href, policyMode);
+  const safeHref = resolvedHrefResult.ok ? resolvedHrefResult.url : null;
+  const isInternal = !external && (safeHref?.startsWith("/") ?? false);
   const isActive = isInternal && (pathname === href || (href !== "/" && pathname.startsWith(href)));
 
   const linkStyle: CSSProperties = {};
@@ -154,39 +158,49 @@ export function ElementLink({
   const resolvedRel =
     rel ?? (resolvedTarget === "_blank" || external ? "noopener noreferrer" : undefined);
 
-  const linkNode = isInternal ? (
-    <TransitionLink
-      href={href}
-      className={linkClassName}
-      style={{ ...linkStyle, ...textStyle }}
-      target={target}
-      rel={rel}
-      download={download as string | undefined}
-      hrefLang={hreflang}
-      ping={ping}
-      referrerPolicy={referrerPolicy}
-      tabIndex={tabIndex}
-      {...(ariaProps ? ariaProps : {})}
-    >
-      <InlineFormattedText text={label} />
-    </TransitionLink>
-  ) : (
-    <a
-      href={href}
-      className={linkClassName}
-      style={{ ...linkStyle, ...textStyle }}
-      target={resolvedTarget}
-      rel={resolvedRel}
-      download={download as string | boolean | undefined}
-      hrefLang={hreflang}
-      ping={ping}
-      referrerPolicy={referrerPolicy}
-      tabIndex={tabIndex}
-      {...(ariaProps ? ariaProps : {})}
-    >
-      <InlineFormattedText text={label} />
-    </a>
-  );
+  const linkNode =
+    isInternal && safeHref ? (
+      <TransitionLink
+        href={safeHref}
+        className={linkClassName}
+        style={{ ...linkStyle, ...textStyle }}
+        target={target}
+        rel={rel}
+        download={download as string | undefined}
+        hrefLang={hreflang}
+        ping={ping}
+        referrerPolicy={referrerPolicy}
+        tabIndex={tabIndex}
+        {...(ariaProps ? ariaProps : {})}
+      >
+        <InlineFormattedText text={label} />
+      </TransitionLink>
+    ) : safeHref ? (
+      <a
+        href={safeHref}
+        className={linkClassName}
+        style={{ ...linkStyle, ...textStyle }}
+        target={resolvedTarget}
+        rel={resolvedRel}
+        download={download as string | boolean | undefined}
+        hrefLang={hreflang}
+        ping={ping}
+        referrerPolicy={referrerPolicy}
+        tabIndex={tabIndex}
+        {...(ariaProps ? ariaProps : {})}
+      >
+        <InlineFormattedText text={label} />
+      </a>
+    ) : (
+      <span
+        className={linkClassName}
+        style={{ ...linkStyle, ...textStyle }}
+        tabIndex={tabIndex}
+        {...(ariaProps ? ariaProps : {})}
+      >
+        <InlineFormattedText text={label} />
+      </span>
+    );
 
   if (Object.keys(blockStyle).length === 0 && role == null) {
     return linkNode;

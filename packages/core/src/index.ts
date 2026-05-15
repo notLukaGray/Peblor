@@ -357,20 +357,28 @@ export function validatePage(input: unknown): ValidatePageResult {
 }
 
 export async function loadPage(filePath: string): Promise<LoadPageResult> {
-  const baseDir = path.resolve(process.cwd());
+  const baseDir = await fs.promises.realpath(path.resolve(process.cwd()));
   const absolute = path.isAbsolute(filePath)
     ? filePath
     : path.join(/* turbopackIgnore: true */ process.cwd(), filePath);
   const resolved = path.resolve(absolute);
+
   const rel = path.relative(baseDir, resolved);
   if (rel.startsWith("..") || path.isAbsolute(rel)) {
     throw new Error(`loadPage path must stay within cwd: ${filePath}`);
   }
-  const rawContent = await fs.promises.readFile(absolute, "utf8");
+
+  const realResolved = await fs.promises.realpath(resolved);
+  const realRel = path.relative(baseDir, realResolved);
+  if (realRel.startsWith("..") || path.isAbsolute(realRel)) {
+    throw new Error(`loadPage path must stay within cwd (symlink escape): ${filePath}`);
+  }
+
+  const rawContent = await fs.promises.readFile(realResolved, "utf8");
   const raw = JSON.parse(rawContent) as unknown;
 
   return {
-    filePath: resolved,
+    filePath: realResolved,
     raw,
     validate: validatePage(raw),
   };
@@ -616,11 +624,11 @@ export async function getModalProps(
   };
 }
 
-export async function getPeblorPropsAsync(
+export async function getPeblorPropsFromPage(
+  page: ResolvedPageWithDefinitions | null,
   slug: string,
   options?: GetPeblorPropsOptions
 ): Promise<PeblorPageProps | null> {
-  const page = await getPageAsync(slug, options);
   if (!page) return null;
 
   const assetBase = getAssetBaseUrl(page);
@@ -699,6 +707,14 @@ export async function getPeblorPropsAsync(
     ...(overlaySections.length > 0 ? { overlaySections } : {}),
     ...(options?.isMobile !== undefined ? { serverIsMobile: options.isMobile } : {}),
   };
+}
+
+export async function getPeblorPropsAsync(
+  slug: string,
+  options?: GetPeblorPropsOptions
+): Promise<PeblorPageProps | null> {
+  const page = await getPageAsync(slug, options);
+  return getPeblorPropsFromPage(page, slug, options);
 }
 
 export function isMobileFromUserAgent(userAgent: string): boolean {

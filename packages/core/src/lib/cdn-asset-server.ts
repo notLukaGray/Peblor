@@ -241,7 +241,14 @@ export async function fetchAssetFromCdn(
         await res.arrayBuffer().catch(() => undefined);
         if (attempt === maxAttempts) return null;
       } else {
+        const MAX_RAW_BYTES = 32 * 1024 * 1024;
+        const contentLength = res.headers.get("content-length");
+        if (contentLength && parseInt(contentLength, 10) > MAX_RAW_BYTES) {
+          await res.body?.cancel().catch(() => undefined);
+          return null;
+        }
         const buffer = await res.arrayBuffer();
+        if (buffer.byteLength > MAX_RAW_BYTES) return null;
         const contentType = getContentTypeForAssetKey(assetKey);
         return { buffer, contentType };
       }

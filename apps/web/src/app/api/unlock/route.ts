@@ -92,6 +92,11 @@ function hasAllowedOriginHeader(originOrReferer: string | null): boolean {
 }
 
 async function unlockPostHandler(request: NextRequest) {
+  const originOrReferer = request.headers.get("origin") || request.headers.get("referer");
+  if (!hasAllowedOriginHeader(originOrReferer)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   const secret = process.env.SITE_PASSWORD;
   if (!secret) {
     return buildErrorResponse("Password protection is not configured.", 503);

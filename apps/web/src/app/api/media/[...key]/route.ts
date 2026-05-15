@@ -59,14 +59,16 @@ function rewriteHlsUri(line: string, baseKey: string): string | null {
   }
 
   if (trimmed.startsWith("#")) {
-    return line.replace(/URI="([^"]+)"/g, (_match, uri: string) => {
+    return line.replace(/URI=("([^"]+)"|'([^']+)'|([^\s,>]+))/g, (_match, _full, dq, sq, uq) => {
+      const uri = dq ?? sq ?? uq ?? "";
+      const quote = _full.startsWith('"') ? '"' : _full.startsWith("'") ? "'" : "";
       if (isAbsoluteUrl(uri)) {
         if (process.env.CDN_SIGNING_MODE !== "public") {
           throw new Error("unsafe-absolute-tag-uri");
         }
-        return `URI="${uri}"`;
+        return `URI=${quote}${uri}${quote}`;
       }
-      if (uri.startsWith("/")) return `URI="${uri}"`;
+      if (uri.startsWith("/")) return `URI=${quote}${uri}${quote}`;
 
       const { pathPart, suffix } = splitUriSuffix(uri);
       const normalized = [baseKey, pathPart]
@@ -85,7 +87,9 @@ function rewriteHlsUri(line: string, baseKey: string): string | null {
         }, [])
         .join("/");
       const assetKey = validateAssetKey(normalized);
-      return assetKey ? `URI="${buildProxyUrl(assetKey)}${suffix}"` : `URI="${uri}"`;
+      return assetKey
+        ? `URI=${quote}${buildProxyUrl(assetKey)}${suffix}${quote}`
+        : `URI=${quote}${uri}${quote}`;
     });
   }
 
@@ -152,7 +156,7 @@ async function buildRawAssetResponse(assetKey: string): Promise<NextResponse> {
  * Catch-all ensures path keys are not split when the server decodes %2F to /.
  */
 function isRawAllowedFormat(assetKey: string): boolean {
-  return /\.(?:avif|jpe?g|png|webp|hdr|exr)$/i.test(assetKey);
+  return /\.(?:avif|jpe?g|png|webp)$/i.test(assetKey);
 }
 
 export async function GET(
