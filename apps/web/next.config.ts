@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import path from "path";
 import createBundleAnalyzer from "@next/bundle-analyzer";
 import cdnConfig from "@content/config/cdn.json";
 
@@ -57,6 +58,10 @@ const nextConfig: NextConfig = {
       dynamic: 300,
       static: 300,
     },
+  },
+  outputFileTracingRoot: path.resolve(__dirname, "../.."),
+  outputFileTracingIncludes: {
+    "/**": ["../../content/**/*", "../../peblor.config.json"],
   },
   outputFileTracingExcludes: {
     "*": ["**/next.config.ts"],
