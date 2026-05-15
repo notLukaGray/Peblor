@@ -1,0 +1,7 @@
+{
+  "contentDir": "./content",
+  "validatePagesBaseRef": "origin/main",
+  "enableDevApi": false,
+  "rateLimitMemoryMax": 1000,
+  "rateLimitCookieSameSite": "Lax"
+}

@@ -1,0 +1,58 @@
+id: element.formField
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: elementFormFieldSchema
+
+runtime_ref: "@pb/runtime-react/page-builder/elements/ElementFormField"
+
+feels_like: >
+  A standalone form field element — any of the 22 supported field types (text,
+  email, password, tel, url, number, date, time, datetime-local, color, search,
+  paragraph, checkbox, checkboxGroup, radio, select, switch, range, file, hidden,
+  button, row) rendered outside a section.formBlock. Use for inline search bars,
+  standalone date pickers, color swatches, toggle switches, or file uploads that
+  don't need a full form wrapper. Supports labels, validation, placeholder text,
+  options arrays for choice fields, and styling via the same form field config.
+
+not_this_if:
+  - "you need a full form with submit and server POST (use section.formBlock)"
+  - "you need a glass-style search input with video player integration (use element.input)"
+  - "you need a range slider with action dispatch (use element.range)"
+
+axes:
+  - name: field
+    fields: [field, width]
+    note: "field: FormFieldBlock with fieldType, label, placeholder, value, options, etc.; width controls sizing"
+
+does_not_cover:
+  - what: "Full form with server submission"
+    use_instead: section.formBlock
+  - what: "Glass-style search input with icon"
+    use_instead: element.input
+  - what: "Range slider with action dispatch"
+    use_instead: element.range
+  - what: "Toggle button with action"
+    use_instead: element.button
+
+covers:
+  - description: "Standalone date picker with label and placeholder"
+    example: content/presets/element-form-field.json
+    minimal: true
+
+composes_with:
+  parents: [section.column, section.contentBlock]
+  siblings_typical: [element.heading, element.body, element.button]
+  motion: "external — motionTiming applied by parent wrapper"
+
+known_limitations:
+  - "field value is local state — no automatic binding to variable store"
+  - "Standalone fields don't participate in form submission — use section.formBlock for that"
+  - "button and submit fieldTypes render a standalone button that fires the field's action"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field on element.formField"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

@@ -1,0 +1,52 @@
+id: motion.whileHover
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: motionPropsSchema
+
+feels_like: >
+  Applies Framer Motion keyframe overrides while the pointer hovers over an element
+  or section. Use for hover-scale, color shifts, brightness lifts, or any visual
+  feedback that should appear on hover and reverse on leave. Works on any element
+  or section via motionPropsSchema.
+
+not_this_if:
+  - "you need continuous cursor-position tracking (use trigger.cursor)"
+  - "you need a click/tap trigger (use trigger.onClick)"
+  - "you need an expandable reveal on hover (use section.reveal with revealOnHover)"
+
+axes:
+  - name: keyframes
+    fields: [whileHover]
+    note: "z.union([motionKeyframesSchema, string]) — any known FM property"
+
+does_not_cover:
+  - what: "Cursor-position-driven animation"
+    use_instead: trigger.cursor
+  - what: "Click or tap trigger"
+    use_instead: trigger.onClick
+  - what: "Expand/collapse section reveal"
+    use_instead: section.reveal
+  - what: "Pressed/tap-hold gesture"
+    use_instead: motion.whileTap
+
+covers:
+  - description: "Image that scales to 1.05 on hover with a 0.2s transition"
+    example: content/presets/motion-while-hover.json
+
+composes_with:
+  parents: [section.*, element.*]
+  siblings_typical: [motion.whileTap, motion.whileFocus]
+  motion: "whileHover on motionProps — merged from motion defaults"
+
+known_limitations:
+  - "whileHover keyframes are stripped of layout-owned keys (position, flex, grid) — use scale/opacity/color"
+  - "Transition duration comes from the transition object, not whileHover itself"
+  - "If motion defaults provide empty whileHover, no hover gesture applies automatically"
+
+proposal_hints:
+  new_variant_value: "N/A — motion gesture, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

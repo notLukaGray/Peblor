@@ -1,0 +1,43 @@
+{
+  "cdnBase": "",
+  "cdn": {
+    "tokenExpiryDays": 7,
+    "clientCacheExpiryHours": 168,
+    "apiCacheMaxAge": 2592000,
+    "apiCacheStaleWhileRevalidate": 86400,
+    "allowedHosts": [".b-cdn.net"],
+    "allowedExtensions": [
+      ".webm",
+      ".mp4",
+      ".mpd",
+      ".m3u8",
+      ".ts",
+      ".m4s",
+      ".m4a",
+      ".aac",
+      ".webp",
+      ".jpg",
+      ".jpeg",
+      ".png",
+      ".avif",
+      ".glb",
+      ".gltf",
+      ".exr",
+      ".hdr"
+    ],
+    "images": {
+      "defaultWidth": 1200,
+      "defaultPosterWidth": 1920,
+      "posterWidth": 1280,
+      "posterQuality": 60,
+      "mobileMaxWidth": 768,
+      "mobileMaxWidth2x": 1536,
+      "defaultQuality": 75,
+      "defaultFormat": "webp",
+      "defaultAspectRatio": null,
+      "posterAspectRatio": "16/9",
+      "class": null,
+      "posterClass": null
+    }
+  }
+}

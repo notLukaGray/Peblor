@@ -1,0 +1,47 @@
+id: motion.fade
+kind: motion-preset
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A simple opacity fade — element starts transparent and fades to full opacity
+  on entrance. The default entrance preset for most text, image, and card elements.
+  Clean, neutral, never competes with content.
+
+not_this_if:
+  - "you want directional movement on entry (use motion.slideUp, motion.slideLeft, etc.)"
+  - "you want a scale pop effect (use motion.popIn)"
+  - "you want blur-to-sharp reveal (use motion.blurIn)"
+
+axes:
+  - name: preset
+    fields: [motionTiming]
+    note: "entrancePreset: 'fade' on motionTimingSchema"
+
+covers:
+  - description: "Heading that fades in when scrolled into view"
+    example: content/presets/motion-fade.json
+
+does_not_cover:
+  - what: "Slide-up entrance with translate"
+    use_instead: motion.slideUp
+  - what: "Scale entrance from small"
+    use_instead: motion.zoomIn
+  - what: "Pop entrance with spring overshoot"
+    use_instead: motion.popIn
+  - what: "Blur-to-sharp entrance"
+    use_instead: motion.blurIn
+
+composes_with:
+  parents: [section.*, element.*]
+  siblings_typical: []
+  motion: "motionTiming.entrancePreset: 'fade' — applied via the motionTiming integration barrel"
+
+known_limitations:
+  - "Preset keyframes and timing are defined in page-builder-motion-defaults.ts"
+
+proposal_hints:
+  new_variant_value: "N/A — motion preset, no variant field"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

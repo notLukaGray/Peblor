@@ -1,0 +1,8 @@
+{
+  "type": "elementDivider",
+  "orientation": "horizontal",
+  "length": ["60%", "80%"],
+  "thickness": "1px",
+  "color": "border",
+  "style": "solid"
+}

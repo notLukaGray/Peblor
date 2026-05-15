@@ -1,0 +1,12 @@
+{
+  "type": "elementImage",
+  "variant": "inline",
+  "src": "inline-figure.jpg",
+  "alt": "Inline figure",
+  "objectFit": "contain",
+  "aspectRatio": "4/3",
+  "srcSet": "inline-figure-480.jpg 480w, inline-figure-800.jpg 800w",
+  "sizes": "(max-width: 600px) 480px, 800px",
+  "loading": "lazy",
+  "decoding": "async"
+}

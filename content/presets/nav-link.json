@@ -1,0 +1,14 @@
+{
+  "type": "elementLink",
+  "variant": "nav",
+  "label": "Work",
+  "href": "/work",
+  "copyType": "body",
+  "target": "_self",
+  "fontWeight": 500,
+  "fontSize": "0.875rem",
+  "linkDefault": "textSecondary",
+  "linkHover": "accent",
+  "linkTransition": 0.2,
+  "wordWrap": true
+}

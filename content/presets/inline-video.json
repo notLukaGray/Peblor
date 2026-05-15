@@ -1,0 +1,13 @@
+{
+  "type": "elementVideo",
+  "variant": "inline",
+  "src": "inline-clip.mp4",
+  "poster": "inline-clip-poster.jpg",
+  "showPlayButton": true,
+  "loop": false,
+  "muted": false,
+  "objectFit": "contain",
+  "aspectRatio": "16/9",
+  "ariaLabel": "Product demo clip",
+  "preload": "metadata"
+}

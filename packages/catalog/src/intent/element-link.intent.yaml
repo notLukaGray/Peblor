@@ -1,0 +1,70 @@
+id: element.link
+kind: cluster
+package: "@pb/contracts"
+schema_ref: elementLinkSchema
+runtime_ref: "@pb/runtime-react/page-builder/elements/ElementLink"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A standalone inline or nav hyperlink rendered as styled text — not a pill button.
+  Use when the interaction is navigation (href) and the visual treatment is
+  underline-style rather than a padded CTA surface.
+
+not_this_if:
+  - "you need a padded CTA pill or ghost button (use element.button)"
+  - "the link is a single word inside a paragraph (use element.richText with inline link)"
+  - "no navigation is involved — purely styled text (use element.body)"
+
+axes:
+  - name: variant
+    fields: [variant]
+    note: "inline, emphasis, nav — maps to pbBuilderDefaultsV1.elements.link presets"
+  - name: copy
+    fields: [label, copyType, level, wordWrap]
+  - name: href
+    fields: [href, external, target, rel, download, hreflang, ping, referrerPolicy]
+  - name: typography
+    fields:
+      [
+        fontFamily,
+        fontSize,
+        fontWeight,
+        fontFeatureSettings,
+        textOverflow,
+        textStroke,
+        verticalAlign,
+        paragraphSpacing,
+      ]
+  - name: color-states
+    fields: [linkDefault, linkHover, linkActive, linkDisabled, linkTransition]
+  - name: state
+    fields: [disabled]
+
+covers:
+  - description: "Nav-style horizontal link with accent hover transition"
+    example: content/presets/nav-link.json
+  - description: "Inline emphasis link with state color transitions"
+    example: content/presets/inline-link.json
+
+does_not_cover:
+  - what: "Padded CTA pill or ghost button"
+    use_instead: element.button
+  - what: "Heading-level display copy"
+    use_instead: element.heading
+  - what: "Rich text paragraph with inline anchor tags"
+    use_instead: element.richText
+
+composes_with:
+  parents: [section.column, section.contentBlock, module.*]
+  siblings_typical: [element.heading, element.body, element.button]
+  motion: "external — motionTiming applied by parent wrapper"
+
+known_limitations:
+  - "level is required when copyType is 'heading' — validation fails otherwise"
+  - "No multi-line link wrapping by default; set wordWrap: true explicitly"
+
+proposal_hints:
+  new_variant_value: extend_cluster
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

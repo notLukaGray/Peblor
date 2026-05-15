@@ -1,0 +1,9 @@
+{
+  "type": "triggerSection",
+  "id": "trigger_video_end_example",
+  "trigger": { "type": "onVideoEnd", "target": "hero-video" },
+  "actions": [
+    { "type": "setVariant", "target": "cta", "value": "visible" },
+    { "type": "setVariant", "target": "controls", "value": "end-screen" }
+  ]
+}

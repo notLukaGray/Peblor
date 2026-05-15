@@ -1,0 +1,72 @@
+id: element.marquee
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: elementMarqueeSchema
+
+feels_like: >
+  An auto-scrolling text strip: classic horizontal/vertical loop via translate,
+  or motion along an SVG path (`followPath.d`): SVG `<textPath>` lays glyphs on
+  the path (tangent-aligned by default; `offsetRotate: 0deg` keeps glyphs upright).
+  Supports pause on hover/focus, gradient fade edges (linear mode), speed/gap,
+  and typography aligned with the rest of the page builder: `level` for heading
+  tokens, `variant` (display | section | label) for body-style scales, plus
+  explicit font fields, theme `color` / `textFill`, and `variableKey` for live
+  copy. Layout `rotate` / flips wrap the whole figure via ElementLayoutWrapper.
+
+not_this_if:
+  - "you need a snapping carousel with item selection (use element.infiniteScroll)"
+  - "you need static text (use element.heading or element.body)"
+  - "you need a user-scrollable container (use section.scrollContainer)"
+
+axes:
+  - name: content
+    fields: [text, variableKey]
+  - name: direction
+    fields: [direction, speed, gap]
+  - name: path
+    fields: [followPath]
+    note: "{ d, offsetRotate?, height? } — SVG textPath on the path; repeated tiles + startOffset loop; gradient edges omitted"
+  - name: interaction
+    fields: [pauseOnHover, pauseOnFocus]
+  - name: edges
+    fields: [gradientEdges, gradientWidth, gradientColor]
+    note: "linear translate mode only"
+  - name: loop
+    fields: [autoFill, reverseOnEnd, duplicateContent]
+  - name: typography
+    fields: [level, variant, fontFamily, fontSize, fontWeight, letterSpacing, color, textFill]
+  - name: layout_motion
+    fields: [rotate, flipHorizontal, flipVertical]
+
+does_not_cover:
+  - what: "Snapping carousel with per-item active states"
+    use_instead: element.infiniteScroll
+  - what: "Static text display"
+    use_instead: element.heading
+  - what: "User-scrollable content container"
+    use_instead: section.scrollContainer
+  - what: "Logo grid or static card group"
+    use_instead: section.column
+
+covers:
+  - description: "Text ticker scrolling right-to-left with gradient fade edges and hover pause"
+    example: content/presets/element-marquee.json
+    minimal: true
+
+composes_with:
+  parents: [section.column, section.contentBlock]
+  siblings_typical: [element.heading, element.button]
+  motion: "external — motionTiming for entrance; internal CSS keyframes (linear) or rAF + SVG textPath (path)"
+
+known_limitations:
+  - "followPath uses SVG textPath — check target browsers; SSR shows static first line without path animation"
+  - "Gradient fade edges apply to linear translate mode, not path mode"
+  - "duplicateContent is schema-only until wired in runtime"
+
+proposal_hints:
+  new_variant_value: extend_cluster
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

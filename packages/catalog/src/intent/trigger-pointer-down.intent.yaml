@@ -1,0 +1,47 @@
+id: trigger.pointerDown
+kind: trigger
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  Fires on pointer-down (mousedown / touchstart) — earlier than a click event.
+  Use for press-and-hold interactions, scrub-start signals, or any UI feedback
+  that should respond immediately on contact rather than waiting for release.
+
+not_this_if:
+  - "you need the full click (press and release) (use trigger.onClick)"
+  - "you need the release event (use trigger.pointerUp)"
+
+axes:
+  - name: config
+    fields: []
+    note: "no dedicated schema field — wired via element action bindings (element.range, element.button onPointerDown)"
+
+covers:
+  - description: "Scrub start with pressed variant and scrubState active flag"
+    example: content/presets/trigger-pointer-down.json
+
+does_not_cover:
+  - what: "Full click (down + up)"
+    use_instead: trigger.onClick
+  - what: "Pointer up / release"
+    use_instead: trigger.pointerUp
+  - what: "Keyboard shortcut"
+    use_instead: trigger.keyboard
+  - what: "Timer trigger"
+    use_instead: trigger.timer
+
+composes_with:
+  parents: [element.range, element.button, section.*]
+  siblings_typical: [trigger.pointerUp, trigger.onClick]
+  motion: "N/A — fires an action; motionTiming on the target element handles visual feedback"
+
+known_limitations:
+  - "Not a direct schema field on sections — wired via element action bindings"
+  - "pointerdown fires before the browser has resolved click intent — do not use for navigation"
+
+proposal_hints:
+  new_variant_value: "N/A — trigger, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

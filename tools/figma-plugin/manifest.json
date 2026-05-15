@@ -1,0 +1,9 @@
+{
+  "name": "Page Builder Export",
+  "id": "peblor-export",
+  "api": "1.0.0",
+  "main": "dist/main.js",
+  "ui": "dist/ui.html",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page"
+}

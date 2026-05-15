@@ -1,0 +1,61 @@
+id: element.tabs
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: elementTabsSchema
+
+feels_like: >
+  A tabbed interface element — a row of tab headers that switch between content
+  panels containing child elements. Each tab has a label, optional icon and badge,
+  and its own set of child elements rendered when active. Supports underline, pill,
+  contained, and vertical variants; fade or slide content transitions; lazy loading;
+  scrollable tab overflow; mobile collapse to dropdown; and keyboard arrow-key
+  navigation. Use for settings panels, product detail tabs, filter groups, or any
+  UI where the user switches between related content views.
+
+not_this_if:
+  - "you need an accordion with expand/collapse per item (use section.reveal)"
+  - "you need a carousel with snap and per-item states (use element.infiniteScroll)"
+  - "you need a simple flex group without tab switching (use element.group)"
+
+axes:
+  - name: tabs
+    fields: [tabs, activeTab]
+    note: "tabs array: [{ label, icon?, badge?, disabled?, elements }]"
+  - name: variant
+    fields: [variant, tabAlignment]
+  - name: behavior
+    fields: [contentAnimation, lazyLoad, scrollable, mobileCollapse, keyboardNav]
+  - name: accessibility
+    fields: [ariaLabel]
+
+does_not_cover:
+  - what: "Expand/collapse accordion"
+    use_instead: section.reveal
+  - what: "Snapping card carousel"
+    use_instead: element.infiniteScroll
+  - what: "Static flex group layout"
+    use_instead: element.group
+  - what: "Tab navigation between separate pages"
+    use_instead: "external — use element.link with page routes"
+
+covers:
+  - description: "Three-tab interface with pill variant, fade transitions, and lazy loading"
+    example: content/presets/element-tabs.json
+    minimal: true
+
+composes_with:
+  parents: [section.column, section.contentBlock]
+  siblings_typical: [element.heading, element.body]
+  motion: "external — motionTiming for entrance; contentAnimation controls tab switch transition"
+
+known_limitations:
+  - "Tab content elements are validated at the section level — not as inline elementBlockSchema for now"
+  - "Mobile collapse renders tab headers as a dropdown select — works best with 3-6 tabs"
+
+proposal_hints:
+  new_variant_value: extend_cluster
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

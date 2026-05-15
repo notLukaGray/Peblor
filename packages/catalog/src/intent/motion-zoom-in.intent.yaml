@@ -1,0 +1,47 @@
+id: motion.zoomIn
+kind: motion-preset
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A scale-up + fade entrance — element starts smaller than its resting size
+  and scales to full size while fading in. Use for image cards, CTA blocks,
+  and feature images where a sense of arrival or emphasis is desired.
+
+not_this_if:
+  - "you want scale-down exit (use motion.zoomOut)"
+  - "you want a spring pop with overshoot (use motion.popIn)"
+  - "you want a plain fade (use motion.fade)"
+
+axes:
+  - name: preset
+    fields: [motionTiming]
+    note: "entrancePreset: 'zoomIn' on motionTimingSchema"
+
+covers:
+  - description: "Product image card that scales up on entrance"
+    example: content/presets/motion-zoom-in.json
+
+does_not_cover:
+  - what: "Scale-down exit entrance"
+    use_instead: motion.zoomOut
+  - what: "Pop entrance with spring overshoot"
+    use_instead: motion.popIn
+  - what: "Directional slide"
+    use_instead: "motion.slideUp, motion.slideDown, motion.slideLeft, motion.slideRight"
+  - what: "Plain opacity fade"
+    use_instead: motion.fade
+
+composes_with:
+  parents: [section.*, element.*]
+  siblings_typical: []
+  motion: "motionTiming.entrancePreset: 'zoomIn'"
+
+known_limitations:
+  - "Initial scale value defined in motion defaults"
+
+proposal_hints:
+  new_variant_value: "N/A — motion preset, no variant field"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

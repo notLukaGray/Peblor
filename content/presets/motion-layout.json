@@ -1,0 +1,7 @@
+{
+  "type": "elementImage",
+  "id": "motion_layout_example_a",
+  "image": { "src": "https://example.com/photo-a.jpg", "alt": "Shared layout element A" },
+  "layout": true,
+  "layoutId": "shared-card"
+}

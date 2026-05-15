@@ -1,0 +1,81 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+**/node_modules/
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js (any workspace / package)
+**/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+!.env.example
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# backups
+*.backup
+*.bak
+*~
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+
+# Generated page manifest — built by validate-pages script
+**/src/content/page-manifest.json
+.vercel
+
+# Generated IDE JSON schemas (run `npm run generate-json-schemas` to rebuild)
+**/src/content/schemas/peblor.schema.json
+**/src/content/schemas/definition-block.schema.json
+**/src/content/schemas/definitions-file.schema.json
+**/src/content/schemas/module.schema.json
+
+# Lighthouse CI
+.lighthouseci/
+
+# Generated font files — downloaded at build time by download-webfonts.ts
+**/public/font/self-hosted/

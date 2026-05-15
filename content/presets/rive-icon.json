@@ -1,0 +1,8 @@
+{
+  "type": "elementRive",
+  "src": "icons.riv",
+  "artboard": "StarIcon",
+  "stateMachine": "HoverState",
+  "autoplay": true,
+  "ariaLabel": "Animated star icon"
+}

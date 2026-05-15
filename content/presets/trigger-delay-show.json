@@ -1,0 +1,6 @@
+{
+  "type": "triggerSection",
+  "id": "trigger_delay_show_example",
+  "trigger": { "type": "timer", "delayMs": 800, "intervalMs": 4000, "maxFires": 5 },
+  "actions": [{ "type": "setVariant", "target": "slide", "value": "next" }]
+}

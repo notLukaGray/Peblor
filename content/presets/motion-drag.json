@@ -1,0 +1,10 @@
+{
+  "type": "elementImage",
+  "id": "motion_drag_example",
+  "image": { "src": "https://example.com/card.jpg", "alt": "Draggable card" },
+  "drag": "x",
+  "dragConstraints": { "left": 0, "right": 300 },
+  "dragElastic": 0.2,
+  "dragSnapToOrigin": true,
+  "whileDrag": { "scale": 1.05 }
+}

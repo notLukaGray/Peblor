@@ -1,0 +1,51 @@
+id: section.trigger
+kind: cluster
+package: "@pb/contracts"
+schema_ref: sectionTriggerSchema
+runtime_ref: "@pb/runtime-react/page-builder/sections/SectionTrigger"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  An invisible intersection-observer sentinel. Place it at a strategic position
+  in the page to fire `onVisible`/`onInvisible`/`onProgress` actions when the
+  viewport crosses it — without a rendered background or children. The lightweight
+  alternative to wiring triggers on a visible section.
+
+not_this_if:
+  - "the section has visible children (use section.contentBlock and set onVisible on it)"
+  - "you need scroll-progress binding from a scroll container (use section.scrollContainer)"
+  - "you need the trigger to fire on a per-element basis (wire onVisible on that element's section)"
+
+axes:
+  - name: trigger
+    fields: [onVisible, onInvisible, onProgress, threshold, triggerOnce, rootMargin, delay]
+
+covers:
+  - description: "Intersection trigger that sets a variable on viewport entry with threshold and rootMargin"
+    example: content/presets/viewport-trigger.json
+
+does_not_cover:
+  - what: "Section with visual children wired to visibility triggers"
+    use_instead: section.contentBlock
+  - what: "Scroll-progress binding driving a continuous value"
+    use_instead: section.scrollContainer
+  - what: "Video or media state trigger"
+    use_instead: "trigger.onVideoPlay / trigger.onVideoEnd"
+  - what: "Keyboard or timer triggers"
+    use_instead: "trigger.keyboard / trigger.timer"
+
+composes_with:
+  parents: [page]
+  siblings_typical: [section.contentBlock, section.scrollContainer]
+  motion: "N/A — no visual wrapper; triggers fire from intersection observer"
+
+known_limitations:
+  - "Has no elements or fill fields — completely invisible in layout"
+  - "onProgress fires on each intersection-observer update, not as a smooth 0→1 value"
+  - "Place immediately before the target section for consistent firing point"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field on section.trigger"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

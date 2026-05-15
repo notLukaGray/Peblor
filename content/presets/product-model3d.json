@@ -1,0 +1,10 @@
+{
+  "type": "elementModel3D",
+  "ariaLabel": "Interactive 3D product model",
+  "scene": {
+    "camera": { "type": "perspective", "distance": 3 },
+    "lights": [{ "type": "ambient", "intensity": 0.5 }],
+    "instances": [{ "modelKey": "product", "position": [0, 0, 0] }]
+  },
+  "models": { "product": { "geometry": "product.glb" } }
+}

@@ -1,0 +1,48 @@
+id: trigger.idle
+kind: trigger
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  Fires `onIdle` after a configurable period of user inactivity and `onActive`
+  when the user interacts again. Wire `idleTriggers` on a section to hide
+  controls after inactivity, enter screensaver mode, or reset state after
+  kiosk-style timeout.
+
+not_this_if:
+  - "you need a fixed-interval timer regardless of user activity (use trigger.timer)"
+  - "you need a click or interaction trigger (use trigger.onClick)"
+
+axes:
+  - name: config
+    fields: [idleTriggers]
+    note: "array of { idleAfterMs?, onIdle?, onActive? } on baseSectionPropsSchema"
+
+covers:
+  - description: "Video controls hide after 3s idle with onActive restore"
+    example: content/presets/trigger-idle-reset.json
+
+does_not_cover:
+  - what: "Fixed timer that fires regardless of user input"
+    use_instead: trigger.timer
+  - what: "Click or keyboard trigger"
+    use_instead: "trigger.onClick / trigger.keyboard"
+  - what: "Intersection-based trigger"
+    use_instead: trigger.onVisible
+  - what: "Scroll-direction trigger"
+    use_instead: trigger.scrollDirection
+
+composes_with:
+  parents: [section.*]
+  siblings_typical: [trigger.timer]
+  motion: "N/A — fires actions; receiving section handles visibility or animation"
+
+known_limitations:
+  - "idleAfterMs defaults are implementation-defined; always set explicitly"
+  - "onActive fires on any pointer, keyboard, or touch event after idle state"
+
+proposal_hints:
+  new_variant_value: "N/A — trigger, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

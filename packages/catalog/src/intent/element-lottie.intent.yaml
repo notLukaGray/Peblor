@@ -1,0 +1,71 @@
+id: element.lottie
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: elementLottieSchema
+
+feels_like: >
+  A Lottie animation player that renders .json animation files as SVG, canvas,
+  or HTML. Supports autoplay, loop count (boolean or exact number), speed
+  control, forward/reverse direction, bounce and reverse play modes, frame
+  segment playback, background color, hover-to-play, interactive event-to-action
+  bindings, theme color overrides, and lifecycle events (onComplete, onLoop,
+  onEnterFrame). Use for animated icons, loading spinners, onboarding
+  illustrations, micro-interactions, or any lightweight vector animation.
+
+not_this_if:
+  - "you need a Rive interactive animation with state machines (use element.rive)"
+  - "you need a video with audio (use element.video)"
+  - "you need a 3D model (use element.model3d)"
+
+axes:
+  - name: source
+    fields: [src, poster]
+  - name: playback
+    fields: [autoplay, loop, speed, direction, playMode]
+  - name: segment
+    fields: [segment]
+  - name: render
+    fields: [renderer, backgroundColor, preserveAspectRatio]
+  - name: interaction
+    fields: [hover, interactivity]
+    note: "hover: play on hover/tap; interactivity: [{ event, action }] maps Lottie events to page-builder actions"
+  - name: theming
+    fields: [themeOverrides]
+    note: "record of color key → theme token for runtime color remapping"
+  - name: events
+    fields: [onComplete, onLoop, onEnterFrame]
+  - name: accessibility
+    fields: [ariaLabel]
+
+does_not_cover:
+  - what: "Rive interactive animation with state machines"
+    use_instead: element.rive
+  - what: "Video with audio track"
+    use_instead: element.video
+  - what: "3D model scene"
+    use_instead: element.model3d
+  - what: "Static SVG image"
+    use_instead: element.svg
+
+covers:
+  - description: "Lottie animation with autoplay, 3 loops, bounce mode, hover-to-play, and color overrides"
+    example: content/presets/element-lottie.json
+    minimal: true
+
+composes_with:
+  parents: [section.column, section.contentBlock]
+  siblings_typical: [element.heading, element.button]
+  motion: "external — motionTiming for entrance; internal Lottie runtime controls playback"
+
+known_limitations:
+  - "Lottie runtime is loaded lazily — first render may show poster or blank canvas briefly"
+  - "themeOverrides map Lottie color layer names to theme tokens — layer names must match the JSON"
+  - "interactivity binds Lottie event names (click, hover, complete, loop) to page-builder actions via triggerActionSchema"
+
+proposal_hints:
+  new_variant_value: extend_cluster
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

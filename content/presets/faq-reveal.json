@@ -1,0 +1,8 @@
+{
+  "type": "revealSection",
+  "triggerMode": "click",
+  "expandAxis": "vertical",
+  "initialRevealed": false,
+  "collapsedElements": [],
+  "revealedElements": []
+}

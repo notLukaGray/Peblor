@@ -1,0 +1,50 @@
+{
+  "title": "Preset Resolution Probe",
+  "slug": "preset-resolution-probe",
+  "description": "Conformance fixture that verifies inline preset expansion in @pb/core.expandPage.",
+  "sectionOrder": ["hero"],
+  "bgKey": "bg",
+  "preset": {
+    "headingBase": {
+      "type": "elementHeading",
+      "level": 2,
+      "text": "Preset heading",
+      "marginBottom": "3rem",
+      "align": "left",
+      "width": "hug"
+    }
+  },
+  "definitions": {
+    "bg": {
+      "type": "backgroundVariable",
+      "layers": [{ "fill": "#0a0a0a" }]
+    },
+    "hero": {
+      "type": "contentBlock",
+      "id": "hero",
+      "width": "100%",
+      "height": "hug",
+      "align": "center",
+      "fill": "#00000000",
+      "padding": "1rem",
+      "gap": "1rem",
+      "elementOrder": ["title"],
+      "definitions": {
+        "title": {
+          "type": "elementHeading",
+          "preset": "headingBase",
+          "level": 2,
+          "text": "Local heading",
+          "align": "center",
+          "width": "hug"
+        }
+      }
+    }
+  },
+  "conformanceExpect": {
+    "expandedAssertions": [
+      { "path": "sections[0].elements[0].marginBottom", "equals": "3rem" },
+      { "path": "sections[0].elements[0].preset", "exists": false }
+    ]
+  }
+}

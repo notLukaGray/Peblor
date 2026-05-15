@@ -1,0 +1,52 @@
+id: element.input
+kind: cluster
+package: "@pb/contracts"
+schema_ref: elementInputSchema
+runtime_ref: "@pb/runtime-react/page-builder/elements/ElementInput"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A glass-style text search input. Primarily for live-filter or search interactions
+  in interactive overlays and player UIs — not a form field with validation.
+
+not_this_if:
+  - "you need submit, validation, or server POST (use section.formBlock)"
+  - "you need a range/slider control (use element.range)"
+  - "you need a dropdown or select (use section.formBlock with select type)"
+
+axes:
+  - name: variant
+    fields: [variant]
+  - name: content
+    fields: [placeholder, showIcon]
+  - name: color
+    fields: [color]
+  - name: accessibility
+    fields: [ariaLabel]
+
+covers:
+  - description: "Compact search input with icon and accessible label"
+    example: content/presets/search-input.json
+
+does_not_cover:
+  - what: "Form field with label, validation, and submit"
+    use_instead: section.formBlock
+  - what: "Range slider for continuous values"
+    use_instead: element.range
+  - what: "Dropdown or multi-option select"
+    use_instead: section.formBlock
+
+composes_with:
+  parents: [section.column, section.contentBlock, module.*]
+  siblings_typical: [element.button, element.heading]
+  motion: "external — motionTiming applied by parent wrapper"
+
+known_limitations:
+  - "No built-in value binding to a variable store — wire up via action bus if needed"
+  - "showIcon defaults to true; set false to suppress the search icon"
+
+proposal_hints:
+  new_variant_value: extend_cluster
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

@@ -1,0 +1,47 @@
+id: motion.popIn
+kind: motion-preset
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A spring-driven scale entrance with overshoot — the element pops in with a
+  slight bounce, giving a playful, tactile feel. Use for interactive UI elements,
+  tooltips, tags, badges, and any element that should feel lively on entrance.
+
+not_this_if:
+  - "you want a smooth linear scale (use motion.zoomIn)"
+  - "you want a directional slide (use motion.slideUp etc.)"
+  - "you want a soft fade (use motion.fade)"
+
+axes:
+  - name: preset
+    fields: [motionTiming]
+    note: "entrancePreset: 'popIn' on motionTimingSchema"
+
+covers:
+  - description: "Tag badge that pops in with a spring bounce"
+    example: content/presets/motion-pop-in.json
+
+does_not_cover:
+  - what: "Smooth linear scale entrance"
+    use_instead: motion.zoomIn
+  - what: "Directional slide entrance"
+    use_instead: "motion.slideUp / motion.slideLeft"
+  - what: "Blur-to-sharp entrance"
+    use_instead: motion.blurIn
+  - what: "Tilt entrance"
+    use_instead: motion.tiltIn
+
+composes_with:
+  parents: [section.*, element.*]
+  siblings_typical: []
+  motion: "motionTiming.entrancePreset: 'popIn' — spring easing defined in motion defaults"
+
+known_limitations:
+  - "Spring parameters (stiffness, damping) are defined in motion defaults"
+
+proposal_hints:
+  new_variant_value: "N/A — motion preset, no variant field"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

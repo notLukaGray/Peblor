@@ -1,0 +1,10 @@
+{
+  "type": "elementHeading",
+  "id": "motion_trigger_example",
+  "level": 1,
+  "text": "Animate on first visible",
+  "motionTiming": {
+    "trigger": "onFirstVisible",
+    "entrancePreset": "fade"
+  }
+}

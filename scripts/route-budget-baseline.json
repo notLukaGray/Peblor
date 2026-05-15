@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-14T12:10:00.000Z",
+  "routes": {
+    "/": {
+      "bytes": 304166,
+      "chunkCount": 6
+    },
+    "/[...slug]": {
+      "bytes": 502728,
+      "chunkCount": 15
+    },
+    "/playground": {
+      "bytes": 1080876,
+      "chunkCount": 17
+    },
+    "/robots.txt": {
+      "bytes": 0,
+      "chunkCount": 0
+    },
+    "/style-guide": {
+      "bytes": 88897,
+      "chunkCount": 2
+    }
+  },
+  "exceptions": {}
+}

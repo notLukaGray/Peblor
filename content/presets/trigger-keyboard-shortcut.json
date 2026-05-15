@@ -1,0 +1,7 @@
+{
+  "type": "triggerSection",
+  "id": "trigger_keyboard_shortcut_example",
+  "trigger": { "type": "keyboard", "key": "k", "meta": true, "preventDefault": true },
+  "actions": [{ "type": "setVariant", "target": "search-modal", "value": "open" }],
+  "triggerOnce": false
+}

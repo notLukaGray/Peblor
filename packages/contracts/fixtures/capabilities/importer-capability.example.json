@@ -1,0 +1,9 @@
+{
+  "type": "importer",
+  "name": "example-importer",
+  "version": "1.0.0",
+  "supportedContractVersions": ["1.0.0"],
+  "supportedElementTypes": ["elementHeading", "elementBody", "elementImage"],
+  "supportedSectionTypes": ["contentBlock", "formBlock"],
+  "diagnosticCodes": ["PB_EXT_IMPORT_INVALID_SOURCE", "PB_EXT_IMPORT_INVALID_PAGE"]
+}

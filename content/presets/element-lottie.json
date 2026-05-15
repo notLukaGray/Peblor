@@ -1,0 +1,10 @@
+{
+  "type": "elementLottie",
+  "id": "lottie_example",
+  "src": "https://example.com/animation.json",
+  "autoplay": true,
+  "loop": 3,
+  "playMode": "bounce",
+  "hover": true,
+  "themeOverrides": { "primary": "var(--color-accent)", "background": "var(--color-surface)" }
+}

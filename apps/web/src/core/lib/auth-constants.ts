@@ -1,0 +1,1 @@
+export { accessCookieName } from "./globals";

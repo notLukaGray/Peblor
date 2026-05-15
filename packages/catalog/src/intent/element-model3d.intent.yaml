@@ -1,0 +1,61 @@
+id: element.model3d
+kind: cluster
+package: "@pb/contracts"
+schema_ref: elementModel3DSchema
+runtime_ref: "@pb/runtime-react/page-builder/elements/ElementModel3D"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A Three.js/R3F 3D scene — one or more glTF/GLB models in a configured
+  environment with lights, a camera, optional post-processing effects, and
+  per-instance pointer interactions. The full interactive 3D surface for
+  product viewers, hero scenes, configurators.
+
+not_this_if:
+  - "the asset is a 2D raster image (use element.image)"
+  - "the asset is a 2D vector (use element.vector)"
+  - "the animation is a Rive file (use element.rive)"
+  - "you only need a CSS/SVG animation (use element.svg with animation)"
+
+axes:
+  - name: scene
+    fields: [scene, canvas]
+    note: "scene holds models/lights/camera defs; canvas controls renderer size and background"
+  - name: assets
+    fields: [textures, materials, models]
+    note: "pre-declared asset registries — instances in scene reference these by key"
+  - name: post-processing
+    fields: [postProcessing]
+  - name: module
+    fields: [module]
+    note: "module string links this element to a player module for command routing"
+  - name: accessibility
+    fields: [ariaLabel, initiallyLoaded]
+
+covers:
+  - description: "Single product model with orbit camera and HDR environment"
+    example: content/presets/product-model3d.json
+
+does_not_cover:
+  - what: "2D raster image or photo"
+    use_instead: element.image
+  - what: "Rive state-machine animation"
+    use_instead: element.rive
+  - what: "Simple CSS-animated SVG illustration"
+    use_instead: element.svg
+
+composes_with:
+  parents: [section.column, section.contentBlock, module.*]
+  siblings_typical: [element.heading, element.button]
+  motion: "external — motionTiming applied by parent wrapper; per-instance animations via scene config"
+
+known_limitations:
+  - "Per-instance command targeting not yet supported — commands are global singletons"
+  - "initiallyLoaded: false defers scene mount until triggered (saves bundle on first paint)"
+  - "postProcessing effects require WebGL2 — fall back gracefully on unsupported devices"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field on element.model3d"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

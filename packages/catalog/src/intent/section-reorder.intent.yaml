@@ -1,0 +1,53 @@
+id: section.reorder
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: sectionContentBlockSchema
+
+feels_like: >
+  Enables drag-and-drop reordering of child elements within a content block
+  section. Configure the reorder axis (x or y), drag unit (frame or content),
+  and drag behavior (elastic snap, free, or none). Use for sortable lists,
+  priority reordering, playlist management, or any UI where the user should
+  rearrange items by dragging.
+
+not_this_if:
+  - "you need a scrolling carousel with snap (use element.infiniteScroll)"
+  - "you need free-form element dragging (use motion.drag)"
+  - "you need a static ordered list (use section.contentBlock without reorder)"
+
+axes:
+  - name: reorder
+    fields: [reorderable, reorderAxis, reorderDragUnit, reorderDragBehavior]
+    note: "reorderable: boolean; reorderAxis: x | y; dragUnit: frame | content; dragBehavior: elasticSnap | free | none"
+
+does_not_cover:
+  - what: "Snapping scroll carousel"
+    use_instead: element.infiniteScroll
+  - what: "Free-form draggable element"
+    use_instead: motion.drag
+  - what: "Static ordered list"
+    use_instead: section.contentBlock
+  - what: "Grid-based sort with columns"
+    use_instead: section.column
+
+covers:
+  - description: "Reorderable vertical list with elastic snap on y-axis"
+    example: content/presets/section-reorder.json
+
+composes_with:
+  parents: [page]
+  siblings_typical: [section.contentBlock, section.column]
+  motion: "reorder drag handled via framer-motion drag controls in ReorderableElementList"
+
+known_limitations:
+  - "reorderable only applies to section.contentBlock — not available on other section types"
+  - "reorderDragUnit: 'content' drags the visual element; 'frame' uses a drag handle overlay"
+  - "reorderAxis must match the content block's flexDirection — x for row, y for column"
+
+proposal_hints:
+  new_variant_value: "N/A — section capability, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

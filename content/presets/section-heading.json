@@ -1,0 +1,10 @@
+{
+  "type": "elementHeading",
+  "variant": "label",
+  "text": "Section title",
+  "level": 3,
+  "semanticLevel": 2,
+  "letterSpacing": "0.08em",
+  "fontFamily": "mono",
+  "color": "textSecondary"
+}

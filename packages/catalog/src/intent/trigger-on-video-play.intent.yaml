@@ -1,0 +1,47 @@
+id: trigger.onVideoPlay
+kind: trigger
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  Fires when a video player within a module enters play state. Wire to show
+  play-state UI, hide idle overlays, or dispatch analytics events the moment
+  playback starts. Requires a module with contextType: 'video'.
+
+not_this_if:
+  - "you need to trigger on pause (use trigger.onVideoPause)"
+  - "you need to trigger when video ends (use trigger.onVideoEnd)"
+
+axes:
+  - name: config
+    fields: []
+    note: "no dedicated schema field — wired via module slot visibleWhen: ['playing'] or via action bindings on element.button"
+
+covers:
+  - description: "Playing-state indicator with resume overlay hidden on video play"
+    example: content/presets/trigger-video-play.json
+
+does_not_cover:
+  - what: "Video pause event"
+    use_instead: trigger.onVideoPause
+  - what: "Video end event"
+    use_instead: trigger.onVideoEnd
+  - what: "Intersection-based visibility trigger"
+    use_instead: trigger.onVisible
+  - what: "Timer-based trigger"
+    use_instead: trigger.timer
+
+composes_with:
+  parents: [module]
+  siblings_typical: [trigger.onVideoPause, trigger.onVideoEnd]
+  motion: "N/A — player state drives slot visibility; motionTiming on the slot controls reveal"
+
+known_limitations:
+  - "Requires module contextType: 'video' and a wired video element"
+  - "State is managed by the player context — not a direct section field"
+
+proposal_hints:
+  new_variant_value: "N/A — trigger, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

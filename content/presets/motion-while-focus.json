@@ -1,0 +1,7 @@
+{
+  "type": "elementInput",
+  "id": "motion_while_focus_example",
+  "placeholder": "Focus on me",
+  "whileFocus": { "scale": 1.02, "boxShadow": "0 0 0 2px var(--color-accent)" },
+  "transition": { "duration": 0.2 }
+}

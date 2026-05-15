@@ -1,0 +1,10 @@
+{
+  "type": "cmsAdapter",
+  "name": "example-cms-adapter",
+  "version": "1.0.0",
+  "cmsProvider": "example-cms",
+  "syncModes": ["pull", "push", "bidirectional"],
+  "mappingFeatures": ["fieldMapping", "slugSync", "assetLinking"],
+  "conflictPolicies": ["manualReview", "lastWriteWins"],
+  "diagnosticCodes": ["PB_EXT_CMS_CONFLICT", "PB_EXT_CMS_MAPPING_UNSUPPORTED"]
+}

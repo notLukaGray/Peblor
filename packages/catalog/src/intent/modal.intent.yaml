@@ -1,0 +1,56 @@
+id: modal
+kind: cluster
+package: "@pb/contracts"
+schema_ref: modalBuilderSchema
+runtime_ref: "@pb/runtime-react/page-builder/modals/ModalBuilder"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A full-screen overlay dialog with its own sectionOrder and definitions — a
+  mini page-builder inside a modal. Opened by trigger actions and animated
+  with configurable enter/exit transitions. Use for contact forms, lightboxes,
+  detail panels, and any content that should float above the page.
+
+not_this_if:
+  - "the content should stay in the page flow (use section.contentBlock or section.reveal)"
+  - "you need a positioned slot overlay within a player (use module slots)"
+  - "the dialog is a simple confirmation with no custom layout (use a native dialog)"
+
+axes:
+  - name: identity
+    fields: [id, title]
+  - name: content
+    fields: [sectionOrder, definitions]
+  - name: animation
+    fields: [transition, motion]
+  - name: appearance
+    fields: [effects]
+
+covers:
+  - description: "Contact form modal with form fields inside a contentBlock section"
+    example: content/presets/contact-modal.json
+
+does_not_cover:
+  - what: "In-flow expandable section"
+    use_instead: section.reveal
+  - what: "Player overlay UI chrome"
+    use_instead: "module slots"
+  - what: "Tooltip or popover anchored to an element"
+    use_instead: "section.reveal with externalTriggerKey"
+  - what: "Toast or notification"
+    use_instead: "not currently supported — use section.reveal with fixed positioning"
+
+composes_with:
+  parents: [page modals registry]
+  siblings_typical: []
+  motion: "transition controls enter/exit duration and easing; motion overrides keyframes for the dialog wrapper"
+
+known_limitations:
+  - "id must be unique across all modals on a page — duplicate ids produce undefined open behavior"
+  - "sectionOrder + definitions mirror the page shape — sections inside follow the same render pipeline"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field on modal"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

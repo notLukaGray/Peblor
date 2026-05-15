@@ -1,0 +1,9 @@
+{
+  "type": "revealSection",
+  "id": "motion_fade_example",
+  "triggerMode": "onVisible",
+  "motion": "fade",
+  "motionDuration": 0.6,
+  "motionEasing": "easeOut",
+  "sections": []
+}

@@ -1,0 +1,17 @@
+{
+  "type": "divider",
+  "height": ["4rem", "6rem"],
+  "width": "100%",
+  "minHeight": "3rem",
+  "fill": "surfaceSecondary",
+  "border": {
+    "top": { "width": "1px", "color": "borderSubtle", "style": "solid" }
+  },
+  "effects": [{ "type": "blur", "value": "8px" }],
+  "motionTiming": {
+    "triggerMode": "onVisible",
+    "motion": "fade",
+    "motionDuration": 0.5,
+    "motionEasing": "easeOut"
+  }
+}

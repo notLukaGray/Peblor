@@ -1,0 +1,15 @@
+{
+  "type": "elementVideo",
+  "variant": "hero",
+  "src": "hero-reel.mp4",
+  "poster": "hero-reel-poster.jpg",
+  "autoplay": true,
+  "loop": true,
+  "muted": true,
+  "objectFit": "cover",
+  "aspectRatio": "16/9",
+  "preload": "none",
+  "streamingConfig": {
+    "autoStartLoad": true
+  }
+}

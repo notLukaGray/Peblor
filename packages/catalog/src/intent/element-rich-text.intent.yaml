@@ -1,0 +1,50 @@
+id: element.richText
+kind: cluster
+package: "@pb/contracts"
+schema_ref: elementRichTextSchema
+runtime_ref: "@pb/runtime-react/page-builder/elements/ElementRichText"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  HTML-rendered prose that can contain inline formatting — bold, italic, links,
+  lists, headings. Use when the copy comes from a CMS rich-text field, or when a
+  single text block needs mixed inline formatting that element.body cannot express.
+
+not_this_if:
+  - "the copy is uniform (all same style) — use element.heading or element.body"
+  - "you need a standalone clickable link (use element.link)"
+  - "the text comes from a variable store (use element.body with variableKey)"
+
+axes:
+  - name: content
+    fields: [content, markup]
+    note: "content is the raw rich-text string; markup is a pre-rendered HTML override"
+  - name: typography
+    fields: [level, wordWrap]
+
+covers:
+  - description: "CMS-sourced rich text with bold, italic, and inline anchor formatting"
+    example: content/presets/rich-text-body.json
+
+does_not_cover:
+  - what: "Uniform heading or label copy"
+    use_instead: element.heading
+  - what: "Uniform paragraph body copy"
+    use_instead: element.body
+  - what: "Standalone hyperlink"
+    use_instead: element.link
+
+composes_with:
+  parents: [section.column, section.contentBlock, module.*]
+  siblings_typical: [element.heading, element.image, element.button]
+  motion: "external — motionTiming applied by parent wrapper"
+
+known_limitations:
+  - "markup field bypasses content parsing — use only when raw HTML is pre-sanitized"
+  - "No per-run typography overrides; all styling is driven by the level/variant class"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field on element.richText"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

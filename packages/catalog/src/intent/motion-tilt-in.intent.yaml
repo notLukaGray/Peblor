@@ -1,0 +1,48 @@
+id: motion.tiltIn
+kind: motion-preset
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A 3D-perspective tilt + fade entrance — element starts rotated on the X or Y
+  axis and rotates to flat while fading in, creating a card-flip or perspective-
+  drop feel. Use for card carousels, content panels, and feature rows where
+  3D depth enhances the entrance.
+
+not_this_if:
+  - "you want a flat 2D slide (use motion.slideUp etc.)"
+  - "you want a scale entrance (use motion.zoomIn or motion.popIn)"
+  - "you want a plain fade (use motion.fade)"
+
+axes:
+  - name: preset
+    fields: [motionTiming]
+    note: "entrancePreset: 'tiltIn' on motionTimingSchema"
+
+covers:
+  - description: "Feature card that tilts from perspective into flat position"
+    example: content/presets/motion-tilt-in.json
+
+does_not_cover:
+  - what: "Flat translate slide"
+    use_instead: "motion.slideUp / motion.slideLeft"
+  - what: "Scale entrance"
+    use_instead: motion.zoomIn
+  - what: "Blur-to-sharp entrance"
+    use_instead: motion.blurIn
+  - what: "Spring pop entrance"
+    use_instead: motion.popIn
+
+composes_with:
+  parents: [section.*, element.*]
+  siblings_typical: []
+  motion: "motionTiming.entrancePreset: 'tiltIn' — perspective set on parent section"
+
+known_limitations:
+  - "Requires CSS perspective on a parent element for depth effect — set on the section wrapper"
+
+proposal_hints:
+  new_variant_value: "N/A — motion preset, no variant field"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

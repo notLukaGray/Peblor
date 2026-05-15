@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">Image preview placeholder</title>
+  <desc id="desc">Gradient placeholder used by the image dev preview.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1f2937" />
+      <stop offset="50%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="panel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.06" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)" />
+  <rect x="120" y="90" width="960" height="620" rx="32" fill="url(#panel)" stroke="#ffffff" stroke-opacity="0.2" />
+  <g fill="#e2e8f0" fill-opacity="0.92">
+    <circle cx="250" cy="250" r="54" />
+    <path d="M180 610l210-220 126 130 190-210 254 300z" />
+  </g>
+  <text x="600" y="700" text-anchor="middle" fill="#e2e8f0" fill-opacity="0.9" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="34" letter-spacing="2">
+    IMAGE PREVIEW
+  </text>
+</svg>

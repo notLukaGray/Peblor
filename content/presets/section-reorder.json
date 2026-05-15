@@ -1,0 +1,13 @@
+{
+  "type": "contentBlock",
+  "id": "section_reorder_example",
+  "reorderable": true,
+  "reorderAxis": "y",
+  "reorderDragUnit": "frame",
+  "reorderDragBehavior": "elasticSnap",
+  "elements": [
+    { "type": "elementHeading", "id": "item_1", "level": 4, "text": "First Item" },
+    { "type": "elementHeading", "id": "item_2", "level": 4, "text": "Second Item" },
+    { "type": "elementHeading", "id": "item_3", "level": 4, "text": "Third Item" }
+  ]
+}

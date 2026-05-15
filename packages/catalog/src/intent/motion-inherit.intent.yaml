@@ -1,0 +1,53 @@
+id: motion.inherit
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: motionPropsSchema
+
+feels_like: >
+  Controls how animation variants and motion settings cascade from parent to
+  child elements. Set inheritMode to 'auto' (use parent defaults), 'inherit'
+  (force inherit even when parent isolates), or 'isolate' (break the chain —
+  children start fresh). Use for scoped animation systems where a parent's
+  motion settings should not leak into nested content.
+
+not_this_if:
+  - "you need entrance/exit animation presets (use motionTiming.entrancePreset / exitPreset)"
+  - "you need to disable animations for accessibility (use motion.reduceMotion)"
+  - "you need shared layout animation (use motion.layout)"
+
+axes:
+  - name: inheritance
+    fields: [inherit, inheritMode]
+    note: "inherit: boolean; inheritMode: auto | inherit | isolate"
+
+does_not_cover:
+  - what: "Entrance or exit animation presets"
+    use_instead: "motionTiming.entrancePreset"
+  - what: "Accessibility reduced motion"
+    use_instead: motion.reduceMotion
+  - what: "Shared layout animation between elements"
+    use_instead: motion.layout
+  - what: "Variant state management"
+    use_instead: "motion.variants (variants, initialVariant, animateVariant)"
+
+covers:
+  - description: "Content block that isolates its motion from the parent page's animation context"
+    example: content/presets/motion-inherit.json
+
+composes_with:
+  parents: [section.*, element.*]
+  siblings_typical: [motion.reduceMotion, motionTiming.entrancePreset]
+  motion: "inherit + inheritMode on motionProps — controls variant cascade through framer-motion context"
+
+known_limitations:
+  - "inheritMode: 'isolate' creates a new animation context — parent motion timing does not apply"
+  - "inheritMode: 'auto' is the default — follows the parent's inherit setting"
+  - "Both inherit and inheritMode can be set together; inheritMode takes precedence for context behavior"
+
+proposal_hints:
+  new_variant_value: "N/A — animation config, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

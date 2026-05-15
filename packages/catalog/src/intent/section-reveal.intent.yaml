@@ -1,0 +1,73 @@
+id: section.reveal
+kind: cluster
+package: "@pb/contracts"
+schema_ref: sectionRevealSchema
+runtime_ref: "@pb/runtime-react/page-builder/sections/SectionReveal"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  An expandable/collapsible section with two element states — collapsed and revealed.
+  Expands on hover, click, external trigger, or button press, animating the container
+  from collapsedSize to expandedSize with staggered child reveal. Use for accordions,
+  FAQs, expandable feature details, and slide-in side panels.
+
+not_this_if:
+  - "you want a simple show/hide driven by a variable (use visibleWhen on section.contentBlock)"
+  - "you need tab-switching between multiple panels (use element.infiniteScroll as a tab strip)"
+  - "you need a modal overlay (use modal)"
+
+axes:
+  - name: trigger
+    fields:
+      [
+        triggerMode,
+        externalTriggerKey,
+        externalTriggerMode,
+        revealOnHover,
+        revealOnClick,
+        toggleOnClick,
+      ]
+  - name: animation
+    fields:
+      [
+        expandAxis,
+        expandDurationMs,
+        collapseDurationMs,
+        transitionEasing,
+        revealStaggerMs,
+        revealDurationMs,
+        revealPreset,
+      ]
+  - name: sizing
+    fields: [collapsedSize, expandedSize, initialRevealed]
+  - name: children
+    fields: [collapsedElements, revealedElements]
+
+covers:
+  - description: "Click-to-expand FAQ section with vertical slide reveal"
+    example: content/presets/faq-reveal.json
+
+does_not_cover:
+  - what: "Conditional visibility driven by a variable (no animation)"
+    use_instead: "visibleWhen on section.contentBlock"
+  - what: "Tab-strip selector switching between multiple views"
+    use_instead: element.infiniteScroll
+  - what: "Full-screen modal overlay"
+    use_instead: modal
+  - what: "Scroll-driven reveal with progress binding"
+    use_instead: section.scrollContainer
+
+composes_with:
+  parents: [page, module.*]
+  siblings_typical: [section.contentBlock, element.button]
+  motion: "motionTiming on the outer wrapper; revealPreset drives child stagger reveal"
+
+known_limitations:
+  - "externalTriggerKey must match the key used in button or trigger actions to setTrue/setFalse/toggle"
+  - "collapsedElements are shown only when collapsed; revealedElements shown only when revealed"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field on section.reveal"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

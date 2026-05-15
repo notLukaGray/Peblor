@@ -1,0 +1,52 @@
+id: motion.whileTap
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: motionPropsSchema
+
+feels_like: >
+  Applies Framer Motion keyframe overrides while the pointer is pressed down on
+  an element or section. Use for press-scale, color-darken, or any tactile
+  feedback that should appear on tap and reverse on release. Works on any element
+  or section via motionPropsSchema.
+
+not_this_if:
+  - "you need a click action trigger (use trigger.onClick)"
+  - "you need pointer-down event separately from pointer-up (use trigger.pointerDown / trigger.pointerUp)"
+  - "you need hover feedback with no press state (use motion.whileHover)"
+
+axes:
+  - name: keyframes
+    fields: [whileTap]
+    note: "z.union([motionKeyframesSchema, string]) — any known FM property"
+
+does_not_cover:
+  - what: "Click action trigger"
+    use_instead: trigger.onClick
+  - what: "Separate pointer-down and pointer-up actions"
+    use_instead: trigger.pointerDown
+  - what: "Hover-only visual feedback"
+    use_instead: motion.whileHover
+  - what: "Drag interaction"
+    use_instead: motion.drag
+
+covers:
+  - description: "Button with press-scale 0.95 while-tap gesture"
+    example: content/presets/motion-while-tap.json
+
+composes_with:
+  parents: [section.*, element.*]
+  siblings_typical: [motion.whileHover, motion.whileFocus]
+  motion: "whileTap on motionProps — merged from motion defaults"
+
+known_limitations:
+  - "whileTap keyframes are stripped of layout-owned keys — use scale/opacity/color"
+  - "whileTap fires on pointer-down and reverses on pointer-up"
+  - "Transition for the tap animation comes from the shared transition config"
+
+proposal_hints:
+  new_variant_value: "N/A — motion gesture, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

@@ -1,0 +1,13 @@
+{
+  "title": "Unlock",
+  "slug": "unlock",
+  "description": "Password-protected page unlock.",
+  "sectionOrder": ["unlock_intro", "unlock_form", "unlock_footer"],
+  "bgKey": "bg",
+  "definitions": {
+    "bg": {
+      "type": "backgroundVariable",
+      "layers": [{ "fill": "#0a0a0a" }]
+    }
+  }
+}

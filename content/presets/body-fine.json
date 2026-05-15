@@ -1,0 +1,10 @@
+{
+  "type": "elementBody",
+  "variant": "fine",
+  "text": "Fig. 1 — Caption text below the hero image",
+  "fontSize": "0.875rem",
+  "lineHeight": 1.35,
+  "color": "textSecondary",
+  "textOverflow": "ellipsis",
+  "maxLines": 2
+}

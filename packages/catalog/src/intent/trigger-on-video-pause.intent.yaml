@@ -1,0 +1,47 @@
+id: trigger.onVideoPause
+kind: trigger
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  Fires when a video player within a module enters pause state. Wire to show
+  pause-state overlays, resume prompts, or analytics events. Counterpart to
+  trigger.onVideoPlay.
+
+not_this_if:
+  - "you need to trigger on play (use trigger.onVideoPlay)"
+  - "you need to trigger when video ends (use trigger.onVideoEnd)"
+
+axes:
+  - name: config
+    fields: []
+    note: "no dedicated schema field — wired via module slot visibleWhen: ['paused'] or action bindings"
+
+covers:
+  - description: "Paused-state indicator and resume overlay when video pauses"
+    example: content/presets/trigger-video-pause.json
+
+does_not_cover:
+  - what: "Video play event"
+    use_instead: trigger.onVideoPlay
+  - what: "Video end event"
+    use_instead: trigger.onVideoEnd
+  - what: "Timer-based trigger"
+    use_instead: trigger.timer
+  - what: "User click trigger"
+    use_instead: trigger.onClick
+
+composes_with:
+  parents: [module]
+  siblings_typical: [trigger.onVideoPlay, trigger.onVideoEnd]
+  motion: "N/A — player state drives slot visibility"
+
+known_limitations:
+  - "Requires module contextType: 'video'"
+  - "Fires on both user-initiated pause and programmatic pause commands"
+
+proposal_hints:
+  new_variant_value: "N/A — trigger, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

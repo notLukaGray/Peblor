@@ -1,0 +1,56 @@
+id: element.range
+kind: cluster
+package: "@pb/contracts"
+schema_ref: elementRangeSchema
+runtime_ref: "@pb/runtime-react/page-builder/elements/ElementRange"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A styled range slider. Use for volume controls, seek bars, or any continuous
+  0–1 input that should fire page-builder actions on every change. Integrates with
+  VideoControlContext for `action: "volume"` and `action: "seek"`.
+
+not_this_if:
+  - "you need a discrete toggle or on/off switch (use element.button with setVariable)"
+  - "you need a text input (use element.input)"
+  - "you need a form field with label and validation (use section.formBlock)"
+
+axes:
+  - name: variant
+    fields: [variant]
+  - name: range
+    fields: [min, max, step, defaultValue]
+  - name: action
+    fields: [action, actionPayload]
+    note: '"volume" and "seek" delegate to VideoControlContext; others fire firePageBuilderProgressTrigger'
+  - name: style
+    fields: [style]
+    note: "sub-keys: trackColor, fillColor, trackHeight, thumbSize, borderRadius, accentColor"
+  - name: state
+    fields: [disabled, ariaLabel]
+
+covers:
+  - description: "Video volume slider wired to VideoControlContext"
+    example: content/presets/volume-range.json
+
+does_not_cover:
+  - what: "Discrete yes/no toggle"
+    use_instead: element.button
+  - what: "Text search input"
+    use_instead: element.input
+  - what: "Form input with label and server validation"
+    use_instead: section.formBlock
+
+composes_with:
+  parents: [section.column, section.contentBlock, module.*]
+  siblings_typical: [element.videoTime, element.videoQualitySelect, element.button]
+  motion: "external — motionTiming applied by parent wrapper"
+
+known_limitations:
+  - "Custom track/thumb rendering activates only when trackHeight AND thumbSize are both set"
+
+proposal_hints:
+  new_variant_value: extend_cluster
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

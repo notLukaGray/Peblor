@@ -1,0 +1,21 @@
+{
+  "type": "elementTabs",
+  "id": "tabs_example",
+  "tabs": [
+    {
+      "label": "Design",
+      "elements": [{ "type": "elementBody", "text": "Design system tokens and components." }]
+    },
+    {
+      "label": "Develop",
+      "elements": [{ "type": "elementBody", "text": "API references and code examples." }]
+    },
+    {
+      "label": "Ship",
+      "elements": [{ "type": "elementBody", "text": "Deployment guides and CI/CD setup." }]
+    }
+  ],
+  "variant": "pill",
+  "contentAnimation": "fade",
+  "lazyLoad": true
+}

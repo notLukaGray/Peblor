@@ -1,0 +1,7 @@
+{
+  "type": "elementSVG",
+  "markup": "<svg viewBox=\"0 0 120 24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 12 Q30 0 60 12 Q90 24 120 12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" opacity=\"0.4\"/></svg>",
+  "ariaLabel": "Decorative wave separator",
+  "rotate": 0,
+  "flipHorizontal": false
+}

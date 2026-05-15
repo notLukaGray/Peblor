@@ -1,0 +1,6 @@
+{
+  "type": "backgroundVideo",
+  "video": "hero-loop.mp4",
+  "poster": "hero-poster.webp",
+  "overlay": "color-mix(in oklch, accent 28%, transparent)"
+}

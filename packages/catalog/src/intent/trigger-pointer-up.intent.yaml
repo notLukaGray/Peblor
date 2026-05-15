@@ -1,0 +1,47 @@
+id: trigger.pointerUp
+kind: trigger
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  Fires on pointer-up (mouseup / touchend) — the release counterpart to
+  trigger.pointerDown. Use for scrub-end signals, press-and-hold release,
+  or any interaction that should complete on release rather than on contact.
+
+not_this_if:
+  - "you need the full click (down + up together) (use trigger.onClick)"
+  - "you need the initial contact (use trigger.pointerDown)"
+
+axes:
+  - name: config
+    fields: []
+    note: "no dedicated schema field — wired via element action bindings (element.range, element.button onPointerUp)"
+
+covers:
+  - description: "Scrub end with idle variant restore and scrubState reset"
+    example: content/presets/trigger-pointer-up.json
+
+does_not_cover:
+  - what: "Full click (down + up)"
+    use_instead: trigger.onClick
+  - what: "Pointer down / initial contact"
+    use_instead: trigger.pointerDown
+  - what: "Keyboard shortcut"
+    use_instead: trigger.keyboard
+  - what: "Idle detection after inactivity"
+    use_instead: trigger.idle
+
+composes_with:
+  parents: [element.range, element.button, section.*]
+  siblings_typical: [trigger.pointerDown, trigger.onClick]
+  motion: "N/A — fires an action; receiving element handles visual feedback"
+
+known_limitations:
+  - "Not a direct schema field — wired via element action bindings"
+  - "pointerup may fire outside the element if the pointer moved during drag — handle in action logic"
+
+proposal_hints:
+  new_variant_value: "N/A — trigger, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

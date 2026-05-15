@@ -1,0 +1,47 @@
+id: motion.slideLeft
+kind: motion-preset
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A leftward-translate + fade entrance — element starts to the right of its
+  resting position and slides left while fading in. Use for side-panel entrances,
+  righthand content columns, and elements entering from the trailing edge.
+
+not_this_if:
+  - "you want rightward movement (use motion.slideRight)"
+  - "you want vertical movement (use motion.slideUp or motion.slideDown)"
+  - "you want a plain fade (use motion.fade)"
+
+axes:
+  - name: preset
+    fields: [motionTiming]
+    note: "entrancePreset: 'slideLeft' on motionTimingSchema"
+
+covers:
+  - description: "Feature description panel that slides in from the right"
+    example: content/presets/motion-slide-left.json
+
+does_not_cover:
+  - what: "Rightward-sliding entrance"
+    use_instead: motion.slideRight
+  - what: "Upward-sliding entrance"
+    use_instead: motion.slideUp
+  - what: "Downward-sliding entrance"
+    use_instead: motion.slideDown
+  - what: "Plain opacity fade"
+    use_instead: motion.fade
+
+composes_with:
+  parents: [section.*, element.*]
+  siblings_typical: []
+  motion: "motionTiming.entrancePreset: 'slideLeft'"
+
+known_limitations:
+  - "Translate distance defined in motion defaults"
+
+proposal_hints:
+  new_variant_value: "N/A — motion preset, no variant field"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

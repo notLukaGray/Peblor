@@ -1,0 +1,53 @@
+id: section.visibleWhen
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: baseSectionPropsSchema
+
+feels_like: >
+  Conditionally shows or hides a section based on page-builder variable values.
+  Define single or compound conditions with operators (equals, notEquals, gt,
+  gte, lt, lte, contains, startsWith) and AND/OR logic. Use for feature flags,
+  A/B test variants, user-state-driven visibility, or any content gating that
+  depends on variable state. Works on any section type.
+
+not_this_if:
+  - "you need a visibility trigger based on scroll or viewport (use section.trigger)"
+  - "you need an animated expand/collapse (use section.reveal)"
+  - "you need to toggle visibility via action (use trigger actions with setVariable)"
+
+axes:
+  - name: condition
+    fields: [visibleWhen]
+    note: "variable, operator, value for single condition; conditions[] + logic for compound"
+
+does_not_cover:
+  - what: "Scroll or viewport-based visibility"
+    use_instead: section.trigger
+  - what: "Animated expand/collapse reveal"
+    use_instead: section.reveal
+  - what: "Visibility toggled by action"
+    use_instead: "trigger actions setVariable"
+  - what: "CSS display or opacity toggle"
+    use_instead: "external — use element-level responsive visibility"
+
+covers:
+  - description: "Section that only shows when showPromo variable equals 'true'"
+    example: content/presets/section-visible-when.json
+
+composes_with:
+  parents: [page]
+  siblings_typical: [section.contentBlock, section.reveal]
+  motion: "N/A — pure conditional rendering; no animation"
+
+known_limitations:
+  - "visibleWhen only operates on section-level visibility — not element-level"
+  - "compound conditions use logic: 'and' or 'or' between all conditions[] entries"
+  - "visibleWhen does not animate — section appears/disappears instantly"
+
+proposal_hints:
+  new_variant_value: "N/A — section capability, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

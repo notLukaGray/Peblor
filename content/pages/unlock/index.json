@@ -1,0 +1,10 @@
+{
+  "title": "Unlock",
+  "sectionOrder": ["content"],
+  "definitions": {
+    "content": {
+      "type": "contentBlock",
+      "elements": []
+    }
+  }
+}

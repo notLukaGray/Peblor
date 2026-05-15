@@ -1,0 +1,47 @@
+id: trigger.onInvisible
+kind: trigger
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  An intersection-observer trigger that fires when an element or section exits
+  the viewport — the counterpart to trigger.onVisible. Use to pause media,
+  reset state, or dismiss overlays when the user scrolls away from a section.
+
+not_this_if:
+  - "you need to trigger on entry (use trigger.onVisible)"
+  - "you need continuous scroll progress (use trigger.onProgress)"
+
+axes:
+  - name: config
+    fields: [onInvisible, threshold, triggerOnce, rootMargin]
+    note: "fields on baseSectionPropsSchema; wire on any section or element"
+
+covers:
+  - description: "Fade-out with 0.1 threshold and bottom root margin"
+    example: content/presets/trigger-fade-out.json
+
+does_not_cover:
+  - what: "Trigger on viewport entry"
+    use_instead: trigger.onVisible
+  - what: "Continuous scroll progress 0→1"
+    use_instead: trigger.onProgress
+  - what: "Timer that fires after a delay"
+    use_instead: trigger.timer
+  - what: "Trigger on user idle"
+    use_instead: trigger.idle
+
+composes_with:
+  parents: [section.*, element.*]
+  siblings_typical: [trigger.onVisible]
+  motion: "N/A — trigger fires an action; animation is on the receiving element"
+
+known_limitations:
+  - "fires when element intersection ratio drops below threshold"
+  - "triggerOnce: true prevents re-firing — usually omit for exit triggers to allow re-entry"
+
+proposal_hints:
+  new_variant_value: "N/A — trigger, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

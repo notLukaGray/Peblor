@@ -1,0 +1,52 @@
+id: motion.whileInView
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: motionPropsSchema
+
+feels_like: >
+  Applies Framer Motion keyframe overrides while an element or section is within
+  the viewport. Use for persistent in-view effects like pulsing CTAs, glowing
+  indicators, or scroll-driven state changes that persist while visible. Works
+  on any element or section via motionPropsSchema.
+
+not_this_if:
+  - "you need a one-shot entrance animation on first visible (use motionTiming.entrancePreset)"
+  - "you need a trigger action on visibility enter (use trigger.onVisible)"
+  - "you need scroll-progress-driven animation (use trigger.onViewportProgress)"
+
+axes:
+  - name: keyframes
+    fields: [whileInView]
+    note: "z.union([motionKeyframesSchema, string]) — any known FM property"
+
+does_not_cover:
+  - what: "One-shot entrance animation"
+    use_instead: "motionTiming.entrancePreset"
+  - what: "Action trigger on visibility enter/exit"
+    use_instead: trigger.onVisible
+  - what: "Scroll-progress-driven animation"
+    use_instead: trigger.onViewportProgress
+  - what: "Hover gesture"
+    use_instead: motion.whileHover
+
+covers:
+  - description: "CTA button that glows continuously while visible in viewport"
+    example: content/presets/motion-while-in-view.json
+
+composes_with:
+  parents: [section.*, element.*]
+  siblings_typical: [motion.whileHover, trigger.onVisible]
+  motion: "whileInView on motionProps — merged from motion defaults; also available via motion component defaults"
+
+known_limitations:
+  - "whileInView persists as long as the element is visible — unlike one-shot entrance animations"
+  - "whileInView keyframes are stripped of layout-owned keys"
+  - "Viewport margin is controlled by the viewport config on motionTiming, not whileInView itself"
+
+proposal_hints:
+  new_variant_value: "N/A — motion gesture, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

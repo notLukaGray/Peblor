@@ -1,0 +1,14 @@
+{
+  "type": "backgroundTransition",
+  "from": {
+    "type": "backgroundVariable",
+    "layers": [{ "fill": "oklch(96% 0.01 260)" }]
+  },
+  "to": {
+    "type": "backgroundImage",
+    "image": "hero-scroll.webp"
+  },
+  "mode": "progress",
+  "easing": "easeInOut",
+  "progressRange": { "start": 0.2, "end": 0.6 }
+}

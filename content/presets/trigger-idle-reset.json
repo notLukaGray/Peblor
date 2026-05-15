@@ -1,0 +1,7 @@
+{
+  "type": "triggerSection",
+  "id": "trigger_idle_reset_example",
+  "trigger": { "type": "idle", "idleAfterMs": 3000 },
+  "actions": [{ "type": "setVariant", "target": "controls", "value": "hidden" }],
+  "onActive": [{ "type": "setVariant", "target": "controls", "value": "visible" }]
+}

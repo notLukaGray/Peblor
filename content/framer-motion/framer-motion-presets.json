@@ -1,0 +1,76 @@
+{
+  "entrancePresets": {
+    "fade": {
+      "initial": { "opacity": 0 },
+      "animate": { "opacity": 1 }
+    },
+    "slideUp": {
+      "initial": { "y": 24 },
+      "animate": { "y": 0 }
+    },
+    "slideDown": {
+      "initial": { "y": -24 },
+      "animate": { "y": 0 }
+    },
+    "slideLeft": {
+      "initial": { "x": 24 },
+      "animate": { "x": 0 }
+    },
+    "slideRight": {
+      "initial": { "x": -24 },
+      "animate": { "x": 0 }
+    },
+    "zoomIn": {
+      "initial": { "scale": 0.92 },
+      "animate": { "scale": 1 }
+    },
+    "zoomOut": {
+      "initial": { "scale": 1.08 },
+      "animate": { "scale": 1 }
+    },
+    "popIn": {
+      "initial": { "opacity": 0, "scale": 0.86, "y": 10 },
+      "animate": { "opacity": 1, "scale": 1, "y": 0 }
+    },
+    "blurIn": {
+      "initial": { "opacity": 0, "filter": "blur(8px)" },
+      "animate": { "opacity": 1, "filter": "blur(0px)" }
+    },
+    "tiltIn": {
+      "initial": { "rotate": -4 },
+      "animate": { "rotate": 0 }
+    }
+  },
+  "exitPresets": {
+    "fade": {
+      "exit": { "opacity": 0 }
+    },
+    "slideUp": {
+      "exit": { "y": -24 }
+    },
+    "slideDown": {
+      "exit": { "y": 24 }
+    },
+    "slideLeft": {
+      "exit": { "x": -24 }
+    },
+    "slideRight": {
+      "exit": { "x": 24 }
+    },
+    "zoomIn": {
+      "exit": { "scale": 1.08 }
+    },
+    "zoomOut": {
+      "exit": { "scale": 0.92 }
+    },
+    "popIn": {
+      "exit": { "opacity": 0, "scale": 0.92, "y": 8 }
+    },
+    "blurIn": {
+      "exit": { "opacity": 0, "filter": "blur(8px)" }
+    },
+    "tiltIn": {
+      "exit": { "rotate": 4 }
+    }
+  }
+}

@@ -1,0 +1,76 @@
+id: element.video
+kind: cluster
+package: "@pb/contracts"
+schema_ref: elementVideoSchema
+runtime_ref: "@pb/runtime-react/page-builder/elements/ElementVideo"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  Any element whose primary content is a time-based video asset — inline clips,
+  background loops, hero reels, or interactive player surfaces. The renderer
+  owns the playback surface; it is not a background fill.
+
+not_this_if:
+  - "the asset is a still image (jpg, png, webp, avif)"
+  - "the asset is vector or SVG (use element.vector or element.svg)"
+  - "the video is a background fill on a section (use background.video)"
+  - "you need a 3D animated model (use element.model3d)"
+
+axes:
+  - name: variant
+    fields: [variant]
+    note: "presentational preset key — maps to fit/controls/playback defaults at runtime"
+  - name: fit
+    fields: [objectFit, objectPosition, aspectRatio]
+    responsive: true
+  - name: framing
+    fields: [rotate, flipHorizontal, flipVertical]
+  - name: source
+    fields: [src, poster, sources, module]
+    note: "src is required; poster is required; sources is ordered fallback list"
+  - name: playback
+    fields: [autoplay, loop, muted, playbackRate, showPlayButton, preload, streamingConfig]
+  - name: events
+    fields: [onVideoPlay, onVideoPause, onVideoEnd]
+  - name: accessibility
+    fields: [ariaLabel, crossOrigin, controlsList]
+  - name: interactivity
+    fields: [link]
+
+covers:
+  - description: "Hero reel, autoplay loop, full-bleed cover"
+    example: content/presets/hero-video.json
+  - description: "Inline clip with poster and play button"
+    example: content/presets/inline-video.json
+
+does_not_cover:
+  - what: "Still raster image"
+    use_instead: element.image
+  - what: "Vector or animated SVG"
+    use_instead: element.svg
+  - what: "Section background video fill"
+    use_instead: background.image
+  - what: "3D animated model or scene"
+    use_instead: element.model3d
+
+composes_with:
+  parents:
+    - section.column
+    - section.content-block
+    - module.*
+  siblings_typical:
+    - element.heading
+    - element.button
+    - element.scrollProgressBar
+  motion: "external — motionTiming applied by parent wrapper"
+
+known_limitations:
+  - "HLS/DASH adaptive streaming requires streamingConfig.autoStartLoad: true for instant-play"
+  - "No native <picture> art-direction; use sources[] for format fallbacks only"
+  - "onVideoPlay/Pause/End fire in the element's module scope — not page-level"
+
+proposal_hints:
+  new_variant_value: extend_cluster
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

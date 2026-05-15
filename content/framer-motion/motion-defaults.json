@@ -1,0 +1,553 @@
+{
+  "motionComponent": {
+    "animate": {
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "rotate": 0,
+      "rotateX": 0,
+      "rotateY": 0,
+      "rotateZ": 0,
+      "scale": 1,
+      "scaleX": 1,
+      "scaleY": 1,
+      "skew": 0,
+      "skewX": 0,
+      "skewY": 0,
+      "originX": "50%",
+      "originY": "50%",
+      "originZ": 0,
+      "perspective": null,
+      "translateX": 0,
+      "translateY": 0,
+      "translateZ": 0,
+      "width": null,
+      "height": null,
+      "top": null,
+      "left": null,
+      "bottom": null,
+      "right": null,
+      "borderRadius": null,
+      "borderTopLeftRadius": null,
+      "borderTopRightRadius": null,
+      "borderBottomLeftRadius": null,
+      "borderBottomRightRadius": null,
+      "backgroundColor": null,
+      "color": null,
+      "boxShadow": null,
+      "textShadow": null,
+      "filter": null,
+      "backdropFilter": null,
+      "clipPath": null,
+      "pathLength": null,
+      "pathOffset": null,
+      "pathSpacing": null,
+      "strokeDasharray": null,
+      "strokeDashoffset": null,
+      "fill": null,
+      "stroke": null,
+      "strokeWidth": null,
+      "strokeOpacity": null,
+      "fillOpacity": null
+    },
+    "initial": {
+      "opacity": 0,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0
+    },
+    "exit": {
+      "opacity": 0,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "transition": null
+    },
+    "transition": {
+      "type": "tween",
+      "tween": {
+        "type": "tween",
+        "duration": 0.3,
+        "ease": "easeOut",
+        "easeCubicBezier": [0.25, 0.46, 0.45, 0.94],
+        "delay": 0,
+        "repeat": 0,
+        "repeatType": "loop",
+        "repeatDelay": 0,
+        "from": null,
+        "times": null
+      },
+      "spring": {
+        "type": "spring",
+        "stiffness": 100,
+        "damping": 10,
+        "mass": 1,
+        "velocity": 0,
+        "restSpeed": 0.01,
+        "restDelta": 0.01,
+        "bounce": 0.25,
+        "duration": null,
+        "delay": 0,
+        "repeat": 0,
+        "repeatType": "loop",
+        "repeatDelay": 0
+      },
+      "inertia": {
+        "type": "inertia",
+        "velocity": 0,
+        "power": 0.8,
+        "timeConstant": 750,
+        "bounceStiffness": 500,
+        "bounceDamping": 10,
+        "min": null,
+        "max": null,
+        "restSpeed": 10,
+        "restDelta": 0.01
+      },
+      "keyframes": {
+        "type": "keyframes",
+        "duration": 0.8,
+        "ease": "easeInOut",
+        "times": null,
+        "delay": 0,
+        "repeat": 0,
+        "repeatType": "loop",
+        "repeatDelay": 0
+      },
+      "layout": {
+        "duration": 0.3,
+        "delay": 0,
+        "ease": "easeOut",
+        "type": "tween"
+      },
+      "enterDuration": 0.2,
+      "exitDuration": 0.15,
+      "staggerDelay": 0.05,
+      "staggerChildren": 0.05,
+      "delayChildren": 0,
+      "staggerDirection": 1,
+      "when": false,
+      "perProperty": {
+        "opacity": { "duration": 0.2, "ease": "easeInOut" },
+        "x": { "type": "spring", "stiffness": 300, "damping": 30 },
+        "backgroundColor": { "type": "tween", "duration": 0.3 }
+      }
+    },
+    "variants": {
+      "hidden": {
+        "opacity": 0,
+        "y": 20,
+        "scale": 0.95,
+        "transition": { "type": "tween", "duration": 0.2 }
+      },
+      "visible": {
+        "opacity": 1,
+        "y": 0,
+        "scale": 1,
+        "transition": {
+          "type": "spring",
+          "stiffness": 300,
+          "damping": 30,
+          "staggerChildren": 0,
+          "delayChildren": 0,
+          "staggerDirection": 1,
+          "when": false
+        }
+      },
+      "exit": {
+        "opacity": 0,
+        "y": -20,
+        "scale": 0.95
+      }
+    },
+    "custom": null,
+    "inherit": true,
+    "onAnimationStart": null,
+    "onAnimationComplete": null,
+    "style": {
+      "x": null,
+      "y": null,
+      "rotate": null,
+      "scale": null,
+      "opacity": null,
+      "scaleX": null,
+      "scaleY": null
+    }
+  },
+
+  "gestures": {
+    "whileHover": {
+      "scale": 1,
+      "opacity": 1,
+      "transition": { "type": "spring", "stiffness": 400, "damping": 25 }
+    },
+    "whileTap": {
+      "scale": 1,
+      "opacity": 1
+    },
+    "whileFocus": {
+      "scale": 1,
+      "outline": "2px solid currentColor"
+    },
+    "whileDrag": {
+      "scale": 1.05,
+      "cursor": "grabbing",
+      "zIndex": 100
+    },
+    "whileInView": {
+      "opacity": 1,
+      "y": 0,
+      "transition": { "type": "spring", "stiffness": 200, "damping": 30 }
+    },
+    "viewport": {
+      "once": true,
+      "root": null,
+      "margin": "0px",
+      "amount": 0.1
+    },
+    "propagate": {
+      "tap": true
+    },
+    "hoverCallbacks": {
+      "onHoverStart": null,
+      "onHoverEnd": null
+    },
+    "tapCallbacks": {
+      "onTap": null,
+      "onTapStart": null,
+      "onTapCancel": null
+    },
+    "panCallbacks": {
+      "onPan": null,
+      "onPanStart": null,
+      "onPanEnd": null
+    }
+  },
+
+  "drag": {
+    "drag": false,
+    "dragDirectionLock": false,
+    "dragPropagation": false,
+    "dragConstraints": null,
+    "dragElastic": 0.5,
+    "dragMomentum": true,
+    "dragTransition": {
+      "type": "inertia",
+      "power": 0.8,
+      "timeConstant": 750,
+      "bounceStiffness": 500,
+      "bounceDamping": 10,
+      "min": null,
+      "max": null
+    },
+    "dragSnapToOrigin": false,
+    "dragControls": null,
+    "onDragStart": null,
+    "onDrag": null,
+    "onDragEnd": null,
+    "onDirectionLock": null
+  },
+
+  "layout": {
+    "layout": false,
+    "layoutId": null,
+    "layoutDependency": null,
+    "layoutScroll": false,
+    "layoutRoot": false,
+    "onLayoutAnimationStart": null,
+    "onLayoutAnimationComplete": null
+  },
+
+  "animatePresence": {
+    "initial": true,
+    "mode": "sync",
+    "onExitComplete": null,
+    "presenceAffectsLayout": true
+  },
+
+  "layoutGroup": {
+    "id": null,
+    "inherit": true
+  },
+
+  "reorder": {
+    "group": {
+      "axis": "y",
+      "values": [],
+      "onReorder": null,
+      "as": "ul"
+    },
+    "item": {
+      "value": null,
+      "as": "li",
+      "drag": "y",
+      "dragListener": true,
+      "layout": true
+    }
+  },
+
+  "motionConfig": {
+    "transition": {
+      "type": "spring",
+      "stiffness": 100,
+      "damping": 10
+    },
+    "reducedMotion": "user",
+    "nonce": null,
+    "isStatic": false
+  },
+
+  "lazyMotion": {
+    "features": null,
+    "strict": false
+  },
+
+  "hooks": {
+    "useAnimate": {
+      "scope": null,
+      "animateArgs": {
+        "selector_or_element": null,
+        "keyframes": {},
+        "options": {
+          "duration": 0.3,
+          "delay": 0,
+          "ease": "easeInOut",
+          "type": "tween",
+          "repeat": 0,
+          "repeatType": "loop",
+          "repeatDelay": 0,
+          "at": null
+        }
+      },
+      "sequenceFormat": [
+        ["selector", { "opacity": 1 }, { "duration": 0.3 }],
+        ["selector2", { "x": 100 }, { "at": 0.2 }]
+      ],
+      "controls": {
+        "play": null,
+        "pause": null,
+        "stop": null,
+        "complete": null,
+        "cancel": null,
+        "speed": 1,
+        "time": 0,
+        "duration": null,
+        "state": "idle"
+      }
+    },
+    "useMotionValue": {
+      "initialValue": 0,
+      "methods": {
+        "get": null,
+        "set": null,
+        "jump": null,
+        "getPrevious": null,
+        "getVelocity": null,
+        "on": null,
+        "destroy": null
+      }
+    },
+    "useTransform": {
+      "input": null,
+      "inputRange": [0, 1],
+      "outputRange": [0, 100],
+      "options": {
+        "clamp": true,
+        "ease": null
+      }
+    },
+    "useSpring": {
+      "source": null,
+      "config": {
+        "stiffness": 100,
+        "damping": 10,
+        "mass": 1,
+        "velocity": 0,
+        "restSpeed": 0.01,
+        "restDelta": 0.01
+      }
+    },
+    "useScroll": {
+      "returns": {
+        "scrollX": "MotionValue<number>",
+        "scrollY": "MotionValue<number>",
+        "scrollXProgress": "MotionValue<number> 0-1",
+        "scrollYProgress": "MotionValue<number> 0-1"
+      },
+      "options": {
+        "container": null,
+        "target": null,
+        "axis": "y",
+        "offset": ["start end", "end start"]
+      }
+    },
+    "useVelocity": {
+      "source": null
+    },
+    "useMotionTemplate": {},
+    "useMotionValueEvent": {
+      "value": null,
+      "event": "change",
+      "callback": null
+    },
+    "useAnimation": {
+      "methods": {
+        "start": null,
+        "stop": null,
+        "set": null
+      }
+    },
+    "useCycle": {
+      "values": []
+    },
+    "useInView": {
+      "options": {
+        "root": null,
+        "margin": "0px",
+        "amount": "some",
+        "once": false
+      }
+    },
+    "useReducedMotion": {},
+    "useDragControls": {
+      "methods": {
+        "start": null
+      }
+    },
+    "useWillChange": {}
+  },
+
+  "svgMotionValues": {
+    "pathLength": {
+      "range": "0 to 1"
+    },
+    "pathOffset": {
+      "range": "0 to 1"
+    },
+    "pathSpacing": {
+      "range": "0 to 1"
+    }
+  },
+
+  "animate_standalone": {
+    "element": null,
+    "keyframes": {},
+    "options": {
+      "duration": 0.3,
+      "delay": 0,
+      "ease": "easeInOut",
+      "repeat": 0,
+      "repeatType": "loop",
+      "repeatDelay": 0,
+      "onComplete": null,
+      "onUpdate": null
+    }
+  },
+
+  "scroll_standalone": {
+    "callback": null,
+    "options": {
+      "source": null,
+      "target": null,
+      "offset": ["start end", "end start"],
+      "axis": "y"
+    }
+  },
+
+  "inView_standalone": {
+    "element": null,
+    "callback": null,
+    "options": {
+      "root": null,
+      "margin": "0px",
+      "amount": "some"
+    }
+  },
+
+  "stagger_standalone": {
+    "duration": 0.05,
+    "options": {
+      "startDelay": 0,
+      "from": "first",
+      "ease": null
+    }
+  },
+
+  "animatableProperties": {
+    "transforms": [
+      "x",
+      "y",
+      "z",
+      "rotate",
+      "rotateX",
+      "rotateY",
+      "rotateZ",
+      "scale",
+      "scaleX",
+      "scaleY",
+      "skew",
+      "skewX",
+      "skewY",
+      "translateX",
+      "translateY",
+      "translateZ",
+      "perspective"
+    ],
+    "origin": ["originX", "originY", "originZ"],
+    "visual": [
+      "opacity",
+      "backgroundColor",
+      "color",
+      "fill",
+      "stroke",
+      "strokeWidth",
+      "strokeOpacity",
+      "fillOpacity",
+      "borderRadius",
+      "borderTopLeftRadius",
+      "borderTopRightRadius",
+      "borderBottomLeftRadius",
+      "borderBottomRightRadius",
+      "boxShadow",
+      "textShadow",
+      "filter",
+      "backdropFilter",
+      "clipPath",
+      "background",
+      "backgroundImage"
+    ],
+    "layout": ["width", "height", "top", "left", "right", "bottom", "margin", "padding"],
+    "svg": ["pathLength", "pathOffset", "pathSpacing", "strokeDasharray", "strokeDashoffset", "d"]
+  },
+
+  "easings": {
+    "named": [
+      "linear",
+      "easeIn",
+      "easeOut",
+      "easeInOut",
+      "circIn",
+      "circOut",
+      "circInOut",
+      "backIn",
+      "backOut",
+      "backInOut",
+      "anticipate"
+    ],
+    "cubicBezier": [0.25, 0.46, 0.45, 0.94],
+    "steps": [4, "end"],
+    "customFunction": null
+  },
+
+  "progressBar": {
+    "height": "4px",
+    "fill": "rgba(255,255,255,0.4)",
+    "trackBackground": "rgba(255,255,255,0.1)"
+  },
+
+  "defaultSlideDistancePx": 24,
+  "defaultFeedbackDurationMs": 400
+}

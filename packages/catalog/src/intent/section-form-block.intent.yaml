@@ -1,0 +1,59 @@
+id: section.formBlock
+kind: cluster
+package: "@pb/contracts"
+schema_ref: sectionFormBlockSchema
+runtime_ref: "@pb/runtime-react/page-builder/sections/SectionFormBlock"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A section that wraps a form — an ordered list of field blocks (text, email,
+  textarea, select, checkbox) posted to an API route. Handles method, action URL,
+  and static payload values. Use for contact forms, newsletter sign-ups, and
+  survey blocks.
+
+not_this_if:
+  - "you only need a single input that writes to a variable (use element.input)"
+  - "the interaction is a range slider (use element.range)"
+  - "the form is controlled client-side only with no submission (use element.input with variableKey)"
+
+axes:
+  - name: submission
+    fields: [action, method, actionPayload]
+  - name: fields
+    fields: [fields]
+  - name: sizing
+    fields: [contentWidth, contentHeight]
+    responsive: true
+  - name: appearance
+    fields: [fill, effects, border, borderRadius]
+    responsive: true
+
+covers:
+  - description: "Contact form with name/email/topic/message fields posted to /api/forms/contact"
+    example: content/presets/contact-form.json
+
+does_not_cover:
+  - what: "Single input writing to a page-builder variable"
+    use_instead: element.input
+  - what: "Range slider or scrub control"
+    use_instead: element.range
+  - what: "Full page builder content section with flex layout"
+    use_instead: section.contentBlock
+  - what: "Reorderable or scroll-driven section"
+    use_instead: section.scrollContainer
+
+composes_with:
+  parents: [page, module.*]
+  siblings_typical: [section.contentBlock, section.divider]
+  motion: "motionTiming on the section wrapper"
+
+known_limitations:
+  - "field types are defined by formFieldBlockSchema — not all HTML input types supported"
+  - "actionPayload sends static key-value pairs alongside the form data"
+  - "No client-side validation beyond schema constraints — implement in the API handler"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field on section.formBlock"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

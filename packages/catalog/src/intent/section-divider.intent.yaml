@@ -1,0 +1,56 @@
+id: section.divider
+kind: cluster
+package: "@pb/contracts"
+schema_ref: sectionDividerSchema
+runtime_ref: "@pb/runtime-react/page-builder/sections/SectionDivider"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A structural spacer or visual separator between page sections. Has no children —
+  just a block with configurable height, fill, and optional visual divider layers.
+  Use to add breathing room between content sections or to render a styled line
+  or gradient rule.
+
+not_this_if:
+  - "you need a horizontal rule inside a content block (use element.divider)"
+  - "you need a vertical spacer inside a flex container (use element.spacer)"
+  - "you need a section with children (use section.contentBlock)"
+
+axes:
+  - name: sizing
+    fields: [height, width, minHeight]
+    responsive: true
+  - name: appearance
+    fields: [fill, layers, border, effects]
+    responsive: true
+  - name: motion
+    fields: [motionTiming]
+
+covers:
+  - description: "Responsive-height section spacer with border, blur, and fade-in motion"
+    example: content/presets/section-spacer.json
+
+does_not_cover:
+  - what: "Horizontal rule inside a content block"
+    use_instead: element.divider
+  - what: "Vertical spacer inside a flex/grid container"
+    use_instead: element.spacer
+  - what: "Fully invisible spacing placeholder in a section column"
+    use_instead: element.spacer
+  - what: "Section with child elements"
+    use_instead: section.contentBlock
+
+composes_with:
+  parents: [page]
+  siblings_typical: [section.contentBlock, section.column]
+  motion: "motionTiming on the divider wrapper"
+
+known_limitations:
+  - "Has no elements field — cannot hold children"
+  - "Use layers for decorative divider lines (gradient or fill strokes)"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field on section.divider"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

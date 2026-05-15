@@ -1,0 +1,8 @@
+{
+  "type": "triggerSection",
+  "id": "trigger_scroll_progress_example",
+  "trigger": { "type": "onProgress", "source": "section", "start": 0, "end": 1 },
+  "actions": [{ "type": "setVariable", "target": "xOffset", "value": "progress" }],
+  "threshold": 0,
+  "rootMargin": "0px 0px 0px 0px"
+}

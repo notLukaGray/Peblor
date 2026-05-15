@@ -1,0 +1,49 @@
+id: trigger.onVisible
+kind: trigger
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  An intersection-observer trigger that fires when an element or section enters
+  the viewport. Wire `onVisible` on any section or element to run actions —
+  set a variable, play a video, start an animation, open a modal — the moment
+  the target becomes visible to the user.
+
+not_this_if:
+  - "you need continuous progress as the element scrolls through the viewport (use trigger.onProgress)"
+  - "you need to fire when the element leaves (use trigger.onInvisible)"
+
+axes:
+  - name: config
+    fields: [onVisible, threshold, triggerOnce, rootMargin, delay]
+    note: "fields on baseSectionPropsSchema; wire on any section or element"
+
+covers:
+  - description: "Fade-in with 0.3 threshold, trigger-once, and root margin"
+    example: content/presets/trigger-fade-in.json
+
+does_not_cover:
+  - what: "Continuous progress value as element scrolls through viewport"
+    use_instead: trigger.onProgress
+  - what: "Trigger when element leaves viewport"
+    use_instead: trigger.onInvisible
+  - what: "Keyboard shortcut trigger"
+    use_instead: trigger.keyboard
+  - what: "Time-delayed action without intersection"
+    use_instead: trigger.timer
+
+composes_with:
+  parents: [section.*, element.*]
+  siblings_typical: [trigger.onInvisible]
+  motion: "N/A — trigger fires an action; animation is configured on the receiving element"
+
+known_limitations:
+  - "triggerOnce: true prevents re-firing after the first visible event"
+  - "threshold is a 0–1 ratio of the element that must be visible to fire"
+  - "rootMargin adjusts the effective viewport boundary (accepts CSS margin values)"
+
+proposal_hints:
+  new_variant_value: "N/A — trigger, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

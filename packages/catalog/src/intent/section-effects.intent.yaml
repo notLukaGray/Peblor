@@ -1,0 +1,53 @@
+id: section.effects
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: baseSectionPropsSchema
+
+feels_like: >
+  Applies visual effects to sections and elements — glass (frosted glass with
+  physics-based refraction), drop shadow, inner shadow, glow, opacity, blur,
+  backdrop blur, brightness, contrast, saturation, grayscale, and sepia. Stack
+  multiple effects in the effects array for layered visual treatments. Works
+  on any section type and many element types.
+
+not_this_if:
+  - "you need a background image or video (use background.image / background.video)"
+  - "you need CSS filter or backdrop-filter as a single string (use filter or backdropFilter on the section)"
+  - "you need border styling (use border / borderRadius on the section)"
+
+axes:
+  - name: effects
+    fields: [effects]
+    note: "array of discriminated union: glass, dropShadow, innerShadow, glow, opacity, blur, backdropBlur, brightness, contrast, saturate, grayscale, sepia"
+
+does_not_cover:
+  - what: "Background image or video fill"
+    use_instead: background.image
+  - what: "Single-string CSS filter"
+    use_instead: "filter or backdropFilter on baseSectionProps"
+  - what: "Border styles"
+    use_instead: "border, borderRadius on baseSectionProps"
+  - what: "CSS box-shadow as a single string"
+    use_instead: "boxShadow on baseSectionProps"
+
+covers:
+  - description: "Content block with glass effect, drop shadow, and 8px border radius"
+    example: content/presets/section-effects.json
+
+composes_with:
+  parents: [section.*, element.*]
+  siblings_typical: [section.sticky, section.parallax]
+  motion: "N/A — pure CSS/post-processing effects; glass effect uses SVG filter pipeline"
+
+known_limitations:
+  - "Glass effect is GPU-intensive — use sparingly on mobile breakpoints"
+  - "Multiple blur effects stack additively — may cause performance issues"
+  - "backdropBlur requires content behind the element to be visible"
+
+proposal_hints:
+  new_variant_value: "N/A — visual effects, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

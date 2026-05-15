@@ -1,0 +1,12 @@
+{
+  "type": "sectionColumn",
+  "elements": [],
+  "columns": { "mobile": 1, "desktop": 2 },
+  "columnAssignments": {},
+  "columnWidths": {
+    "desktop": ["1fr", "1fr"]
+  },
+  "columnGaps": {
+    "desktop": "2rem"
+  }
+}

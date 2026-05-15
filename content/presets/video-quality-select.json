@@ -1,0 +1,12 @@
+{
+  "type": "elementVideoQualitySelect",
+  "icon": {
+    "type": "elementVector",
+    "viewBox": "0 0 24 24",
+    "shapes": [
+      { "type": "path", "d": "M12 2L2 7v10l10 5 10-5V7l-10-5z", "fill": "iconFill" },
+      { "type": "path", "d": "M8 11h2v6H8v-6zm6-2h2v8h-2V9z", "fill": "iconAccent" }
+    ],
+    "colors": { "iconFill": "textSecondary", "iconAccent": "accent" }
+  }
+}

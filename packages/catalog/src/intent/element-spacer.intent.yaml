@@ -1,0 +1,48 @@
+id: element.spacer
+kind: cluster
+package: "@pb/contracts"
+schema_ref: elementSpacerSchema
+runtime_ref: "@pb/runtime-react/page-builder/elements/ElementSpacer"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  An explicit whitespace block — a sized gap between elements in a flex or grid
+  layout. Use when CSS gap is not enough or when the spacing needs a different
+  size at mobile vs desktop breakpoints.
+
+not_this_if:
+  - "you can achieve the gap with section or element margin/padding fields"
+  - "you need a visible horizontal rule (use element.divider)"
+  - "the spacing adapts automatically with the layout (rely on gap/padding)"
+
+axes:
+  - name: variant
+    fields: [variant]
+    note: "sm, md, lg — maps to pbBuilderDefaultsV1.elements.spacer height presets"
+
+covers:
+  - description: "Medium vertical spacer between content groups"
+    example: content/presets/spacer-md.json
+    minimal: true
+
+does_not_cover:
+  - what: "Visible dividing line between sections"
+    use_instead: element.divider
+  - what: "Section-level vertical rhythm (use section margin/padding)"
+    use_instead: "section fields: marginTop, marginBottom, padding"
+  - what: "Full-width section spacer block between page sections"
+    use_instead: section.divider
+
+composes_with:
+  parents: [section.column, section.contentBlock, module.*]
+  siblings_typical: [element.heading, element.body, element.image]
+  motion: "N/A — spacer has no visible surface"
+
+known_limitations:
+  - "No custom size field — use elementLayout width/height for explicit sizing beyond sm/md/lg"
+
+proposal_hints:
+  new_variant_value: extend_cluster
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "N/A — spacer has no meaningful axis beyond variant"

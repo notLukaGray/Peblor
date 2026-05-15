@@ -1,0 +1,6 @@
+{
+  "type": "elementRichText",
+  "content": "<p>This <strong>bold</strong> paragraph contains an <a href=\"/about\">inline link</a> and some <em>italic</em> text.</p>",
+  "level": 2,
+  "wordWrap": true
+}

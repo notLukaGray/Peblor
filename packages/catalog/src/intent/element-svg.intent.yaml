@@ -1,0 +1,54 @@
+id: element.svg
+kind: cluster
+package: "@pb/contracts"
+schema_ref: elementSVGSchema
+runtime_ref: "@pb/runtime-react/page-builder/elements/ElementSVG"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A raw SVG markup string injected verbatim into the DOM. Use when the SVG
+  already has its own styling, SMIL animations, or inline scripts — and you don't
+  need theme token mapping. Simpler and more flexible than element.vector at the
+  cost of theme integration.
+
+not_this_if:
+  - "you need per-path theme token fills or hover transitions (use element.vector)"
+  - "the asset is a raster image (use element.image)"
+  - "the asset is a Rive file (use element.rive)"
+
+axes:
+  - name: markup
+    fields: [markup]
+  - name: framing
+    fields: [rotate, flipHorizontal, flipVertical]
+  - name: interactivity
+    fields: [link]
+  - name: accessibility
+    fields: [ariaLabel]
+
+covers:
+  - description: "Inline decorative SVG wave with accessibility label"
+    example: content/presets/decorative-svg.json
+
+does_not_cover:
+  - what: "SVG with theme-mapped fill tokens and hover states"
+    use_instead: element.vector
+  - what: "Raster photograph or product image"
+    use_instead: element.image
+  - what: "Rive interactive animation"
+    use_instead: element.rive
+
+composes_with:
+  parents: [section.column, section.contentBlock, module.*]
+  siblings_typical: [element.heading, element.image]
+  motion: "external — motionTiming applied by parent wrapper"
+
+known_limitations:
+  - "markup is injected as dangerouslySetInnerHTML — ensure SVG is sanitized before use"
+  - "No theme token integration — all colors/sizes must be hard-coded in the markup"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field on element.svg"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

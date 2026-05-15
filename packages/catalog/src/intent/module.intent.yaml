@@ -1,0 +1,63 @@
+id: module
+kind: cluster
+package: "@pb/contracts"
+schema_ref: moduleBlockSchema
+runtime_ref: "@pb/runtime-react/page-builder/modules/ModuleBlock"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A player module — a content slot (video, image, or model3d) surrounded by
+  named overlay slots for controls, captions, and UI chrome. Each slot is a
+  positioned flex container that can show/hide based on player state, with
+  optional Framer Motion reveal animations and drag-gesture support.
+  The standard composition surface for video players, gallery viewers, and
+  3D product configurators.
+
+not_this_if:
+  - "you need a plain element without a player context (use section.contentBlock)"
+  - "you need a modal overlay over the page (use modal)"
+  - "the content needs no overlay UI chrome (use element.video, element.image, or element.model3d directly)"
+
+axes:
+  - name: player
+    fields: [contextType, contentSlot]
+  - name: slots
+    fields: [slots, definitionsRef]
+    note: "each slot has position, inset, display, flex, gap, section, visibleWhen, motion, etc."
+  - name: container
+    fields: [container]
+    note: "controls padding, borderRadius, aspectRatio of the outer wrapper"
+  - name: behavior
+    fields: [behavior, keyBindings]
+  - name: appearance
+    fields: [overlayMotion, effects, style]
+
+covers:
+  - description: "Video player module with positioned controls overlay"
+    example: content/presets/video-player-module.json
+
+does_not_cover:
+  - what: "Plain content section with no player context"
+    use_instead: section.contentBlock
+  - what: "Full-screen modal dialog"
+    use_instead: modal
+  - what: "Standalone video without overlay chrome"
+    use_instead: element.video
+  - what: "3D scene without player controls"
+    use_instead: element.model3d
+
+composes_with:
+  parents: [page]
+  siblings_typical: [section.contentBlock, section.column]
+  motion: "overlayMotion drives the controls overlay; individual slots carry their own motion"
+
+known_limitations:
+  - "Commands are global singletons — no per-instance targeting when multiple modules appear on a page"
+  - "slot.visibleWhen: 'always' always shows; array of state strings shows only in those player states"
+  - "definitionsRef points to a content ref for slot element definitions — avoids inline verbosity"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field on module"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

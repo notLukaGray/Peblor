@@ -1,0 +1,68 @@
+id: element.imageCompare
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: elementImageCompareSchema
+
+feels_like: >
+  A before/after image comparison slider. Two images overlay each other, and
+  a draggable handle reveals the "after" image by clipping the "before" image
+  at the handle position. Supports horizontal or vertical split, optional
+  before/after labels, keyboard stepping, and divider styling. Optional
+  **handleElements** uses the same JSON shape as **elementGroup.section**
+  (`elementOrder` + `definitions`) so the center control can be a nested
+  **elementGroup** (pill, typography, glass, etc.); when unset, **handleSize** /
+  **handleColor** / **handleIcon** drive the default circular handle. Use for
+  photo retouching demos, design system comparisons, or visual diffs.
+
+not_this_if:
+  - "you need two static images side by side (use element.images in a section.contentBlock)"
+  - "you need a range slider for numeric input (use element.range)"
+  - "you need an image carousel with multiple items (use element.infiniteScroll)"
+
+axes:
+  - name: images
+    fields: [before, after]
+  - name: position
+    fields: [initialPosition, direction]
+  - name: labels
+    fields: [beforeLabel, afterLabel, labelPosition]
+  - name: interaction
+    fields: [hoverActivate, keyboardStep]
+  - name: handle
+    fields: [handleElements, handleSize, handleColor, handleIcon]
+  - name: divider
+    fields: [dividerColor, dividerWidth]
+  - name: accessibility
+    fields: [ariaLabel]
+
+does_not_cover:
+  - what: "Static side-by-side image comparison"
+    use_instead: "element.image with section.contentBlock"
+  - what: "Numeric range slider input"
+    use_instead: element.range
+  - what: "Multi-image carousel or gallery"
+    use_instead: element.infiniteScroll
+  - what: "Video comparison"
+    use_instead: "external — not supported in v1"
+
+covers:
+  - description: "Horizontal before/after slider with center start, hover follow, and labels"
+    example: content/presets/element-image-compare.json
+    minimal: true
+
+composes_with:
+  parents: [section.column, section.contentBlock]
+  siblings_typical: [element.heading, element.body]
+  motion: "external — motionTiming for entrance; internal drag/motion for handle position"
+
+known_limitations:
+  - "Both images must have the same aspect ratio for a clean comparison"
+  - "hoverActivate moves the handle to the cursor position on hover — disable for pure drag-only"
+
+proposal_hints:
+  new_variant_value: extend_cluster
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

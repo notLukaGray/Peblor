@@ -1,0 +1,69 @@
+id: element.rive
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 2
+
+schema_ref: elementRiveSchema
+
+runtime_ref: "@pb/runtime-react/page-builder/elements/ElementRive"
+
+feels_like: >
+  A Rive interactive animation — a .riv file with one or more artboards and
+  optional state machines. Supports poster fallback, loop count, speed control,
+  normal/bounce/reverse play modes, background color, hover-to-play, event-to-input
+  mappings, and lifecycle events (onStateChange, onComplete, onLoop, onStop).
+  Use for animated icons, character animations, interactive UI elements, or
+  any stateful vector animation with user input handling.
+
+not_this_if:
+  - "you need a Lottie animation (use element.lottie)"
+  - "you need a video with audio (use element.video)"
+  - "you need a static SVG image (use element.svg)"
+
+axes:
+  - name: source
+    fields: [src, poster, artboard, stateMachine]
+  - name: playback
+    fields: [autoplay, loop, speed, playMode]
+  - name: render
+    fields: [backgroundColor, preserveAspectRatio]
+  - name: interaction
+    fields: [hover, interactivity]
+    note: "hover: play on hover/tap; interactivity: [{ event, input, value? }] maps events to Rive state machine inputs"
+  - name: events
+    fields: [onStateChange, onComplete, onLoop, onStop]
+  - name: accessibility
+    fields: [ariaLabel]
+
+does_not_cover:
+  - what: "Lottie JSON-based animation"
+    use_instead: element.lottie
+  - what: "Video with audio track"
+    use_instead: element.video
+  - what: "Static SVG or vector icon"
+    use_instead: element.svg
+  - what: "3D model scene"
+    use_instead: element.model3d
+
+covers:
+  - description: "Interactive Rive icon with hover-to-play and state machine input bindings"
+    example: content/presets/rive-icon.json
+  - description: "Rive animation with loop count, poster, and lifecycle events"
+    example: content/presets/rive-animation.json
+    minimal: true
+
+composes_with:
+  parents: [section.column, section.contentBlock, module.*]
+  siblings_typical: [element.heading, element.button]
+  motion: "external — motionTiming applied by parent wrapper"
+
+known_limitations:
+  - "State machine inputs can be set via interactivity event-to-input bindings from JSON"
+  - "Rive runtime is loaded lazily — first render may show poster or blank canvas briefly"
+  - "artboard defaults to the first artboard in the file if omitted"
+
+proposal_hints:
+  new_variant_value: extend_cluster
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

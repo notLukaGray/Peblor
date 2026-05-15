@@ -1,0 +1,66 @@
+id: element.tooltip
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: elementTooltipSchema
+
+feels_like: >
+  An anchored tooltip popover that appears next to a trigger element on hover,
+  click, or focus. Supports auto-positioning, configurable show/hide delays,
+  offset from the trigger, an optional arrow pointer, interactive mode (hover
+  into the tooltip), cursor-follow mode, and fade/scale/slide animations.
+  Typography and color follow the text styling system. Use for help text,
+  feature hints, keyboard shortcuts, or any supplemental information that
+  should float near its context.
+
+not_this_if:
+  - "you need a full-screen modal dialog (use modal)"
+  - "you need an expandable inline reveal (use section.reveal)"
+  - "you need hover gesture keyframes on the element itself (use motion.whileHover)"
+
+axes:
+  - name: content
+    fields: [content]
+  - name: position
+    fields: [position, offset, arrow]
+  - name: trigger
+    fields: [trigger, showDelay, hideDelay]
+  - name: behavior
+    fields: [interactive, followCursor, maxWidth, zIndex]
+  - name: animation
+    fields: [animation]
+  - name: typography
+    fields: [color, fontFamily, fontSize, fontWeight]
+  - name: accessibility
+    fields: [ariaLabel]
+
+does_not_cover:
+  - what: "Full-screen modal overlay"
+    use_instead: modal
+  - what: "Expandable inline reveal"
+    use_instead: section.reveal
+  - what: "Gesture keyframes on hover"
+    use_instead: motion.whileHover
+  - what: "Rich HTML content inside tooltip"
+    use_instead: "external — content is text-only in v1"
+
+covers:
+  - description: "Tooltip with top auto-position, 300ms show delay, arrow, and fade animation"
+    example: content/presets/element-tooltip.json
+    minimal: true
+
+composes_with:
+  parents: [section.column, section.contentBlock]
+  siblings_typical: [element.heading, element.button, element.image]
+  motion: "external — motionTiming for entrance; animation field controls tooltip show/hide transition"
+
+known_limitations:
+  - "Trigger element is the immediate previous sibling or wrapping parent — position resolves relative to it"
+  - "auto position falls back to top if no space is available in the preferred direction"
+
+proposal_hints:
+  new_variant_value: extend_cluster
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

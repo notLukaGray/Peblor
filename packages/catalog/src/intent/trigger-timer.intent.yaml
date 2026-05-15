@@ -1,0 +1,49 @@
+id: trigger.timer
+kind: trigger
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  Time-based triggers — a delay before the first fire, an interval for repeated
+  firing, and an optional max-fires cap. Wire `timerTriggers` on any section to
+  autoplay content, advance slides, dismiss overlays, or cycle variables on a
+  schedule without user interaction.
+
+not_this_if:
+  - "you need to fire on user interaction (use trigger.onClick or trigger.keyboard)"
+  - "you need a trigger on scroll position (use trigger.onVisible or trigger.onViewportProgress)"
+
+axes:
+  - name: config
+    fields: [timerTriggers]
+    note: "array of { delay?, interval?, maxFires?, action } on baseSectionPropsSchema"
+
+covers:
+  - description: "Auto-advance slideshow with 800ms delay and 4-second interval, max 5 fires"
+    example: content/presets/trigger-delay-show.json
+
+does_not_cover:
+  - what: "User click trigger"
+    use_instead: trigger.onClick
+  - what: "Keyboard shortcut trigger"
+    use_instead: trigger.keyboard
+  - what: "Intersection-observer trigger"
+    use_instead: trigger.onVisible
+  - what: "User idle trigger"
+    use_instead: trigger.idle
+
+composes_with:
+  parents: [section.*]
+  siblings_typical: [trigger.onClick, trigger.idle]
+  motion: "N/A — fires actions; receiving element handles animation"
+
+known_limitations:
+  - "delay and interval are in milliseconds"
+  - "maxFires: 1 is equivalent to a one-shot delayed action"
+  - "timers are cleared when the section unmounts"
+
+proposal_hints:
+  new_variant_value: "N/A — trigger, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

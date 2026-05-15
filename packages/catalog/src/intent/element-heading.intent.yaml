@@ -1,0 +1,76 @@
+id: element.heading
+kind: cluster
+package: "@pb/contracts"
+schema_ref: elementHeadingSchema
+runtime_ref: "@pb/runtime-react/page-builder/elements/ElementHeading"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A single typographic heading — display titles, section labels, kickers,
+  eyebrows. One block of styled text rendered at a semantic heading level.
+  The primary tool for hierarchy and landmark copy.
+
+not_this_if:
+  - "the copy is multi-sentence body or paragraph text (use element.body)"
+  - "the text is a navigation link or inline hyperlink (use element.link)"
+  - "the copy requires HTML markup, lists, or block-level richness (use element.richText)"
+  - "the copy comes from a CMS rich-text field (use element.richText)"
+
+axes:
+  - name: variant
+    fields: [variant]
+    note: "maps to pbBuilderDefaultsV1.elements.heading preset — sets level, size, weight baseline"
+  - name: copy
+    fields: [text, level, semanticLevel, wordWrap, variableKey]
+    note: "level drives typography style; semanticLevel overrides the rendered tag for outline correctness"
+  - name: typography
+    fields:
+      [
+        fontFamily,
+        fontSize,
+        fontWeight,
+        letterSpacing,
+        lineHeight,
+        lineSpacing,
+        fontFeatureSettings,
+      ]
+  - name: color
+    fields: [color, textFill]
+  - name: overflow
+    fields: [textOverflow, textStroke, verticalAlign, paragraphSpacing, maxLines]
+
+covers:
+  - description: "Display-size hero title with gradient text fill"
+    example: content/presets/hero-heading.json
+  - description: "Section label at h3 level with custom letter spacing"
+    example: content/presets/section-heading.json
+
+does_not_cover:
+  - what: "Multi-paragraph body copy"
+    use_instead: element.body
+  - what: "Hyperlink or navigation text"
+    use_instead: element.link
+  - what: "Rich text with HTML markup, lists, or block formatting"
+    use_instead: element.richText
+
+composes_with:
+  parents:
+    - section.column
+    - section.content-block
+    - module.*
+  siblings_typical:
+    - element.body
+    - element.button
+    - element.image
+  motion: "external — motionTiming applied by parent wrapper"
+
+known_limitations:
+  - "No inline formatting — bold/italic sub-runs require element.richText"
+  - "variableKey replaces the entire text field at runtime; static text is ignored when set"
+  - "lineSpacing is legacy shorthand; prefer lineHeight for new content"
+
+proposal_hints:
+  new_variant_value: extend_cluster
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

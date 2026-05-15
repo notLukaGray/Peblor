@@ -1,0 +1,8 @@
+{
+  "type": "contentBlock",
+  "flexDirection": "column",
+  "gap": "1rem",
+  "reorderable": true,
+  "reorderAxis": "y",
+  "elements": []
+}

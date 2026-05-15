@@ -1,0 +1,53 @@
+{
+  "name": "@pb/runtime-react",
+  "version": "1.0.0",
+  "private": true,
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./server": "./src/server.ts",
+    "./client": "./src/client.ts",
+    "./core/*": "./src/core/*",
+    "./renderers": "./src/renderers.tsx",
+    "./effects": "./src/effects.tsx",
+    "./modal": "./src/modal.tsx",
+    "./motion": "./src/motion.tsx",
+    "./scroll": "./src/scroll.tsx",
+    "./dev-client": "./src/dev-client.ts",
+    "./dev-server": "./src/dev-server.ts",
+    "./dev-core": "./src/dev-core.ts"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "type-check": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@rive-app/react-canvas": "^4.28.3",
+    "@pb/contracts": "1.0.0",
+    "@pb/core": "1.0.0",
+    "dashjs": "^5.1.1",
+    "framer-motion": "^12.38.0",
+    "highlight.js": "^11.11.1",
+    "hls.js": "^1.6.16",
+    "lottie-web": "^5.12.2",
+    "next": "^16.2.4",
+    "react-markdown": "^10.1.0",
+    "rehype-highlight": "^7.0.2",
+    "remark-gfm": "^4.0.1",
+    "three": "^0.184.0",
+    "zod": "4.4.2",
+    "zustand": "^5.0.12"
+  },
+  "peerDependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.6.1",
+    "@react-three/postprocessing": "^3.0.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

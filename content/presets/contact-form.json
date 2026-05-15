@@ -1,0 +1,47 @@
+{
+  "type": "formBlock",
+  "contentWidth": ["100%", "480px"],
+  "action": "contact",
+  "method": "post",
+  "actionPayload": { "source": "website", "page": "contact" },
+  "fill": "surface",
+  "borderRadius": ["8px", "12px"],
+  "border": { "width": "1px", "color": "borderSubtle", "style": "solid" },
+  "fields": [
+    {
+      "type": "formField",
+      "fieldType": "text",
+      "name": "name",
+      "label": "Full Name",
+      "required": true,
+      "width": "100%"
+    },
+    {
+      "type": "formField",
+      "fieldType": "email",
+      "name": "email",
+      "label": "Email",
+      "required": true,
+      "width": "100%"
+    },
+    {
+      "type": "formField",
+      "fieldType": "select",
+      "name": "topic",
+      "label": "Topic",
+      "options": [
+        { "value": "general", "label": "General" },
+        { "value": "support", "label": "Support" }
+      ],
+      "width": "100%"
+    },
+    {
+      "type": "formField",
+      "fieldType": "paragraph",
+      "name": "message",
+      "label": "Message",
+      "width": "100%"
+    },
+    { "type": "formField", "fieldType": "submit", "label": "Send", "width": "auto" }
+  ]
+}

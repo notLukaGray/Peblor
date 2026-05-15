@@ -1,0 +1,8 @@
+{
+  "type": "revealSection",
+  "id": "motion_blur_in_example",
+  "triggerMode": "onVisible",
+  "motion": "blurIn",
+  "motionDuration": 0.6,
+  "sections": []
+}

@@ -1,0 +1,11 @@
+{
+  "type": "elementRive",
+  "id": "rive_animation_example",
+  "src": "https://example.com/animation.riv",
+  "poster": "https://example.com/rive-poster.jpg",
+  "loop": 3,
+  "speed": 1.5,
+  "playMode": "bounce",
+  "hover": true,
+  "onComplete": { "type": "setVariable", "payload": { "key": "animationDone", "value": true } }
+}

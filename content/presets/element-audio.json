@@ -1,0 +1,9 @@
+{
+  "type": "elementAudio",
+  "id": "audio_example",
+  "src": "https://example.com/audio.mp3",
+  "poster": "https://example.com/cover.jpg",
+  "controls": true,
+  "showWaveform": true,
+  "showTimeDisplay": true
+}

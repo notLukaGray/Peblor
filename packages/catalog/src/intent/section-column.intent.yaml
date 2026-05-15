@@ -1,0 +1,87 @@
+id: section.column
+kind: cluster
+package: "@pb/contracts"
+schema_ref: sectionColumnBaseSchema
+runtime_ref: "@pb/runtime-react/page-builder/sections/SectionColumn"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A column-grid section that places elements into defined columns with explicit
+  assignments per element. The backbone of multi-column layouts — product grids,
+  side-by-side feature blocks, card arrays. Supports responsive two-breakpoint
+  column counts and per-item span/style overrides.
+
+not_this_if:
+  - "you need a single horizontal/vertical flex row with no columns (use section.contentBlock)"
+  - "you need horizontal or vertical scroll with snap (use section.scrollContainer)"
+  - "the section should expand/collapse on interaction (use section.reveal)"
+  - "there are no elements, just a background or spacer (use section.divider)"
+
+axes:
+  - name: grid
+    fields: [columns, columnWidths, columnGaps, gridMode, gridAutoRows]
+    responsive: true
+    note: "columns drives the grid definition; gridMode controls CSS grid vs flex-column fallback"
+  - name: assignments
+    fields: [columnAssignments, columnSpan, elementOrder]
+    note: "columnAssignments maps element IDs to column indices; elementOrder sets render order"
+  - name: item-styles
+    fields: [itemStyles, columnStyles, itemLayout]
+    note: "per-item style overrides keyed by element id; columnStyles targets column tracks; itemLayout sets per-item flex layout"
+  - name: sizing
+    fields: [contentWidth, contentHeight]
+  - name: base-triggers
+    fields:
+      [
+        onVisible,
+        onInvisible,
+        onProgress,
+        onViewportProgress,
+        threshold,
+        triggerOnce,
+        rootMargin,
+        delay,
+      ]
+  - name: parallax
+    fields: [scrollSpeed, initialX, initialY]
+    note: "active in content — do not remove (see memory: FM Phase 2 audit)"
+  - name: motion
+    fields: [motionTiming, motion]
+  - name: visibility
+    fields: [visibleWhen, reduceMotion]
+
+covers:
+  - description: "Two-column feature block, desktop side-by-side / mobile stacked"
+    example: content/presets/two-column-feature.json
+  - description: "Three-column card grid with equal widths"
+    example: content/presets/three-column-grid.json
+
+does_not_cover:
+  - what: "Single-column vertical or horizontal flex stack"
+    use_instead: section.contentBlock
+  - what: "Horizontally scrollable card carousel with snap"
+    use_instead: section.scrollContainer
+  - what: "Section that reveals content on hover or click"
+    use_instead: section.reveal
+  - what: "Thin divider bar or spacer row"
+    use_instead: section.divider
+
+composes_with:
+  parents:
+    - pageBuilder (top-level sections array)
+    - module.*
+  siblings_typical:
+    - section.contentBlock
+    - section.scrollContainer
+  motion: "per-section via motionTiming; element-level motion is delegated to each child"
+
+known_limitations:
+  - "columnAssignments are required — use {} (empty) or a record mapping element IDs to column indices"
+  - "gridDebug renders column outlines in preview; strip before production export"
+  - "Responsive grid (columns as [mobile, desktop]) requires columnAssignments to cover both breakpoints"
+
+proposal_hints:
+  new_variant_value: extend_cluster
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

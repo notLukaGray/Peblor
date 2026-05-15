@@ -1,0 +1,7 @@
+{
+  "type": "elementScrollProgressBar",
+  "height": "3px",
+  "fill": "accent",
+  "trackBackground": "borderSubtle",
+  "offset": ["start end", "end start"]
+}

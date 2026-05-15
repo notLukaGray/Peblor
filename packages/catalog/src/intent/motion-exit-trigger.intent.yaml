@@ -1,0 +1,53 @@
+id: motion.exitTrigger
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: motionTimingSchema
+
+feels_like: >
+  Controls when an element or section's exit animation plays. Choose manual
+  (exit animation plays only when the element is programmatically removed) or
+  leaveViewport (exit animation plays automatically when the element scrolls
+  out of the viewport). Set via motionTiming.exitTrigger on any element or
+  section.
+
+not_this_if:
+  - "you need entrance animation timing (use motion.trigger)"
+  - "you need a trigger action on element leaving viewport (use trigger.onInvisible)"
+  - "you need scroll-progress-driven exit (use trigger.onViewportProgress)"
+
+axes:
+  - name: exit
+    fields: [exitTrigger, exitViewport]
+    note: "exitTrigger: manual | leaveViewport; exitViewport: viewport margin config for exit detection"
+
+does_not_cover:
+  - what: "Entrance animation timing"
+    use_instead: motion.trigger
+  - what: "Action trigger on invisible"
+    use_instead: trigger.onInvisible
+  - what: "Scroll-progress-driven animation"
+    use_instead: trigger.onViewportProgress
+  - what: "Exit animation preset selection"
+    use_instead: "motionTiming.exitPreset"
+
+covers:
+  - description: "Card that fades out when it leaves the viewport"
+    example: content/presets/motion-exit-trigger.json
+
+composes_with:
+  parents: [section.*, element.*]
+  siblings_typical: [motion.trigger, motionTiming.exitPreset]
+  motion: "motionTiming.exitTrigger — determines when the resolved exit motion plays"
+
+known_limitations:
+  - "leaveViewport uses IntersectionObserver with the exitViewport margin config"
+  - "manual exit requires programmatic removal — typically driven by page transitions"
+  - "When exitTrigger is leaveViewport, the element is wrapped in AnimatePresence for smooth exit"
+
+proposal_hints:
+  new_variant_value: "N/A — motion timing, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

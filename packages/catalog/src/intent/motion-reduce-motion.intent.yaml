@@ -1,0 +1,53 @@
+id: motion.reduceMotion
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: baseSectionPropsSchema
+
+feels_like: >
+  Respects the user's OS-level "reduce motion" accessibility preference by
+  disabling or simplifying animations on sections and elements. Set reduceMotion
+  to true on any section to skip entrance animations, parallax, and scroll-driven
+  effects when the user has requested reduced motion. Use for accessibility
+  compliance and inclusive motion design.
+
+not_this_if:
+  - "you need to disable all animations globally (use the prefers-reduced-motion CSS media query)"
+  - "you need per-element animation control (use motionTiming.entrancePreset with conditional logic)"
+  - "you need to override reduced motion (use inheritMode: 'isolate')"
+
+axes:
+  - name: accessibility
+    fields: [reduceMotion]
+    note: "boolean — when true, sections respect prefers-reduced-motion and skip animations"
+
+does_not_cover:
+  - what: "Global CSS-based reduced motion"
+    use_instead: "external — @media (prefers-reduced-motion: reduce)"
+  - what: "Per-element animation override"
+    use_instead: "motionTiming.entrancePreset"
+  - what: "Animation inheritance isolation"
+    use_instead: motion.inherit
+  - what: "Selective animation disabling"
+    use_instead: "external — handle via variable conditions"
+
+covers:
+  - description: "Hero section that respects reduced motion by skipping its parallax and entrance animation"
+    example: content/presets/motion-reduce-motion.json
+
+composes_with:
+  parents: [section.*]
+  siblings_typical: [motion.inherit]
+  motion: "reduceMotion flag checked by framer-motion integration; skips entrance/exit animations"
+
+known_limitations:
+  - "reduceMotion only affects the section it's set on — not child sections unless they inherit"
+  - "The runtime checks prefers-reduced-motion via matchMedia — OS-level setting"
+  - "Not all effects are gated by reduceMotion — some pure CSS effects may still render"
+
+proposal_hints:
+  new_variant_value: "N/A — accessibility flag, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

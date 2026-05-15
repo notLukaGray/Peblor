@@ -1,0 +1,47 @@
+id: motion.slideUp
+kind: motion-preset
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  An upward-translate + fade entrance — element starts below its resting position
+  and slides up while fading in. The standard entrance for cards, sections, and
+  content blocks that should feel like they're rising into view.
+
+not_this_if:
+  - "you want a plain fade with no movement (use motion.fade)"
+  - "you want downward movement (use motion.slideDown)"
+  - "you want horizontal movement (use motion.slideLeft or motion.slideRight)"
+
+axes:
+  - name: preset
+    fields: [motionTiming]
+    note: "entrancePreset: 'slideUp' on motionTimingSchema"
+
+covers:
+  - description: "Card that slides up and fades in when it enters the viewport"
+    example: content/presets/motion-slide-up.json
+
+does_not_cover:
+  - what: "Plain opacity fade with no translate"
+    use_instead: motion.fade
+  - what: "Downward-sliding entrance"
+    use_instead: motion.slideDown
+  - what: "Left-sliding entrance"
+    use_instead: motion.slideLeft
+  - what: "Right-sliding entrance"
+    use_instead: motion.slideRight
+
+composes_with:
+  parents: [section.*, element.*]
+  siblings_typical: []
+  motion: "motionTiming.entrancePreset: 'slideUp'"
+
+known_limitations:
+  - "Translate distance is defined in motion defaults — not overridable from JSON without custom entranceMotion"
+
+proposal_hints:
+  new_variant_value: "N/A — motion preset, no variant field"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

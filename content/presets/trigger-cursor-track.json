@@ -1,0 +1,6 @@
+{
+  "type": "triggerSection",
+  "id": "trigger_cursor_track_example",
+  "trigger": { "type": "cursor", "axis": "x", "throttleMs": 16 },
+  "actions": [{ "type": "setVariable", "target": "parallaxX", "value": "cursor" }]
+}

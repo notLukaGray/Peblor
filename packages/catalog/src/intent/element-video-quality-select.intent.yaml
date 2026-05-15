@@ -1,0 +1,51 @@
+id: element.videoQualitySelect
+kind: cluster
+package: "@pb/contracts"
+schema_ref: elementVideoQualitySelectSchema
+runtime_ref: "@pb/runtime-react/page-builder/elements/ElementVideoQualitySelect"
+stability: experimental
+schema_version: 1
+
+feels_like: >
+  A quality-level picker for the nearest VideoControlContext — shows available
+  HLS/DASH renditions and lets the user lock to a specific resolution. Use inside
+  module player UIs only.
+
+not_this_if:
+  - "there is no adaptive streaming video ancestor (element is a no-op)"
+  - "you need a general-purpose dropdown (use section.formBlock with select type)"
+  - "you want to programmatically set quality without a UI (use trigger actions)"
+
+axes:
+  - name: icon
+    fields: [icon]
+    note: "optional elementVector inline icon shown on the trigger button"
+  - name: style
+    fields: [style]
+
+covers:
+  - description: "Quality picker inside an HLS player overlay"
+    example: content/presets/video-quality-select.json
+    minimal: true
+
+does_not_cover:
+  - what: "General-purpose dropdown or select control"
+    use_instead: section.formBlock
+  - what: "Volume or seek slider"
+    use_instead: element.range
+  - what: "Static text label showing current quality"
+    use_instead: element.body
+
+composes_with:
+  parents: [module.*]
+  siblings_typical: [element.videoTime, element.range, element.button]
+  motion: "external — motionTiming applied by parent wrapper"
+
+known_limitations:
+  - "Requires a VideoControlContext with an HLS/DASH source — no-ops for plain mp4"
+  - "Icon is an inline elementVector — supply a valid viewBox and shapes or omit entirely"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

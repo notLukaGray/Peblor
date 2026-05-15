@@ -1,0 +1,10 @@
+{
+  "type": "contentBlock",
+  "id": "section_sticky_example",
+  "sticky": true,
+  "stickyPosition": "top",
+  "stickyOffset": "0px",
+  "elements": [
+    { "type": "elementHeading", "id": "sticky_heading", "level": 3, "text": "Sticky Header" }
+  ]
+}

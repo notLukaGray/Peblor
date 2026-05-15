@@ -1,0 +1,11 @@
+{
+  "type": "elementMarquee",
+  "id": "marquee_example",
+  "text": "New arrivals just landed — free shipping on orders over $50 — shop the latest collection today",
+  "direction": "left",
+  "speed": 12,
+  "gap": "48px",
+  "pauseOnHover": true,
+  "gradientEdges": true,
+  "level": 2
+}

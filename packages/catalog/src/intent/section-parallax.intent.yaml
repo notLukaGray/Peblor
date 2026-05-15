@@ -1,0 +1,53 @@
+id: section.parallax
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: baseSectionPropsSchema
+
+feels_like: >
+  Applies a parallax scroll speed multiplier to a section — elements inside
+  move at a different rate than the page scroll, creating depth. Set scrollSpeed
+  to a value where 1 is normal scroll, 0 is fixed, and values above 1 scroll
+  faster than the page. Use for hero depth effects, layered storytelling, or
+  subtle background motion.
+
+not_this_if:
+  - "you need scroll-progress-driven triggers (use section.scrollContainer)"
+  - "you need sticky positioning (use section.sticky)"
+  - "you need entrance animations on scroll (use motionTiming.entrancePreset)"
+
+axes:
+  - name: speed
+    fields: [scrollSpeed, initialX, initialY]
+    note: "scrollSpeed: number; 1 = normal, 0 = fixed, >1 = faster; initialX/Y set starting position"
+
+does_not_cover:
+  - what: "Scroll-progress-driven triggers with variable binding"
+    use_instead: section.scrollContainer
+  - what: "Sticky positioning"
+    use_instead: section.sticky
+  - what: "Entrance animation on viewport entry"
+    use_instead: "motionTiming.entrancePreset"
+  - what: "Scroll-driven opacity changes"
+    use_instead: "scrollOpacityRange on baseSectionProps"
+
+covers:
+  - description: "Hero section with scrollSpeed 0.5 for a slow-reveal parallax effect"
+    example: content/presets/section-parallax.json
+
+composes_with:
+  parents: [page]
+  siblings_typical: [section.contentBlock, section.column]
+  motion: "parallax uses framer-motion useTransform for scroll-driven translateY"
+
+known_limitations:
+  - "scrollSpeed is a multiplier — 0 means the section stays fixed relative to viewport"
+  - "initialX and initialY set the starting translate offset in pixels or CSS units"
+  - "Parallax effects stack with entrance animations — order matters for perceived depth"
+
+proposal_hints:
+  new_variant_value: "N/A — section capability, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

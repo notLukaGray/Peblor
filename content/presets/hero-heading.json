@@ -1,0 +1,12 @@
+{
+  "type": "elementHeading",
+  "variant": "display",
+  "text": "Bold headline copy",
+  "level": 1,
+  "textFill": {
+    "type": "gradient",
+    "value": "linear-gradient(90deg, #fff 0%, #aaa 100%)"
+  },
+  "fontWeight": "700",
+  "letterSpacing": "-0.03em"
+}

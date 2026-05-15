@@ -1,0 +1,9 @@
+{
+  "type": "triggerSection",
+  "id": "trigger_pointer_down_example",
+  "trigger": { "type": "pointerDown", "target": "self" },
+  "actions": [
+    { "type": "setVariant", "target": "card", "value": "pressed" },
+    { "type": "setVariable", "target": "scrubState", "value": "active" }
+  ]
+}

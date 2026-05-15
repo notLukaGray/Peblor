@@ -1,0 +1,12 @@
+{
+  "type": "elementLink",
+  "variant": "emphasis",
+  "label": "Read the full case study",
+  "href": "/work/case-study",
+  "copyType": "body",
+  "external": false,
+  "target": "_self",
+  "linkDefault": "accent",
+  "linkHover": "textSecondary",
+  "linkTransition": 0.2
+}

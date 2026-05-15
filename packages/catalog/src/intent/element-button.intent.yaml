@@ -1,0 +1,106 @@
+id: element.button
+kind: cluster
+package: "@pb/contracts"
+schema_ref: elementButtonSchema
+runtime_ref: "@pb/runtime-react/page-builder/elements/ElementButton"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A tappable call-to-action surface — either a navigation link (href) or a
+  page-builder action trigger (action). Renders as a styled pill or ghost
+  button with full hover/active/disabled state management.
+
+not_this_if:
+  - "the text is inline inside a paragraph (use element.link)"
+  - "the intent is plain body or heading copy with no interaction (use element.body / element.heading)"
+  - "the form submit should trigger validation and a network request (use section.formBlock)"
+  - "you need an icon-only action embedded inside a video player (use element.vector with link)"
+
+axes:
+  - name: variant
+    fields: [variant]
+    note: "maps to pbBuilderDefaultsV1.elements.button preset — sets fill, stroke, radius defaults"
+  - name: label
+    fields: [label, copyType, level, fontFamily, wordWrap, vectorRef]
+    note: "copyType+level determine typography class; vectorRef embeds an icon element"
+  - name: action
+    fields:
+      [action, actionPayload, href, external, target, rel, download, referrerPolicy, hreflang, ping]
+    note: "use either href (link) OR action (button trigger) — not both"
+  - name: wrapper
+    fields:
+      [
+        wrapperFill,
+        wrapperStroke,
+        wrapperStrokeWidth,
+        wrapperPadding,
+        wrapperBorderRadius,
+        wrapperWidth,
+        wrapperHeight,
+        wrapperMinWidth,
+        wrapperMinHeight,
+        wrapperInteractionVars,
+        wrapperFillRef,
+        wrapperStrokeRef,
+      ]
+    note: "wrapperFillRef/wrapperStrokeRef take element IDs for dynamic theming"
+  - name: wrapper-states
+    fields:
+      [
+        wrapperFillHover,
+        wrapperStrokeHover,
+        wrapperFillActive,
+        wrapperFillDisabled,
+        wrapperScaleHover,
+        wrapperScaleActive,
+        wrapperScaleDisabled,
+        wrapperOpacityHover,
+        wrapperTransition,
+        linkDefault,
+        linkHover,
+        linkActive,
+        linkDisabled,
+        linkTransition,
+      ]
+  - name: state
+    fields: [disabled, loading, loadingLabel]
+  - name: events
+    fields: [pointerDownAction, pointerUpAction]
+
+covers:
+  - description: "Primary CTA button linking to a page section"
+    example: content/presets/primary-button.json
+  - description: "Ghost icon-action button firing a page-builder action"
+    example: content/presets/ghost-action-button.json
+
+does_not_cover:
+  - what: "Inline hyperlink within a paragraph"
+    use_instead: element.link
+  - what: "Form submission with validation"
+    use_instead: section.formBlock
+  - what: "Icon-only vector that navigates"
+    use_instead: element.vector
+  - what: "Drag-and-drop reorder handle"
+    use_instead: "elementGroup (parent reorderable section handles this)"
+
+composes_with:
+  parents:
+    - section.column
+    - section.content-block
+    - module.*
+  siblings_typical:
+    - element.heading
+    - element.body
+    - element.image
+  motion: "external — motionTiming applied by parent wrapper"
+
+known_limitations:
+  - "href and action are mutually exclusive — validation fails if both are set"
+  - "wrapperFillRef/wrapperStrokeRef take element IDs for dynamic theming; not color tokens"
+  - "vectorRef is a string key into the section definitions record, not a URL"
+
+proposal_hints:
+  new_variant_value: extend_cluster
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

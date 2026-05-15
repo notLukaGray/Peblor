@@ -1,0 +1,67 @@
+id: element.body
+kind: cluster
+package: "@pb/contracts"
+schema_ref: elementBodySchema
+runtime_ref: "@pb/runtime-react/page-builder/elements/ElementBody"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  Paragraph or body copy — sentences, captions, descriptions, supporting text.
+  Not a headline, not markup-rich prose; just styled running text at one of
+  three size levels (lead, standard, fine).
+
+not_this_if:
+  - "the copy is a headline or label (use element.heading)"
+  - "the text needs inline links, bold/italic runs, or lists (use element.richText)"
+  - "the copy is a standalone hyperlink (use element.link)"
+
+axes:
+  - name: variant
+    fields: [variant]
+    note: "lead, standard, fine — maps to pbBuilderDefaultsV1.elements.body presets"
+  - name: copy
+    fields: [text, level, wordWrap, variableKey]
+  - name: typography
+    fields:
+      [
+        fontFamily,
+        fontSize,
+        fontWeight,
+        lineHeight,
+        lineSpacing,
+        letterSpacing,
+        fontFeatureSettings,
+      ]
+  - name: color
+    fields: [color, textFill]
+  - name: overflow
+    fields: [textOverflow, textStroke, verticalAlign, paragraphSpacing, maxLines]
+
+covers:
+  - description: "Lead-size intro paragraph with accent color and refined letter spacing"
+    example: content/presets/body-lead.json
+  - description: "Fine-print caption with secondary color and text-overflow ellipsis"
+    example: content/presets/body-fine.json
+
+does_not_cover:
+  - what: "Headline, display, or label copy"
+    use_instead: element.heading
+  - what: "Rich text with inline formatting"
+    use_instead: element.richText
+  - what: "Standalone navigation or action link"
+    use_instead: element.link
+
+composes_with:
+  parents: [section.column, section.contentBlock, module.*]
+  siblings_typical: [element.heading, element.button, element.image]
+  motion: "external — motionTiming applied by parent wrapper"
+
+known_limitations:
+  - "variableKey replaces the full text field — static text is ignored when set"
+  - "lineSpacing is legacy shorthand; prefer lineHeight for new content"
+
+proposal_hints:
+  new_variant_value: extend_cluster
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

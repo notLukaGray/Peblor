@@ -1,0 +1,43 @@
+{
+  "title": "Project Gamma",
+  "slug": "project-cinematic",
+  "description": "Placeholder fixture C.",
+  "ogImage": "https://media.example.com/website/work/project-cinematic/og.webp",
+  "assetBaseUrl": "/work",
+  "sectionOrder": [
+    "cinematic_a",
+    "cinematic_b",
+    "cinematic_c",
+    "cinematic_d",
+    "cinematic_e",
+    "cinematic_f"
+  ],
+  "bgKey": "bg-film",
+  "definitions": {
+    "bg-film": {
+      "type": "backgroundVideo",
+      "video": "work/project-cinematic/bg.webm",
+      "poster": "work/project-cinematic/bg-poster.webp"
+    },
+    "bg-dark": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "#0a0a0a"
+        },
+        {
+          "fill": "linear-gradient(180deg, #0a0a0a 0%, #111111 100%)"
+        }
+      ]
+    }
+  },
+  "transitions": [
+    {
+      "type": "SCROLL",
+      "source": "trigger",
+      "id": "film-to-dark",
+      "from": "bg-film",
+      "to": "bg-dark"
+    }
+  ]
+}

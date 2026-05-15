@@ -1,0 +1,41 @@
+{
+  "ui": {
+    "preloadMinDurationMs": 3000,
+    "resizeDebounceMs": 50,
+    "canvasLoadTimeoutMs": 5000,
+    "crossfadeDurationMs": 400,
+    "videoPauseButtonHideDelayMs": 2000,
+    "home": {
+      "heroCarousel": {
+        "opacityCurve": [0, 0.2, 0.4, 0.8, 0.4, 0.2, 0],
+        "placeholderBackgrounds": [
+          "hsl(0, 20%, 10%)",
+          "hsl(45, 20%, 10%)",
+          "hsl(90, 20%, 10%)",
+          "hsl(135, 20%, 10%)",
+          "hsl(180, 20%, 10%)",
+          "hsl(225, 20%, 10%)",
+          "hsl(270, 20%, 10%)",
+          "hsl(315, 20%, 10%)"
+        ]
+      }
+    },
+    "video": {
+      "doubleTapThresholdMs": 450,
+      "holdThresholdMs": 400,
+      "holdRepeatMs": 500,
+      "feedbackDurationMs": 500,
+      "slotExpandDurationMs": 400,
+      "slotElementRevealMs": 300,
+      "slotElementRevealStaggerMs": 50,
+      "slotTransitionMs": 500,
+      "slotTransitionEasing": "ease",
+      "seekBackSeconds": 10,
+      "seekForwardSeconds": 30,
+      "defaultAspectRatio": "16/9"
+    }
+  },
+  "cache": {
+    "videoUrlPrefix": "video_url_"
+  }
+}

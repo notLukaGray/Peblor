@@ -1,0 +1,17 @@
+{
+  "name": "@pb/pb-cli",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "cli": "tsx src/index.ts",
+    "type-check": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@pb/catalog": "1.0.0",
+    "@pb/contracts": "1.0.0",
+    "@pb/core": "1.0.0",
+    "@pb/sdk": "1.0.0",
+    "js-yaml": "^4.1.0"
+  }
+}

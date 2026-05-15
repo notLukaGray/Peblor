@@ -1,0 +1,11 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flexDirection": "column",
+  "gap": "0.75rem",
+  "padding": "1rem",
+  "section": {
+    "elementOrder": [],
+    "definitions": {}
+  }
+}

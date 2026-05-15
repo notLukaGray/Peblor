@@ -1,0 +1,54 @@
+id: motion.trigger
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: motionTimingSchema
+
+feels_like: >
+  Controls when an element or section's entrance animation plays. Choose from
+  onMount (plays immediately when the element mounts), onFirstVisible (plays
+  once the first time the element enters the viewport), onEveryVisible (plays
+  every time the element re-enters the viewport), or onTrigger (waits for an
+  external action to fire). Set via motionTiming.trigger on any element or
+  section.
+
+not_this_if:
+  - "you need exit animation control (use motion.exitTrigger)"
+  - "you need a trigger action on visibility (use trigger.onVisible)"
+  - "you need scroll-progress-driven animation (use trigger.onViewportProgress)"
+
+axes:
+  - name: trigger
+    fields: [trigger]
+    note: "onMount | onFirstVisible | onEveryVisible | onTrigger — set via motionTiming.trigger"
+
+does_not_cover:
+  - what: "Exit animation timing mode"
+    use_instead: motion.exitTrigger
+  - what: "Action trigger on visibility"
+    use_instead: trigger.onVisible
+  - what: "Scroll progress binding"
+    use_instead: trigger.onViewportProgress
+  - what: "Entrance animation preset selection"
+    use_instead: "motionTiming.entrancePreset (motion.fade, motion.slideUp, etc.)"
+
+covers:
+  - description: "Heading that animates in on first viewport entry with fade preset"
+    example: content/presets/motion-trigger.json
+
+composes_with:
+  parents: [section.*, element.*]
+  siblings_typical: [motion.exitTrigger, motionTiming.entrancePreset]
+  motion: "motionTiming.trigger — determines when the resolved entrance motion plays"
+
+known_limitations:
+  - "onEveryVisible re-triggers the entrance animation each time the element scrolls into view"
+  - "onTrigger requires an external action to set the trigger — wire via trigger actions"
+  - "onMount fires immediately — useful for hero animations that should play on page load"
+
+proposal_hints:
+  new_variant_value: "N/A — motion timing, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

@@ -1,0 +1,70 @@
+id: element.counter
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: elementCounterSchema
+
+feels_like: >
+  An animated number counter that counts up (or down) from a start value to
+  a target value. Supports prefix/suffix, decimal formatting, locale-aware
+  thousands separators, and configurable trigger modes (on mount, on visible,
+  or scroll-driven between two viewport progress points). Typography follows
+  the heading level system with per-character styling.
+
+not_this_if:
+  - "you need static text without animation (use element.heading or element.body)"
+  - "you need a countdown timer (use trigger.timer with element.heading bound to a variable)"
+  - "you need a progress bar (use element.scrollProgressBar)"
+
+axes:
+  - name: value
+    fields: [target, start]
+  - name: tween
+    fields: [tween]
+    note: "required for onMount / onVisible when variableKey is not set — { duration, easing? } (ms)"
+  - name: scroll
+    fields: [scroll]
+    note: "required for onScroll — { scrollStart?, scrollEnd?, easing? } viewport progress 0–1"
+  - name: variable_tween
+    fields: [variableTween]
+    note: "required when variableKey is set and trigger is not onScroll — { duration, easing? } for bound-value updates"
+  - name: format
+    fields: [prefix, suffix, decimals, separator, locale]
+  - name: trigger
+    fields: [trigger]
+    note: "onMount | onVisible | onScroll"
+  - name: typography
+    fields: [level, fontFamily, fontSize, fontWeight, letterSpacing, color, textFill]
+  - name: binding
+    fields: [variableKey]
+
+does_not_cover:
+  - what: "Static text display"
+    use_instead: element.heading
+  - what: "Countdown timer"
+    use_instead: trigger.timer
+  - what: "Progress bar or loading indicator"
+    use_instead: element.scrollProgressBar
+  - what: "Multi-number stat block"
+    use_instead: element.group
+
+covers:
+  - description: "Stat counter that counts from 0 to 1500 on scroll with comma separator and plus suffix"
+    example: content/presets/element-counter.json
+    minimal: true
+
+composes_with:
+  parents: [section.column, section.contentBlock]
+  siblings_typical: [element.heading, element.body]
+  motion: "external — motionTiming on parent; counter animates with requestAnimationFrame (instant when prefers-reduced-motion)"
+
+known_limitations:
+  - "Scroll-driven trigger requires the counter to be inside a scrollable container"
+  - "variableKey + non-scroll: client tweens with variableTween; prefers-reduced-motion snaps. variableKey + onScroll: scroll mapping only (no variable tween)"
+
+proposal_hints:
+  new_variant_value: extend_cluster
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

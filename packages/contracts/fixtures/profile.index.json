@@ -1,0 +1,67 @@
+{
+  "title": "Profile",
+  "slug": "profile",
+  "description": "About and contact — placeholder.",
+  "sectionOrder": ["profile_intro", "profile_footer"],
+  "bgKey": "bg",
+  "definitions": {
+    "bg": {
+      "type": "backgroundVariable",
+      "layers": [{ "fill": "#0a0a0a" }]
+    },
+    "profile_intro": {
+      "type": "contentBlock",
+      "id": "profile_intro",
+      "ariaLabel": "Profile intro",
+      "width": ["100%", "72%"],
+      "height": "hug",
+      "align": "center",
+      "fill": "#00000000",
+      "padding": ["2rem 1rem", "4rem 2rem"],
+      "gap": "1rem",
+      "elementOrder": ["heading", "body"],
+      "definitions": {
+        "heading": {
+          "type": "elementHeading",
+          "level": 1,
+          "text": "Profile",
+          "align": "center",
+          "width": "hug",
+          "wordWrap": true,
+          "marginBottom": "1rem"
+        },
+        "body": {
+          "type": "elementBody",
+          "level": 2,
+          "text": "Placeholder: bio and contact details will go here.",
+          "align": "center",
+          "textAlign": "center",
+          "width": "100%",
+          "wordWrap": true
+        }
+      }
+    },
+    "profile_footer": {
+      "type": "contentBlock",
+      "id": "profile_footer",
+      "width": "100%",
+      "height": "hug",
+      "align": "center",
+      "fill": "#00000000",
+      "padding": "1rem",
+      "gap": "1rem",
+      "elementOrder": ["note"],
+      "definitions": {
+        "note": {
+          "type": "elementBody",
+          "level": 5,
+          "text": "Placeholder.",
+          "align": "center",
+          "textAlign": "center",
+          "width": "hug",
+          "wordWrap": true
+        }
+      }
+    }
+  }
+}

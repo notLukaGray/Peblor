@@ -1,0 +1,8 @@
+{
+  "type": "triggerSection",
+  "id": "trigger_fade_out_example",
+  "trigger": { "type": "onInvisible" },
+  "actions": [{ "type": "setVariant", "target": "chip", "value": "hidden" }],
+  "threshold": 0.1,
+  "rootMargin": "0px 0px 200px 0px"
+}

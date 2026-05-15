@@ -1,0 +1,59 @@
+id: element.audio
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: elementAudioSchema
+
+feels_like: >
+  An audio player element with waveform visualization and time display. Supports
+  format fallbacks via sources array, cover art poster, and standard playback
+  controls. Use for podcast embeds, music players, audio samples, or any
+  time-based audio content. Composes with the same playback, layout, motion,
+  and trigger systems as element.video.
+
+not_this_if:
+  - "you need video with visual content (use element.video)"
+  - "you need a full media player with playlist (use element.group with multiple audio elements)"
+  - "you need background audio (use background.video with audio track)"
+
+axes:
+  - name: source
+    fields: [src, sources, poster]
+    note: "sources is ordered format fallback list [{ src, type? }]"
+  - name: playback
+    fields: [autoplay, loop, muted, controls, playbackRate, preload]
+  - name: display
+    fields: [showWaveform, showTimeDisplay]
+  - name: accessibility
+    fields: [ariaLabel]
+
+does_not_cover:
+  - what: "Video with visual content"
+    use_instead: element.video
+  - what: "Background audio without visible player UI"
+    use_instead: background.video
+  - what: "Playlist with multiple tracks"
+    use_instead: element.group
+  - what: "Music streaming or DRM-protected audio"
+    use_instead: "external — use a custom integration"
+
+covers:
+  - description: "Audio player with waveform visualization, time display, and format fallbacks"
+    example: content/presets/element-audio.json
+    minimal: true
+
+composes_with:
+  parents: [section.column, section.contentBlock]
+  siblings_typical: [element.heading, element.body, element.button]
+  motion: "external — motionTiming applied by parent wrapper"
+
+known_limitations:
+  - "Waveform visualization requires client-side audio context — server renders a placeholder"
+  - "No native playlist or multi-track support — compose with element.group for playlists"
+
+proposal_hints:
+  new_variant_value: extend_cluster
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

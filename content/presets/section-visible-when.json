@@ -1,0 +1,18 @@
+{
+  "type": "contentBlock",
+  "id": "section_visible_when_example",
+  "visibleWhen": {
+    "variable": "showPromo",
+    "operator": "equals",
+    "value": "true"
+  },
+  "elements": [
+    { "type": "elementHeading", "id": "promo_heading", "level": 2, "text": "Special Offer" },
+    {
+      "type": "elementBody",
+      "id": "promo_body",
+      "level": 3,
+      "text": "Limited time promotion for new users."
+    }
+  ]
+}

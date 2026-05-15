@@ -1,0 +1,48 @@
+id: trigger.onProgress
+kind: trigger
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  An intersection-based progress trigger that fires an action on each
+  intersection-observer update as an element scrolls through the viewport.
+  Wire `onProgress` to dispatch a continuous value to an action handler.
+  Distinct from trigger.onViewportProgress which uses a scroll-container context.
+
+not_this_if:
+  - "you need smooth continuous progress from a scroll container (use trigger.onViewportProgress)"
+  - "you only need a fire-once event on entry (use trigger.onVisible)"
+
+axes:
+  - name: config
+    fields: [onProgress, threshold, rootMargin]
+    note: "fields on baseSectionPropsSchema"
+
+covers:
+  - description: "Section updates xOffset variable on each intersection update"
+    example: content/presets/trigger-scroll-progress.json
+
+does_not_cover:
+  - what: "Smooth scroll progress from a named scroll container"
+    use_instead: trigger.onViewportProgress
+  - what: "One-shot entry trigger"
+    use_instead: trigger.onVisible
+  - what: "One-shot exit trigger"
+    use_instead: trigger.onInvisible
+  - what: "Click-based trigger"
+    use_instead: trigger.onClick
+
+composes_with:
+  parents: [section.*, element.*]
+  siblings_typical: [trigger.onVisible, trigger.onViewportProgress]
+  motion: "N/A — progress value is dispatched to actions, not used directly by motionTiming"
+
+known_limitations:
+  - "Intersection observer fires discretely, not frame-by-frame — for smooth animation use trigger.onViewportProgress"
+  - "Progress values are not normalized 0→1 automatically; handler receives intersection ratio"
+
+proposal_hints:
+  new_variant_value: "N/A — trigger, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

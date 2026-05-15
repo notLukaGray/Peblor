@@ -1,0 +1,85 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignoreDependencies": ["patch-package", "tailwindcss"],
+  "include": [
+    "files",
+    "dependencies",
+    "unlisted",
+    "unresolved",
+    "duplicates",
+    "binaries",
+    "catalog"
+  ],
+  "workspaces": {
+    ".": {
+      "entry": ["package.json"],
+      "project": ["*.{ts,tsx,js,mjs}", "scripts/**/*.{ts,tsx,js,mjs}"]
+    },
+    "apps/web": {
+      "entry": ["src/app/**/*.{ts,tsx}", "src/core/**/*.{ts,tsx}", "src/devtools/**/*.{ts,tsx}"],
+      "project": ["src/**/*.{ts,tsx}"],
+      "paths": {
+        "@/peblor/*": ["../../packages/runtime-react/src/peblor/*"],
+        "@pb/runtime-react/*": ["../../packages/runtime-react/src/*"],
+        "@/core/*": ["./src/core/*"],
+        "@/content/*": ["../../content/*"],
+        "@/*": ["./src/*"]
+      }
+    },
+    "packages/contracts": {
+      "project": ["src/**/*.ts", "scripts/**/*.ts"],
+      "paths": {
+        "@/*": ["./src/*"]
+      }
+    },
+    "packages/core": {
+      "entry": ["src/**/*.test.ts"],
+      "project": ["src/**/*.ts"],
+      "paths": {
+        "@pb/core/internal/*": ["./src/internal/*"]
+      }
+    },
+    "packages/extensions": {
+      "entry": ["src/**/*.test.ts"],
+      "project": ["src/**/*.ts"],
+      "paths": {
+        "@/*": ["../../apps/web/src/*", "../contracts/src/*"]
+      }
+    },
+    "packages/runtime-react": {
+      "entry": ["src/**/*.test.ts", "src/**/*.test.tsx"],
+      "project": ["src/**/*.{ts,tsx}"],
+      "ignore": [
+        "src/peblor/background/motion/bg-layer-motion-schema.ts",
+        "src/peblor/client-islands/ClientPageRuntimeIsland.tsx"
+      ],
+      "paths": {
+        "@pb/runtime-react/*": ["./src/*"],
+        "@/peblor/*": ["./src/peblor/*"],
+        "@/core/*": ["../../apps/web/src/core/*", "./src/core/*"],
+        "@/content/*": ["../../content/*"],
+        "@/*": ["../../apps/web/src/*", "./src/*"]
+      }
+    },
+    "packages/sdk": {
+      "project": ["src/**/*.ts"],
+      "paths": {
+        "@/*": ["../../apps/web/src/*", "../contracts/src/*"]
+      }
+    },
+    "tools/figma-bridge": {
+      "project": ["src/**/*.ts"]
+    },
+    "tools/figma-plugin": {
+      "entry": ["src/**/*.{ts,tsx}"],
+      "project": ["src/**/*.{ts,tsx}"]
+    },
+    "tools/figma-widget": {
+      "entry": ["src/**/*.{ts,tsx}"],
+      "project": ["src/**/*.{ts,tsx}"]
+    },
+    "tools/pb-cli": {
+      "project": ["src/**/*.ts"]
+    }
+  }
+}

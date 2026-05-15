@@ -1,0 +1,386 @@
+[
+  {
+    "name": "_applymatrixtopoint_.md",
+    "path": "docs/modules/_applymatrixtopoint_.md",
+    "sha": "6fb2f33ea865b35728abd6998648191623628b92",
+    "size": 526,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_applymatrixtopoint_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_applymatrixtopoint_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/6fb2f33ea865b35728abd6998648191623628b92",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_applymatrixtopoint_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_applymatrixtopoint_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/6fb2f33ea865b35728abd6998648191623628b92",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_applymatrixtopoint_.md"
+    }
+  },
+  {
+    "name": "_clone_.md",
+    "path": "docs/modules/_clone_.md",
+    "sha": "fa1bca149cf031ec227e6775cb8fd4d932847865",
+    "size": 393,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_clone_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_clone_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/fa1bca149cf031ec227e6775cb8fd4d932847865",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_clone_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_clone_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/fa1bca149cf031ec227e6775cb8fd4d932847865",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_clone_.md"
+    }
+  },
+  {
+    "name": "_convertcolor_.md",
+    "path": "docs/modules/_convertcolor_.md",
+    "sha": "0abd472bfa97796edf02cbd64b31a98e02b553a3",
+    "size": 2382,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_convertcolor_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_convertcolor_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/0abd472bfa97796edf02cbd64b31a98e02b553a3",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_convertcolor_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_convertcolor_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/0abd472bfa97796edf02cbd64b31a98e02b553a3",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_convertcolor_.md"
+    }
+  },
+  {
+    "name": "_extractimagecropparams_.md",
+    "path": "docs/modules/_extractimagecropparams_.md",
+    "sha": "4280ab3449d9bdd2478b103cc98fe2dab82ee0f4",
+    "size": 949,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_extractimagecropparams_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_extractimagecropparams_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/4280ab3449d9bdd2478b103cc98fe2dab82ee0f4",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_extractimagecropparams_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_extractimagecropparams_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/4280ab3449d9bdd2478b103cc98fe2dab82ee0f4",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_extractimagecropparams_.md"
+    }
+  },
+  {
+    "name": "_extractlineargradientstartend_.md",
+    "path": "docs/modules/_extractlineargradientstartend_.md",
+    "sha": "412e6bc54e30cc03e60437f7aa42b97d8390522d",
+    "size": 1045,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_extractlineargradientstartend_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_extractlineargradientstartend_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/412e6bc54e30cc03e60437f7aa42b97d8390522d",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_extractlineargradientstartend_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_extractlineargradientstartend_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/412e6bc54e30cc03e60437f7aa42b97d8390522d",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_extractlineargradientstartend_.md"
+    }
+  },
+  {
+    "name": "_extractradialordiamondgradientparams_.md",
+    "path": "docs/modules/_extractradialordiamondgradientparams_.md",
+    "sha": "368bc4eac1bed095e867598e40f41a6c693b456c",
+    "size": 1042,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_extractradialordiamondgradientparams_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_extractradialordiamondgradientparams_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/368bc4eac1bed095e867598e40f41a6c693b456c",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_extractradialordiamondgradientparams_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_extractradialordiamondgradientparams_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/368bc4eac1bed095e867598e40f41a6c693b456c",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_extractradialordiamondgradientparams_.md"
+    }
+  },
+  {
+    "name": "_findmethods_.md",
+    "path": "docs/modules/_findmethods_.md",
+    "sha": "c0079cf418d79de2502c8018dd46c9f7ebf49d18",
+    "size": 1137,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_findmethods_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_findmethods_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/c0079cf418d79de2502c8018dd46c9f7ebf49d18",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_findmethods_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_findmethods_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/c0079cf418d79de2502c8018dd46c9f7ebf49d18",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_findmethods_.md"
+    }
+  },
+  {
+    "name": "_getallfonts_.md",
+    "path": "docs/modules/_getallfonts_.md",
+    "sha": "399ba23a30e3905eebd1a133da9e9289d5529532",
+    "size": 501,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_getallfonts_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_getallfonts_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/399ba23a30e3905eebd1a133da9e9289d5529532",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_getallfonts_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_getallfonts_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/399ba23a30e3905eebd1a133da9e9289d5529532",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_getallfonts_.md"
+    }
+  },
+  {
+    "name": "_getboundingrect_.md",
+    "path": "docs/modules/_getboundingrect_.md",
+    "sha": "3ae2fd00683c3662888723411d6b591287c4cb15",
+    "size": 661,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_getboundingrect_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_getboundingrect_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/3ae2fd00683c3662888723411d6b591287c4cb15",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_getboundingrect_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_getboundingrect_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/3ae2fd00683c3662888723411d6b591287c4cb15",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_getboundingrect_.md"
+    }
+  },
+  {
+    "name": "_getcssstyles_.md",
+    "path": "docs/modules/_getcssstyles_.md",
+    "sha": "d53a714453ee15af7c21cdb71b1d3716c0063953",
+    "size": 1610,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_getcssstyles_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_getcssstyles_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/d53a714453ee15af7c21cdb71b1d3716c0063953",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_getcssstyles_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_getcssstyles_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/d53a714453ee15af7c21cdb71b1d3716c0063953",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_getcssstyles_.md"
+    }
+  },
+  {
+    "name": "_getnodeindex_.md",
+    "path": "docs/modules/_getnodeindex_.md",
+    "sha": "89a3f1b796f355df7f9abf7f425d0c8b56ac6ae5",
+    "size": 504,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_getnodeindex_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_getnodeindex_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/89a3f1b796f355df7f9abf7f425d0c8b56ac6ae5",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_getnodeindex_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_getnodeindex_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/89a3f1b796f355df7f9abf7f425d0c8b56ac6ae5",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_getnodeindex_.md"
+    }
+  },
+  {
+    "name": "_getpage_.md",
+    "path": "docs/modules/_getpage_.md",
+    "sha": "18bed465c0deae2ba37740fe7c340df86c70c84c",
+    "size": 458,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_getpage_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_getpage_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/18bed465c0deae2ba37740fe7c340df86c70c84c",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_getpage_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_getpage_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/18bed465c0deae2ba37740fe7c340df86c70c84c",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_getpage_.md"
+    }
+  },
+  {
+    "name": "_getrelativeposition_.md",
+    "path": "docs/modules/_getrelativeposition_.md",
+    "sha": "6b87f3bd84111113bcf2b556657ef551febb3ecd",
+    "size": 1752,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_getrelativeposition_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_getrelativeposition_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/6b87f3bd84111113bcf2b556657ef551febb3ecd",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_getrelativeposition_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_getrelativeposition_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/6b87f3bd84111113bcf2b556657ef551febb3ecd",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_getrelativeposition_.md"
+    }
+  },
+  {
+    "name": "_haschildren_.md",
+    "path": "docs/modules/_haschildren_.md",
+    "sha": "c333ce1b924da8ba9dcfc964568ad6818211452c",
+    "size": 728,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_haschildren_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_haschildren_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/c333ce1b924da8ba9dcfc964568ad6818211452c",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_haschildren_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_haschildren_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/c333ce1b924da8ba9dcfc964568ad6818211452c",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_haschildren_.md"
+    }
+  },
+  {
+    "name": "_ispartofinstance_.md",
+    "path": "docs/modules/_ispartofinstance_.md",
+    "sha": "64f95d412aa84bb6d030a348379d57f862afade2",
+    "size": 535,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_ispartofinstance_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_ispartofinstance_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/64f95d412aa84bb6d030a348379d57f862afade2",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_ispartofinstance_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_ispartofinstance_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/64f95d412aa84bb6d030a348379d57f862afade2",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_ispartofinstance_.md"
+    }
+  },
+  {
+    "name": "_ispartofnode_.md",
+    "path": "docs/modules/_ispartofnode_.md",
+    "sha": "c3c8451b78b04fb74b6e6571968b8cb762817507",
+    "size": 549,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_ispartofnode_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_ispartofnode_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/c3c8451b78b04fb74b6e6571968b8cb762817507",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_ispartofnode_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_ispartofnode_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/c3c8451b78b04fb74b6e6571968b8cb762817507",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_ispartofnode_.md"
+    }
+  },
+  {
+    "name": "_istypenode_.md",
+    "path": "docs/modules/_istypenode_.md",
+    "sha": "123fe5b3fe57306562e0630c202aeff09928e5b1",
+    "size": 3097,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_istypenode_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_istypenode_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/123fe5b3fe57306562e0630c202aeff09928e5b1",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_istypenode_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_istypenode_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/123fe5b3fe57306562e0630c202aeff09928e5b1",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_istypenode_.md"
+    }
+  },
+  {
+    "name": "_isvisiblenode_.md",
+    "path": "docs/modules/_isvisiblenode_.md",
+    "sha": "15dc1297adf02ce1d4a65b96851b4e565825e6ca",
+    "size": 534,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_isvisiblenode_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_isvisiblenode_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/15dc1297adf02ce1d4a65b96851b4e565825e6ca",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_isvisiblenode_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_isvisiblenode_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/15dc1297adf02ce1d4a65b96851b4e565825e6ca",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_isvisiblenode_.md"
+    }
+  },
+  {
+    "name": "_loadfonts_.md",
+    "path": "docs/modules/_loadfonts_.md",
+    "sha": "25f0f85661b6f21e7365c880cc7e3b6501d4865d",
+    "size": 513,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_loadfonts_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_loadfonts_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/25f0f85661b6f21e7365c880cc7e3b6501d4865d",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_loadfonts_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_loadfonts_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/25f0f85661b6f21e7365c880cc7e3b6501d4865d",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_loadfonts_.md"
+    }
+  },
+  {
+    "name": "_loaduniquefonts_.md",
+    "path": "docs/modules/_loaduniquefonts_.md",
+    "sha": "680056fd2220419b2d74488807e5ab01e895fef5",
+    "size": 583,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_loaduniquefonts_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_loaduniquefonts_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/680056fd2220419b2d74488807e5ab01e895fef5",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_loaduniquefonts_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_loaduniquefonts_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/680056fd2220419b2d74488807e5ab01e895fef5",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_loaduniquefonts_.md"
+    }
+  },
+  {
+    "name": "_nodetoobject_.md",
+    "path": "docs/modules/_nodetoobject_.md",
+    "sha": "43a21158f6463ccb44d76789c5678c2cddc14c7f",
+    "size": 839,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_nodetoobject_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_nodetoobject_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/43a21158f6463ccb44d76789c5678c2cddc14c7f",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_nodetoobject_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_nodetoobject_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/43a21158f6463ccb44d76789c5678c2cddc14c7f",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_nodetoobject_.md"
+    }
+  },
+  {
+    "name": "_parsetextstyle_.md",
+    "path": "docs/modules/_parsetextstyle_.md",
+    "sha": "0cd77806121c34518fed599451700802b302d315",
+    "size": 6814,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_parsetextstyle_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_parsetextstyle_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/0cd77806121c34518fed599451700802b302d315",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_parsetextstyle_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_parsetextstyle_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/0cd77806121c34518fed599451700802b302d315",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_parsetextstyle_.md"
+    }
+  },
+  {
+    "name": "_setcharacters_.md",
+    "path": "docs/modules/_setcharacters_.md",
+    "sha": "5bce73d58f60a1bd7fbe74fa143680c506019618",
+    "size": 691,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_setcharacters_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_setcharacters_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/5bce73d58f60a1bd7fbe74fa143680c506019618",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_setcharacters_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_setcharacters_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/5bce73d58f60a1bd7fbe74fa143680c506019618",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_setcharacters_.md"
+    }
+  },
+  {
+    "name": "_toplevelframes_.md",
+    "path": "docs/modules/_toplevelframes_.md",
+    "sha": "4e7be999c7d472dd53563e0d3c156d5a887647d7",
+    "size": 550,
+    "url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_toplevelframes_.md?ref=master",
+    "html_url": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_toplevelframes_.md",
+    "git_url": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/4e7be999c7d472dd53563e0d3c156d5a887647d7",
+    "download_url": "https://raw.githubusercontent.com/figma-plugin-helper-functions/figma-plugin-helpers/master/docs/modules/_toplevelframes_.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/contents/docs/modules/_toplevelframes_.md?ref=master",
+      "git": "https://api.github.com/repos/figma-plugin-helper-functions/figma-plugin-helpers/git/blobs/4e7be999c7d472dd53563e0d3c156d5a887647d7",
+      "html": "https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/master/docs/modules/_toplevelframes_.md"
+    }
+  }
+]

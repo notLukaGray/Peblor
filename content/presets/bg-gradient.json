@@ -1,0 +1,31 @@
+{
+  "type": "backgroundVariable",
+  "layers": [
+    {
+      "fill": "linear-gradient(135deg, oklch(55% 0.18 270), oklch(42% 0.12 290), oklch(30% 0.08 310))",
+      "backgroundSize": "400% 400%",
+      "motion": [
+        {
+          "type": "loop",
+          "loopDuration": 16,
+          "loopEasing": "linear",
+          "animate": {},
+          "transition": { "duration": 0.1 }
+        }
+      ]
+    },
+    {
+      "fill": "radial-gradient(circle at 30% 40%, oklch(75% 0.06 100 / 12%), transparent 60%)",
+      "blendMode": "overlay",
+      "opacity": 0.7,
+      "motion": [
+        {
+          "type": "pointer",
+          "pointerFactor": 0.015,
+          "animate": {},
+          "transition": { "duration": 0.1 }
+        }
+      ]
+    }
+  ]
+}

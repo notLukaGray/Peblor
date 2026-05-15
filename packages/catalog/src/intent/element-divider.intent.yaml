@@ -1,0 +1,49 @@
+id: element.divider
+kind: cluster
+package: "@pb/contracts"
+schema_ref: elementDividerSchema
+runtime_ref: "@pb/runtime-react/page-builder/elements/ElementDivider"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A visible horizontal or vertical rule that separates content regions —
+  a thin line with configurable color, style, and length. Semantic sibling
+  to element.spacer but with a rendered surface.
+
+not_this_if:
+  - "you only need invisible whitespace without a visible line (use element.spacer)"
+  - "you need a full-width section separator with background (use section.divider)"
+  - "the divider is part of a table or grid layout (handle with CSS border)"
+
+axes:
+  - name: geometry
+    fields: [orientation, length]
+    responsive: true
+  - name: style
+    fields: [thickness, color, style]
+
+covers:
+  - description: "Horizontal rule with responsive length and border theme token"
+    example: content/presets/divider-horizontal.json
+
+does_not_cover:
+  - what: "Invisible spacing gap"
+    use_instead: element.spacer
+  - what: "Full-width section separator with background fill"
+    use_instead: section.divider
+  - what: "Decorative SVG wave or illustrated separator"
+    use_instead: element.svg
+
+composes_with:
+  parents: [section.column, section.contentBlock, module.*]
+  siblings_typical: [element.heading, element.body]
+  motion: "external — motionTiming applied by parent wrapper"
+
+known_limitations:
+  - "length is responsive (string | [string, string]) — use width/height from elementLayout for absolute sizing"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field on element.divider"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

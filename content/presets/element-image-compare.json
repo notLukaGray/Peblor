@@ -1,0 +1,11 @@
+{
+  "type": "elementImageCompare",
+  "id": "image_compare_example",
+  "before": { "src": "https://example.com/before.jpg", "alt": "Before retouching" },
+  "after": { "src": "https://example.com/after.jpg", "alt": "After retouching" },
+  "initialPosition": 0.5,
+  "direction": "horizontal",
+  "beforeLabel": "Before",
+  "afterLabel": "After",
+  "hoverActivate": true
+}

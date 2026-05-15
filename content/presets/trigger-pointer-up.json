@@ -1,0 +1,9 @@
+{
+  "type": "triggerSection",
+  "id": "trigger_pointer_up_example",
+  "trigger": { "type": "pointerUp", "target": "self" },
+  "actions": [
+    { "type": "setVariant", "target": "card", "value": "idle" },
+    { "type": "setVariable", "target": "scrubState", "value": "idle" }
+  ]
+}

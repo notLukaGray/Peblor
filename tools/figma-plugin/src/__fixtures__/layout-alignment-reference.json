@@ -1,0 +1,24 @@
+{
+  "slug": "fixture-layout",
+  "title": "Layout reference",
+  "sectionOrder": ["hero"],
+  "definitions": {
+    "hero": {
+      "type": "contentBlock",
+      "align": "center",
+      "width": "100%",
+      "contentWidth": "hug",
+      "elementOrder": ["title"],
+      "definitions": {
+        "title": {
+          "type": "elementText",
+          "id": "title",
+          "align": "center",
+          "alignY": "center",
+          "width": "hug",
+          "text": "Reference"
+        }
+      }
+    }
+  }
+}

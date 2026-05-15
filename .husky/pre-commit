@@ -1,0 +1,4 @@
+echo "Running lint-staged on staged files..."
+npx lint-staged
+
+echo "Pre-commit checks passed."

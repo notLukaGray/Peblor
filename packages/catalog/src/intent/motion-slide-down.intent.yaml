@@ -1,0 +1,47 @@
+id: motion.slideDown
+kind: motion-preset
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A downward-translate + fade entrance — element starts above its resting position
+  and slides down while fading in. Use for dropdown-style reveals, navigation
+  menus, and header elements that should feel like they're dropping into place.
+
+not_this_if:
+  - "you want upward movement (use motion.slideUp)"
+  - "you want horizontal movement (use motion.slideLeft or motion.slideRight)"
+  - "you want a plain fade (use motion.fade)"
+
+axes:
+  - name: preset
+    fields: [motionTiming]
+    note: "entrancePreset: 'slideDown' on motionTimingSchema"
+
+covers:
+  - description: "Navigation bar that slides down from the top on page load"
+    example: content/presets/motion-slide-down.json
+
+does_not_cover:
+  - what: "Upward-sliding entrance"
+    use_instead: motion.slideUp
+  - what: "Left-sliding entrance"
+    use_instead: motion.slideLeft
+  - what: "Right-sliding entrance"
+    use_instead: motion.slideRight
+  - what: "Plain opacity fade"
+    use_instead: motion.fade
+
+composes_with:
+  parents: [section.*, element.*]
+  siblings_typical: []
+  motion: "motionTiming.entrancePreset: 'slideDown'"
+
+known_limitations:
+  - "Translate distance is defined in motion defaults"
+
+proposal_hints:
+  new_variant_value: "N/A — motion preset, no variant field"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

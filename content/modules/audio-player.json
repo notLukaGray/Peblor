@@ -1,0 +1,149 @@
+{
+  "type": "module",
+  "contextType": "audio",
+  "contentSlot": "main",
+  "container": {
+    "padding": "0",
+    "borderRadius": "0"
+  },
+  "behavior": {
+    "sleepAfterMs": 3000,
+    "sleepFadeMs": 400,
+    "controlsTransitionMs": 400,
+    "controlsTransitionEasing": "easeOut"
+  },
+  "keyBindings": [
+    { "key": "Space", "action": "assetTogglePlay" },
+    { "key": "KeyK", "action": "assetTogglePlay" },
+    { "key": "ArrowLeft", "action": "assetSeek", "payload": -5 },
+    { "key": "ArrowRight", "action": "assetSeek", "payload": 5 },
+    { "key": "KeyM", "action": "assetMute" }
+  ],
+  "slots": {
+    "main": {
+      "position": "relative",
+      "zIndex": 0
+    },
+    "bottomBar": {
+      "position": "absolute",
+      "bottom": "8px",
+      "left": "0",
+      "right": "0",
+      "zIndex": 10,
+      "display": "flex",
+      "flexDirection": "row",
+      "alignItems": "center",
+      "height": "40px",
+      "gap": "8px",
+      "padding": "0 12px",
+      "visibleWhen": ["awake"],
+      "transformInherit": "disable",
+      "style": {
+        "background": "#00000020",
+        "borderRadius": "9999px"
+      },
+      "effects": [
+        {
+          "type": "glass",
+          "bezelType": "convex_squircle",
+          "bezelWidth": 24,
+          "glassThickness": 20,
+          "refractiveIndex": 1.8,
+          "blur": 1,
+          "scaleRatio": 1,
+          "specularOpacity": 0.5,
+          "specularSaturation": 5,
+          "magnifyingScale": 0.5,
+          "dropShadow": true
+        }
+      ],
+      "section": {
+        "elementOrder": ["left-controls", "seek-wrap", "right-controls"],
+        "definitions": {
+          "left-controls": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "width": "hug",
+            "height": "100%",
+            "gap": "8px",
+            "wrapperStyle": { "position": "relative", "zIndex": 1 },
+            "section": {
+              "elementOrder": ["btn-play", "btn-pause", "btn-mute"],
+              "definitions": {
+                "btn-play": {
+                  "preset": "video-controls-play-bar",
+                  "action": "assetTogglePlay",
+                  "showWhen": "assetPaused",
+                  "wrapperStyle": { "borderRadius": "0" }
+                },
+                "btn-pause": {
+                  "preset": "video-controls-pause-bar",
+                  "action": "assetTogglePlay",
+                  "showWhen": "assetPlaying",
+                  "wrapperStyle": { "borderRadius": "0" }
+                },
+                "btn-mute": {
+                  "preset": "video-controls-mute-bar",
+                  "action": "assetMute",
+                  "wrapperStyle": { "borderRadius": "0" }
+                }
+              }
+            }
+          },
+          "seek-wrap": {
+            "type": "elementGroup",
+            "flex": "1",
+            "height": "100%",
+            "display": "flex",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "justifyContent": "center",
+            "wrapperStyle": { "position": "relative", "zIndex": 1 },
+            "section": {
+              "elementOrder": ["seek"],
+              "definitions": {
+                "seek": {
+                  "preset": "video-controls-seek",
+                  "wrapperStyle": { "width": "100%", "height": "20px" },
+                  "width": "100%",
+                  "height": "20px",
+                  "style": {
+                    "trackColor": "rgba(255,255,255,0.38)",
+                    "fillColor": "#FFFFFF",
+                    "trackHeight": "3px",
+                    "thumbSize": "10px"
+                  }
+                }
+              }
+            }
+          },
+          "right-controls": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "width": "hug",
+            "height": "100%",
+            "gap": "8px",
+            "wrapperStyle": { "position": "relative", "zIndex": 1 },
+            "section": {
+              "elementOrder": ["time"],
+              "definitions": {
+                "time": {
+                  "type": "elementBody",
+                  "text": "0:00 / 0:00",
+                  "bindAudioTransportTime": true,
+                  "width": "hug",
+                  "variant": "fine",
+                  "color": "#FFFFFF"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "elementButton",
+  "variant": "ghost",
+  "label": "Play",
+  "copyType": "body",
+  "action": "assetPlay",
+  "wrapperStroke": "borderPrimary",
+  "wrapperStrokeWidth": 1,
+  "wrapperPadding": "0.5rem 1.25rem",
+  "wrapperBorderRadius": "6px",
+  "wrapperScaleHover": 1.03,
+  "wrapperScaleActive": 0.97
+}

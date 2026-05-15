@@ -1,0 +1,53 @@
+id: background.video
+kind: cluster
+package: "@pb/contracts"
+schema_ref: backgroundVideoSchema
+runtime_ref: "@pb/runtime-react/page-builder/backgrounds/BackgroundVideo"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A looping video background layer — a `<video>` element that fills its parent
+  section with an optional poster image and color overlay. Use for hero sections
+  with ambient motion, product showcases, or any section where a moving backdrop
+  sets tone without competing with foreground content.
+
+not_this_if:
+  - "the asset is a static image (use background.image)"
+  - "you need a color, gradient, or CSS-paintable background (use background.variable)"
+  - "you need the video to be interactive with play/pause controls (use element.video in a module)"
+
+axes:
+  - name: source
+    fields: [video, poster]
+  - name: overlay
+    fields: [overlay]
+
+covers:
+  - description: "Hero section ambient video loop with color-mix overlay tint"
+    example: content/presets/bg-hero-video.json
+
+does_not_cover:
+  - what: "Static background image"
+    use_instead: background.image
+  - what: "Color or gradient background"
+    use_instead: background.variable
+  - what: "Tiled repeating pattern"
+    use_instead: background.pattern
+  - what: "Interactive video player with controls"
+    use_instead: "element.video inside module"
+
+composes_with:
+  parents: [section.contentBlock, section.column, section.scrollContainer]
+  siblings_typical: []
+  motion: "N/A — video plays automatically; no motionTiming on bg blocks"
+
+known_limitations:
+  - "Video autoplay is browser-gated — muted autoplay works; unmuted requires user gesture"
+  - "poster is shown until the video loads; always set poster for above-the-fold placements"
+  - "overlay is a CSS color value — use oklch() or color-mix() for theme-relative tints"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field on background.video"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

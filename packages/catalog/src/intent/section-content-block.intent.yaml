@@ -1,0 +1,68 @@
+id: section.contentBlock
+kind: cluster
+package: "@pb/contracts"
+schema_ref: sectionContentBlockSchema
+runtime_ref: "@pb/runtime-react/page-builder/sections/SectionContentBlock"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A flex section that holds child elements — the standard full-width layout block
+  for hero areas, feature rows, card grids with reorder, and any other free-form
+  content composition. Controls flex axis, wrap, gap, and optionally enables
+  Framer Motion drag-reorder for interactive card lists.
+
+not_this_if:
+  - "you need a CSS grid with named column tracks (use section.column)"
+  - "you need a scrollable section with snap or scroll-progress (use section.scrollContainer)"
+  - "you need an invisible trigger section with no visual content (use section.trigger)"
+
+axes:
+  - name: layout
+    fields: [flexDirection, alignItems, justifyContent, flexWrap, gap, rowGap, columnGap]
+    responsive: true
+  - name: sizing
+    fields: [contentWidth, contentHeight, width, height, minHeight, maxWidth]
+    responsive: true
+  - name: reorder
+    fields: [reorderable, reorderAxis, reorderDragUnit, reorderDragBehavior]
+  - name: appearance
+    fields: [fill, effects, layers, border, borderRadius, overflow]
+    responsive: true
+  - name: motion
+    fields: [motionTiming, scrollSpeed, initialY, sticky, stickyOffset]
+  - name: triggers
+    fields: [onVisible, onInvisible, onProgress, threshold, triggerOnce, rootMargin]
+  - name: children
+    fields: [elements]
+
+covers:
+  - description: "Full-width hero with column flex layout"
+    example: content/presets/hero-content-block.json
+  - description: "Reorderable card list with drag-y"
+    example: content/presets/reorderable-card-list.json
+
+does_not_cover:
+  - what: "CSS grid with multiple named column tracks"
+    use_instead: section.column
+  - what: "Horizontal or vertical scrollable list with snap"
+    use_instead: section.scrollContainer
+  - what: "Invisible section that fires visibility triggers"
+    use_instead: section.trigger
+  - what: "Form with submit and field validation"
+    use_instead: section.formBlock
+
+composes_with:
+  parents: [module.*, page]
+  siblings_typical: [section.column, section.divider]
+  motion: "motionTiming on the section wrapper; children carry their own motionTiming"
+
+known_limitations:
+  - "Reorder requires reorderable: true; children must be elementGroup elements (not nested sections)"
+  - "contentWidth/contentHeight control the inner content container, not the outer section wrapper"
+  - "flexWrap is ignored when reorderable is true — reorder only works on single-axis lists"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field on section.contentBlock"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

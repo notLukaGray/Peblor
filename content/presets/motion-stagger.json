@@ -1,0 +1,28 @@
+{
+  "type": "contentBlock",
+  "id": "motion_stagger_example",
+  "transition": { "staggerChildren": true, "staggerDelay": 0.1, "duration": 0.4 },
+  "elements": [
+    {
+      "type": "elementHeading",
+      "id": "stagger_child_1",
+      "level": 3,
+      "text": "First",
+      "motionTiming": { "entrancePreset": "fade" }
+    },
+    {
+      "type": "elementHeading",
+      "id": "stagger_child_2",
+      "level": 3,
+      "text": "Second",
+      "motionTiming": { "entrancePreset": "fade" }
+    },
+    {
+      "type": "elementHeading",
+      "id": "stagger_child_3",
+      "level": 3,
+      "text": "Third",
+      "motionTiming": { "entrancePreset": "fade" }
+    }
+  ]
+}

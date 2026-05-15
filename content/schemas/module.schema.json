@@ -1,0 +1,489 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "module.schema.json",
+  "$defs": {
+    "Def1": {
+      "$ref": "#/$defs/Def1"
+    },
+    "Def2": {
+      "$ref": "#/$defs/Def2"
+    },
+    "Def3": {
+      "$ref": "#/$defs/Def3"
+    },
+    "Def4": {
+      "$ref": "#/$defs/Def4"
+    },
+    "Def5": {
+      "$ref": "#/$defs/Def5"
+    },
+    "Def6": {
+      "$ref": "#/$defs/Def6"
+    },
+    "Def7": {
+      "$ref": "#/$defs/Def7"
+    },
+    "Def8": {
+      "$ref": "#/$defs/Def8"
+    },
+    "Def9": {
+      "$ref": "#/$defs/Def9"
+    },
+    "Def10": {
+      "$ref": "#/$defs/Def10"
+    },
+    "Def11": {
+      "$ref": "#/$defs/Def11"
+    },
+    "Def12": {
+      "$ref": "#/$defs/Def12"
+    },
+    "Def13": {
+      "$ref": "#/$defs/Def13"
+    },
+    "Def14": {
+      "$ref": "#/$defs/Def14"
+    },
+    "Def15": {
+      "$ref": "#/$defs/Def15"
+    },
+    "Def16": {
+      "$ref": "#/$defs/Def16"
+    },
+    "Def17": {
+      "$ref": "#/$defs/Def17"
+    },
+    "Def18": {
+      "$ref": "#/$defs/Def18"
+    },
+    "Def19": {
+      "$ref": "#/$defs/Def19"
+    },
+    "Def20": {
+      "$ref": "#/$defs/Def20"
+    },
+    "Def21": {
+      "$ref": "#/$defs/Def21"
+    },
+    "Def22": {
+      "$ref": "#/$defs/Def22"
+    },
+    "Def23": {
+      "$ref": "#/$defs/Def23"
+    },
+    "Def24": {
+      "$ref": "#/$defs/Def24"
+    },
+    "Def25": {
+      "$ref": "#/$defs/Def25"
+    },
+    "Def26": {
+      "$ref": "#/$defs/Def26"
+    },
+    "Def27": {
+      "$ref": "#/$defs/Def27"
+    },
+    "Def28": {
+      "$ref": "#/$defs/Def28"
+    },
+    "Def29": {
+      "$ref": "#/$defs/Def29"
+    },
+    "Def30": {
+      "$ref": "#/$defs/Def30"
+    },
+    "Def31": {
+      "$ref": "#/$defs/Def31"
+    },
+    "Def32": {
+      "$ref": "#/$defs/Def32"
+    },
+    "Def33": {
+      "$ref": "#/$defs/Def33"
+    },
+    "Def34": {
+      "$ref": "#/$defs/Def34"
+    },
+    "Def35": {
+      "$ref": "#/$defs/Def35"
+    },
+    "Def36": {
+      "$ref": "#/$defs/Def36"
+    },
+    "Def37": {
+      "$ref": "#/$defs/Def37"
+    },
+    "Def38": {
+      "$ref": "#/$defs/Def38"
+    },
+    "Def39": {
+      "$ref": "#/$defs/Def39"
+    },
+    "Def40": {
+      "$ref": "#/$defs/Def40"
+    },
+    "Def41": {
+      "$ref": "#/$defs/Def41"
+    },
+    "Def42": {
+      "$ref": "#/$defs/Def42"
+    },
+    "Def43": {
+      "$ref": "#/$defs/Def43"
+    },
+    "Def44": {
+      "$ref": "#/$defs/Def44"
+    },
+    "Def45": {
+      "$ref": "#/$defs/Def45"
+    },
+    "Def46": {
+      "$ref": "#/$defs/Def46"
+    },
+    "Def47": {
+      "$ref": "#/$defs/Def47"
+    },
+    "Def48": {
+      "$ref": "#/$defs/Def48"
+    },
+    "Def49": {
+      "$ref": "#/$defs/Def49"
+    },
+    "Def50": {
+      "$ref": "#/$defs/Def50"
+    },
+    "Def51": {
+      "$ref": "#/$defs/Def51"
+    },
+    "Def52": {
+      "$ref": "#/$defs/Def52"
+    },
+    "Def53": {
+      "$ref": "#/$defs/Def53"
+    },
+    "Def54": {
+      "$ref": "#/$defs/Def54"
+    },
+    "Def55": {
+      "$ref": "#/$defs/Def55"
+    }
+  },
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "module"
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "figma": {
+          "type": "object",
+          "properties": {
+            "sourceType": {
+              "type": "string"
+            },
+            "sourceName": {
+              "type": "string"
+            },
+            "fallbackReason": {
+              "type": "string"
+            },
+            "originalLayers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "fill": {
+                    "$ref": "#/$defs/Def1"
+                  },
+                  "blendMode": {
+                    "type": "string"
+                  },
+                  "opacity": {
+                    "type": "number"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": {}
+        }
+      },
+      "additionalProperties": {}
+    },
+    "contextType": {
+      "type": "string",
+      "enum": ["video", "image", "model3d", "audio"]
+    },
+    "contentSlot": {
+      "type": "string"
+    },
+    "slots": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "position": {
+            "type": "string"
+          },
+          "inset": {
+            "type": "string"
+          },
+          "top": {
+            "type": "string"
+          },
+          "left": {
+            "type": "string"
+          },
+          "right": {
+            "type": "string"
+          },
+          "bottom": {
+            "type": "string"
+          },
+          "zIndex": {
+            "type": "number"
+          },
+          "display": {
+            "type": "string"
+          },
+          "flexDirection": {
+            "type": "string"
+          },
+          "alignItems": {
+            "type": "string"
+          },
+          "justifyContent": {
+            "type": "string"
+          },
+          "gap": {
+            "type": "string"
+          },
+          "flexWrap": {
+            "type": "string",
+            "enum": ["nowrap", "wrap", "wrap-reverse"]
+          },
+          "rowGap": {
+            "$ref": "#/$defs/Def4"
+          },
+          "columnGap": {
+            "$ref": "#/$defs/Def4"
+          },
+          "padding": {
+            "type": "string"
+          },
+          "section": {
+            "type": "object",
+            "properties": {
+              "elementOrder": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "mobile": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "desktop": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "required": ["mobile", "desktop"],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "definitions": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["type"],
+                  "additionalProperties": {}
+                }
+              }
+            },
+            "additionalProperties": {}
+          },
+          "action": {
+            "type": "string"
+          },
+          "visibleWhen": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "always"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "transition": {
+            "type": "object",
+            "properties": {
+              "durationMs": {
+                "$ref": "#/$defs/Def5"
+              },
+              "easing": {
+                "default": "easeOut",
+                "type": "string"
+              }
+            },
+            "required": ["durationMs", "easing"],
+            "additionalProperties": false
+          },
+          "expandDurationMs": {
+            "$ref": "#/$defs/Def5"
+          },
+          "elementRevealMs": {
+            "$ref": "#/$defs/Def5"
+          },
+          "elementRevealStaggerMs": {
+            "default": 50,
+            "type": "number",
+            "minimum": 0
+          },
+          "motion": {
+            "$ref": "#/$defs/Def6"
+          },
+          "visibilityPreset": {
+            "type": "string"
+          },
+          "revealPreset": {
+            "type": "string"
+          },
+          "slotWrapperGestures": {
+            "type": "boolean"
+          },
+          "wrapperMotion": {
+            "type": "object",
+            "properties": {
+              "whileHover": {
+                "$ref": "#/$defs/Def10"
+              },
+              "whileTap": {
+                "$ref": "#/$defs/Def10"
+              },
+              "whileFocus": {
+                "$ref": "#/$defs/Def10"
+              }
+            },
+            "additionalProperties": {}
+          },
+          "transformInherit": {
+            "type": "string",
+            "enum": ["inherit", "disable", "follow"]
+          },
+          "effects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/Def35"
+            }
+          },
+          "style": {
+            "$ref": "#/$defs/Def54"
+          }
+        },
+        "required": ["expandDurationMs", "elementRevealMs", "elementRevealStaggerMs"],
+        "additionalProperties": {}
+      }
+    },
+    "definitionsRef": {
+      "type": "string"
+    },
+    "container": {
+      "type": "object",
+      "properties": {
+        "padding": {
+          "type": "string"
+        },
+        "borderRadius": {
+          "type": "string"
+        },
+        "aspectRatio": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "behavior": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "string"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      }
+    },
+    "keyBindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "number"
+          }
+        },
+        "required": ["key", "action"],
+        "additionalProperties": false
+      }
+    },
+    "overlayMotion": {
+      "$ref": "#/$defs/Def6"
+    },
+    "effects": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Def35"
+      }
+    },
+    "style": {
+      "$ref": "#/$defs/Def54"
+    }
+  },
+  "required": ["type", "contentSlot", "slots"],
+  "additionalProperties": {}
+}

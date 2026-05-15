@@ -1,0 +1,44 @@
+{
+  "title": "Project Alpha",
+  "slug": "project-brand",
+  "description": "Placeholder fixture A.",
+  "ogImage": "https://media.example.com/website/work/project-brand/og.webp",
+  "assetBaseUrl": "/work",
+  "sectionOrder": ["brand_a", "brand_b", "brand_c", "brand_d", "brand_e"],
+  "bgKey": "bg-brand",
+  "definitions": {
+    "bg-brand": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "#080808"
+        },
+        {
+          "fill": "linear-gradient(135deg, #1a1a2e 0%, transparent 50%)",
+          "blendMode": "screen"
+        }
+      ]
+    },
+    "bg-brand-accent": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "#080808"
+        },
+        {
+          "fill": "radial-gradient(ellipse 100% 80% at 50% 50%, #2a1a00 0%, transparent 70%)",
+          "blendMode": "screen"
+        }
+      ]
+    }
+  },
+  "transitions": [
+    {
+      "type": "SCROLL",
+      "source": "trigger",
+      "id": "brand-accent-reveal",
+      "from": "bg-brand",
+      "to": "bg-brand-accent"
+    }
+  ]
+}

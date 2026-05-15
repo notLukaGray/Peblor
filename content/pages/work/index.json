@@ -1,0 +1,15 @@
+{
+  "title": "Work",
+  "sectionOrder": ["hero"],
+  "definitions": {
+    "hero": {
+      "type": "contentBlock",
+      "elements": [
+        {
+          "type": "elementHeading",
+          "text": "Work"
+        }
+      ]
+    }
+  }
+}

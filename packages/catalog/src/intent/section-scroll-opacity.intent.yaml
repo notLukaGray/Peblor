@@ -1,0 +1,53 @@
+id: section.scrollOpacity
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: baseSectionPropsSchema
+
+feels_like: >
+  Maps the section's vertical scroll position through the viewport to its opacity.
+  Define an input range (scroll progress 0→1) and an output range (opacity values),
+  and the section's opacity interpolates smoothly between them. Use for fade-in
+  hero reveals, fade-out footers, or any section whose visibility should track
+  scroll position. Works on any section type.
+
+not_this_if:
+  - "you need scroll-progress-driven action triggers (use section.scrollContainer)"
+  - "you need entrance/exit animations (use motionTiming.entrancePreset / exitPreset)"
+  - "you need a fixed or sticky section that tracks scroll (use section.sticky / section.fixed)"
+
+axes:
+  - name: opacity
+    fields: [scrollOpacityRange]
+    note: "input: [start, end] scroll range; output: [start, end] opacity range"
+
+does_not_cover:
+  - what: "Scroll-progress-driven action triggers with variable binding"
+    use_instead: section.scrollContainer
+  - what: "Entrance animation on viewport entry"
+    use_instead: "motionTiming.entrancePreset"
+  - what: "Sticky or fixed positioning"
+    use_instead: section.sticky
+  - what: "Parallax scroll speed"
+    use_instead: section.parallax
+
+covers:
+  - description: "Hero section that fades from 0 to 1 opacity as it scrolls from 10% to 50% of viewport"
+    example: content/presets/section-scroll-opacity.json
+
+composes_with:
+  parents: [page]
+  siblings_typical: [section.contentBlock, section.parallax]
+  motion: "N/A — pure CSS opacity driven by framer-motion useScroll + useTransform"
+
+known_limitations:
+  - "scrollOpacityRange.input is in viewport progress units (0 = element just entering, 1 = element fully exited)"
+  - "output values are raw CSS opacity (0 to 1)"
+  - "Works on any section — not limited to scroll containers"
+
+proposal_hints:
+  new_variant_value: "N/A — section capability, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

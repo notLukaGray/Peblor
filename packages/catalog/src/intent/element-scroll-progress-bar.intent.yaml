@@ -1,0 +1,50 @@
+id: element.scrollProgressBar
+kind: cluster
+package: "@pb/contracts"
+schema_ref: elementScrollProgressBarSchema
+runtime_ref: "@pb/runtime-react/page-builder/elements/ElementScrollProgressBar"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A thin bar that fills left-to-right (or top-to-bottom) tracking the scroll
+  progress of its parent section (0→1). Wires to SectionScrollTargetContext.
+  Use for reading-progress indicators or scroll-driven reveal cues.
+
+not_this_if:
+  - "you need a video seek bar (use element.range with action 'seek')"
+  - "you need a generic loading/progress indicator (use element.range)"
+  - "there is no scroll-container ancestor (the bar will always read 0)"
+
+axes:
+  - name: appearance
+    fields: [height, fill, trackBackground]
+  - name: scroll-config
+    fields: [offset]
+    note: 'offset is [start, end] in useScroll syntax e.g. ["start end", "end start"]'
+
+covers:
+  - description: "Reading progress bar with accent fill and offset scroll configuration"
+    example: content/presets/reading-progress-bar.json
+
+does_not_cover:
+  - what: "Video seek / scrub slider"
+    use_instead: element.range
+  - what: "Arbitrary progress indicator not driven by scroll"
+    use_instead: element.range
+  - what: "Horizontal scroll gallery with active item tracking"
+    use_instead: element.infiniteScroll
+
+composes_with:
+  parents: [section.scrollContainer, section.column]
+  siblings_typical: [element.body, element.heading]
+  motion: "N/A — bar is driven by scroll position, not motionTiming"
+
+known_limitations:
+  - "Requires a SectionScrollTargetContext ancestor — renders a static empty bar otherwise"
+  - "Default height and colors come from motion-defaults progressBar config when not set"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

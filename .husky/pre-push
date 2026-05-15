@@ -1,0 +1,3 @@
+echo "Running pre-push checks..."
+npm run check
+

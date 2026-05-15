@@ -1,0 +1,53 @@
+id: section.fixed
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: baseSectionPropsSchema
+
+feels_like: >
+  Positions a section fixed relative to the viewport, removing it from the
+  normal document flow. Configure the fixed edge (top, bottom, left, right)
+  and offset from that edge. Use for floating action buttons, persistent
+  sidebars, cookie banners, or any UI that stays in place regardless of
+  scroll. Works on any section type.
+
+not_this_if:
+  - "you need position sticky that scrolls then sticks (use section.sticky)"
+  - "you need a modal overlay (use modal)"
+  - "you need a sidebar that reveals on trigger (use section.reveal with fixed)"
+
+axes:
+  - name: position
+    fields: [fixed, fixedPosition, fixedOffset]
+    note: "fixedPosition: top | bottom | left | right; fixedOffset is responsive"
+
+does_not_cover:
+  - what: "Scroll-then-stick behavior"
+    use_instead: section.sticky
+  - what: "Full-screen modal overlay"
+    use_instead: modal
+  - what: "Expandable sidebar panel"
+    use_instead: section.reveal
+  - what: "Positioned tooltip anchored to element"
+    use_instead: "external — no anchored tooltip cluster yet; use section.reveal with fixed"
+
+covers:
+  - description: "Fixed bottom banner with a 16px offset from the bottom edge"
+    example: content/presets/section-fixed.json
+
+composes_with:
+  parents: [page]
+  siblings_typical: [section.contentBlock, section.sticky]
+  motion: "N/A — pure CSS position: fixed; motionTiming can animate entrance/exit"
+
+known_limitations:
+  - "Fixed sections are removed from document flow — surrounding sections don't account for their space"
+  - "fixedOffset accepts responsive values for breakpoint-aware positioning"
+  - "Combining fixed with zIndex lets you layer fixed sections above/below scroll content"
+
+proposal_hints:
+  new_variant_value: "N/A — positioning capability, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

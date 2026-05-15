@@ -1,0 +1,12 @@
+{
+  "type": "elementHeading",
+  "id": "motion_exit_trigger_example",
+  "level": 2,
+  "text": "Fades out when leaving viewport",
+  "motionTiming": {
+    "trigger": "onFirstVisible",
+    "entrancePreset": "fade",
+    "exitTrigger": "leaveViewport",
+    "exitPreset": "fade"
+  }
+}

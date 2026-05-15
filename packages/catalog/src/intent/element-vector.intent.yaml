@@ -1,0 +1,59 @@
+id: element.vector
+kind: cluster
+package: "@pb/contracts"
+schema_ref: elementVectorSchema
+runtime_ref: "@pb/runtime-react/page-builder/elements/ElementVector"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  An inline SVG composed of named shape paths with a theme-mapped color palette.
+  Used for icons, logos, decorative glyphs — anything where individual paths need
+  theme-token fills, hover-state transitions, or precise bounding-box sizing.
+
+not_this_if:
+  - "the SVG is a raw markup string and you don't need theme tokens (use element.svg)"
+  - "the asset is a raster image (use element.image)"
+  - "the asset is a Rive or Lottie animation (use element.rive)"
+  - "you need an animated SVG with complex SMIL/JS behavior (use element.svg)"
+
+axes:
+  - name: geometry
+    fields: [viewBox, preserveAspectRatio, shapes, gradients]
+  - name: color
+    fields: [colors, strokeGroup]
+  - name: framing
+    fields: [rotate, flipHorizontal, flipVertical]
+  - name: interactivity
+    fields: [link]
+  - name: accessibility
+    fields: [ariaLabel]
+
+covers:
+  - description: "Play-icon glyph with hover fill transition"
+    example: content/presets/video-controls.json
+  - description: "Shield logo mark with theme-mapped path fills and checkmark accent"
+    example: content/presets/logo-vector.json
+
+does_not_cover:
+  - what: "Raw SVG markup string without theme tokens"
+    use_instead: element.svg
+  - what: "Raster product image or photo"
+    use_instead: element.image
+  - what: "Rive interactive animation"
+    use_instead: element.rive
+
+composes_with:
+  parents: [section.column, section.contentBlock, module.*]
+  siblings_typical: [element.heading, element.button]
+  motion: "external — motionTiming applied by parent wrapper"
+
+known_limitations:
+  - "colors record maps token names to CSS values; keys must match fill references in shapes"
+  - "No built-in animation — use motionTiming (parent) or element.rive for animated vectors"
+  - "link.hoverFill references a key in the colors record, not a direct CSS value"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field on element.vector"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

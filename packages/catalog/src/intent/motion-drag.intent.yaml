@@ -1,0 +1,66 @@
+id: motion.drag
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: motionPropsSchema
+
+feels_like: >
+  Makes an element or section draggable with Framer Motion pointer tracking.
+  Supports axis locking, constraint boundaries, elasticity, momentum, and
+  snap-to-origin. Use for sliders, draggable cards, panning galleries, or
+  any direct-manipulation interaction. Works on any element or section via
+  motionPropsSchema.
+
+not_this_if:
+  - "you need a reorderable drag-drop list (use section.reorder)"
+  - "you need a snapping scroll carousel (use element.infiniteScroll)"
+  - "you need a range slider with action dispatch (use element.range)"
+
+axes:
+  - name: drag-config
+    fields:
+      [
+        drag,
+        dragConstraints,
+        dragElastic,
+        dragMomentum,
+        dragSnapToOrigin,
+        dragDirectionLock,
+        dragPropagation,
+      ]
+  - name: drag-transition
+    fields: [dragTransition]
+  - name: gesture
+    fields: [whileDrag]
+    note: "keyframes applied during drag"
+
+does_not_cover:
+  - what: "Reorderable list with drag-drop reordering"
+    use_instead: section.reorder
+  - what: "Snapping scroll carousel"
+    use_instead: element.infiniteScroll
+  - what: "Range slider with action dispatch"
+    use_instead: element.range
+  - what: "Tap/press gesture"
+    use_instead: motion.whileTap
+
+covers:
+  - description: "Draggable card with x-axis lock, parent constraints, and elastic snap"
+    example: content/presets/motion-drag.json
+
+composes_with:
+  parents: [section.*, element.*]
+  siblings_typical: [motion.whileHover, motion.whileDrag]
+  motion: "drag and drag sub-properties on motionProps; whileDrag for gesture keyframes"
+
+known_limitations:
+  - "drag: true enables both axes — use 'x' or 'y' to lock"
+  - "dragConstraints: 'parent' is the most common; custom boundaries are in px from element origin"
+  - "dragTransition controls the physics release animation — type: inertia plus power/timeConstant for momentum"
+
+proposal_hints:
+  new_variant_value: "N/A — motion interaction, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

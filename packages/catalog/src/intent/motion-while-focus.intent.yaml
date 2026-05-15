@@ -1,0 +1,52 @@
+id: motion.whileFocus
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: motionPropsSchema
+
+feels_like: >
+  Applies Framer Motion keyframe overrides while an element or section has
+  keyboard focus. Use for focus-ring scale, outline glow, or any visual
+  feedback that indicates the currently focused element. Works on any element
+  or section via motionPropsSchema.
+
+not_this_if:
+  - "you need a keyboard shortcut trigger (use trigger.keyboard)"
+  - "you need hover feedback (use motion.whileHover)"
+  - "you need click/tap action (use trigger.onClick)"
+
+axes:
+  - name: keyframes
+    fields: [whileFocus]
+    note: "z.union([motionKeyframesSchema, string]) — any known FM property"
+
+does_not_cover:
+  - what: "Keyboard shortcut trigger"
+    use_instead: trigger.keyboard
+  - what: "Hover visual feedback"
+    use_instead: motion.whileHover
+  - what: "Tap/press gesture"
+    use_instead: motion.whileTap
+  - what: "Focus-trap or focus management"
+    use_instead: "external — handle via modal or form focus management"
+
+covers:
+  - description: "Input that scales to 1.02 with a glow effect when focused"
+    example: content/presets/motion-while-focus.json
+
+composes_with:
+  parents: [section.*, element.*]
+  siblings_typical: [motion.whileHover, motion.whileTap]
+  motion: "whileFocus on motionProps — merged from motion defaults"
+
+known_limitations:
+  - "Focus gesture only applies to focusable elements (inputs, buttons, links, tabindex)"
+  - "whileFocus keyframes are stripped of layout-owned keys"
+  - "Not commonly used standalone — usually paired with whileHover for complete interaction states"
+
+proposal_hints:
+  new_variant_value: "N/A — motion gesture, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

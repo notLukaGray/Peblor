@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Page Builder Export</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+      font-size: 13px;
+      color: #333;
+      padding: 16px;
+      background: #fff;
+    }
+    h2 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    #subtitle {
+      font-size: 11px;
+      color: #999;
+      margin-bottom: 14px;
+    }
+    #export-btn {
+      background: #18a0fb;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      width: 100%;
+    }
+    #export-btn:hover { background: #0d8de0; }
+    #export-btn:disabled { background: #aaa; cursor: not-allowed; }
+    #export-options {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .option-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #555;
+      cursor: pointer;
+    }
+    .option-row input {
+      width: 12px;
+      height: 12px;
+    }
+    .option-hint {
+      font-size: 10px;
+      color: #999;
+      margin-left: 18px;
+    }
+    #status {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #555;
+      min-height: 20px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    #status.error { color: #c0392b; }
+    #status.success { color: #27ae60; }
+    #action-row {
+      display: none;
+      flex-direction: row;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    #copy-json-btn {
+      flex: 1;
+      background: #18a0fb;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    #copy-json-btn:hover { background: #0d8de0; }
+    #copy-json-btn:disabled { background: #aaa; cursor: not-allowed; }
+    #copy-json-btn.copied {
+      background: #27ae60;
+    }
+    #copy-merged-page-btn {
+      flex: 1;
+      background: #0d8050;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    #copy-merged-page-btn:hover { background: #0a6b42; }
+    #copy-merged-page-btn:disabled { background: #aaa; cursor: not-allowed; }
+    #copy-merged-page-btn.copied {
+      background: #27ae60;
+    }
+    #copy-errors-btn {
+      flex: 0 0 auto;
+      background: #6f5a1f;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    #copy-errors-btn:hover { background: #5e4c1a; }
+    #copy-errors-btn:disabled { background: #aaa; cursor: not-allowed; }
+    #copy-errors-btn.copied {
+      background: #27ae60;
+    }
+    #download-btn {
+      flex: 0 0 auto;
+      background: transparent;
+      color: #555;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    #download-btn:hover { border-color: #18a0fb; color: #18a0fb; background: transparent; }
+    #summary {
+      display: none;
+      margin-top: 6px;
+      font-size: 11px;
+      color: #777;
+    }
+    #warnings {
+      margin-top: 8px;
+      font-size: 11px;
+      color: #555;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    #warnings details summary {
+      cursor: pointer;
+      user-select: none;
+    }
+    .comments-group {
+      margin-top: 6px;
+    }
+    .comments-group-title {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin: 4px 0 2px;
+    }
+    .warnings-list {
+      margin-top: 4px;
+      padding-left: 0;
+      list-style: none;
+    }
+    .warnings-list li {
+      margin-top: 2px;
+    }
+    .comment-item {
+      display: flex;
+      gap: 6px;
+      align-items: flex-start;
+      list-style: none;
+      margin-left: 0;
+    }
+    .comment-tag {
+      border-radius: 3px;
+      padding: 1px 4px;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      flex: 0 0 auto;
+    }
+    .comment-message { flex: 1; }
+    .comment-item--error { color: #c0392b; }
+    .comment-item--warn { color: #e67e22; }
+    .comment-item--info { color: #27ae60; }
+    .comment-tag--error { background: #fdecea; color: #c0392b; }
+    .comment-tag--warn { background: #fff4e5; color: #e67e22; }
+    .comment-tag--info { background: #eaf8f0; color: #27ae60; }
+
+    /* Preview panel */
+    #preview-panel {
+      display: none;
+      margin-top: 12px;
+      border: 1px solid #eee;
+      border-radius: 6px;
+      padding: 8px 10px;
+      background: #fafafa;
+    }
+    .pre-export-summary {
+      font-size: 11px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      min-height: 16px;
+    }
+    .pre-export-summary--error { color: #c0392b; }
+    .pre-export-summary--warn  { color: #e67e22; }
+    .pre-export-summary--ok    { color: #27ae60; }
+    .preview-heading {
+      font-size: 11px;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 6px;
+    }
+    .preview-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .preview-item {
+      font-size: 11px;
+      line-height: 1.4;
+      border: 1px solid #e8e8e8;
+      border-radius: 4px;
+      padding: 5px 7px;
+      background: #fff;
+    }
+    .preview-item-top {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .preview-name {
+      color: #333;
+      font-weight: 500;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .preview-key {
+      color: #999;
+      font-size: 10px;
+      margin-top: 2px;
+    }
+    .issue-badge {
+      font-size: 10px;
+      flex-shrink: 0;
+    }
+    .structure-hint-btn {
+      border: 1px solid #c8d8e8;
+      background: #f3f8fd;
+      color: #245b86;
+      border-radius: 999px;
+      padding: 1px 7px;
+      font-size: 9px;
+      line-height: 1.5;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .structure-hint-btn:hover {
+      background: #eaf3fb;
+      border-color: #b7d0e3;
+    }
+    .copy-section-btn {
+      border: 1px solid #9ec8b2;
+      background: #eff8f3;
+      color: #1f6a47;
+      border-radius: 999px;
+      padding: 1px 7px;
+      font-size: 9px;
+      line-height: 1.5;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .copy-section-btn:hover {
+      background: #e4f3ea;
+      border-color: #89b89f;
+    }
+    .target-override-select {
+      font-size: 10px;
+      padding: 1px 3px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      background: #fff;
+      color: #333;
+      flex-shrink: 0;
+      max-width: 130px;
+    }
+
+    /* Per-frame issues list */
+    .frame-issues {
+      margin-top: 4px;
+      font-size: 10px;
+    }
+    .frame-issues-summary {
+      cursor: pointer;
+      color: #888;
+      user-select: none;
+    }
+    .frame-issues-list {
+      list-style: none;
+      margin-top: 3px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .frame-issue {
+      padding: 1px 4px;
+      border-radius: 2px;
+      font-size: 10px;
+    }
+    .frame-issue--error { color: #c0392b; background: #fdf0ee; }
+    .frame-issue--warn  { color: #d35400; background: #fef9f0; }
+    .frame-issue--info  { color: #555; background: #f5f5f5; }
+
+    /* Advanced options per frame */
+    .frame-adv-options {
+      margin-top: 4px;
+      font-size: 10px;
+    }
+    .frame-adv-summary {
+      cursor: pointer;
+      color: #aaa;
+      user-select: none;
+    }
+    .frame-adv-body {
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .adv-option {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #555;
+      cursor: pointer;
+    }
+    .adv-option--select {
+      gap: 5px;
+    }
+    .adv-select {
+      font-size: 10px;
+      padding: 1px 3px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      background: #fff;
+    }
+
+    /* Export error summary (post-export) */
+    .export-error-summary {
+      padding: 5px 8px;
+      background: #fdf0ee;
+      border: 1px solid #e8c5be;
+      border-radius: 4px;
+      color: #c0392b;
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+
+    /* Type badges */
+    .badge {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 1px 5px;
+      border-radius: 3px;
+      flex-shrink: 0;
+      color: #fff;
+    }
+    .badge-blue       { background: #2980b9; }
+    .badge-purple     { background: #8e44ad; }
+    .badge-orange     { background: #d35400; }
+    .badge-teal       { background: #16a085; }
+    .badge-green      { background: #27ae60; }
+    .badge-olive      { background: #7f8c00; }
+    .badge-gray       { background: #7f8c8d; }
+    .badge-yellow     { background: #f39c12; }
+    .badge-red        { background: #c0392b; }
+    .responsive-badge { margin-left: 2px; }
+
+    /* Per-frame CDN prefix input */
+    .cdn-prefix-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 4px;
+    }
+    .cdn-prefix-row label {
+      font-size: 10px;
+      color: #888;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .cdn-prefix-input {
+      font-size: 10px;
+      padding: 1px 4px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      color: #333;
+      background: #fff;
+      flex: 1;
+      min-width: 0;
+    }
+    .cdn-prefix-input:focus {
+      outline: none;
+      border-color: #18a0fb;
+    }
+
+    #naming-legend {
+      margin-top: 14px;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+    }
+    #naming-legend details summary {
+      font-size: 11px;
+      color: #aaa;
+      cursor: pointer;
+      user-select: none;
+      list-style: none;
+    }
+    #naming-legend details summary::before {
+      content: "? ";
+      font-weight: 700;
+    }
+    #naming-legend details[open] summary::before {
+      content: "? ";
+    }
+    .legend-table {
+      margin-top: 6px;
+      font-size: 10px;
+      color: #777;
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .legend-table td {
+      padding: 2px 4px;
+      vertical-align: top;
+    }
+    .legend-table td:first-child {
+      font-weight: 600;
+      color: #555;
+      white-space: nowrap;
+      padding-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h2>Page Builder Export</h2>
+    <div id="subtitle">Export selected frames as JSON</div>
+    <button id="export-btn">Export Selection</button>
+    <div id="export-options">
+      <label class="option-row" for="auto-presets-toggle">
+        <input type="checkbox" id="auto-presets-toggle" />
+        Auto-promote repeated structures
+      </label>
+      <div class="option-hint">Creates presets automatically and hides structure warnings.</div>
+    </div>
+    <div id="status"></div>
+
+    <!-- Preview panel: shown after main thread detects targets, before conversion -->
+    <div id="preview-panel"></div>
+
+    <div id="action-row">
+      <button id="copy-json-btn" type="button">Copy JSON</button>
+      <button id="copy-merged-page-btn" type="button">Copy page JSON</button>
+      <button id="copy-errors-btn" type="button">Copy errors</button>
+      <button id="download-btn" type="button">Export ZIP</button>
+    </div>
+    <div id="summary"></div>
+    <div id="warnings"></div>
+
+    <!-- Naming convention legend -->
+    <div id="naming-legend">
+      <details>
+        <summary>Naming convention</summary>
+        <table class="legend-table">
+          <tbody>
+            <tr><td>Page/*</td><td>pages/{key}.json</td></tr>
+            <tr><td>Section/*</td><td>presets/{key}.json</td></tr>
+            <tr><td>Section[Desktop]/*</td><td>presets/{key}.json (responsive — pair with mobile)</td></tr>
+            <tr><td>Section[Mobile]/*</td><td>merged into Section[Desktop] pair</td></tr>
+            <tr><td>Modal/*</td><td>modals/{key}.json</td></tr>
+            <tr><td>Module/*</td><td>modules/{key}.json</td></tr>
+            <tr><td>Button/*</td><td>globals.json → buttons.{key}</td></tr>
+            <tr><td>Background/*</td><td>globals.json → backgrounds.{key}</td></tr>
+            <tr><td>Global/*</td><td>globals.json → elements.{key}</td></tr>
+            <tr><td>(no prefix)</td><td>pages/{key}.json</td></tr>
+          </tbody>
+        </table>
+      </details>
+    </div>
+  </div>
+  <script>/*__UI_SCRIPT__*/</script>
+</body>
+</html>

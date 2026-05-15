@@ -1,0 +1,11 @@
+{
+  "type": "elementInfiniteScroll",
+  "scrollDirection": "vertical",
+  "snapAlign": "start",
+  "selectedIndexVariable": "galleryIndex",
+  "gap": "0.5rem",
+  "section": {
+    "elementOrder": [],
+    "definitions": {}
+  }
+}

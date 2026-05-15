@@ -1,0 +1,23 @@
+{
+  "type": "contentBlock",
+  "id": "unlock_modal_footer",
+  "ariaLabel": "Unlock footer",
+  "width": "100%",
+  "height": "hug",
+  "align": "center",
+  "fill": "transparent",
+  "gap": "1rem",
+  "elementOrder": ["unlock_modal_lock_link"],
+  "definitions": {
+    "unlock_modal_lock_link": {
+      "type": "elementLink",
+      "copyType": "body",
+      "level": 4,
+      "label": "Lock again (clears access on this device)",
+      "href": "/api/unlock?lock=1",
+      "align": "center",
+      "width": "hug",
+      "marginTop": "1rem"
+    }
+  }
+}

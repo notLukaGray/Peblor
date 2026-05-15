@@ -1,0 +1,39 @@
+{
+  "id": "contact-form-modal",
+  "title": "Get in Touch",
+  "sectionOrder": ["form"],
+  "definitions": {
+    "form": {
+      "type": "contentBlock",
+      "elementOrder": ["name", "email", "message", "submit"],
+      "elements": {
+        "name": {
+          "type": "formField",
+          "fieldType": "text",
+          "name": "name",
+          "label": "Name",
+          "required": true,
+          "width": "100%"
+        },
+        "email": {
+          "type": "formField",
+          "fieldType": "email",
+          "name": "email",
+          "label": "Email",
+          "required": true,
+          "width": "100%"
+        },
+        "message": {
+          "type": "formField",
+          "fieldType": "paragraph",
+          "name": "message",
+          "label": "Message",
+          "width": "100%"
+        },
+        "submit": { "type": "formField", "fieldType": "submit", "label": "Send", "width": "auto" }
+      }
+    }
+  },
+  "transition": { "duration": 0.3, "easing": "easeOut" },
+  "motion": { "enter": {}, "exit": {} }
+}

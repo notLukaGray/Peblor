@@ -1,0 +1,49 @@
+id: trigger.cursor
+kind: trigger
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  Mouse-cursor position as a continuous progress value — fires an action on each
+  throttled mousemove with the normalized x or y position (0→1) of the cursor
+  within the viewport. Wire `cursorTriggers` on a section to drive parallax
+  effects, spotlight positions, or variable bindings that follow the cursor.
+
+not_this_if:
+  - "you only need a click, not continuous position (use trigger.onClick)"
+  - "you need scroll position, not cursor position (use trigger.onViewportProgress)"
+
+axes:
+  - name: config
+    fields: [cursorTriggers]
+    note: "array of { axis, action, throttleMs? } on baseSectionPropsSchema"
+
+covers:
+  - description: "Cursor-x position bound to a parallax variable with 16ms throttle"
+    example: content/presets/trigger-cursor-track.json
+
+does_not_cover:
+  - what: "Click or tap trigger"
+    use_instead: trigger.onClick
+  - what: "Scroll-progress trigger"
+    use_instead: trigger.onViewportProgress
+  - what: "Pointer down/up events"
+    use_instead: "trigger.pointerDown / trigger.pointerUp"
+  - what: "Idle detection"
+    use_instead: trigger.idle
+
+composes_with:
+  parents: [section.*]
+  siblings_typical: [trigger.onVisible]
+  motion: "N/A — cursor value dispatched to action; bind to CSS variable or motionTiming via variable"
+
+known_limitations:
+  - "axis: 'x' or 'y' — one trigger per axis; compose two for both"
+  - "throttleMs defaults are implementation-defined; set explicitly for predictable fps"
+  - "Cursor position is relative to the viewport, not the section"
+
+proposal_hints:
+  new_variant_value: "N/A — trigger, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

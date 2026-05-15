@@ -1,0 +1,91 @@
+id: element.infiniteScroll
+kind: cluster
+package: "@pb/contracts"
+schema_ref: elementInfiniteScrollSchema
+runtime_ref: "@pb/runtime-react/page-builder/elements/ElementInfiniteScroll"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A snapping scrollable list of child elements — a horizontal or vertical carousel
+  with active/inactive scale and opacity transitions, optional centering on click,
+  and variable binding for the selected index or id. Use for card carousels,
+  media galleries, and tab-strip style selectors.
+
+not_this_if:
+  - "you need a scrollable section with scroll-progress triggers (use section.scrollContainer)"
+  - "you need simple flex wrapping without snap (use element.group or section.contentBlock)"
+  - "the list is a standard reorderable drag-drop (use element.group inside a reorderable section)"
+
+axes:
+  - name: scroll
+    fields: [scrollDirection, loop, snapAlign, wheelLockMs, snapDurationMs]
+  - name: selection
+    fields:
+      [
+        initialIndex,
+        selectedIndexVariable,
+        selectedIdVariable,
+        selectedValueVariable,
+        selectedValues,
+        centerOnClick,
+      ]
+  - name: item-states
+    fields:
+      [
+        activeScale,
+        inactiveScale,
+        activeOpacity,
+        inactiveOpacity,
+        activeItemStyle,
+        inactiveItemStyle,
+      ]
+    responsive: true
+  - name: layout
+    fields:
+      [
+        alignItems,
+        justifyContent,
+        gap,
+        rowGap,
+        columnGap,
+        padding,
+        paddingTop,
+        paddingRight,
+        paddingBottom,
+        paddingLeft,
+      ]
+    responsive: true
+  - name: children
+    fields: [section]
+  - name: effects
+    fields: [effects]
+
+covers:
+  - description: "Horizontal card carousel with active-scale and snap-center"
+    example: content/presets/card-carousel.json
+  - description: "Vertical media gallery with selected-index binding"
+    example: content/presets/media-gallery-scroll.json
+
+does_not_cover:
+  - what: "Scrollable section with scroll-progress triggers"
+    use_instead: section.scrollContainer
+  - what: "Simple flex group without snap behavior"
+    use_instead: element.group
+  - what: "CSS grid with column tracks"
+    use_instead: section.column
+
+composes_with:
+  parents: [section.column, section.contentBlock, module.*]
+  siblings_typical: [element.heading, element.button, element.image]
+  motion: "external — motionTiming on the scroll container wrapper"
+
+known_limitations:
+  - "selectedValues maps element-id keys to arbitrary JSON values for per-item content overrides"
+  - "wheelLockMs prevents scroll chaining — set 0 to allow natural scroll fall-through"
+  - "centerOnClick scrolls the clicked item to center; requires snapAlign: 'center'"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

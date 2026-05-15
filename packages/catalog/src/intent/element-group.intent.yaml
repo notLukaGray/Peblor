@@ -1,0 +1,64 @@
+id: element.group
+kind: cluster
+package: "@pb/contracts"
+schema_ref: elementGroupSchema
+runtime_ref: "@pb/runtime-react/page-builder/elements/ElementGroup"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A flex container that groups child elements with its own layout axis, gap,
+  and alignment — an inline section-within-an-element. Use when a cluster of
+  elements needs shared spacing and alignment that the parent section's grid
+  can't express, or when elements need to reorder via Framer Motion Reorder.
+
+not_this_if:
+  - "the grouping only needs a gap tweak (use the parent section gap/columnGap)"
+  - "you need a full section with background, motion, triggers (use section.contentBlock)"
+  - "you need a scrollable list with snap (use element.infiniteScroll)"
+
+axes:
+  - name: layout
+    fields: [display, flexDirection, alignItems, justifyContent, gap, rowGap, flexWrap]
+    responsive: true
+  - name: columns
+    fields: [columnCount, columnGap]
+  - name: spacing
+    fields: [padding, paddingTop, paddingRight, paddingBottom, paddingLeft]
+    responsive: true
+  - name: flex
+    fields: [flex]
+    responsive: true
+  - name: children
+    fields: [section]
+    note: "section.definitions holds the child element definitions; section.elementOrder sets render order"
+  - name: effects
+    fields: [effects]
+
+covers:
+  - description: "Horizontal icon-label pair with flex row layout"
+    example: content/presets/icon-label-group.json
+  - description: "Reorderable card list with gap and padding"
+    example: content/presets/reorderable-group.json
+
+does_not_cover:
+  - what: "Full section with background fill and scroll triggers"
+    use_instead: section.contentBlock
+  - what: "Scrollable snapping list"
+    use_instead: element.infiniteScroll
+  - what: "CSS grid with multiple column tracks"
+    use_instead: section.column
+
+composes_with:
+  parents: [section.column, section.contentBlock, module.*]
+  siblings_typical: [element.heading, element.body, element.image]
+  motion: "external — motionTiming on the group wrapper; children can have independent motionTiming"
+
+known_limitations:
+  - "Nested depth adds render cost — keep group nesting shallow"
+  - "Reorder requires the parent section to set reorderable: true and the group to be a direct child"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field on element.group"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

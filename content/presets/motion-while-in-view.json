@@ -1,0 +1,9 @@
+{
+  "type": "elementButton",
+  "id": "motion_while_in_view_example",
+  "label": "Get Started",
+  "variant": "primary",
+  "whileInView": { "opacity": 1, "scale": 1.02 },
+  "initial": { "opacity": 0.8, "scale": 1 },
+  "transition": { "duration": 0.4 }
+}

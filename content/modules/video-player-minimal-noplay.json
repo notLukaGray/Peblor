@@ -1,0 +1,175 @@
+{
+  "type": "module",
+  "contextType": "video",
+  "contentSlot": "main",
+  "container": {
+    "padding": "10px",
+    "borderRadius": "20px"
+  },
+  "behavior": {
+    "sleepAfterMs": 3000,
+    "sleepFadeMs": 500,
+    "controlsTransitionMs": 500,
+    "controlsTransitionEasing": "easeOut",
+    "transitionEasing": "easeOut",
+    "feedbackDurationMs": 100
+  },
+  "keyBindings": [
+    { "key": "Space", "action": "assetTogglePlay" },
+    { "key": "KeyK", "action": "assetTogglePlay" },
+    { "key": "ArrowLeft", "action": "assetSeek", "payload": -5 },
+    { "key": "KeyJ", "action": "assetSeek", "payload": -5 },
+    { "key": "ArrowRight", "action": "assetSeek", "payload": 5 },
+    { "key": "KeyL", "action": "assetSeek", "payload": 5 },
+    { "key": "KeyM", "action": "assetMute" },
+    { "key": "KeyF", "action": "videoFullscreen" }
+  ],
+  "overlayMotion": {
+    "initial": {
+      "opacity": 0
+    },
+    "animate": {
+      "opacity": 1
+    },
+    "transition": {
+      "duration": 0.5,
+      "ease": "easeOut"
+    },
+    "whileHover": {},
+    "whileTap": {
+      "scale": 1,
+      "opacity": 1
+    },
+    "whileFocus": {
+      "opacity": 1
+    }
+  },
+  "slots": {
+    "main": {
+      "position": "absolute",
+      "inset": "0",
+      "zIndex": 0
+    },
+    "bottomBar": {
+      "position": "absolute",
+      "bottom": "calc(10px + env(safe-area-inset-bottom, 0px))",
+      "left": "10px",
+      "right": "10px",
+      "zIndex": 10,
+      "paddingBottom": "10px",
+      "display": "flex",
+      "flexDirection": "row",
+      "alignItems": "center",
+      "justifyContent": "flex-start",
+      "height": "44px",
+      "gap": "2px",
+      "visibleWhen": ["awake"],
+      "transformInherit": "disable",
+      "slotWrapperGestures": false,
+      "wrapperMotion": {
+        "whileHover": {
+          "opacity": 1
+        },
+        "whileTap": {
+          "opacity": 1
+        },
+        "whileFocus": {
+          "opacity": 1
+        }
+      },
+      "defaultWrapperStyle": {
+        "width": "44px",
+        "height": "44px",
+        "minWidth": "44px",
+        "minHeight": "44px"
+      },
+      "style": {
+        "background": "#00000020",
+        "borderRadius": "9999px"
+      },
+      "effects": [
+        {
+          "type": "glass",
+          "bezelType": "convex_squircle",
+          "bezelWidth": 24,
+          "glassThickness": 20,
+          "refractiveIndex": 1.8,
+          "blur": 1,
+          "scaleRatio": 1,
+          "specularOpacity": 0.5,
+          "specularSaturation": 5,
+          "magnifyingScale": 0.5,
+          "dropShadow": true
+        }
+      ],
+      "section": {
+        "elementOrder": ["left-controls", "right-controls"],
+        "definitions": {
+          "left-controls": {
+            "type": "elementGroup",
+            "width": "44px",
+            "height": "44px",
+            "display": "flex",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "padding": "0 0 0 4px",
+            "gap": "0px",
+            "wrapperStyle": {
+              "position": "relative",
+              "zIndex": 1
+            },
+            "section": {
+              "elementOrder": ["ui-play", "ui-pause"],
+              "definitions": {
+                "ui-play": {
+                  "preset": "video-controls-play-bar",
+                  "action": "assetTogglePlay",
+                  "showWhen": "assetPaused",
+                  "wrapperStyle": {
+                    "transform": "translateY(1px)"
+                  }
+                },
+                "ui-pause": {
+                  "preset": "video-controls-pause-bar",
+                  "action": "assetTogglePlay",
+                  "showWhen": "assetPlaying",
+                  "wrapperStyle": {
+                    "transform": "translateY(1px)"
+                  }
+                }
+              }
+            }
+          },
+          "right-controls": {
+            "type": "elementGroup",
+            "width": "hug",
+            "display": "flex",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "justifyContent": "flex-end",
+            "gap": "4px",
+            "wrapperStyle": {
+              "position": "relative",
+              "zIndex": 1
+            },
+            "section": {
+              "elementOrder": ["fullscreen", "minimize"],
+              "definitions": {
+                "fullscreen": {
+                  "preset": "video-controls-fullscreen-bar",
+                  "action": "videoFullscreen",
+                  "showWhen": "videoContained"
+                },
+                "minimize": {
+                  "preset": "video-controls-minimize-bar",
+                  "action": "videoFullscreen",
+                  "showWhen": "videoFullscreen"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

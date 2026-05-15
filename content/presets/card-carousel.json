@@ -1,0 +1,15 @@
+{
+  "type": "elementInfiniteScroll",
+  "scrollDirection": "horizontal",
+  "snapAlign": "center",
+  "activeScale": 1,
+  "inactiveScale": 0.92,
+  "activeOpacity": 1,
+  "inactiveOpacity": 0.6,
+  "gap": "1rem",
+  "centerOnClick": true,
+  "section": {
+    "elementOrder": [],
+    "definitions": {}
+  }
+}

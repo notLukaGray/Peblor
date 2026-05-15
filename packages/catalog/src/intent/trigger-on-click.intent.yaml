@@ -1,0 +1,49 @@
+id: trigger.onClick
+kind: trigger
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A click/tap trigger that fires an action when the user clicks an element or
+  section. Wire `action` on element.button, or wire `onClick` on any section
+  or element via triggerActionSchema. The primary interaction trigger for
+  modals, reveals, player commands, and variable mutations.
+
+not_this_if:
+  - "you need a pointer-down event before click completes (use trigger.pointerDown)"
+  - "you need a keyboard shortcut (use trigger.keyboard)"
+  - "the click is navigation — a link (use element.link or element.button with href)"
+
+axes:
+  - name: config
+    fields: [action]
+    note: "triggerActionSchema on element.button; section onClick via wrapper"
+
+covers:
+  - description: "Button click that toggles a reveal section with repeatable trigger"
+    example: content/presets/trigger-click-reveal.json
+
+does_not_cover:
+  - what: "Pointer down before click completes"
+    use_instead: trigger.pointerDown
+  - what: "Pointer up / release"
+    use_instead: trigger.pointerUp
+  - what: "Keyboard shortcut"
+    use_instead: trigger.keyboard
+  - what: "Timer-driven automatic action"
+    use_instead: trigger.timer
+
+composes_with:
+  parents: [element.button, section.*]
+  siblings_typical: [trigger.keyboard, trigger.pointerDown]
+  motion: "N/A — triggers an action; receiving section/element handles animation"
+
+known_limitations:
+  - "Background actions have no root handler — silent fail when fired from button context (known gap)"
+  - "Click on a button inside a section also bubbles — avoid double-wiring"
+
+proposal_hints:
+  new_variant_value: "N/A — trigger, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

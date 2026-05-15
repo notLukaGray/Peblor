@@ -1,0 +1,10 @@
+{
+  "type": "elementFormField",
+  "field": {
+    "type": "formField",
+    "fieldType": "date",
+    "label": "Select a date",
+    "placeholder": "YYYY-MM-DD",
+    "name": "eventDate"
+  }
+}

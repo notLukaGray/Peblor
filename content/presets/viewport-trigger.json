@@ -1,0 +1,8 @@
+{
+  "type": "sectionTrigger",
+  "onVisible": { "type": "setVariable", "payload": { "key": "heroVisible", "value": true } },
+  "threshold": 0.2,
+  "triggerOnce": true,
+  "rootMargin": "0px 0px -10% 0px",
+  "delay": 100
+}

@@ -1,0 +1,14 @@
+{
+  "type": "contentBlock",
+  "id": "motion_inherit_example",
+  "inheritMode": "isolate",
+  "fill": "var(--color-surface)",
+  "elements": [
+    {
+      "type": "elementHeading",
+      "id": "isolated_heading",
+      "level": 2,
+      "text": "Isolated Motion Context"
+    }
+  ]
+}

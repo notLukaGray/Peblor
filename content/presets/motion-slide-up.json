@@ -1,0 +1,9 @@
+{
+  "type": "revealSection",
+  "id": "motion_slide_up_example",
+  "triggerMode": "onVisible",
+  "motion": "slideUp",
+  "motionDuration": 0.65,
+  "motionEasing": "easeOut",
+  "sections": []
+}

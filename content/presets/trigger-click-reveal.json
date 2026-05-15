@@ -1,0 +1,7 @@
+{
+  "type": "triggerSection",
+  "id": "trigger_click_reveal_example",
+  "trigger": { "type": "onClick", "target": "faq-question" },
+  "actions": [{ "type": "setVariant", "target": "faq-answer", "value": "open" }],
+  "triggerOnce": false
+}

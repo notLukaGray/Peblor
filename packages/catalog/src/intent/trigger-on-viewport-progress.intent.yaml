@@ -1,0 +1,48 @@
+id: trigger.onViewportProgress
+kind: trigger
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A smooth scroll-progress trigger that fires with a 0→1 value derived from
+  the element's position within the viewport as the user scrolls. Wire
+  `onViewportProgress` to animate values, seek media, or update variables in
+  real time with scroll. Requires a scroll-container ancestor.
+
+not_this_if:
+  - "you only need a discrete fire-once event (use trigger.onVisible)"
+  - "you need intersection-observer-based progress without scroll context (use trigger.onProgress)"
+
+axes:
+  - name: config
+    fields: [onViewportProgress, threshold, rootMargin]
+    note: "fields on baseSectionPropsSchema; requires SectionScrollTargetContext ancestor"
+
+covers:
+  - description: "Smooth opacity binding from viewport scroll progress (10%-90% range)"
+    example: content/presets/trigger-viewport-progress.json
+
+does_not_cover:
+  - what: "Discrete intersection-observer progress"
+    use_instead: trigger.onProgress
+  - what: "Scroll-direction (up/down) trigger"
+    use_instead: trigger.scrollDirection
+  - what: "Entry trigger"
+    use_instead: trigger.onVisible
+  - what: "Exit trigger"
+    use_instead: trigger.onInvisible
+
+composes_with:
+  parents: [section.scrollContainer, section.*]
+  siblings_typical: [trigger.onVisible]
+  motion: "N/A — progress value dispatched to actions; bind to motionTiming via variable"
+
+known_limitations:
+  - "Requires a SectionScrollTargetContext ancestor — no-ops without one"
+  - "Progress discarded in root action runner (known gap, see gaps audit March 2026)"
+
+proposal_hints:
+  new_variant_value: "N/A — trigger, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

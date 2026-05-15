@@ -1,0 +1,11 @@
+{
+  "type": "elementButton",
+  "variant": "default",
+  "label": "Get started",
+  "copyType": "body",
+  "href": "/work",
+  "external": false,
+  "wrapperFill": "accent",
+  "wrapperPadding": "0.75rem 1.5rem",
+  "wrapperBorderRadius": "99px"
+}

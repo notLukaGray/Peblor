@@ -1,0 +1,50 @@
+id: background.image
+kind: cluster
+package: "@pb/contracts"
+schema_ref: backgroundImageSchema
+runtime_ref: "@pb/runtime-react/page-builder/backgrounds/BackgroundImage"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A static image that fills the parent section as a background — resolved through
+  the same asset pipeline as element.image. Use for photo-backed hero sections,
+  illustrated headers, or decorative backdrops where a raster image sets the scene.
+
+not_this_if:
+  - "the background is a video (use background.video)"
+  - "you need a color, gradient, or animated fill (use background.variable)"
+  - "you need a tiled repeating pattern (use background.pattern)"
+
+axes:
+  - name: source
+    fields: [image]
+
+covers:
+  - description: "Static hero background photo with WebP asset"
+    example: content/presets/bg-hero-image.json
+    minimal: true
+
+does_not_cover:
+  - what: "Looping ambient video backdrop"
+    use_instead: background.video
+  - what: "Solid color or CSS gradient background"
+    use_instead: background.variable
+  - what: "Repeating tiled texture or pattern"
+    use_instead: background.pattern
+  - what: "Animated crossfade between two backgrounds"
+    use_instead: background.transition
+
+composes_with:
+  parents: [section.contentBlock, section.column, section.scrollContainer]
+  siblings_typical: []
+  motion: "N/A — no motionTiming on bg blocks; use background.variable with motion layers for parallax"
+
+known_limitations:
+  - "Image is resolved through the asset pipeline — src must be a registered asset key or URL"
+  - "No built-in overlay; layer a semi-transparent background.variable on top if needed"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field on background.image"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

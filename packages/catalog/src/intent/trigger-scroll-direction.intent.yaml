@@ -1,0 +1,48 @@
+id: trigger.scrollDirection
+kind: trigger
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  Fires discrete actions when the user's scroll direction changes — separate
+  actions for scrolling down and scrolling up. Wire `scrollDirectionTriggers`
+  on a section to hide/show sticky headers, swap content, or dispatch commands
+  based on scroll intent rather than scroll position.
+
+not_this_if:
+  - "you need a continuous scroll progress value (use trigger.onViewportProgress)"
+  - "you need a one-time entry trigger (use trigger.onVisible)"
+
+axes:
+  - name: config
+    fields: [scrollDirectionTriggers]
+    note: "array of { onScrollDown?, onScrollUp?, threshold? } on baseSectionPropsSchema"
+
+covers:
+  - description: "Sticky header hides on scroll-down (50px threshold), shows on scroll-up"
+    example: content/presets/trigger-scroll-hide.json
+
+does_not_cover:
+  - what: "Continuous scroll position as a progress value"
+    use_instead: trigger.onViewportProgress
+  - what: "Intersection-based visibility trigger"
+    use_instead: trigger.onVisible
+  - what: "Cursor position trigger"
+    use_instead: trigger.cursor
+  - what: "Timer-based action"
+    use_instead: trigger.timer
+
+composes_with:
+  parents: [section.*]
+  siblings_typical: [trigger.onVisible, trigger.onViewportProgress]
+  motion: "N/A — fires actions; receiving section sets visibility or motionTiming state"
+
+known_limitations:
+  - "threshold is a pixel delta to debounce jitter — set to avoid rapid flip-flop"
+  - "onScrollDown and onScrollUp fire once per direction change, not per pixel"
+
+proposal_hints:
+  new_variant_value: "N/A — trigger, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

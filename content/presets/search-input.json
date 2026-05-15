@@ -1,0 +1,8 @@
+{
+  "type": "elementInput",
+  "variant": "compact",
+  "placeholder": "Search…",
+  "showIcon": true,
+  "ariaLabel": "Search content",
+  "color": "rgba(255,255,255,0.85)"
+}

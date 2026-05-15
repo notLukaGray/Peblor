@@ -1,0 +1,50 @@
+id: background.pattern
+kind: cluster
+package: "@pb/contracts"
+schema_ref: backgroundPatternSchema
+runtime_ref: "@pb/runtime-react/page-builder/backgrounds/BackgroundPattern"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A tiled repeating image background — dots, grids, textures, or custom SVG
+  patterns that tile across the section. Simple, static, no animation layers.
+  Use for structured texture effects that should not compete with foreground motion.
+
+not_this_if:
+  - "the asset is a full-cover photo (use background.image)"
+  - "you need an animated fill or gradient (use background.variable)"
+  - "the pattern should respond to scroll or cursor (use background.variable with motion layers)"
+
+axes:
+  - name: source
+    fields: [image, repeat]
+
+covers:
+  - description: "Tiled dot-grid SVG background pattern"
+    example: content/presets/bg-dot-pattern.json
+    minimal: true
+
+does_not_cover:
+  - what: "Full-bleed background image"
+    use_instead: background.image
+  - what: "Animated or gradient fill"
+    use_instead: background.variable
+  - what: "Video background"
+    use_instead: background.video
+  - what: "Animated crossfade between backgrounds"
+    use_instead: background.transition
+
+composes_with:
+  parents: [section.contentBlock, section.column, section.scrollContainer]
+  siblings_typical: []
+  motion: "N/A — static tiled fill, no per-layer motion"
+
+known_limitations:
+  - "No built-in motion; combine with a background.variable layer for animated overlays"
+  - "repeat defaults to 'repeat' — set 'no-repeat' for single-placement decorative images"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field on background.pattern"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

@@ -1,0 +1,175 @@
+{
+  "type": "sectionColumn",
+  "id": "nav",
+  "ariaLabel": "Main navigation",
+  "fixed": true,
+  "fixedPosition": "top",
+  "fixedOffset": "0px",
+  "zIndex": 200,
+
+  "width": "100%",
+  "contentWidth": "min(90%,600px)",
+  "height": "hug",
+  "align": "center",
+
+  "fill": "oklch(from var(--pb-secondary) l c h / 0.5)",
+  "borderRadius": "0 0 30px 30px",
+  "effects": [
+    {
+      "type": "glass",
+      "bezelType": "convex_squircle",
+      "bezelWidth": 60,
+      "glassThickness": 2,
+      "refractiveIndex": 1.5,
+      "blur": 5,
+      "scaleRatio": 0.1,
+      "specularOpacity": 0,
+      "specularSaturation": 5,
+      "magnifyingScale": 1,
+      "dropShadow": true
+    }
+  ],
+
+  "marginTop": ".5rem",
+  "marginRight": "1rem",
+  "marginBottom": ".5rem",
+  "marginLeft": "1rem",
+
+  "elementOrder": ["work", "teaching", "logo", "research", "profile"],
+  "columnAssignments": {
+    "work": 0,
+    "teaching": 1,
+    "logo": 2,
+    "research": 3,
+    "profile": 4
+  },
+  "columnGaps": "auto",
+  "columns": 5,
+
+  "definitions": {
+    "work": {
+      "type": "elementLink",
+      "id": "work",
+      "label": "Work",
+      "href": "/work",
+      "copyType": "body",
+      "variant": "legal-light",
+      "linkDefault": "var(--pb-on-secondary)",
+      "linkHover": "var(--pb-link-hover)",
+      "linkActive": "var(--pb-link-active)"
+    },
+    "teaching": {
+      "type": "elementLink",
+      "id": "teaching",
+      "label": "Teaching",
+      "href": "/teaching",
+      "copyType": "body",
+      "variant": "legal-light",
+      "linkDefault": "var(--pb-on-secondary)",
+      "linkHover": "var(--pb-link-hover)",
+      "linkActive": "var(--pb-link-active)"
+    },
+    "logo": {
+      "type": "elementVector",
+      "id": "logo",
+      "viewBox": "0 0 30 30",
+      "preserveAspectRatio": "xMidYMid meet",
+      "width": "30px",
+      "height": "30px",
+      "align": "center",
+      "link": {
+        "ref": "/",
+        "external": false,
+        "hoverFill": "nav-logo-fill-hover",
+        "hoverStroke": "nav-logo-stroke-hover",
+        "vectorTransition": ".5s"
+      },
+      "colors": {
+        "nav-logo-stroke": "oklch(from var(--pb-on-secondary) l c h / 0.5)",
+        "nav-logo-stroke-hover": "var(--pb-link-hover)"
+      },
+      "gradients": [
+        {
+          "type": "linearGradient",
+          "id": "nav-logo-fill",
+          "x1": "0",
+          "y1": "1",
+          "x2": "1",
+          "y2": "0",
+          "gradientUnits": "objectBoundingBox",
+          "gradientTransform": "rotate(167 0.5 0.5)",
+          "stops": [
+            { "offset": "0", "color": "var(--pb-on-secondary)", "opacity": 0.1 },
+            { "offset": "1", "color": "var(--pb-on-secondary)", "opacity": 0.6 }
+          ]
+        },
+        {
+          "type": "linearGradient",
+          "id": "nav-logo-fill-hover",
+          "x1": "0",
+          "y1": "1",
+          "x2": "1",
+          "y2": "0",
+          "gradientUnits": "objectBoundingBox",
+          "gradientTransform": "rotate(167 0.5 0.5)",
+          "stops": [
+            { "offset": "0", "color": "var(--pb-link-hover)", "opacity": 0.2 },
+            { "offset": "1", "color": "var(--pb-link-hover)", "opacity": 0.9 }
+          ]
+        }
+      ],
+      "strokeGroup": {
+        "stroke": "nav-logo-stroke",
+        "strokeWidth": 1,
+        "strokeLinejoin": "round",
+        "strokeMiterlimit": 10,
+        "opacity": 0.5,
+        "blendMode": "overlay"
+      },
+      "shapes": [
+        {
+          "type": "path",
+          "d": "M19.0192 30L0.00116246 19.0172L20.366 13.0263L19.0192 30Z",
+          "fill": "nav-logo-fill"
+        },
+        {
+          "type": "path",
+          "d": "M-4.87566e-05 19.0192L10.9817 0.000574477L20.3665 13.0266L-4.87566e-05 19.0192Z",
+          "fill": "nav-logo-fill"
+        },
+        {
+          "type": "path",
+          "d": "M10.9807 0L29.9997 10.9812L20.366 13.0263L10.9807 0Z",
+          "fill": "nav-logo-fill"
+        },
+        {
+          "type": "path",
+          "d": "M29.9995 10.9805L19.0191 30L20.3659 13.0263L29.9995 10.9805Z",
+          "fill": "nav-logo-fill"
+        }
+      ]
+    },
+    "research": {
+      "type": "elementLink",
+      "id": "research",
+      "label": "Research",
+      "href": "/research",
+      "copyType": "body",
+      "variant": "legal-light",
+      "linkDefault": "var(--pb-on-secondary)",
+      "linkHover": "var(--pb-link-hover)",
+      "linkActive": "var(--pb-link-active)"
+    },
+    "profile": {
+      "type": "elementLink",
+      "id": "profile",
+      "label": "Profile",
+      "href": "/profile",
+      "copyType": "body",
+      "variant": "legal-light",
+      "linkDefault": "var(--pb-on-secondary)",
+      "linkHover": "var(--pb-link-hover)",
+      "linkActive": "var(--pb-link-active)"
+    }
+  }
+}

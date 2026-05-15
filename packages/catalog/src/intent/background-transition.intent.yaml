@@ -1,0 +1,56 @@
+id: background.transition
+kind: cluster
+package: "@pb/contracts"
+schema_ref: backgroundTransitionSchema
+runtime_ref: "@pb/runtime-react/page-builder/backgrounds/BackgroundTransition"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  An animated crossfade between two background blocks — `from` to `to` — driven
+  either by a timed duration or by a scroll/variable progress value. Use for
+  hero backgrounds that shift as the user scrolls, or slideshow-style background
+  crossfades triggered by user interaction.
+
+not_this_if:
+  - "you only need a single static background (use background.image, background.video, or background.variable)"
+  - "you need more than two background states (compose multiple background.transition blocks)"
+  - "the transition is a color-only change (use background.variable with trigger motion)"
+
+axes:
+  - name: backgrounds
+    fields: [from, to]
+    note: "each is a bgBlockSchema — can be image, video, variable, pattern, or nested transition"
+  - name: timing
+    fields: [duration, easing, mode]
+  - name: progress
+    fields: [trigger, time, position, progress, progressRange]
+
+covers:
+  - description: "Progress-mode crossfade from solid surface to background image on scroll"
+    example: content/presets/bg-crossfade.json
+
+does_not_cover:
+  - what: "Single static background (no crossfade)"
+    use_instead: "background.image, background.video, or background.variable"
+  - what: "Animated gradient or color without crossfade"
+    use_instead: background.variable
+  - what: "Tiled pattern"
+    use_instead: background.pattern
+  - what: "CSS-only transition on a single layer"
+    use_instead: "background.variable with trigger motion"
+
+composes_with:
+  parents: [section.contentBlock, section.column, section.scrollContainer]
+  siblings_typical: []
+  motion: "N/A — transition is controlled by mode/duration/progress; no motionTiming wrapper"
+
+known_limitations:
+  - "mode: 'time' requires duration > 0"
+  - "mode: 'progress' uses progressRange to map 0→1 input to 0→1 crossfade"
+  - "from and to accept any bgBlockSchema including nested transitions — depth compounds rendering cost"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field on background.transition"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

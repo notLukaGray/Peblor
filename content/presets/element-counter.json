@@ -1,0 +1,13 @@
+{
+  "type": "elementCounter",
+  "id": "counter_example",
+  "target": 1500,
+  "start": 0,
+  "tween": { "duration": 2000 },
+  "prefix": "",
+  "suffix": "+",
+  "decimals": 0,
+  "separator": true,
+  "trigger": "onVisible",
+  "level": 1
+}

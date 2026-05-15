@@ -1,0 +1,53 @@
+id: section.sticky
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: baseSectionPropsSchema
+
+feels_like: >
+  Makes a section stick to the top or bottom of the viewport while the user
+  scrolls past it. Configure the stick edge, offset from the edge, and
+  responsive positioning. Use for sticky headers, persistent nav bars,
+  or floating CTAs that follow the user through scroll. Works on any
+  section type.
+
+not_this_if:
+  - "you need a fixed-position element that ignores scroll (use section.fixed)"
+  - "you need scroll-progress-driven behavior (use section.scrollContainer)"
+  - "you need parallax scroll speed (use section.parallax)"
+
+axes:
+  - name: position
+    fields: [sticky, stickyOffset, stickyPosition]
+    note: "stickyPosition: top | bottom; stickyOffset is responsive"
+
+does_not_cover:
+  - what: "Fixed positioning outside scroll flow"
+    use_instead: section.fixed
+  - what: "Scroll-progress-driven triggers"
+    use_instead: section.scrollContainer
+  - what: "Parallax scroll speed"
+    use_instead: section.parallax
+  - what: "Entrance animation on scroll"
+    use_instead: "motionTiming.entrancePreset"
+
+covers:
+  - description: "Sticky header that pins to the top with a 0px offset"
+    example: content/presets/section-sticky.json
+
+composes_with:
+  parents: [page]
+  siblings_typical: [section.contentBlock, section.column]
+  motion: "N/A — pure CSS position: sticky; no framer-motion involvement"
+
+known_limitations:
+  - "sticky requires a scrollable ancestor — works best when the page is the scroll container"
+  - "stickyOffset accepts responsive values (string | [string, string]) for breakpoint-aware offsets"
+  - "stickyPosition defaults to 'top' when sticky: true and no position is set"
+
+proposal_hints:
+  new_variant_value: "N/A — positioning capability, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

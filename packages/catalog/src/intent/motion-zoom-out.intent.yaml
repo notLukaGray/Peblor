@@ -1,0 +1,47 @@
+id: motion.zoomOut
+kind: motion-preset
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A scale-down + fade entrance — element starts larger than its resting size
+  and shrinks to full size while fading in. Gives a cinematic "pull back" feel.
+  Use for hero backgrounds, full-bleed images, and overlapping-reveal sequences.
+
+not_this_if:
+  - "you want scale-up entrance (use motion.zoomIn)"
+  - "you want a spring pop (use motion.popIn)"
+  - "you want a plain fade (use motion.fade)"
+
+axes:
+  - name: preset
+    fields: [motionTiming]
+    note: "entrancePreset: 'zoomOut' on motionTimingSchema"
+
+covers:
+  - description: "Hero section background image that zooms out on page load"
+    example: content/presets/motion-zoom-out.json
+
+does_not_cover:
+  - what: "Scale-up entrance"
+    use_instead: motion.zoomIn
+  - what: "Pop entrance with overshoot"
+    use_instead: motion.popIn
+  - what: "Directional slide"
+    use_instead: "motion.slideUp / motion.slideDown"
+  - what: "Plain fade"
+    use_instead: motion.fade
+
+composes_with:
+  parents: [section.*, element.*]
+  siblings_typical: []
+  motion: "motionTiming.entrancePreset: 'zoomOut'"
+
+known_limitations:
+  - "Initial scale value defined in motion defaults"
+
+proposal_hints:
+  new_variant_value: "N/A — motion preset, no variant field"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

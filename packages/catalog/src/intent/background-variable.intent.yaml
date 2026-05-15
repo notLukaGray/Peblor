@@ -1,0 +1,53 @@
+id: background.variable
+kind: cluster
+package: "@pb/contracts"
+schema_ref: backgroundVariableSchema
+runtime_ref: "@pb/runtime-react/page-builder/backgrounds/BackgroundVariable"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A CSS fill background — solid colors, gradients, mesh gradients, or any
+  theme-token value — optionally animated with parallax, loop, scroll, pointer,
+  or trigger motion layers. The composable background for brand-color sections,
+  animated gradient heros, and glass panels.
+
+not_this_if:
+  - "the background is a photo or raster image (use background.image)"
+  - "the background is a looping video (use background.video)"
+  - "you need a tiled SVG pattern (use background.pattern)"
+
+axes:
+  - name: layers
+    fields: [layers]
+    note: "each layer has fill, blendMode, opacity, backgroundSize, backgroundPosition, motion[]"
+
+covers:
+  - description: "Animated mesh gradient with loop motion and pointer-reactive radial glow"
+    example: content/presets/bg-gradient.json
+    minimal: true
+
+does_not_cover:
+  - what: "Raster photo background"
+    use_instead: background.image
+  - what: "Ambient video background"
+    use_instead: background.video
+  - what: "Tiled repeating SVG or image"
+    use_instead: background.pattern
+  - what: "Animated crossfade between two backgrounds"
+    use_instead: background.transition
+
+composes_with:
+  parents: [section.contentBlock, section.column, section.scrollContainer]
+  siblings_typical: []
+  motion: "bgLayerMotionSchema per layer — supports loop, scroll, pointer, parallax, trigger"
+
+known_limitations:
+  - "Multiple layers compose via CSS blend modes — order matters (first layer is bottom)"
+  - "backgroundSize is required for gradient pan animations (e.g. '400% 400%')"
+  - "fill must be a valid CSS value or theme token resolvable at render time"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field on background.variable"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

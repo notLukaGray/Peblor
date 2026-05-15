@@ -1,0 +1,53 @@
+id: motion.stagger
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: motionPropsSchema
+
+feels_like: >
+  Staggers the entrance or exit animation of child elements with a configurable
+  delay between each child. Set staggerChildren on the parent's transition to
+  enable sequenced reveal, and staggerDelay to control the gap between each
+  child. Use for list item reveals, grid card sequences, or any multi-element
+  container where children should animate in one by one rather than all at once.
+
+not_this_if:
+  - "you need per-element entrance presets with no sequencing (use motionTiming.entrancePreset)"
+  - "you need reveal stagger for a section.reveal specifically (use section.reveal with revealStaggerMs)"
+  - "you need a one-shot entrance on the container itself (use motion.fade / motion.slideUp etc.)"
+
+axes:
+  - name: stagger
+    fields: [transition]
+    note: "set staggerChildren + staggerDelay on transition object; applied by framer-motion"
+
+does_not_cover:
+  - what: "Per-element entrance presets without sequencing"
+    use_instead: "motionTiming.entrancePreset on individual elements"
+  - what: "Section reveal stagger with collapsed/expanded states"
+    use_instead: section.reveal
+  - what: "Container-level entrance animation"
+    use_instead: motion.fade
+  - what: "Scroll-driven reveal sequencing"
+    use_instead: trigger.onViewportProgress
+
+covers:
+  - description: "Content block where children fade in one by one with 0.1s stagger delay"
+    example: content/presets/motion-stagger.json
+
+composes_with:
+  parents: [section.*, element.group, element.infiniteScroll]
+  siblings_typical: [motion.fade, motion.slideUp]
+  motion: "staggerChildren + staggerDelay on transition; applied by framer-motion when children are motion components"
+
+known_limitations:
+  - "staggerChildren only works when children are wrapped in motion components (which page-builder does automatically)"
+  - "staggerDelay is in seconds, not milliseconds"
+  - "Stagger interacts with entrancePreset — the preset defines the animation, stagger sequences it across children"
+
+proposal_hints:
+  new_variant_value: "N/A — motion capability, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

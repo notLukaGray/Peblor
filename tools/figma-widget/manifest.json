@@ -1,0 +1,11 @@
+{
+  "name": "Page Builder Widget",
+  "id": "com.peblor.widget",
+  "api": "1.0.0",
+  "editorType": ["figma"],
+  "main": "dist/widget.js",
+  "widgetApi": "1.0.0",
+  "containsWidget": true,
+  "documentAccess": "dynamic-page",
+  "capabilities": []
+}

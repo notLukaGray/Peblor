@@ -1,0 +1,126 @@
+{
+  "type": "contentBlock",
+  "id": "pagetest",
+  "elements": [
+    {
+      "type": "elementGroup",
+      "id": "pagetest-inner",
+      "width": "100%",
+      "display": "flex",
+      "flexDirection": "column",
+      "justifyContent": "flex-start",
+      "alignItems": "center",
+      "gap": "10px",
+      "padding": "20px",
+      "section": {
+        "elementOrder": ["buttondark", "buttondark-2"],
+        "definitions": {
+          "buttondark": {
+            "type": "elementGroup",
+            "id": "buttondark",
+            "interactions": {
+              "onClick": { "type": "navigate", "payload": { "href": "https://google.com" } },
+              "cursor": "pointer"
+            },
+            "motion": { "layout": true },
+            "section": {
+              "elementOrder": ["buttondark--default"],
+              "definitions": {
+                "buttondark--default": {
+                  "type": "elementGroup",
+                  "id": "buttondark--default",
+                  "width": "150px",
+                  "height": "44px",
+                  "motion": {
+                    "whileHover": { "width": "200px" },
+                    "whileTap": { "width": "170px" }
+                  },
+                  "section": {
+                    "elementOrder": ["internalframe"],
+                    "definitions": {
+                      "internalframe": {
+                        "type": "elementGroup",
+                        "id": "internalframe",
+                        "wrapperStyle": {
+                          "backgroundColor": "#00000080",
+                          "borderRadius": "9999px"
+                        },
+                        "motion": {
+                          "whileHover": { "backgroundColor": "#3f3f3f80" },
+                          "whileTap": { "backgroundColor": "#000000" }
+                        },
+                        "section": {
+                          "elementOrder": ["text"],
+                          "definitions": {
+                            "text": {
+                              "type": "elementBody",
+                              "id": "text",
+                              "text": "BUTTON",
+                              "color": "#ffffff"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "buttondark-2": {
+            "type": "elementGroup",
+            "id": "buttondark-2",
+            "interactions": {
+              "onClick": { "type": "navigate", "payload": { "href": "https://yahoo.com" } },
+              "cursor": "pointer"
+            },
+            "motion": { "layout": true },
+            "section": {
+              "elementOrder": ["buttondark-2--default"],
+              "definitions": {
+                "buttondark-2--default": {
+                  "type": "elementGroup",
+                  "id": "buttondark-2--default",
+                  "width": "150px",
+                  "height": "44px",
+                  "motion": {
+                    "whileHover": { "width": "200px" },
+                    "whileTap": { "width": "170px" }
+                  },
+                  "section": {
+                    "elementOrder": ["internalframe-2"],
+                    "definitions": {
+                      "internalframe-2": {
+                        "type": "elementGroup",
+                        "id": "internalframe-2",
+                        "wrapperStyle": {
+                          "backgroundColor": "#00000080",
+                          "borderRadius": "9999px"
+                        },
+                        "motion": {
+                          "whileHover": { "backgroundColor": "#3f3f3f80" },
+                          "whileTap": { "backgroundColor": "#000000" }
+                        },
+                        "section": {
+                          "elementOrder": ["text-2"],
+                          "definitions": {
+                            "text-2": {
+                              "type": "elementBody",
+                              "id": "text-2",
+                              "text": "TWO",
+                              "color": "#ffffff"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

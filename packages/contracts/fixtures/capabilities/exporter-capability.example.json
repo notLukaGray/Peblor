@@ -1,0 +1,9 @@
+{
+  "type": "exporter",
+  "name": "example-exporter",
+  "version": "1.0.0",
+  "inputContractVersions": ["1.0.0"],
+  "outputTargets": ["peblor-json"],
+  "fidelityLevel": "lossless",
+  "diagnosticCodes": ["PB_EXT_EXPORT_UNSUPPORTED_CONSTRUCT"]
+}

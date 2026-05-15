@@ -1,0 +1,10 @@
+{
+  "type": "elementBody",
+  "variant": "lead",
+  "text": "Lead paragraph introducing the section with a clear and concise overview.",
+  "fontFamily": "primary",
+  "letterSpacing": "-0.01em",
+  "lineHeight": 1.5,
+  "color": "accent",
+  "wordWrap": true
+}

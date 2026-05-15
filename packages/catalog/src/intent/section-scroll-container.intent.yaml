@@ -1,0 +1,58 @@
+id: section.scrollContainer
+kind: cluster
+package: "@pb/contracts"
+schema_ref: sectionScrollContainerSchema
+runtime_ref: "@pb/runtime-react/page-builder/sections/SectionScrollContainer"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A scrollable section whose scroll position drives a named progress trigger —
+  horizontal, vertical, or both axes. The trigger drives variable bindings and
+  animated transitions in child elements. Use for scroll-jacked hero scenes,
+  horizontal scroll galleries, and scroll-linked reveal sequences.
+
+not_this_if:
+  - "you don't need scroll-linked progress (use section.contentBlock)"
+  - "you need a snapping card carousel with active/inactive states (use element.infiniteScroll)"
+  - "you need a section that only triggers on visibility, not on scroll progress (use section.trigger)"
+
+axes:
+  - name: scroll
+    fields: [scrollDirection, scrollProgressTrigger, scrollProgressTriggerId]
+  - name: appearance
+    fields: [fill, effects, width, height, overflow]
+    responsive: true
+  - name: motion
+    fields: [motionTiming, sticky, stickyOffset]
+  - name: children
+    fields: [elements]
+
+covers:
+  - description: "Horizontal scroll gallery with named progress trigger and fade-in motion"
+    example: content/presets/scroll-gallery.json
+
+does_not_cover:
+  - what: "Snapping carousel with per-item scale and opacity"
+    use_instead: element.infiniteScroll
+  - what: "Plain flex section with no scroll-progress wiring"
+    use_instead: section.contentBlock
+  - what: "CSS-grid multi-column layout"
+    use_instead: section.column
+  - what: "Invisible intersection-observer trigger"
+    use_instead: section.trigger
+
+composes_with:
+  parents: [module.*, page]
+  siblings_typical: [section.contentBlock, section.column]
+  motion: "motionTiming on the section wrapper; scroll progress delivered via SectionScrollTargetContext"
+
+known_limitations:
+  - "scrollProgressTrigger.id names the context consumed by element.scrollProgressBar and other progress listeners"
+  - "overflow: hidden on the section is required for axis-constrained scroll containment"
+  - "Both axes ('both') is rarely used — usually pair with overflow: auto"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field on section.scrollContainer"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

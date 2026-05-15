@@ -1,0 +1,11 @@
+{
+  "type": "elementTooltip",
+  "id": "tooltip_example",
+  "content": "Click to learn more about this feature",
+  "position": "top",
+  "trigger": "hover",
+  "showDelay": 300,
+  "arrow": true,
+  "interactive": false,
+  "animation": "fade"
+}

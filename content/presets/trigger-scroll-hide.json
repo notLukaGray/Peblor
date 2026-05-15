@@ -1,0 +1,10 @@
+{
+  "type": "triggerSection",
+  "id": "trigger_scroll_hide_example",
+  "trigger": { "type": "scrollDirection", "direction": "down", "threshold": 50 },
+  "actions": [
+    { "type": "setVariant", "target": "header", "value": "hidden" },
+    { "type": "setVariable", "target": "headerState", "value": "collapsed" }
+  ],
+  "onScrollUp": [{ "type": "setVariant", "target": "header", "value": "visible" }]
+}

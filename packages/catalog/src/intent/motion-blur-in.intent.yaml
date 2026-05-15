@@ -1,0 +1,48 @@
+id: motion.blurIn
+kind: motion-preset
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A blur-to-sharp + fade entrance — element starts blurred and sharpens while
+  fading in, creating a dreamy focus-pull effect. Use for background reveals,
+  transitions between states, and elements that should appear to materialize
+  rather than slide into view.
+
+not_this_if:
+  - "you want a directional slide (use motion.slideUp etc.)"
+  - "you want a plain fade with no blur (use motion.fade)"
+  - "you want a scale pop (use motion.popIn)"
+
+axes:
+  - name: preset
+    fields: [motionTiming]
+    note: "entrancePreset: 'blurIn' on motionTimingSchema"
+
+covers:
+  - description: "Background image that sharpens into focus on section entrance"
+    example: content/presets/motion-blur-in.json
+
+does_not_cover:
+  - what: "Plain opacity fade"
+    use_instead: motion.fade
+  - what: "Directional slide"
+    use_instead: "motion.slideUp / motion.slideLeft"
+  - what: "Scale pop entrance"
+    use_instead: motion.popIn
+  - what: "Tilt entrance"
+    use_instead: motion.tiltIn
+
+composes_with:
+  parents: [section.*, element.*]
+  siblings_typical: []
+  motion: "motionTiming.entrancePreset: 'blurIn'"
+
+known_limitations:
+  - "blur filter is GPU-accelerated — avoid on large elements with backdrop-filter simultaneously"
+
+proposal_hints:
+  new_variant_value: "N/A — motion preset, no variant field"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

@@ -1,0 +1,41 @@
+{
+  "name": "@pb/core",
+  "version": "1.0.0",
+  "private": true,
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": "./src/root.ts",
+    "./load": "./src/load.ts",
+    "./validate": "./src/validate.ts",
+    "./migrate": "./src/migrate.ts",
+    "./resolve": "./src/resolve.ts",
+    "./util": "./src/util.ts",
+    "./host-config": "./src/host-config.ts",
+    "./defaults": "./src/defaults.ts",
+    "./expand": "./src/expand.ts",
+    "./lib/*": "./src/lib/*.ts",
+    "./keys": "./src/keys.ts",
+    "./layout": "./src/layout.ts",
+    "./media": "./src/media.ts",
+    "./typography": "./src/typography.ts",
+    "./triggers": "./src/triggers.ts",
+    "./loader": "./src/loader.ts",
+    "./modal": "./src/modal.ts",
+    "./host": "./src/host.ts",
+    "./motion": "./src/motion.ts",
+    "./overrides": "./src/overrides.ts",
+    "./modules": "./src/modules.ts"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "type-check": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run src/internal/*.test.ts src/internal/**/*.test.ts"
+  },
+  "dependencies": {
+    "@pb/contracts": "1.0.0",
+    "zod": "4.4.2"
+  }
+}

@@ -1,0 +1,49 @@
+id: trigger.keyboard
+kind: trigger
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  Keyboard shortcut triggers scoped to a section — fired while the section is
+  mounted. Wire `keyboardTriggers` on any section to bind key combos (with
+  optional shift/ctrl/alt/meta modifiers) to `onKeyDown` and `onKeyUp` actions.
+  Use for player controls, presentation modes, and power-user shortcuts.
+
+not_this_if:
+  - "you need a click or tap trigger (use trigger.onClick)"
+  - "the shortcut should be page-global rather than section-scoped (wire on the root page section)"
+
+axes:
+  - name: config
+    fields: [keyboardTriggers]
+    note: "array of { key, shift?, ctrl?, alt?, meta?, onKeyDown?, onKeyUp?, preventDefault? } on baseSectionPropsSchema"
+
+covers:
+  - description: "Cmd+K shortcut with preventDefault for search modal toggle"
+    example: content/presets/trigger-keyboard-shortcut.json
+
+does_not_cover:
+  - what: "Click trigger"
+    use_instead: trigger.onClick
+  - what: "Pointer down/up triggers"
+    use_instead: "trigger.pointerDown / trigger.pointerUp"
+  - what: "Timer-driven action"
+    use_instead: trigger.timer
+  - what: "Mouse cursor position trigger"
+    use_instead: trigger.cursor
+
+composes_with:
+  parents: [section.*]
+  siblings_typical: [trigger.onClick]
+  motion: "N/A — fires actions; receiving element handles animation"
+
+known_limitations:
+  - "key matches KeyboardEvent.code (e.g. 'Space', 'ArrowLeft') — not KeyboardEvent.key"
+  - "shortcuts are active only while the section is mounted"
+  - "preventDefault: true stops default browser behavior for the key combo"
+
+proposal_hints:
+  new_variant_value: "N/A — trigger, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

@@ -1,0 +1,52 @@
+id: element.videoTime
+kind: cluster
+package: "@pb/contracts"
+schema_ref: elementVideoTimeSchema
+runtime_ref: "@pb/runtime-react/page-builder/elements/ElementVideoTime"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A text display that shows the current playback time or duration of the nearest
+  VideoControlContext. Use inside module player UIs, not in general page content.
+
+not_this_if:
+  - "you need a progress bar (use element.scrollProgressBar or element.range with action 'seek')"
+  - "you need static copy (use element.body or element.heading)"
+  - "there is no video context ancestor (element will render nothing useful)"
+
+axes:
+  - name: format
+    fields: [format]
+    note: 'time format string e.g. "mm:ss" — component default if omitted'
+  - name: typography
+    fields: [level, wordWrap]
+  - name: style
+    fields: [style]
+
+covers:
+  - description: "Current-time readout inside a video player overlay"
+    example: content/presets/video-time-display.json
+    minimal: true
+
+does_not_cover:
+  - what: "Scroll-driven progress bar"
+    use_instead: element.scrollProgressBar
+  - what: "Video seek/scrub slider"
+    use_instead: element.range
+  - what: "Static timestamp copy"
+    use_instead: element.body
+
+composes_with:
+  parents: [module.*, section.column]
+  siblings_typical: [element.range, element.videoQualitySelect, element.button]
+  motion: "external — motionTiming applied by parent wrapper"
+
+known_limitations:
+  - "Requires a VideoControlContext ancestor — renders nothing if no video context is present"
+  - "format field is passed directly to the time formatter; invalid strings may display unexpectedly"
+
+proposal_hints:
+  new_variant_value: "N/A — no variant field on element.videoTime"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

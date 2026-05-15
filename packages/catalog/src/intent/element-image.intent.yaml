@@ -1,0 +1,68 @@
+id: element.image
+kind: cluster
+package: "@pb/contracts"
+schema_ref: elementImageSchema
+runtime_ref: "@pb/runtime-react/page-builder/elements/ElementImage"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  Anything where the content IS a still raster image — product shots, hero art,
+  inline figures. Renderer treats the image as the primary surface.
+
+not_this_if:
+  - "the asset is a video file (mp4, hls, dash)"
+  - "the asset is vector (svg, lottie, rive)"
+  - "the image is a section background fill, not foreground content"
+
+axes:
+  - name: variant
+    fields: [variant]
+    note: "presentational preset key — maps to runtime defaults for fit/aspect/animation"
+  - name: fit
+    fields: [objectFit, objectPosition, aspectRatio]
+    responsive: true
+  - name: framing
+    fields: [imageCrop, rotate, flipHorizontal, flipVertical]
+  - name: filter
+    fields: [imageFilters, fillOpacity]
+  - name: loading
+    fields: [loading, decoding, srcSet, sizes]
+  - name: interactivity
+    fields: [link]
+
+covers:
+  - description: "Hero image, full-bleed, focal-point cover crop"
+    example: content/presets/hero-image.json
+  - description: "Inline figure with srcSet for art direction"
+    example: content/presets/inline-figure.json
+
+does_not_cover:
+  - what: "Animated raster (GIF playback, video loops)"
+    use_instead: element.video
+  - what: "Vector or animated SVG"
+    use_instead: element.svg
+  - what: "Section background fill"
+    use_instead: background.image
+
+composes_with:
+  parents:
+    - section.column
+    - section.column-grid
+    - section.content-block
+    - module.*
+  siblings_typical:
+    - element.heading
+    - element.body
+    - element.button
+  motion: "external — motionTiming is applied by the parent wrapper, not this schema"
+
+known_limitations:
+  - "imageRotation is legacy; use rotate"
+  - "imageCrop focal points are metadata only — they do not transform pixels"
+  - "No <picture> art-direction switching; srcSet/sizes only"
+
+proposal_hints:
+  new_variant_value: extend_cluster
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify carefully before adding an axis"

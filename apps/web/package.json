@@ -1,0 +1,38 @@
+{
+  "name": "@peblor/web",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@pb/contracts": "1.0.0",
+    "@pb/core": "1.0.0",
+    "@pb/runtime-react": "1.0.0",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
+    "chokidar": "^5.0.0",
+    "culori": "^4.0.2",
+    "framer-motion": "^12.38.0",
+    "hls.js": "^1.6.16",
+    "next": "^16.2.4",
+    "react": "19.2.6",
+    "react-dom": "^19.2.5",
+    "three": "^0.184.0",
+    "tsx": "^4.21.0",
+    "zod": "4.4.2"
+  },
+  "scripts": {
+    "dev": "npm run generate-json-schemas && npm run generate-protected-slugs && npm run download-webfonts && set -a && [ -f ../../.env ] && . ../../.env || true && set +a && export ENABLE_DEV_API=\"${ENABLE_DEV_API:-1}\" && ../../node_modules/.bin/next dev",
+    "build": "npm run generate-protected-slugs && npm run download-webfonts && set -a && [ -f ../../.env ] && . ../../.env || true && set +a && ../../node_modules/.bin/next build",
+    "start": "set -a && [ -f ../../.env ] && . ../../.env || true && set +a && ../../node_modules/.bin/next start",
+    "download-webfonts": "tsx ../../scripts/download-webfonts.ts",
+    "generate-protected-slugs": "tsx ../../scripts/generate-protected-slugs.ts",
+    "type-check": "tsc --noEmit -p tsconfig.json",
+    "lint": "eslint . --max-warnings 0",
+    "lint:boundaries": "eslint ../../packages/core/src/internal ../../packages/runtime-react/src/peblor/elements src/core src/app/layout.tsx --max-warnings 0 && tsx ../../scripts/check-boundaries.ts",
+    "generate-json-schemas": "tsx ../../scripts/generate-json-schemas.ts && prettier --write ../../content/schemas/peblor.schema.json ../../content/schemas/definition-block.schema.json ../../content/schemas/definitions-file.schema.json ../../content/schemas/module.schema.json",
+    "validate-pages": "tsx ../../scripts/validate-pages.ts",
+    "list-assets": "tsx ../../scripts/list-peblor-assets.ts"
+  },
+  "devDependencies": {
+    "@next/bundle-analyzer": "^16.2.4"
+  }
+}

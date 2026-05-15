@@ -1,0 +1,16 @@
+{
+  "type": "contentBlock",
+  "id": "section_parallax_example",
+  "scrollSpeed": 0.5,
+  "initialY": "0px",
+  "fill": "var(--color-surface)",
+  "elements": [
+    {
+      "type": "elementHeading",
+      "id": "parallax_heading",
+      "level": 1,
+      "text": "Slow Reveal",
+      "motionTiming": { "entrancePreset": "fade" }
+    }
+  ]
+}

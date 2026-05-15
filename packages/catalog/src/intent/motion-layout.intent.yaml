@@ -1,0 +1,53 @@
+id: motion.layout
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+schema_ref: motionPropsSchema
+
+feels_like: >
+  Enables Framer Motion layout animations — smooth automatic transitions of
+  position and size when an element's layout changes. Use layoutId to share
+  an animated identity between two elements (shared layout), or enable layout
+  animation on a single element that resizes or repositions. Works on any
+  element or section via motionPropsSchema.
+
+not_this_if:
+  - "you need entrance/exit animations (use motionTiming.entrancePreset / exitPreset)"
+  - "you need scroll-driven animation (use trigger.onViewportProgress)"
+  - "you need gesture-based animation (use motion.whileHover / motion.whileTap)"
+
+axes:
+  - name: layout-anim
+    fields: [layout, layoutId, layoutDependency, layoutScroll, layoutRoot]
+    note: "layoutId enables shared element transitions between two elements"
+
+does_not_cover:
+  - what: "Entrance or exit animation presets"
+    use_instead: "motionTiming.entrancePreset"
+  - what: "Scroll-progress-driven animation"
+    use_instead: trigger.onViewportProgress
+  - what: "Gesture-based visual feedback"
+    use_instead: motion.whileHover
+  - what: "CSS transitions for layout"
+    use_instead: "external — use CSS transition on the element wrapper"
+
+covers:
+  - description: "Two images sharing a layoutId for a smooth crossfade-reposition transition"
+    example: content/presets/motion-layout.json
+
+composes_with:
+  parents: [section.*, element.*]
+  siblings_typical: [motion.whileHover, motionTiming.entrancePreset]
+  motion: "layout, layoutId, layoutScroll, layoutRoot on motionProps"
+
+known_limitations:
+  - "layoutId must be unique per shared element pair — duplicate ids on three elements is undefined"
+  - "layoutScroll hooks into scroll container for correct position tracking"
+  - "layoutRoot isolates layout animation scope — use when nested layouts conflict"
+
+proposal_hints:
+  new_variant_value: "N/A — motion animation, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

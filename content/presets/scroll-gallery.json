@@ -1,0 +1,18 @@
+{
+  "type": "scrollContainer",
+  "scrollDirection": "horizontal",
+  "scrollProgressTrigger": {
+    "id": "gallery_scroll",
+    "start": 0,
+    "end": 1
+  },
+  "overflow": "hidden",
+  "width": "100%",
+  "height": "100vh",
+  "elements": [],
+  "motionTiming": {
+    "triggerMode": "onVisible",
+    "motion": "fade",
+    "motionDuration": 0.5
+  }
+}

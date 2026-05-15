@@ -1,0 +1,13 @@
+{
+  "name": "@pb/dev-tools-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx server.ts",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "tsx": "^4.21.0"
+  }
+}

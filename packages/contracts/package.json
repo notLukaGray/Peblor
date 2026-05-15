@@ -1,0 +1,32 @@
+{
+  "name": "@pb/contracts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./types": "./src/peblor-types-inferred.ts",
+    "./validate-compiled": "./src/validate-compiled.ts",
+    "./capability-schemas": "./src/capability-schemas.ts",
+    "./version": "./src/version.ts",
+    "./core/lib/*": "./src/core/lib/*.ts",
+    "./peblor/background/motion/*": "./src/peblor/background/motion/*.ts",
+    "./peblor/core/*": "./src/peblor/core/*.ts",
+    "./peblor/core/peblor-schemas/*": "./src/peblor/core/peblor-schemas/*.ts",
+    "./analytics": "./src/analytics/index.ts"
+  },
+  "files": [
+    "src",
+    "dist",
+    "fixtures"
+  ],
+  "scripts": {
+    "type-check": "tsc --noEmit -p tsconfig.json",
+    "generate-schemas": "tsx scripts/generate-schemas.ts"
+  },
+  "dependencies": {
+    "ajv": "^8.20.0",
+    "ajv-formats": "3.0.1",
+    "zod": "4.4.2"
+  }
+}
