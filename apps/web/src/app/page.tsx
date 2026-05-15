@@ -47,9 +47,11 @@ async function buildContentPageMaps(): Promise<{
   );
   for (const { page, data } of pageRecords) {
     const href = `/${page.slugSegments.join("/")}`;
-    const contentSlug =
+    const fullSlug = page.slugSegments.join("/");
+    hrefBySlug.set(fullSlug, href);
+    const shortSlug =
       typeof data?.slug === "string" ? data.slug : page.slugSegments[page.slugSegments.length - 1];
-    if (contentSlug) hrefBySlug.set(contentSlug, href);
+    if (shortSlug && shortSlug !== fullSlug) hrefBySlug.set(shortSlug, href);
     const ogImage = typeof data?.ogImage === "string" ? data.ogImage : null;
     if (ogImage) ogImageByHref.set(href, ogImage);
   }

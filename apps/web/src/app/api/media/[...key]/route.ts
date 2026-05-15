@@ -4,6 +4,7 @@ import {
   validateAssetKey,
   getSignedCdnUrl,
 } from "@pb/core/lib/cdn-asset-server";
+import { initCoreGlobalsFromContent } from "@pb/core/lib/globals-init";
 import { buildProxyUrl } from "@/core/lib/proxy-url";
 import { normalizeImageTransformParams } from "@pb/core/lib/cdn-image-params";
 
@@ -164,6 +165,9 @@ export async function GET(
   { params }: { params: Promise<{ key: string[] }> }
 ): Promise<NextResponse> {
   try {
+    // Ensure CDN globals are initialized (layout.bootstrapCore may not run for API-only requests).
+    initCoreGlobalsFromContent();
+
     let keySegments: string[];
     try {
       const resolvedParams = await params;
@@ -252,6 +256,7 @@ export async function GET(
     // directly from Bunny. Vercel serves only this tiny redirect, not the asset bytes.
     return buildRedirectResponse(cdnUrl);
   } catch (_error) {
+    console.error("[api/media] Error serving asset:", _error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

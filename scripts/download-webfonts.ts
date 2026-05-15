@@ -118,10 +118,24 @@ async function main(): Promise<void> {
   if (fs.existsSync(FLAG_FILE) && fs.existsSync(CSS_FILE)) {
     const flag = fs.readFileSync(FLAG_FILE, "utf-8");
     if (flag.includes(`SELF_HOSTED = true`) && flag.includes(configHash)) {
+      // Verify font files actually exist on disk (they may be missing on Vercel
+      // since public/font/self-hosted/ is gitignored).
+      let hasFontFiles = false;
+      try {
+        const entries = fs.readdirSync(FONT_OUT_DIR);
+        hasFontFiles = entries.some((e) => e.endsWith(".woff2"));
+      } catch {
+        // Directory doesn't exist — need to re-download.
+      }
+      if (hasFontFiles) {
+        console.log(
+          "[download-webfonts] Fonts already self-hosted (config hash unchanged) — skipping."
+        );
+        return;
+      }
       console.log(
-        "[download-webfonts] Fonts already self-hosted (config hash unchanged) — skipping."
+        "[download-webfonts] Config hash unchanged but font files missing — re-downloading."
       );
-      return;
     }
   }
 
