@@ -1,0 +1,17 @@
+{
+  "name": "@pb/pb-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "type-check": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@pb/catalog": "1.0.0",
+    "@pb/contracts": "1.0.0",
+    "@pb/core": "1.0.0",
+    "@pb/sdk": "1.0.0"
+  }
+}

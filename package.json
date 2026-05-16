@@ -24,6 +24,7 @@
     "prepare": "command -v husky >/dev/null 2>&1 && husky || true",
     "prepare:commit": "bash scripts/prepare-commit.sh",
     "pb-cli": "tsx tools/pb-cli/src/index.ts",
+    "pb-mcp": "tsx tools/pb-mcp/src/index.ts",
     "contracts:generate-schemas": "npm run generate-schemas --workspace @pb/contracts",
     "catalog:build": "npm run catalog:build --workspace @pb/catalog",
     "catalog:build:ci": "npm run catalog:build:ci --workspace @pb/catalog",

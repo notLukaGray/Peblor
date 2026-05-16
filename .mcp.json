@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "peblor": {
+      "command": "npm",
+      "args": ["run", "pb-mcp"]
+    }
+  }
+}
