@@ -141,14 +141,16 @@ export function ElementEntranceWrapper({
   const { initial, animate, transition, viewportAmount, viewportOnce, whileHover, whileTap } =
     effectiveResolved;
   const trigger = motionTiming?.trigger ?? "onFirstVisible";
+  const bypassInViewShortcut = trigger === "onMount";
 
   const restAfterEntrance: Record<string, unknown> =
     finalTargetFromAnimate(animate) ??
     (animate && typeof animate === "object" && !Array.isArray(animate)
       ? (animate as Record<string, unknown>)
       : {});
-  const effectiveInitial = skip || viewOnMount === true ? { ...restAfterEntrance } : initial;
-  const effectiveTransition = skip || viewOnMount === true ? { duration: 0 } : transition;
+  const shouldShortcutToRest = !bypassInViewShortcut && viewOnMount === true;
+  const effectiveInitial = skip || shouldShortcutToRest ? { ...restAfterEntrance } : initial;
+  const effectiveTransition = skip || shouldShortcutToRest ? { duration: 0 } : transition;
 
   // Only clip when scale is genuinely non-unity — "scale": 1 is the default no-op value
   // and should not cause overflow:hidden (which clips descenders and outlines).

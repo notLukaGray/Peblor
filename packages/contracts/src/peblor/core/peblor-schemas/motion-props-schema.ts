@@ -131,6 +131,10 @@ const baseTransitionSchema = z.object({
   stiffness: z.number().optional(),
   damping: z.number().optional(),
   mass: z.number().optional(),
+  repeat: z.number().min(0).optional(),
+  repeatType: z.enum(["loop", "reverse", "mirror"]).optional(),
+  repeatDelay: z.number().min(0).optional(),
+  times: z.array(z.number().min(0).max(1)).optional(),
 });
 
 const layoutTransitionSchema = baseTransitionSchema.optional();

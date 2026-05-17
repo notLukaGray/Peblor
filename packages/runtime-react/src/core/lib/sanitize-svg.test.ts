@@ -2,6 +2,15 @@ import { describe, expect, it, vi } from "vitest";
 import { sanitizeSvgMarkup, sanitizeSvgMarkupServer } from "./sanitize-svg";
 
 describe("sanitizeSvgMarkup (browser path)", () => {
+  it("preserves safe SVG animation tags", () => {
+    const input =
+      '<svg viewBox="0 0 10 10"><rect width="10" height="10" fill="#fff"><animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite"/></rect></svg>';
+    const output = sanitizeSvgMarkup(input);
+    expect(output).toContain("<animate");
+    expect(output).toContain('attributeName="opacity"');
+    expect(output).toContain('repeatCount="indefinite"');
+  });
+
   it("preserves style attributes but strips dangerous values", () => {
     const input =
       '<svg viewBox="0 0 10 10"><rect width="10" height="10" style="fill:url(javascript:alert(1))" /></svg>';
@@ -26,9 +35,27 @@ describe("sanitizeSvgMarkup (browser path)", () => {
     expect(output).not.toContain("https://evil.example");
     expect(output).not.toContain("clip-path:url(#g)");
   });
+
+  it("preserves animateMotion + mpath local href refs", () => {
+    const input =
+      '<svg viewBox="0 0 20 20"><path id="p" d="M2 10 L18 10"/><circle r="2"><animateMotion dur="2s" repeatCount="indefinite"><mpath href="#p"/></animateMotion></circle></svg>';
+    const output = sanitizeSvgMarkup(input);
+    expect(output).toContain("<animatemotion");
+    expect(output).toContain("<mpath");
+    expect(output).toContain('href="#p"');
+  });
 });
 
 describe("sanitizeSvgMarkupServer (SSR path)", () => {
+  it("preserves safe SVG animation tags in SSR", () => {
+    const input =
+      '<svg viewBox="0 0 10 10"><rect width="10" height="10"><animateTransform attributeName="transform" type="rotate" from="0 5 5" to="360 5 5" dur="4s" repeatCount="indefinite"/></rect></svg>';
+    const output = sanitizeSvgMarkupServer(input);
+    expect(output).toContain("<animatetransform");
+    expect(output).toContain('attributeName="transform"');
+    expect(output).toContain('type="rotate"');
+  });
+
   it("returns sanitized markup in Node, not empty string", () => {
     const input =
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">' +
@@ -57,6 +84,15 @@ describe("sanitizeSvgMarkupServer (SSR path)", () => {
     const output = sanitizeSvgMarkupServer(input);
     expect(output).toContain('clip-path="url(#c)"');
     expect(output).not.toContain("https://evil.example");
+  });
+
+  it("preserves animateMotion + mpath local href refs in SSR", () => {
+    const input =
+      '<svg viewBox="0 0 20 20"><path id="p" d="M2 10 L18 10"/><circle r="2"><animateMotion dur="2s" repeatCount="indefinite"><mpath href="#p"/></animateMotion></circle></svg>';
+    const output = sanitizeSvgMarkupServer(input);
+    expect(output).toContain("<animatemotion");
+    expect(output).toContain("<mpath");
+    expect(output).toContain('href="#p"');
   });
 
   it("returns empty for empty input", () => {

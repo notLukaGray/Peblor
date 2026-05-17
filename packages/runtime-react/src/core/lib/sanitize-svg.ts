@@ -25,6 +25,11 @@ export const TAGS_ALLOWED = new Set([
   "stop",
   "title",
   "desc",
+  "animate",
+  "animatetransform",
+  "animatemotion",
+  "set",
+  "mpath",
 ]);
 
 /** Allowlist of safe attribute names (lowercase, no xlink prefix, no hyphens). */
@@ -68,6 +73,32 @@ export const ATTRS_ALLOWED = new Set([
   "stopcolor",
   "stopopacity",
   "strokemiterlimit",
+  "href",
+  "xlinkhref",
+  "attributename",
+  "attributetype",
+  "from",
+  "to",
+  "by",
+  "values",
+  "keytimes",
+  "keysplines",
+  "calcmode",
+  "begin",
+  "dur",
+  "end",
+  "repeatcount",
+  "repeatdur",
+  "additive",
+  "accumulate",
+  "restart",
+  "min",
+  "max",
+  "path",
+  "keypoints",
+  "rotate",
+  "type",
+  "origin",
 ]);
 
 const SHAPE_TAGS = new Set(["path", "circle", "rect", "ellipse", "polygon", "polyline", "line"]);
@@ -119,6 +150,9 @@ export function sanitizeAttrValue(
     attrName === "href" ||
     attrName === "xlink:href"
   ) {
+    if (isSafeLocalSvgUrlRef(value)) {
+      return value.replace(/"/g, "&quot;").replace(/</g, "&lt;");
+    }
     const result = resolveAuthoredUrl(value, "any");
     if (!result.ok) return null;
     return result.url.replace(/"/g, "&quot;").replace(/</g, "&lt;");

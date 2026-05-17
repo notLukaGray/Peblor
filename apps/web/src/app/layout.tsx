@@ -173,6 +173,7 @@ export default async function RootLayout({
       <head>
         <script
           nonce={nonce}
+          suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html:
               '(function(){var d=document.documentElement;var t=d.dataset.pbForcedTheme||localStorage.getItem("theme");d.className+=" "+(t==="light"?"light":"dark");d.style.colorScheme=t==="light"?"light":"dark"})();',
