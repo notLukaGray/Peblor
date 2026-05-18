@@ -1,5 +1,14 @@
 {
-  "transition": {
-    "duration": 0.01
-  }
+  "type": "contentBlock",
+  "id": "section_reduce_motion_example",
+  "reduceMotion": true,
+  "parallax": 0,
+  "elements": [
+    {
+      "type": "elementHeading",
+      "id": "reduce_motion_heading",
+      "level": 2,
+      "text": "Accessible motion"
+    }
+  ]
 }

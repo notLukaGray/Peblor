@@ -1,3 +1,5 @@
 {
-  "layout": true
+  "layout": true,
+  "layoutId": "gallery-card",
+  "layoutScroll": true
 }

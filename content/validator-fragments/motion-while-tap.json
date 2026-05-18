@@ -1,5 +1,10 @@
 {
   "whileTap": {
-    "scale": 0.98
+    "scale": 0.98,
+    "opacity": 0.92
+  },
+  "transition": {
+    "stiffness": 280,
+    "damping": 22
   }
 }
