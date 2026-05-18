@@ -1,9 +1,0 @@
-{
-  "type": "triggerSection",
-  "id": "trigger_fade_in_example",
-  "trigger": { "type": "onVisible" },
-  "actions": [{ "type": "setVariant", "target": "chip", "value": "visible" }],
-  "threshold": 0.3,
-  "triggerOnce": true,
-  "rootMargin": "0px 0px -50px 0px"
-}

@@ -32,7 +32,7 @@ axes:
 
 covers:
   - description: "Video volume slider wired to VideoControlContext"
-    example: content/presets/volume-range.json
+    example: content/validator-fragments/volume-range.json
 
 does_not_cover:
   - what: "Discrete yes/no toggle"

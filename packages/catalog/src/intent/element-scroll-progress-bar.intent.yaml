@@ -25,7 +25,7 @@ axes:
 
 covers:
   - description: "Reading progress bar with accent fill and offset scroll configuration"
-    example: content/presets/reading-progress-bar.json
+    example: content/validator-fragments/reading-progress-bar.json
 
 does_not_cover:
   - what: "Video seek / scrub slider"

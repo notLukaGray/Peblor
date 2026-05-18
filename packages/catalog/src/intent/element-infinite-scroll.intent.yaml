@@ -63,9 +63,9 @@ axes:
 
 covers:
   - description: "Horizontal card carousel with active-scale and snap-center"
-    example: content/presets/card-carousel.json
+    example: content/validator-fragments/card-carousel.json
   - description: "Vertical media gallery with selected-index binding"
-    example: content/presets/media-gallery-scroll.json
+    example: content/validator-fragments/media-gallery-scroll.json
 
 does_not_cover:
   - what: "Scrollable section with scroll-progress triggers"

@@ -35,7 +35,7 @@ axes:
 
 covers:
   - description: "Single product model with orbit camera and HDR environment"
-    example: content/presets/product-model3d.json
+    example: content/validator-fragments/product-model3d.json
 
 does_not_cover:
   - what: "2D raster image or photo"

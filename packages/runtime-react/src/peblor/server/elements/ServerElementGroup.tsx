@@ -96,6 +96,10 @@ export function ServerElementGroup({
       pbContentGuidelines.frameAlignItemsDefault
   );
   const resolvedGapValue = resolveResponsiveValue(gap, isMobile);
+  const resolvedPaddingTop = resolveResponsiveValue(paddingTop, isMobile);
+  const resolvedPaddingRight = resolveResponsiveValue(paddingRight, isMobile);
+  const resolvedPaddingBottom = resolveResponsiveValue(paddingBottom, isMobile);
+  const resolvedPaddingLeft = resolveResponsiveValue(paddingLeft, isMobile);
   const resolvedJustifyContent = peblorJustifyContentForGap(
     normalizeFlexJustifyContentValue(
       coalesceEmptyString(resolveResponsiveValue(justifyContent, isMobile)) ??
@@ -132,10 +136,10 @@ export function ServerElementGroup({
     ...(resolveResponsiveValue(padding, isMobile) != null
       ? { padding: resolveResponsiveValue(padding, isMobile) }
       : {}),
-    ...(paddingTop != null ? { paddingTop } : {}),
-    ...(paddingRight != null ? { paddingRight } : {}),
-    ...(paddingBottom != null ? { paddingBottom } : {}),
-    ...(paddingLeft != null ? { paddingLeft } : {}),
+    ...(resolvedPaddingTop != null ? { paddingTop: resolvedPaddingTop } : {}),
+    ...(resolvedPaddingRight != null ? { paddingRight: resolvedPaddingRight } : {}),
+    ...(resolvedPaddingBottom != null ? { paddingBottom: resolvedPaddingBottom } : {}),
+    ...(resolvedPaddingLeft != null ? { paddingLeft: resolvedPaddingLeft } : {}),
     ...(!hasExplicitPadding
       ? { padding: scaleSpaceShorthandForDensity(pbContentGuidelines.framePaddingDefault) }
       : {}),

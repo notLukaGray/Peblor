@@ -52,7 +52,7 @@ does_not_cover:
 
 covers:
   - description: "Stat counter that counts from 0 to 1500 on scroll with comma separator and plus suffix"
-    example: content/presets/element-counter.json
+    example: content/validator-fragments/element-counter.json
     minimal: true
 
 composes_with:

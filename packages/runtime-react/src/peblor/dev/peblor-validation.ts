@@ -1,7 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
-import { z } from "zod";
-import { peblorSchema } from "@pb/contracts/peblor/core/peblor-schemas";
+import { validatePage as validatePageInCore } from "@pb/core";
 import {
   loadPeblorAsync,
   loadPeblorByPathAsync,
@@ -20,15 +19,6 @@ export interface ValidationResult {
   valid: boolean;
   errors: string[];
 }
-
-type IssuePathPart = string | number | symbol;
-
-type FlattenedIssue = {
-  code: string;
-  path: string;
-  message: string;
-  branchTrail: string[];
-};
 
 const PAGE_DATA_DIR = CORE_PAGE_DATA_DIR ?? path.join(CORE_CONTENT_DIR ?? process.cwd(), "pages");
 
@@ -55,126 +45,26 @@ async function validatePage(slug: string): Promise<ValidationResult> {
   if (!page) {
     return { slug, valid: false, errors: ["Page file not found or could not be loaded"] };
   }
-  const result = peblorSchema.safeParse(page);
-  if (result.success) return { slug, valid: true, errors: [] };
+  const result = validatePageInCore(page);
+  if (result.valid) return { slug, valid: true, errors: [] };
   const errors: string[] = [];
   const seen = new Set<string>();
-  for (const issue of result.error.issues) {
-    for (const detail of flattenZodIssue(issue, [], [], page)) {
-      const sourceHint = getSourceHint(slug, detail.path);
-      const key = `${detail.code}|${detail.path}|${detail.message}|${detail.branchTrail.join(">")}|${sourceHint ?? ""}`;
-      if (seen.has(key)) continue;
-      seen.add(key);
-      const pathPrefix = detail.path ? `${detail.path}: ` : "";
-      const codePrefix = `[${detail.code}] `;
-      const branchPrefix =
-        detail.branchTrail.length > 0 ? `${detail.branchTrail.join(" > ")}: ` : "";
-      const sourceSuffix = sourceHint ? ` (${sourceHint})` : "";
-      errors.push(`${pathPrefix}${codePrefix}${branchPrefix}${detail.message}${sourceSuffix}`);
-    }
+  for (const diagnostic of result.diagnostics) {
+    const sourceHint = getSourceHint(slug, diagnostic.path);
+    const key = `${diagnostic.code}|${diagnostic.path}|${diagnostic.message}|${sourceHint ?? ""}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const pathPrefix = diagnostic.path && diagnostic.path !== "$" ? `${diagnostic.path}: ` : "";
+    const codePrefix = `[${diagnostic.code}] `;
+    const sourceSuffix = sourceHint ? ` (${sourceHint})` : "";
+    errors.push(`${pathPrefix}${codePrefix}${diagnostic.message}${sourceSuffix}`);
   }
   return { slug, valid: false, errors };
 }
 
-function flattenZodIssue(
-  issue: z.ZodIssue,
-  inheritedPath: IssuePathPart[] = [],
-  branchTrail: string[] = [],
-  rootValue?: unknown
-): FlattenedIssue[] {
-  const fullPath = [...inheritedPath, ...issue.path];
-
-  if (issue.code === "invalid_union" && "unionErrors" in issue) {
-    const unionIssue = issue as z.ZodIssue & {
-      unionErrors: ReadonlyArray<{ issues: z.ZodIssue[] }>;
-    };
-    const nested = unionIssue.unionErrors.flatMap(
-      (unionError: { issues: z.ZodIssue[] }, index: number) =>
-        unionError.issues.flatMap((nestedIssue: z.ZodIssue) =>
-          flattenZodIssue(nestedIssue, fullPath, [...branchTrail, `union[${index}]`], rootValue)
-        )
-    );
-    if (nested.length > 0) return nested;
-  }
-
-  const metadata = formatIssueMetadata(issue);
-  const hasPath = fullPath.length > 0;
-  const currentValue =
-    rootValue !== undefined && hasPath
-      ? getValueAtPath(
-          rootValue,
-          fullPath.map((p) => String(p))
-        )
-      : undefined;
-  const currentValuePart = hasPath
-    ? `current=${
-        currentValue === undefined
-          ? "undefined (likely missing in JSON)"
-          : safeJsonStringify(currentValue)
-      }`
-    : null;
-
-  const metaParts = [metadata, currentValuePart].filter((p) => p && p.length > 0) as string[];
-  const metaString = metaParts.length > 0 ? ` (${metaParts.join(", ")})` : "";
-  const message = (issue.message || "Validation failed") + metaString;
-
-  return [
-    {
-      code: issue.code,
-      path: fullPath.map((p) => String(p)).join("."),
-      message,
-      branchTrail,
-    },
-  ];
-}
-
-function getValueAtPath(root: unknown, pathParts: string[]): unknown {
-  let current: unknown = root;
-
-  for (const part of pathParts) {
-    if (current == null) return undefined;
-
-    const isArrayIndex = Number.isInteger(Number(part));
-    if (isArrayIndex) {
-      if (!Array.isArray(current)) return undefined;
-      const index = Number(part);
-      current = current[index];
-    } else if (typeof current === "object") {
-      const record = current as Record<string, unknown>;
-      current = record[part];
-    } else {
-      return undefined;
-    }
-  }
-
-  return current;
-}
-
-function safeJsonStringify(value: unknown): string {
-  try {
-    return JSON.stringify(value);
-  } catch {
-    return String(value);
-  }
-}
-
-function formatIssueMetadata(issue: z.ZodIssue): string | null {
-  const parts: string[] = [];
-  const i = issue as unknown as Record<string, unknown>;
-  if (typeof i.expected === "string") parts.push(`expected=${i.expected}`);
-  if (typeof i.received === "string") parts.push(`received=${i.received}`);
-  if (typeof i.discriminator === "string") parts.push(`discriminator=${i.discriminator}`);
-  if (Array.isArray(i.values) && i.values.length > 0) {
-    const values = i.values.map((v) => JSON.stringify(v)).join("|");
-    parts.push(`allowed=${values}`);
-  }
-  if (typeof i.minimum === "number") parts.push(`minimum=${i.minimum}`);
-  if (typeof i.maximum === "number") parts.push(`maximum=${i.maximum}`);
-  return parts.length > 0 ? parts.join(", ") : null;
-}
-
 function getSourceHint(slug: string, errorPath: string): string | null {
-  const parts = errorPath.split(".").filter(Boolean);
+  const normalizedPath = errorPath.startsWith("$.") ? errorPath.slice(2) : errorPath;
+  const parts = normalizedPath.split(".").filter(Boolean);
   if (parts[0] !== "definitions") return null;
   const topDefinitionKey = parts[1];
   if (!topDefinitionKey) return null;

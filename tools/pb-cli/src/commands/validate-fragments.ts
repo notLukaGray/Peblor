@@ -8,8 +8,9 @@ import { validateModuleValue } from "../lib/module-validate.js";
 import { readJsonFile } from "../lib/json-file.js";
 import { mapZodIssues } from "../lib/zod-diagnostics.js";
 import type { CommandIo } from "./types.js";
+import { validateFragmentValue } from "./validate-fragment.js";
 
-type Kind = "section" | "element" | "action" | "bg" | "module" | "overlay";
+type Kind = "section" | "element" | "action" | "bg" | "module" | "overlay" | "fragment";
 
 function listJsonFiles(dir: string): string[] {
   const out: string[] = [];
@@ -27,7 +28,7 @@ function listJsonFiles(dir: string): string[] {
 export async function runValidateFragments(args: string[], io: CommandIo): Promise<number> {
   if (args.includes("--help") || args.includes("-h")) {
     io.printText(
-      "Usage: pb-cli validate-fragments <dir> --kind <section|element|action|bg|module|overlay> [--json]"
+      "Usage: pb-cli validate-fragments <dir> --kind <section|element|action|bg|module|overlay|fragment> [--json]"
     );
     return 0;
   }
@@ -65,6 +66,7 @@ export async function runValidateFragments(args: string[], io: CommandIo): Promi
       };
     }
 
+    if (kind === "fragment") return { file, ...validateFragmentValue(read.value) };
     if (kind === "section") return { file, ...validateSectionValue(read.value) };
     if (kind === "element") return { file, ...validateElementValue(read.value) };
     if (kind === "bg") return { file, ...validateBgValue(read.value) };

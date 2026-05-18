@@ -35,7 +35,7 @@ does_not_cover:
 
 covers:
   - description: "Card that fades out when it leaves the viewport"
-    example: content/presets/motion-exit-trigger.json
+    example: content/validator-fragments/motion-exit-trigger.json
 
 composes_with:
   parents: [section.*, element.*]

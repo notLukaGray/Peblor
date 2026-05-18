@@ -20,7 +20,7 @@ axes:
 
 covers:
   - description: "Fade-out with 0.1 threshold and bottom root margin"
-    example: content/presets/trigger-fade-out.json
+    example: content/validator-fragments/trigger-fade-out.json
 
 does_not_cover:
   - what: "Trigger on viewport entry"

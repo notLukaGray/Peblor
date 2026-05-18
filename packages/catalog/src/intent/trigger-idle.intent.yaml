@@ -21,7 +21,7 @@ axes:
 
 covers:
   - description: "Video controls hide after 3s idle with onActive restore"
-    example: content/presets/trigger-idle-reset.json
+    example: content/validator-fragments/trigger-idle-reset.json
 
 does_not_cover:
   - what: "Fixed timer that fires regardless of user input"

@@ -20,7 +20,7 @@ axes:
 
 covers:
   - description: "Scrub start with pressed variant and scrubState active flag"
-    example: content/presets/trigger-pointer-down.json
+    example: content/validator-fragments/trigger-pointer-down.json
 
 does_not_cover:
   - what: "Full click (down + up)"

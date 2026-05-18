@@ -29,7 +29,7 @@ axes:
 
 covers:
   - description: "Inline decorative SVG wave with accessibility label"
-    example: content/presets/decorative-svg.json
+    example: content/validator-fragments/decorative-svg.json
 
 does_not_cover:
   - what: "SVG with theme-mapped fill tokens and hover states"

@@ -35,7 +35,7 @@ does_not_cover:
 
 covers:
   - description: "Hero section that fades from 0 to 1 opacity as it scrolls from 10% to 50% of viewport"
-    example: content/presets/section-scroll-opacity.json
+    example: content/validator-fragments/section-scroll-opacity.json
 
 composes_with:
   parents: [page]

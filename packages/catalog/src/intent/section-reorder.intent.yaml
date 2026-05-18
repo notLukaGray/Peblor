@@ -35,7 +35,7 @@ does_not_cover:
 
 covers:
   - description: "Reorderable vertical list with elastic snap on y-axis"
-    example: content/presets/section-reorder.json
+    example: content/validator-fragments/section-reorder.json
 
 composes_with:
   parents: [page]

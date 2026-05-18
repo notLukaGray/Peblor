@@ -43,9 +43,9 @@ axes:
 
 covers:
   - description: "Nav-style horizontal link with accent hover transition"
-    example: content/presets/nav-link.json
+    example: content/validator-fragments/nav-link.json
   - description: "Inline emphasis link with state color transitions"
-    example: content/presets/inline-link.json
+    example: content/validator-fragments/inline-link.json
 
 does_not_cover:
   - what: "Padded CTA pill or ghost button"

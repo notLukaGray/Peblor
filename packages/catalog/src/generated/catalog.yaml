@@ -1,5 +1,5 @@
 version: "1"
-generated_at: "2026-05-15T14:48:33.105Z"
+generated_at: "2026-05-18T14:02:41.383Z"
 entries:
   - id: background.image
     kind: cluster
@@ -22,7 +22,7 @@ entries:
           - image
     covers:
       - description: Static hero background photo with WebP asset
-        example: content/presets/bg-hero-image.json
+        example: content/validator-fragments/bg-hero-image.json
         minimal: true
     does_not_cover:
       - what: Looping ambient video backdrop
@@ -69,7 +69,7 @@ entries:
           - repeat
     covers:
       - description: Tiled dot-grid SVG background pattern
-        example: content/presets/bg-dot-pattern.json
+        example: content/validator-fragments/bg-dot-pattern.json
         minimal: true
     does_not_cover:
       - what: Full-bleed background image
@@ -131,7 +131,7 @@ entries:
           - progressRange
     covers:
       - description: Progress-mode crossfade from solid surface to background image on scroll
-        example: content/presets/bg-crossfade.json
+        example: content/validator-fragments/bg-crossfade.json
     does_not_cover:
       - what: Single static background (no crossfade)
         use_instead: background.image, background.video, or background.variable
@@ -180,7 +180,7 @@ entries:
         note: each layer has fill, blendMode, opacity, backgroundSize, backgroundPosition, motion[]
     covers:
       - description: Animated mesh gradient with loop motion and pointer-reactive radial glow
-        example: content/presets/bg-gradient.json
+        example: content/validator-fragments/bg-gradient.json
         minimal: true
     does_not_cover:
       - what: Raster photo background
@@ -234,7 +234,7 @@ entries:
           - overlay
     covers:
       - description: Hero section ambient video loop with color-mix overlay tint
-        example: content/presets/bg-hero-video.json
+        example: content/validator-fragments/bg-hero-video.json
     does_not_cover:
       - what: Static background image
         use_instead: background.image
@@ -307,7 +307,7 @@ entries:
         use_instead: external — use a custom integration
     covers:
       - description: Audio player with waveform visualization, time display, and format fallbacks
-        example: content/presets/element-audio.json
+        example: content/validator-fragments/element-audio.json
         minimal: true
     composes_with:
       parents:
@@ -373,9 +373,9 @@ entries:
           - maxLines
     covers:
       - description: Lead-size intro paragraph with accent color and refined letter spacing
-        example: content/presets/body-lead.json
+        example: content/validator-fragments/body-lead.json
       - description: Fine-print caption with secondary color and text-overflow ellipsis
-        example: content/presets/body-fine.json
+        example: content/validator-fragments/body-fine.json
     does_not_cover:
       - what: Headline, display, or label copy
         use_instead: element.heading
@@ -487,9 +487,9 @@ entries:
           - pointerUpAction
     covers:
       - description: Primary CTA button linking to a page section
-        example: content/presets/primary-button.json
+        example: content/validator-fragments/primary-button.json
       - description: Ghost icon-action button firing a page-builder action
-        example: content/presets/ghost-action-button.json
+        example: content/validator-fragments/ghost-action-button.json
     does_not_cover:
       - what: Inline hyperlink within a paragraph
         use_instead: element.link
@@ -585,7 +585,7 @@ entries:
         use_instead: element.group
     covers:
       - description: Stat counter that counts from 0 to 1500 on scroll with comma separator and plus suffix
-        example: content/presets/element-counter.json
+        example: content/validator-fragments/element-counter.json
         minimal: true
     composes_with:
       parents:
@@ -634,7 +634,7 @@ entries:
           - style
     covers:
       - description: Horizontal rule with responsive length and border theme token
-        example: content/presets/divider-horizontal.json
+        example: content/validator-fragments/divider-horizontal.json
     does_not_cover:
       - what: Invisible spacing gap
         use_instead: element.spacer
@@ -697,7 +697,7 @@ entries:
         use_instead: element.button
     covers:
       - description: Standalone date picker with label and placeholder
-        example: content/presets/element-form-field.json
+        example: content/validator-fragments/element-form-field.json
         minimal: true
     composes_with:
       parents:
@@ -770,9 +770,9 @@ entries:
           - effects
     covers:
       - description: Horizontal icon-label pair with flex row layout
-        example: content/presets/icon-label-group.json
+        example: content/validator-fragments/icon-label-group.json
       - description: Reorderable card list with gap and padding
-        example: content/presets/reorderable-group.json
+        example: content/validator-fragments/reorderable-group.json
     does_not_cover:
       - what: Full section with background fill and scroll triggers
         use_instead: section.contentBlock
@@ -852,9 +852,9 @@ entries:
           - maxLines
     covers:
       - description: Display-size hero title with gradient text fill
-        example: content/presets/hero-heading.json
+        example: content/validator-fragments/hero-heading.json
       - description: Section label at h3 level with custom letter spacing
-        example: content/presets/section-heading.json
+        example: content/validator-fragments/section-heading.json
     does_not_cover:
       - what: Multi-paragraph body copy
         use_instead: element.body
@@ -941,7 +941,7 @@ entries:
         use_instead: external — not supported in v1
     covers:
       - description: Horizontal before/after slider with center start, hover follow, and labels
-        example: content/presets/element-image-compare.json
+        example: content/validator-fragments/element-image-compare.json
         minimal: true
     composes_with:
       parents:
@@ -1004,9 +1004,9 @@ entries:
           - link
     covers:
       - description: Hero image, full-bleed, focal-point cover crop
-        example: content/presets/hero-image.json
+        example: content/validator-fragments/hero-image.json
       - description: Inline figure with srcSet for art direction
-        example: content/presets/inline-figure.json
+        example: content/validator-fragments/inline-figure.json
     does_not_cover:
       - what: Animated raster (GIF playback, video loops)
         use_instead: element.video
@@ -1097,9 +1097,9 @@ entries:
           - effects
     covers:
       - description: Horizontal card carousel with active-scale and snap-center
-        example: content/presets/card-carousel.json
+        example: content/validator-fragments/card-carousel.json
       - description: Vertical media gallery with selected-index binding
-        example: content/presets/media-gallery-scroll.json
+        example: content/validator-fragments/media-gallery-scroll.json
     does_not_cover:
       - what: Scrollable section with scroll-progress triggers
         use_instead: section.scrollContainer
@@ -1155,7 +1155,7 @@ entries:
           - ariaLabel
     covers:
       - description: Compact search input with icon and accessible label
-        example: content/presets/search-input.json
+        example: content/validator-fragments/search-input.json
     does_not_cover:
       - what: Form field with label, validation, and submit
         use_instead: section.formBlock
@@ -1237,9 +1237,9 @@ entries:
           - disabled
     covers:
       - description: Nav-style horizontal link with accent hover transition
-        example: content/presets/nav-link.json
+        example: content/validator-fragments/nav-link.json
       - description: Inline emphasis link with state color transitions
-        example: content/presets/inline-link.json
+        example: content/validator-fragments/inline-link.json
     does_not_cover:
       - what: Padded CTA pill or ghost button
         use_instead: element.button
@@ -1331,7 +1331,7 @@ entries:
         use_instead: element.svg
     covers:
       - description: Lottie animation with autoplay, 3 loops, bounce mode, hover-to-play, and color overrides
-        example: content/presets/element-lottie.json
+        example: content/validator-fragments/element-lottie.json
         minimal: true
     composes_with:
       parents:
@@ -1428,7 +1428,7 @@ entries:
         use_instead: section.column
     covers:
       - description: Text ticker scrolling right-to-left with gradient fade edges and hover pause
-        example: content/presets/element-marquee.json
+        example: content/validator-fragments/element-marquee.json
         minimal: true
     composes_with:
       parents:
@@ -1491,7 +1491,7 @@ entries:
           - initiallyLoaded
     covers:
       - description: Single product model with orbit camera and HDR environment
-        example: content/presets/product-model3d.json
+        example: content/validator-fragments/product-model3d.json
     does_not_cover:
       - what: 2D raster image or photo
         use_instead: element.image
@@ -1558,7 +1558,7 @@ entries:
           - ariaLabel
     covers:
       - description: Video volume slider wired to VideoControlContext
-        example: content/presets/volume-range.json
+        example: content/validator-fragments/volume-range.json
     does_not_cover:
       - what: Discrete yes/no toggle
         use_instead: element.button
@@ -1609,7 +1609,7 @@ entries:
           - wordWrap
     covers:
       - description: CMS-sourced rich text with bold, italic, and inline anchor formatting
-        example: content/presets/rich-text-body.json
+        example: content/validator-fragments/rich-text-body.json
     does_not_cover:
       - what: Uniform heading or label copy
         use_instead: element.heading
@@ -1695,9 +1695,9 @@ entries:
         use_instead: element.model3d
     covers:
       - description: Interactive Rive icon with hover-to-play and state machine input bindings
-        example: content/presets/rive-icon.json
+        example: content/validator-fragments/rive-icon.json
       - description: Rive animation with loop count, poster, and lifecycle events
-        example: content/presets/rive-animation.json
+        example: content/validator-fragments/rive-animation.json
         minimal: true
     composes_with:
       parents:
@@ -1743,7 +1743,7 @@ entries:
         note: offset is [start, end] in useScroll syntax e.g. ["start end", "end start"]
     covers:
       - description: Reading progress bar with accent fill and offset scroll configuration
-        example: content/presets/reading-progress-bar.json
+        example: content/validator-fragments/reading-progress-bar.json
     does_not_cover:
       - what: Video seek / scrub slider
         use_instead: element.range
@@ -1788,7 +1788,7 @@ entries:
         note: sm, md, lg — maps to pbBuilderDefaultsV1.elements.spacer height presets
     covers:
       - description: Medium vertical spacer between content groups
-        example: content/presets/spacer-md.json
+        example: content/validator-fragments/spacer-md.json
         minimal: true
     does_not_cover:
       - what: Visible dividing line between sections
@@ -1845,7 +1845,7 @@ entries:
           - ariaLabel
     covers:
       - description: Inline decorative SVG wave with accessibility label
-        example: content/presets/decorative-svg.json
+        example: content/validator-fragments/decorative-svg.json
     does_not_cover:
       - what: SVG with theme-mapped fill tokens and hover states
         use_instead: element.vector
@@ -1917,7 +1917,7 @@ entries:
         use_instead: external — use element.link with page routes
     covers:
       - description: Three-tab interface with pill variant, fade transitions, and lazy loading
-        example: content/presets/element-tabs.json
+        example: content/validator-fragments/element-tabs.json
         minimal: true
     composes_with:
       parents:
@@ -1996,7 +1996,7 @@ entries:
         use_instead: external — content is text-only in v1
     covers:
       - description: Tooltip with top auto-position, 300ms show delay, arrow, and fade animation
-        example: content/presets/element-tooltip.json
+        example: content/validator-fragments/element-tooltip.json
         minimal: true
     composes_with:
       parents:
@@ -2058,7 +2058,7 @@ entries:
       - description: Play-icon glyph with hover fill transition
         example: content/presets/video-controls.json
       - description: Shield logo mark with theme-mapped path fills and checkmark accent
-        example: content/presets/logo-vector.json
+        example: content/validator-fragments/logo-vector.json
     does_not_cover:
       - what: Raw SVG markup string without theme tokens
         use_instead: element.svg
@@ -2107,7 +2107,7 @@ entries:
           - style
     covers:
       - description: Quality picker inside an HLS player overlay
-        example: content/presets/video-quality-select.json
+        example: content/validator-fragments/video-quality-select.json
         minimal: true
     does_not_cover:
       - what: General-purpose dropdown or select control
@@ -2159,7 +2159,7 @@ entries:
           - style
     covers:
       - description: Current-time readout inside a video player overlay
-        example: content/presets/video-time-display.json
+        example: content/validator-fragments/video-time-display.json
         minimal: true
     does_not_cover:
       - what: Scroll-driven progress bar
@@ -2249,9 +2249,9 @@ entries:
           - link
     covers:
       - description: Hero reel, autoplay loop, full-bleed cover
-        example: content/presets/hero-video.json
+        example: content/validator-fragments/hero-video.json
       - description: Inline clip with poster and play button
-        example: content/presets/inline-video.json
+        example: content/validator-fragments/inline-video.json
     does_not_cover:
       - what: Still raster image
         use_instead: element.image
@@ -2313,7 +2313,7 @@ entries:
           - effects
     covers:
       - description: Contact form modal with form fields inside a contentBlock section
-        example: content/presets/contact-modal.json
+        example: content/validator-fragments/contact-modal.json
     does_not_cover:
       - what: In-flow expandable section
         use_instead: section.reveal
@@ -2385,7 +2385,7 @@ entries:
           - style
     covers:
       - description: Video player module with positioned controls overlay
-        example: content/presets/video-player-module.json
+        example: content/validator-fragments/video-player-module.json
     does_not_cover:
       - what: Plain content section with no player context
         use_instead: section.contentBlock
@@ -2436,7 +2436,7 @@ entries:
         note: "entrancePreset: 'blurIn' on motionTimingSchema"
     covers:
       - description: Background image that sharpens into focus on section entrance
-        example: content/presets/motion-blur-in.json
+        example: content/validator-fragments/motion-blur-in.json
     does_not_cover:
       - what: Plain opacity fade
         use_instead: motion.fade
@@ -2501,7 +2501,7 @@ entries:
         use_instead: motion.whileTap
     covers:
       - description: Draggable card with x-axis lock, parent constraints, and elastic snap
-        example: content/presets/motion-drag.json
+        example: content/validator-fragments/motion-drag.json
     composes_with:
       parents:
         - section.*
@@ -2556,7 +2556,7 @@ entries:
         use_instead: motionTiming.exitPreset
     covers:
       - description: Card that fades out when it leaves the viewport
-        example: content/presets/motion-exit-trigger.json
+        example: content/validator-fragments/motion-exit-trigger.json
     composes_with:
       parents:
         - section.*
@@ -2593,7 +2593,7 @@ entries:
         note: "entrancePreset: 'fade' on motionTimingSchema"
     covers:
       - description: Heading that fades in when scrolled into view
-        example: content/presets/motion-fade.json
+        example: content/validator-fragments/motion-fade.json
     does_not_cover:
       - what: Slide-up entrance with translate
         use_instead: motion.slideUp
@@ -2647,7 +2647,7 @@ entries:
         use_instead: motion.variants (variants, initialVariant, animateVariant)
     covers:
       - description: Content block that isolates its motion from the parent page's animation context
-        example: content/presets/motion-inherit.json
+        example: content/validator-fragments/motion-inherit.json
     composes_with:
       parents:
         - section.*
@@ -2703,7 +2703,7 @@ entries:
         use_instead: external — use CSS transition on the element wrapper
     covers:
       - description: Two images sharing a layoutId for a smooth crossfade-reposition transition
-        example: content/presets/motion-layout.json
+        example: content/validator-fragments/motion-layout.json
     composes_with:
       parents:
         - section.*
@@ -2742,7 +2742,7 @@ entries:
         note: "entrancePreset: 'popIn' on motionTimingSchema"
     covers:
       - description: Tag badge that pops in with a spring bounce
-        example: content/presets/motion-pop-in.json
+        example: content/validator-fragments/motion-pop-in.json
     does_not_cover:
       - what: Smooth linear scale entrance
         use_instead: motion.zoomIn
@@ -2797,7 +2797,7 @@ entries:
         use_instead: external — handle via variable conditions
     covers:
       - description: Hero section that respects reduced motion by skipping its parallax and entrance animation
-        example: content/presets/motion-reduce-motion.json
+        example: content/validator-fragments/motion-reduce-motion.json
     composes_with:
       parents:
         - section.*
@@ -2832,7 +2832,7 @@ entries:
         note: "entrancePreset: 'slideDown' on motionTimingSchema"
     covers:
       - description: Navigation bar that slides down from the top on page load
-        example: content/presets/motion-slide-down.json
+        example: content/validator-fragments/motion-slide-down.json
     does_not_cover:
       - what: Upward-sliding entrance
         use_instead: motion.slideUp
@@ -2874,7 +2874,7 @@ entries:
         note: "entrancePreset: 'slideLeft' on motionTimingSchema"
     covers:
       - description: Feature description panel that slides in from the right
-        example: content/presets/motion-slide-left.json
+        example: content/validator-fragments/motion-slide-left.json
     does_not_cover:
       - what: Rightward-sliding entrance
         use_instead: motion.slideRight
@@ -2916,7 +2916,7 @@ entries:
         note: "entrancePreset: 'slideRight' on motionTimingSchema"
     covers:
       - description: Media preview panel that slides in from the left
-        example: content/presets/motion-slide-right.json
+        example: content/validator-fragments/motion-slide-right.json
     does_not_cover:
       - what: Leftward-sliding entrance
         use_instead: motion.slideLeft
@@ -2958,7 +2958,7 @@ entries:
         note: "entrancePreset: 'slideUp' on motionTimingSchema"
     covers:
       - description: Card that slides up and fades in when it enters the viewport
-        example: content/presets/motion-slide-up.json
+        example: content/validator-fragments/motion-slide-up.json
     does_not_cover:
       - what: Plain opacity fade with no translate
         use_instead: motion.fade
@@ -3016,7 +3016,7 @@ entries:
         use_instead: trigger.onViewportProgress
     covers:
       - description: Content block where children fade in one by one with 0.1s stagger delay
-        example: content/presets/motion-stagger.json
+        example: content/validator-fragments/motion-stagger.json
     composes_with:
       parents:
         - section.*
@@ -3060,7 +3060,7 @@ entries:
         note: "entrancePreset: 'tiltIn' on motionTimingSchema"
     covers:
       - description: Feature card that tilts from perspective into flat position
-        example: content/presets/motion-tilt-in.json
+        example: content/validator-fragments/motion-tilt-in.json
     does_not_cover:
       - what: Flat translate slide
         use_instead: motion.slideUp / motion.slideLeft
@@ -3114,7 +3114,7 @@ entries:
         use_instead: motionTiming.entrancePreset (motion.fade, motion.slideUp, etc.)
     covers:
       - description: Heading that animates in on first viewport entry with fade preset
-        example: content/presets/motion-trigger.json
+        example: content/validator-fragments/motion-trigger.json
     composes_with:
       parents:
         - section.*
@@ -3161,7 +3161,7 @@ entries:
         use_instead: external — handle via modal or form focus management
     covers:
       - description: Input that scales to 1.02 with a glow effect when focused
-        example: content/presets/motion-while-focus.json
+        example: content/validator-fragments/motion-while-focus.json
     composes_with:
       parents:
         - section.*
@@ -3210,7 +3210,7 @@ entries:
         use_instead: motion.whileTap
     covers:
       - description: Image that scales to 1.05 on hover with a 0.2s transition
-        example: content/presets/motion-while-hover.json
+        example: content/validator-fragments/motion-while-hover.json
     composes_with:
       parents:
         - section.*
@@ -3260,7 +3260,7 @@ entries:
         use_instead: motion.whileHover
     covers:
       - description: CTA button that glows continuously while visible in viewport
-        example: content/presets/motion-while-in-view.json
+        example: content/validator-fragments/motion-while-in-view.json
     composes_with:
       parents:
         - section.*
@@ -3311,7 +3311,7 @@ entries:
         use_instead: motion.drag
     covers:
       - description: Button with press-scale 0.95 while-tap gesture
-        example: content/presets/motion-while-tap.json
+        example: content/validator-fragments/motion-while-tap.json
     composes_with:
       parents:
         - section.*
@@ -3348,7 +3348,7 @@ entries:
         note: "entrancePreset: 'zoomIn' on motionTimingSchema"
     covers:
       - description: Product image card that scales up on entrance
-        example: content/presets/motion-zoom-in.json
+        example: content/validator-fragments/motion-zoom-in.json
     does_not_cover:
       - what: Scale-down exit entrance
         use_instead: motion.zoomOut
@@ -3390,7 +3390,7 @@ entries:
         note: "entrancePreset: 'zoomOut' on motionTimingSchema"
     covers:
       - description: Hero section background image that zooms out on page load
-        example: content/presets/motion-zoom-out.json
+        example: content/validator-fragments/motion-zoom-out.json
     does_not_cover:
       - what: Scale-up entrance
         use_instead: motion.zoomIn
@@ -3483,9 +3483,9 @@ entries:
           - reduceMotion
     covers:
       - description: Two-column feature block, desktop side-by-side / mobile stacked
-        example: content/presets/two-column-feature.json
+        example: content/validator-fragments/two-column-feature.json
       - description: Three-column card grid with equal widths
-        example: content/presets/three-column-grid.json
+        example: content/validator-fragments/three-column-grid.json
     does_not_cover:
       - what: Single-column vertical or horizontal flex stack
         use_instead: section.contentBlock
@@ -3586,9 +3586,9 @@ entries:
           - elements
     covers:
       - description: Full-width hero with column flex layout
-        example: content/presets/hero-content-block.json
+        example: content/validator-fragments/hero-content-block.json
       - description: Reorderable card list with drag-y
-        example: content/presets/reorderable-card-list.json
+        example: content/validator-fragments/reorderable-card-list.json
     does_not_cover:
       - what: CSS grid with multiple named column tracks
         use_instead: section.column
@@ -3652,7 +3652,7 @@ entries:
           - motionTiming
     covers:
       - description: Responsive-height section spacer with border, blur, and fade-in motion
-        example: content/presets/section-spacer.json
+        example: content/validator-fragments/section-spacer.json
     does_not_cover:
       - what: Horizontal rule inside a content block
         use_instead: element.divider
@@ -3711,7 +3711,7 @@ entries:
         use_instead: boxShadow on baseSectionProps
     covers:
       - description: Content block with glass effect, drop shadow, and 8px border radius
-        example: content/presets/section-effects.json
+        example: content/validator-fragments/section-effects.json
     composes_with:
       parents:
         - section.*
@@ -3761,7 +3761,7 @@ entries:
         use_instead: external — no anchored tooltip cluster yet; use section.reveal with fixed
     covers:
       - description: Fixed bottom banner with a 16px offset from the bottom edge
-        example: content/presets/section-fixed.json
+        example: content/validator-fragments/section-fixed.json
     composes_with:
       parents:
         - page
@@ -3819,7 +3819,7 @@ entries:
         responsive: true
     covers:
       - description: Contact form with name/email/topic/message fields posted to /api/forms/contact
-        example: content/presets/contact-form.json
+        example: content/validator-fragments/contact-form.json
     does_not_cover:
       - what: Single input writing to a page-builder variable
         use_instead: element.input
@@ -3878,7 +3878,7 @@ entries:
         use_instead: scrollOpacityRange on baseSectionProps
     covers:
       - description: Hero section with scrollSpeed 0.5 for a slow-reveal parallax effect
-        example: content/presets/section-parallax.json
+        example: content/validator-fragments/section-parallax.json
     composes_with:
       parents:
         - page
@@ -3930,7 +3930,7 @@ entries:
         use_instead: section.column
     covers:
       - description: Reorderable vertical list with elastic snap on y-axis
-        example: content/presets/section-reorder.json
+        example: content/validator-fragments/section-reorder.json
     composes_with:
       parents:
         - page
@@ -3991,7 +3991,7 @@ entries:
           - revealedElements
     covers:
       - description: Click-to-expand FAQ section with vertical slide reveal
-        example: content/presets/faq-reveal.json
+        example: content/validator-fragments/faq-reveal.json
     does_not_cover:
       - what: Conditional visibility driven by a variable (no animation)
         use_instead: visibleWhen on section.contentBlock
@@ -4060,7 +4060,7 @@ entries:
           - elements
     covers:
       - description: Horizontal scroll gallery with named progress trigger and fade-in motion
-        example: content/presets/scroll-gallery.json
+        example: content/validator-fragments/scroll-gallery.json
     does_not_cover:
       - what: Snapping carousel with per-item scale and opacity
         use_instead: element.infiniteScroll
@@ -4121,7 +4121,7 @@ entries:
         use_instead: section.parallax
     covers:
       - description: Hero section that fades from 0 to 1 opacity as it scrolls from 10% to 50% of viewport
-        example: content/presets/section-scroll-opacity.json
+        example: content/validator-fragments/section-scroll-opacity.json
     composes_with:
       parents:
         - page
@@ -4172,7 +4172,7 @@ entries:
         use_instead: motionTiming.entrancePreset
     covers:
       - description: Sticky header that pins to the top with a 0px offset
-        example: content/presets/section-sticky.json
+        example: content/validator-fragments/section-sticky.json
     composes_with:
       parents:
         - page
@@ -4220,7 +4220,7 @@ entries:
           - delay
     covers:
       - description: Intersection trigger that sets a variable on viewport entry with threshold and rootMargin
-        example: content/presets/viewport-trigger.json
+        example: content/validator-fragments/viewport-trigger.json
     does_not_cover:
       - what: Section with visual children wired to visibility triggers
         use_instead: section.contentBlock
@@ -4276,7 +4276,7 @@ entries:
         use_instead: external — use element-level responsive visibility
     covers:
       - description: Section that only shows when showPromo variable equals 'true'
-        example: content/presets/section-visible-when.json
+        example: content/validator-fragments/section-visible-when.json
     composes_with:
       parents:
         - page
@@ -4312,7 +4312,7 @@ entries:
         note: array of { axis, action, throttleMs? } on baseSectionPropsSchema
     covers:
       - description: Cursor-x position bound to a parallax variable with 16ms throttle
-        example: content/presets/trigger-cursor-track.json
+        example: content/validator-fragments/trigger-cursor-track.json
     does_not_cover:
       - what: Click or tap trigger
         use_instead: trigger.onClick
@@ -4355,7 +4355,7 @@ entries:
         note: array of { idleAfterMs?, onIdle?, onActive? } on baseSectionPropsSchema
     covers:
       - description: Video controls hide after 3s idle with onActive restore
-        example: content/presets/trigger-idle-reset.json
+        example: content/validator-fragments/trigger-idle-reset.json
     does_not_cover:
       - what: Fixed timer that fires regardless of user input
         use_instead: trigger.timer
@@ -4402,7 +4402,7 @@ entries:
           baseSectionPropsSchema
     covers:
       - description: Cmd+K shortcut with preventDefault for search modal toggle
-        example: content/presets/trigger-keyboard-shortcut.json
+        example: content/validator-fragments/trigger-keyboard-shortcut.json
     does_not_cover:
       - what: Click trigger
         use_instead: trigger.onClick
@@ -4447,7 +4447,7 @@ entries:
         note: triggerActionSchema on element.button; section onClick via wrapper
     covers:
       - description: Button click that toggles a reveal section with repeatable trigger
-        example: content/presets/trigger-click-reveal.json
+        example: content/validator-fragments/trigger-click-reveal.json
     does_not_cover:
       - what: Pointer down before click completes
         use_instead: trigger.pointerDown
@@ -4496,7 +4496,7 @@ entries:
         note: fields on baseSectionPropsSchema; wire on any section or element
     covers:
       - description: Fade-out with 0.1 threshold and bottom root margin
-        example: content/presets/trigger-fade-out.json
+        example: content/validator-fragments/trigger-fade-out.json
     does_not_cover:
       - what: Trigger on viewport entry
         use_instead: trigger.onVisible
@@ -4542,7 +4542,7 @@ entries:
         note: fields on baseSectionPropsSchema
     covers:
       - description: Section updates xOffset variable on each intersection update
-        example: content/presets/trigger-scroll-progress.json
+        example: content/validator-fragments/trigger-scroll-progress.json
     does_not_cover:
       - what: Smooth scroll progress from a named scroll container
         use_instead: trigger.onViewportProgress
@@ -4589,7 +4589,7 @@ entries:
           bindings
     covers:
       - description: CTA and end-screen overlay shown when non-looping video finishes
-        example: content/presets/trigger-video-end.json
+        example: content/validator-fragments/trigger-video-end.json
     does_not_cover:
       - what: Video play event
         use_instead: trigger.onVideoPlay
@@ -4632,7 +4632,7 @@ entries:
           bindings
     covers:
       - description: Paused-state indicator and resume overlay when video pauses
-        example: content/presets/trigger-video-pause.json
+        example: content/validator-fragments/trigger-video-pause.json
     does_not_cover:
       - what: Video play event
         use_instead: trigger.onVideoPlay
@@ -4676,7 +4676,7 @@ entries:
           bindings on element.button
     covers:
       - description: Playing-state indicator with resume overlay hidden on video play
-        example: content/presets/trigger-video-play.json
+        example: content/validator-fragments/trigger-video-play.json
     does_not_cover:
       - what: Video pause event
         use_instead: trigger.onVideoPause
@@ -4724,7 +4724,7 @@ entries:
         note: fields on baseSectionPropsSchema; requires SectionScrollTargetContext ancestor
     covers:
       - description: Smooth opacity binding from viewport scroll progress (10%-90% range)
-        example: content/presets/trigger-viewport-progress.json
+        example: content/validator-fragments/trigger-viewport-progress.json
     does_not_cover:
       - what: Discrete intersection-observer progress
         use_instead: trigger.onProgress
@@ -4773,7 +4773,7 @@ entries:
         note: fields on baseSectionPropsSchema; wire on any section or element
     covers:
       - description: Fade-in with 0.3 threshold, trigger-once, and root margin
-        example: content/presets/trigger-fade-in.json
+        example: content/validator-fragments/trigger-fade-in.json
     does_not_cover:
       - what: Continuous progress value as element scrolls through viewport
         use_instead: trigger.onProgress
@@ -4818,7 +4818,7 @@ entries:
           element.button onPointerDown)
     covers:
       - description: Scrub start with pressed variant and scrubState active flag
-        example: content/presets/trigger-pointer-down.json
+        example: content/validator-fragments/trigger-pointer-down.json
     does_not_cover:
       - what: Full click (down + up)
         use_instead: trigger.onClick
@@ -4864,7 +4864,7 @@ entries:
           element.button onPointerUp)
     covers:
       - description: Scrub end with idle variant restore and scrubState reset
-        example: content/presets/trigger-pointer-up.json
+        example: content/validator-fragments/trigger-pointer-up.json
     does_not_cover:
       - what: Full click (down + up)
         use_instead: trigger.onClick
@@ -4912,7 +4912,7 @@ entries:
         note: array of { onScrollDown?, onScrollUp?, threshold? } on baseSectionPropsSchema
     covers:
       - description: Sticky header hides on scroll-down (50px threshold), shows on scroll-up
-        example: content/presets/trigger-scroll-hide.json
+        example: content/validator-fragments/trigger-scroll-hide.json
     does_not_cover:
       - what: Continuous scroll position as a progress value
         use_instead: trigger.onViewportProgress
@@ -4955,7 +4955,7 @@ entries:
         note: array of { delay?, interval?, maxFires?, action } on baseSectionPropsSchema
     covers:
       - description: Auto-advance slideshow with 800ms delay and 4-second interval, max 5 fires
-        example: content/presets/trigger-delay-show.json
+        example: content/validator-fragments/trigger-delay-show.json
     does_not_cover:
       - what: User click trigger
         use_instead: trigger.onClick

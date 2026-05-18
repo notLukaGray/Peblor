@@ -20,7 +20,7 @@ axes:
 
 covers:
   - description: "Scrub end with idle variant restore and scrubState reset"
-    example: content/presets/trigger-pointer-up.json
+    example: content/validator-fragments/trigger-pointer-up.json
 
 does_not_cover:
   - what: "Full click (down + up)"

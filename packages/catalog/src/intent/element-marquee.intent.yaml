@@ -53,7 +53,7 @@ does_not_cover:
 
 covers:
   - description: "Text ticker scrolling right-to-left with gradient fade edges and hover pause"
-    example: content/presets/element-marquee.json
+    example: content/validator-fragments/element-marquee.json
     minimal: true
 
 composes_with:

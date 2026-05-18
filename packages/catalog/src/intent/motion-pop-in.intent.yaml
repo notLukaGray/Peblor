@@ -21,7 +21,7 @@ axes:
 
 covers:
   - description: "Tag badge that pops in with a spring bounce"
-    example: content/presets/motion-pop-in.json
+    example: content/validator-fragments/motion-pop-in.json
 
 does_not_cover:
   - what: "Smooth linear scale entrance"

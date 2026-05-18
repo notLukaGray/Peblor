@@ -83,11 +83,12 @@ export function ServerElementCounter({
   const resolvedTextFill = resolveThemeString(textFill?.value, "light");
   const resolvedColor = resolveThemeString(color, "light");
   const resolvedFontFamily = resolveFontFamily(fontFamily);
+  const resolvedFontSize = Array.isArray(fontSize) ? fontSize[0] : fontSize;
 
   const textStyle: CSSProperties = {
     letterSpacing,
     ...(resolvedFontFamily !== undefined ? { fontFamily: resolvedFontFamily } : {}),
-    ...(fontSize !== undefined ? { fontSize } : {}),
+    ...(resolvedFontSize !== undefined ? { fontSize: resolvedFontSize } : {}),
     ...(fontWeight !== undefined ? { fontWeight: fontWeight as CSSProperties["fontWeight"] } : {}),
   };
 

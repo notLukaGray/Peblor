@@ -1,8 +1,0 @@
-{
-  "type": "revealSection",
-  "id": "motion_tilt_in_example",
-  "triggerMode": "onVisible",
-  "motion": "tiltIn",
-  "motionDuration": 0.6,
-  "sections": []
-}

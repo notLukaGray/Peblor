@@ -21,7 +21,7 @@ axes:
 
 covers:
   - description: "Sticky header hides on scroll-down (50px threshold), shows on scroll-up"
-    example: content/presets/trigger-scroll-hide.json
+    example: content/validator-fragments/trigger-scroll-hide.json
 
 does_not_cover:
   - what: "Continuous scroll position as a progress value"

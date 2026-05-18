@@ -37,9 +37,9 @@ axes:
 
 covers:
   - description: "Horizontal icon-label pair with flex row layout"
-    example: content/presets/icon-label-group.json
+    example: content/validator-fragments/icon-label-group.json
   - description: "Reorderable card list with gap and padding"
-    example: content/presets/reorderable-group.json
+    example: content/validator-fragments/reorderable-group.json
 
 does_not_cover:
   - what: "Full section with background fill and scroll triggers"

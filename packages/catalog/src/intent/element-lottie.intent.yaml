@@ -52,7 +52,7 @@ does_not_cover:
 
 covers:
   - description: "Lottie animation with autoplay, 3 loops, bounce mode, hover-to-play, and color overrides"
-    example: content/presets/element-lottie.json
+    example: content/validator-fragments/element-lottie.json
     minimal: true
 
 composes_with:

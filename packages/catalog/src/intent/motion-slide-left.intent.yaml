@@ -21,7 +21,7 @@ axes:
 
 covers:
   - description: "Feature description panel that slides in from the right"
-    example: content/presets/motion-slide-left.json
+    example: content/validator-fragments/motion-slide-left.json
 
 does_not_cover:
   - what: "Rightward-sliding entrance"

@@ -21,7 +21,7 @@ axes:
 
 covers:
   - description: "Cmd+K shortcut with preventDefault for search modal toggle"
-    example: content/presets/trigger-keyboard-shortcut.json
+    example: content/validator-fragments/trigger-keyboard-shortcut.json
 
 does_not_cover:
   - what: "Click trigger"

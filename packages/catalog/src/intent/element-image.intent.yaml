@@ -33,9 +33,9 @@ axes:
 
 covers:
   - description: "Hero image, full-bleed, focal-point cover crop"
-    example: content/presets/hero-image.json
+    example: content/validator-fragments/hero-image.json
   - description: "Inline figure with srcSet for art direction"
-    example: content/presets/inline-figure.json
+    example: content/validator-fragments/inline-figure.json
 
 does_not_cover:
   - what: "Animated raster (GIF playback, video loops)"

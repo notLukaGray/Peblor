@@ -206,7 +206,36 @@ function mapPath(pathParts: Array<string | number>): string {
     .join("")}`;
 }
 
-function toDiagnostics(error: unknown): PeblorDiagnostic[] {
+function readValueAtPath(root: unknown, pathParts: Array<string | number>): unknown {
+  let current: unknown = root;
+  for (const part of pathParts) {
+    if (current == null) return undefined;
+    if (typeof part === "number") {
+      if (!Array.isArray(current)) return undefined;
+      current = current[part];
+      continue;
+    }
+    if (typeof current !== "object") return undefined;
+    current = (current as Record<string, unknown>)[part];
+  }
+  return current;
+}
+
+function stringifyDiagnosticValue(value: unknown): string {
+  const MAX_LEN = 240;
+  const clip = (text: string): string =>
+    text.length > MAX_LEN ? `${text.slice(0, MAX_LEN - 1)}…` : text;
+  if (value === undefined) return "undefined";
+  try {
+    const json = JSON.stringify(value);
+    if (json === undefined) return clip(String(value));
+    return clip(json);
+  } catch {
+    return clip(String(value));
+  }
+}
+
+function toDiagnostics(error: unknown, source?: unknown): PeblorDiagnostic[] {
   if (!error || typeof error !== "object") {
     return [
       {
@@ -234,19 +263,24 @@ function toDiagnostics(error: unknown): PeblorDiagnostic[] {
 
   return maybeIssues.map((issue) => {
     const rec = issue as { code?: unknown; message?: unknown; path?: unknown };
-    const issuePath = Array.isArray(rec.path)
-      ? mapPath(
-          rec.path.filter(
-            (part): part is string | number => typeof part === "string" || typeof part === "number"
-          )
+    const pathParts = Array.isArray(rec.path)
+      ? rec.path.filter(
+          (part): part is string | number => typeof part === "string" || typeof part === "number"
         )
-      : "$";
+      : [];
+    const issuePath = mapPath(pathParts);
+    const currentValue = source === undefined ? undefined : readValueAtPath(source, pathParts);
+    const baseMessage = typeof rec.message === "string" ? rec.message : "Schema validation issue.";
+    const message =
+      source === undefined
+        ? baseMessage
+        : `${baseMessage} (received: ${stringifyDiagnosticValue(currentValue)})`;
 
     return {
       code: typeof rec.code === "string" ? rec.code : "PB_SCHEMA_ISSUE",
       severity: "error" as const,
       path: issuePath,
-      message: typeof rec.message === "string" ? rec.message : "Schema validation issue.",
+      message,
       contractVersion: CONTRACT_VERSION,
     };
   });
@@ -351,7 +385,7 @@ export function validatePage(input: unknown): ValidatePageResult {
 
   return {
     valid: false,
-    diagnostics: toDiagnostics(parsed.error),
+    diagnostics: toDiagnostics(parsed.error, input),
     page: null,
   };
 }

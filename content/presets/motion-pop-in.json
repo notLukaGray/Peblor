@@ -1,8 +1,0 @@
-{
-  "type": "revealSection",
-  "id": "motion_pop_in_example",
-  "triggerMode": "onVisible",
-  "motion": "popIn",
-  "motionDuration": 0.45,
-  "sections": []
-}

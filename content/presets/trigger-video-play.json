@@ -1,9 +1,0 @@
-{
-  "type": "triggerSection",
-  "id": "trigger_video_play_example",
-  "trigger": { "type": "onVideoPlay", "target": "hero-video" },
-  "actions": [
-    { "type": "setVariant", "target": "playback-state", "value": "playing" },
-    { "type": "setVariant", "target": "resume-overlay", "value": "hidden" }
-  ]
-}

@@ -39,7 +39,7 @@ does_not_cover:
 
 covers:
   - description: "Standalone date picker with label and placeholder"
-    example: content/presets/element-form-field.json
+    example: content/validator-fragments/element-form-field.json
     minimal: true
 
 composes_with:

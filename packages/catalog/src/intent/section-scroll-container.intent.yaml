@@ -30,7 +30,7 @@ axes:
 
 covers:
   - description: "Horizontal scroll gallery with named progress trigger and fade-in motion"
-    example: content/presets/scroll-gallery.json
+    example: content/validator-fragments/scroll-gallery.json
 
 does_not_cover:
   - what: "Snapping carousel with per-item scale and opacity"

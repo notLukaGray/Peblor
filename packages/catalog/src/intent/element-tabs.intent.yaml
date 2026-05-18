@@ -43,7 +43,7 @@ does_not_cover:
 
 covers:
   - description: "Three-tab interface with pill variant, fade transitions, and lazy loading"
-    example: content/presets/element-tabs.json
+    example: content/validator-fragments/element-tabs.json
     minimal: true
 
 composes_with:

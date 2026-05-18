@@ -21,7 +21,7 @@ axes:
 
 covers:
   - description: "Smooth opacity binding from viewport scroll progress (10%-90% range)"
-    example: content/presets/trigger-viewport-progress.json
+    example: content/validator-fragments/trigger-viewport-progress.json
 
 does_not_cover:
   - what: "Discrete intersection-observer progress"

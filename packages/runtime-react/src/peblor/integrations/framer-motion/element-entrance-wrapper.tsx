@@ -3,7 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import { motion } from "@/peblor/integrations/framer-motion";
 import { useShouldReduceMotion } from "./reduced-motion";
-import type { MotionTiming } from "@pb/contracts/types";
+import type { MotionPropsFromJson, MotionTiming } from "@pb/contracts/types";
 import { resolveFoundationMotionControls } from "./foundation-motion-policy";
 
 type MotionDivProps = React.ComponentProps<typeof motion.div>;
@@ -32,9 +32,42 @@ function toOpacity(value: unknown, fallback: number): number {
 type EntranceResolvedMotion = {
   initial?: unknown;
   animate?: unknown;
+  transition?: unknown;
   whileHover?: unknown;
   whileTap?: unknown;
+  whileFocus?: unknown;
 } & Record<string, unknown>;
+
+function mergeGestureField(base: unknown, override: unknown): unknown {
+  if (override === undefined) return base;
+  if (base && typeof base === "object" && override && typeof override === "object") {
+    return {
+      ...(base as Record<string, unknown>),
+      ...(override as Record<string, unknown>),
+    };
+  }
+  return override;
+}
+
+function mergeGestureMotion(
+  entrance: EntranceResolvedMotion,
+  elementMotion?: MotionPropsFromJson
+): EntranceResolvedMotion {
+  if (!elementMotion || typeof elementMotion !== "object") return entrance;
+  const rec = elementMotion as Record<string, unknown>;
+  return {
+    ...entrance,
+    transition: mergeGestureField(entrance.transition, rec.transition),
+    whileHover: mergeGestureField(entrance.whileHover, rec.whileHover),
+    whileTap: mergeGestureField(entrance.whileTap, rec.whileTap),
+    whileFocus: mergeGestureField(entrance.whileFocus, rec.whileFocus),
+  };
+}
+
+function asRecord(value: unknown): Record<string, unknown> | undefined {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return undefined;
+  return value as Record<string, unknown>;
+}
 
 function toFadeOnlyResolvedMotion<T extends EntranceResolvedMotion>(resolved: T): T {
   const animateTarget =
@@ -68,6 +101,7 @@ const ALIGN_Y_TO_ALIGN: Record<"top" | "center" | "bottom", string> = {
 
 export type ElementEntranceWrapperProps = {
   motionTiming?: MotionTiming;
+  elementMotion?: MotionPropsFromJson;
   layoutFixed?: boolean;
   wrapperStyle?: React.CSSProperties;
   align?: "left" | "center" | "right";
@@ -102,6 +136,7 @@ export type ElementEntranceWrapperProps = {
  */
 export function ElementEntranceWrapper({
   motionTiming,
+  elementMotion,
   layoutFixed = false,
   wrapperStyle,
   align = "center",
@@ -134,9 +169,10 @@ export function ElementEntranceWrapper({
 
   const resolved = motionTiming?.resolvedEntranceMotion;
   if (!resolved) return <>{children}</>;
-  const effectiveResolved = motionControls.replaceWithFade
-    ? toFadeOnlyResolvedMotion(resolved)
-    : resolved;
+  const effectiveResolved = mergeGestureMotion(
+    motionControls.replaceWithFade ? toFadeOnlyResolvedMotion(resolved) : resolved,
+    elementMotion
+  );
 
   const { initial, animate, transition, viewportAmount, viewportOnce, whileHover, whileTap } =
     effectiveResolved;
@@ -156,7 +192,7 @@ export function ElementEntranceWrapper({
   // and should not cause overflow:hidden (which clips descenders and outlines).
   const hasRealScale = (g: Record<string, unknown> | undefined) =>
     g != null && typeof g.scale === "number" && g.scale !== 1;
-  const hasScaleGesture = hasRealScale(whileHover) || hasRealScale(whileTap);
+  const hasScaleGesture = hasRealScale(asRecord(whileHover)) || hasRealScale(asRecord(whileTap));
 
   const containerStyle: React.CSSProperties = layoutFixed
     ? {
@@ -239,7 +275,15 @@ export function ElementEntranceWrapper({
       {...sharedProps}
       initial={effectiveInitial as MotionDivProps["initial"]}
       whileInView={animate as MotionDivProps["whileInView"]}
-      viewport={{ once: viewportOnce, amount: viewportAmount }}
+      viewport={{
+        once: typeof viewportOnce === "boolean" ? viewportOnce : undefined,
+        amount:
+          viewportAmount === "some" ||
+          viewportAmount === "all" ||
+          typeof viewportAmount === "number"
+            ? viewportAmount
+            : undefined,
+      }}
       transition={effectiveTransition as MotionDivProps["transition"]}
       whileHover={whileHover as MotionDivProps["whileHover"]}
       whileTap={whileTap as MotionDivProps["whileTap"]}

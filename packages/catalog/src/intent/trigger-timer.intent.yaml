@@ -21,7 +21,7 @@ axes:
 
 covers:
   - description: "Auto-advance slideshow with 800ms delay and 4-second interval, max 5 fires"
-    example: content/presets/trigger-delay-show.json
+    example: content/validator-fragments/trigger-delay-show.json
 
 does_not_cover:
   - what: "User click trigger"

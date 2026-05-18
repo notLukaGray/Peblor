@@ -52,6 +52,16 @@ describe("elementCounter", () => {
     expect(r.success).toBe(true);
   });
 
+  it("accepts responsive fontSize arrays", () => {
+    const r = parse({
+      type: "elementCounter",
+      target: 1500,
+      tween: { duration: 2500 },
+      fontSize: ["2rem", "3rem"],
+    });
+    expect(r.success).toBe(true);
+  });
+
   it("parses counter with scroll trigger", () => {
     const r = parse({
       type: "elementCounter",
@@ -89,6 +99,17 @@ describe("elementCounter", () => {
       variableKey: "progress",
       trigger: "onScroll",
       scroll: { scrollStart: 0, scrollEnd: 1 },
+    });
+    expect(r.success).toBe(true);
+  });
+});
+
+describe("elementButton", () => {
+  it("accepts wrapperStrokeWidth as a numeric string", () => {
+    const r = parse({
+      type: "elementButton",
+      label: "Tap",
+      wrapperStrokeWidth: "1.5",
     });
     expect(r.success).toBe(true);
   });

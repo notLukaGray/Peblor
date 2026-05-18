@@ -249,6 +249,10 @@ export function ElementInfiniteScroll({
   const resolvedJustifyContent = resolveResponsiveValue(justifyContent, isMobile);
   const resolvedGapValue = resolveResponsiveValue(gap, isMobile);
   const resolvedPadding = resolveResponsiveValue(padding, isMobile);
+  const resolvedPaddingTop = resolveResponsiveValue(paddingTop, isMobile);
+  const resolvedPaddingRight = resolveResponsiveValue(paddingRight, isMobile);
+  const resolvedPaddingBottom = resolveResponsiveValue(paddingBottom, isMobile);
+  const resolvedPaddingLeft = resolveResponsiveValue(paddingLeft, isMobile);
   const resolvedTrackAlignItems = normalizeFlexAlignItemsValue(
     coalesceEmptyString(resolvedAlignItems) ?? pbContentGuidelines.frameAlignItemsDefault
   );
@@ -316,10 +320,10 @@ export function ElementInfiniteScroll({
       coalesceEmptyString(resolvedJustifyContent) ?? pbContentGuidelines.frameJustifyContentDefault
     ) as CSSProperties["justifyContent"],
     padding: resolvedPadding,
-    paddingBottom,
-    paddingLeft,
-    paddingRight,
-    paddingTop,
+    paddingBottom: resolvedPaddingBottom,
+    paddingLeft: resolvedPaddingLeft,
+    paddingRight: resolvedPaddingRight,
+    paddingTop: resolvedPaddingTop,
     rowGap: resolvedRowGap,
   });
 

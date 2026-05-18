@@ -21,7 +21,7 @@ axes:
 
 covers:
   - description: "Section updates xOffset variable on each intersection update"
-    example: content/presets/trigger-scroll-progress.json
+    example: content/validator-fragments/trigger-scroll-progress.json
 
 does_not_cover:
   - what: "Smooth scroll progress from a named scroll container"

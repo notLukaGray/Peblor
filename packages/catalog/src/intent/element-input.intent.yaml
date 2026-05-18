@@ -27,7 +27,7 @@ axes:
 
 covers:
   - description: "Compact search input with icon and accessible label"
-    example: content/presets/search-input.json
+    example: content/validator-fragments/search-input.json
 
 does_not_cover:
   - what: "Form field with label, validation, and submit"

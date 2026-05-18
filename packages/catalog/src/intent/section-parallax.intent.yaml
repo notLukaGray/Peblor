@@ -35,7 +35,7 @@ does_not_cover:
 
 covers:
   - description: "Hero section with scrollSpeed 0.5 for a slow-reveal parallax effect"
-    example: content/presets/section-parallax.json
+    example: content/validator-fragments/section-parallax.json
 
 composes_with:
   parents: [page]

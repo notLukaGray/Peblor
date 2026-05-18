@@ -29,7 +29,7 @@ axes:
 
 covers:
   - description: "Responsive-height section spacer with border, blur, and fade-in motion"
-    example: content/presets/section-spacer.json
+    example: content/validator-fragments/section-spacer.json
 
 does_not_cover:
   - what: "Horizontal rule inside a content block"

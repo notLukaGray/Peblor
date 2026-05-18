@@ -25,7 +25,7 @@ axes:
 
 covers:
   - description: "Quality picker inside an HLS player overlay"
-    example: content/presets/video-quality-select.json
+    example: content/validator-fragments/video-quality-select.json
     minimal: true
 
 does_not_cover:

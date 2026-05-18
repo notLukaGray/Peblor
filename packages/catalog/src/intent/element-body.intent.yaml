@@ -40,9 +40,9 @@ axes:
 
 covers:
   - description: "Lead-size intro paragraph with accent color and refined letter spacing"
-    example: content/presets/body-lead.json
+    example: content/validator-fragments/body-lead.json
   - description: "Fine-print caption with secondary color and text-overflow ellipsis"
-    example: content/presets/body-fine.json
+    example: content/validator-fragments/body-fine.json
 
 does_not_cover:
   - what: "Headline, display, or label copy"

@@ -1,8 +1,0 @@
-{
-  "type": "revealSection",
-  "id": "motion_zoom_in_example",
-  "triggerMode": "onVisible",
-  "motion": "zoomIn",
-  "motionDuration": 0.5,
-  "sections": []
-}

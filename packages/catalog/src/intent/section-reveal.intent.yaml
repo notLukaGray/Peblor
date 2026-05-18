@@ -46,7 +46,7 @@ axes:
 
 covers:
   - description: "Click-to-expand FAQ section with vertical slide reveal"
-    example: content/presets/faq-reveal.json
+    example: content/validator-fragments/faq-reveal.json
 
 does_not_cover:
   - what: "Conditional visibility driven by a variable (no animation)"

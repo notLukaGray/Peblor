@@ -1,0 +1,16 @@
+{
+  "type": "contentBlock",
+  "id": "section_fixed_example",
+  "fixed": true,
+  "fixedPosition": "bottom",
+  "fixedOffset": "16px",
+  "zIndex": 50,
+  "elements": [
+    {
+      "type": "elementButton",
+      "id": "fixed_cta",
+      "label": "Get Started",
+      "variant": "default"
+    }
+  ]
+}

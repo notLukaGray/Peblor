@@ -38,9 +38,9 @@ axes:
 
 covers:
   - description: "Full-width hero with column flex layout"
-    example: content/presets/hero-content-block.json
+    example: content/validator-fragments/hero-content-block.json
   - description: "Reorderable card list with drag-y"
-    example: content/presets/reorderable-card-list.json
+    example: content/validator-fragments/reorderable-card-list.json
 
 does_not_cover:
   - what: "CSS grid with multiple named column tracks"

@@ -11,7 +11,7 @@ import { runValidateBg } from "./commands/validate-bg.js";
 import { runValidateModuleFragment } from "./commands/validate-module-fragment.js";
 import { runValidateOverlayFragment } from "./commands/validate-overlay-fragment.js";
 import { runValidateFragments } from "./commands/validate-fragments.js";
-import { runValidatePreset } from "./commands/validate-preset.js";
+import { runValidateFragment } from "./commands/validate-fragment.js";
 import { runExplain } from "./commands/explain.js";
 import { runProbe } from "./commands/probe.js";
 import { runPropose } from "./commands/propose.js";
@@ -76,8 +76,10 @@ function printUsage(): void {
   printText("  validate-bg <file>");
   printText("  validate-module-fragment <file>");
   printText("  validate-overlay-fragment <file>");
-  printText("  validate-fragments <dir> --kind <section|element|action|bg|module|overlay>");
-  printText("  validate-preset <file>");
+  printText(
+    "  validate-fragments <dir> --kind <section|element|action|bg|module|overlay|fragment>"
+  );
+  printText("  validate-fragment <file>");
   printText("  diff <file-a> <file-b>");
   printText("  migrate <file> [--from <version>] [--to <version>]");
   printText("  conformance [fixtures-dir]");
@@ -193,8 +195,8 @@ export async function runCli(argv = process.argv): Promise<number> {
       return runValidateOverlayFragment(args, io);
     case "validate-fragments":
       return runValidateFragments(args, io);
-    case "validate-preset":
-      return runValidatePreset(args, io);
+    case "validate-fragment":
+      return runValidateFragment(args, io);
     case "diff":
       if (wantsHelpFlag(args[0]) || wantsHelpFlag(args[1])) {
         printUsage();

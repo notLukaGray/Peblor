@@ -10,6 +10,8 @@ import {
 } from "@pb/core/typography";
 import { resolveThemeString } from "@/peblor/theme/theme-string";
 import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
+import { useDeviceType } from "@pb/runtime-react/core/providers/device-type-provider";
+import { resolveResponsiveValue } from "@pb/runtime-react/core/lib/responsive-value";
 import { ElementLayoutWrapper } from "./Shared/ElementLayoutWrapper";
 import { useVariable } from "@/peblor/runtime/peblor-variable-store";
 
@@ -104,6 +106,7 @@ export function ElementCounter({
   hidden,
 }: Props) {
   const themeMode = usePeblorThemeMode();
+  const { isMobile } = useDeviceType();
   const variableValue = useVariable(variableKey ?? "");
   const scrollStart = scroll?.scrollStart ?? 0;
   const scrollEnd = scroll?.scrollEnd ?? 1;
@@ -294,11 +297,12 @@ export function ElementCounter({
   const resolvedTextFill = resolveThemeString(textFill?.value, themeMode);
   const resolvedColor = resolveThemeString(color, themeMode);
   const resolvedFontFamily = resolveFontFamily(fontFamily);
+  const resolvedFontSize = resolveResponsiveValue(fontSize, isMobile);
 
   const textStyle: CSSProperties = {
     letterSpacing,
     ...(resolvedFontFamily !== undefined ? { fontFamily: resolvedFontFamily } : {}),
-    ...(fontSize !== undefined ? { fontSize } : {}),
+    ...(resolvedFontSize !== undefined ? { fontSize: resolvedFontSize } : {}),
     ...(fontWeight !== undefined ? { fontWeight: fontWeight as CSSProperties["fontWeight"] } : {}),
   };
 

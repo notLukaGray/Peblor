@@ -21,7 +21,7 @@ axes:
 
 covers:
   - description: "Hero section background image that zooms out on page load"
-    example: content/presets/motion-zoom-out.json
+    example: content/validator-fragments/motion-zoom-out.json
 
 does_not_cover:
   - what: "Scale-up entrance"

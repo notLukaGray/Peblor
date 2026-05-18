@@ -35,7 +35,7 @@ does_not_cover:
 
 covers:
   - description: "Content block with glass effect, drop shadow, and 8px border radius"
-    example: content/presets/section-effects.json
+    example: content/validator-fragments/section-effects.json
 
 composes_with:
   parents: [section.*, element.*]

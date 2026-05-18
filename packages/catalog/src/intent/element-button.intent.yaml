@@ -70,9 +70,9 @@ axes:
 
 covers:
   - description: "Primary CTA button linking to a page section"
-    example: content/presets/primary-button.json
+    example: content/validator-fragments/primary-button.json
   - description: "Ghost icon-action button firing a page-builder action"
-    example: content/presets/ghost-action-button.json
+    example: content/validator-fragments/ghost-action-button.json
 
 does_not_cover:
   - what: "Inline hyperlink within a paragraph"

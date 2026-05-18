@@ -48,9 +48,9 @@ does_not_cover:
 
 covers:
   - description: "Interactive Rive icon with hover-to-play and state machine input bindings"
-    example: content/presets/rive-icon.json
+    example: content/validator-fragments/rive-icon.json
   - description: "Rive animation with loop count, poster, and lifecycle events"
-    example: content/presets/rive-animation.json
+    example: content/validator-fragments/rive-animation.json
     minimal: true
 
 composes_with:

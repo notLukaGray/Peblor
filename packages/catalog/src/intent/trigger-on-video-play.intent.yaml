@@ -20,7 +20,7 @@ axes:
 
 covers:
   - description: "Playing-state indicator with resume overlay hidden on video play"
-    example: content/presets/trigger-video-play.json
+    example: content/validator-fragments/trigger-video-play.json
 
 does_not_cover:
   - what: "Video pause event"

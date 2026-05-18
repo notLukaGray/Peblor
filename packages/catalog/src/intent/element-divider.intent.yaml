@@ -25,7 +25,7 @@ axes:
 
 covers:
   - description: "Horizontal rule with responsive length and border theme token"
-    example: content/presets/divider-horizontal.json
+    example: content/validator-fragments/divider-horizontal.json
 
 does_not_cover:
   - what: "Invisible spacing gap"

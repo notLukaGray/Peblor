@@ -34,7 +34,7 @@ does_not_cover:
 
 covers:
   - description: "Input that scales to 1.02 with a glow effect when focused"
-    example: content/presets/motion-while-focus.json
+    example: content/validator-fragments/motion-while-focus.json
 
 composes_with:
   parents: [section.*, element.*]

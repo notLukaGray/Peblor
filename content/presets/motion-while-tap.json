@@ -1,8 +1,0 @@
-{
-  "type": "elementButton",
-  "id": "motion_while_tap_example",
-  "label": "Press Me",
-  "variant": "primary",
-  "whileTap": { "scale": 0.95 },
-  "transition": { "duration": 0.1 }
-}

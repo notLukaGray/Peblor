@@ -28,7 +28,7 @@ axes:
 
 covers:
   - description: "Progress-mode crossfade from solid surface to background image on scroll"
-    example: content/presets/bg-crossfade.json
+    example: content/validator-fragments/bg-crossfade.json
 
 does_not_cover:
   - what: "Single static background (no crossfade)"

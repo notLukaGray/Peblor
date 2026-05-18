@@ -23,7 +23,7 @@ axes:
 
 covers:
   - description: "Medium vertical spacer between content groups"
-    example: content/presets/spacer-md.json
+    example: content/validator-fragments/spacer-md.json
     minimal: true
 
 does_not_cover:

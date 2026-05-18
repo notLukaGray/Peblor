@@ -181,6 +181,10 @@ export function ElementModuleGroup({
   const resolvedJustifyContentValue = resolveResponsiveValue(justifyContent, isMobile);
   const resolvedGapValue = resolveResponsiveValue(gap, isMobile);
   const resolvedPaddingValue = resolveResponsiveValue(padding, isMobile);
+  const resolvedPaddingTop = resolveResponsiveValue(paddingTop, isMobile);
+  const resolvedPaddingRight = resolveResponsiveValue(paddingRight, isMobile);
+  const resolvedPaddingBottom = resolveResponsiveValue(paddingBottom, isMobile);
+  const resolvedPaddingLeft = resolveResponsiveValue(paddingLeft, isMobile);
   const resolvedFlexValue = resolveResponsiveValue(flex, isMobile);
 
   const resolvedFlexDirection =
@@ -246,10 +250,10 @@ export function ElementModuleGroup({
     ...(resolvedRowGap != null ? { rowGap: resolvedRowGap } : {}),
     ...(resolvedColGap != null ? { columnGap: resolvedColGap } : {}),
     ...(resolvedPaddingValue != null ? { padding: resolvedPaddingValue } : {}),
-    ...(paddingTop != null ? { paddingTop } : {}),
-    ...(paddingRight != null ? { paddingRight } : {}),
-    ...(paddingBottom != null ? { paddingBottom } : {}),
-    ...(paddingLeft != null ? { paddingLeft } : {}),
+    ...(resolvedPaddingTop != null ? { paddingTop: resolvedPaddingTop } : {}),
+    ...(resolvedPaddingRight != null ? { paddingRight: resolvedPaddingRight } : {}),
+    ...(resolvedPaddingBottom != null ? { paddingBottom: resolvedPaddingBottom } : {}),
+    ...(resolvedPaddingLeft != null ? { paddingLeft: resolvedPaddingLeft } : {}),
     ...framePaddingFallback,
     flexWrap: resolvedFlexWrap,
     ...(resolvedFlexValue ? { flex: resolvedFlexValue } : {}),

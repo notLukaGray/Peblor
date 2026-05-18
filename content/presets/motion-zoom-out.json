@@ -1,8 +1,0 @@
-{
-  "type": "revealSection",
-  "id": "motion_zoom_out_example",
-  "triggerMode": "onVisible",
-  "motion": "zoomOut",
-  "motionDuration": 0.5,
-  "sections": []
-}

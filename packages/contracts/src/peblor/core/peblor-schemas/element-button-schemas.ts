@@ -66,7 +66,16 @@ export const elementButtonSchema = z
     wrapperFillRef: jsonNullishOptional(z.string()),
     wrapperStrokeRef: jsonNullishOptional(z.string()),
     /** Border width in px when `wrapperStroke` draws a border (default 2 at runtime). */
-    wrapperStrokeWidth: jsonNullishOptional(z.number().min(0).max(48)),
+    wrapperStrokeWidth: z.preprocess(
+      (value) => {
+        if (typeof value === "string") {
+          const parsed = Number(value.trim());
+          return Number.isFinite(parsed) ? parsed : value;
+        }
+        return value;
+      },
+      jsonNullishOptional(z.number().min(0).max(48))
+    ),
     wrapperPadding: jsonNullishOptional(responsiveStringSchema),
     wrapperBorderRadius: jsonNullishOptional(responsiveStringSchema),
     /** Explicit width for the padded wrapper pill (e.g. "10rem", "100%"). */

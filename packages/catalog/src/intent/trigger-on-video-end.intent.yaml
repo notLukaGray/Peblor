@@ -20,7 +20,7 @@ axes:
 
 covers:
   - description: "CTA and end-screen overlay shown when non-looping video finishes"
-    example: content/presets/trigger-video-end.json
+    example: content/validator-fragments/trigger-video-end.json
 
 does_not_cover:
   - what: "Video play event"

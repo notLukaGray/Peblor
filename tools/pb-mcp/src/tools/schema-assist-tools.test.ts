@@ -2,12 +2,12 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { validatePreset } from "./validate-preset.js";
+import { validateFragment } from "./validate-fragment.js";
 import { listFieldPaths } from "./list-field-paths.js";
 import { suggestFix } from "./suggest-fix.js";
 
 describe("schema assist tools", () => {
-  it("validates a preset file", async () => {
+  it("validates a fragment file", async () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), "pb-preset-"));
     const file = path.join(dir, "preset.json");
     fs.writeFileSync(
@@ -15,7 +15,7 @@ describe("schema assist tools", () => {
       JSON.stringify({ type: "setVariable", payload: { key: "a", value: 1 } }),
       "utf8"
     );
-    const out = (await validatePreset.run({ file })) as { valid: boolean };
+    const out = (await validateFragment.run({ file })) as { valid: boolean };
     expect(out.valid).toBe(true);
   });
 

@@ -31,7 +31,7 @@ axes:
 
 covers:
   - description: "Contact form with name/email/topic/message fields posted to /api/forms/contact"
-    example: content/presets/contact-form.json
+    example: content/validator-fragments/contact-form.json
 
 does_not_cover:
   - what: "Single input writing to a page-builder variable"

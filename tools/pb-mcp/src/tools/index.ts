@@ -2,7 +2,7 @@ import { validatePage } from "./validate-page.js";
 import { validateSection } from "./validate-section.js";
 import { validateElement } from "./validate-element.js";
 import { validateBg } from "./validate-bg.js";
-import { validatePreset } from "./validate-preset.js";
+import { validateFragment } from "./validate-fragment.js";
 import { diffPages } from "./diff-pages.js";
 import { migrateContent } from "./migrate-content.js";
 import { batchValidateFragments } from "./batch-validate-fragments.js";
@@ -99,7 +99,7 @@ export const allTools = [
   validateSection,
   validateElement,
   validateBg,
-  validatePreset,
+  validateFragment,
   validateModuleFragment,
   validateOverlayFragment,
   diffPages,

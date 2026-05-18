@@ -21,7 +21,7 @@ axes:
 
 covers:
   - description: "Fade-in with 0.3 threshold, trigger-once, and root margin"
-    example: content/presets/trigger-fade-in.json
+    example: content/validator-fragments/trigger-fade-in.json
 
 does_not_cover:
   - what: "Continuous progress value as element scrolls through viewport"

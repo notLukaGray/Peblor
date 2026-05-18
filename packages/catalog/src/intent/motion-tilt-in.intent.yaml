@@ -22,7 +22,7 @@ axes:
 
 covers:
   - description: "Feature card that tilts from perspective into flat position"
-    example: content/presets/motion-tilt-in.json
+    example: content/validator-fragments/motion-tilt-in.json
 
 does_not_cover:
   - what: "Flat translate slide"

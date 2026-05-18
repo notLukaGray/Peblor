@@ -3,6 +3,10 @@ import { elementLayoutSchema } from "./element-foundation-schemas";
 import { jsonNullishOptional, themeStringSchema } from "./schema-primitives";
 
 const counterVariantSchema = jsonNullishOptional(z.enum(["display", "section", "label"]));
+const responsiveCssSizeSchema = z.union([
+  z.union([z.string(), z.number()]),
+  z.tuple([z.union([z.string(), z.number()]), z.union([z.string(), z.number()])]),
+]);
 const headingLevelSchema = z.union([
   z.literal(1),
   z.literal(2),
@@ -43,7 +47,7 @@ export const elementCounterSchema = z
     level: headingLevelSchema.optional(),
     variant: counterVariantSchema,
     fontFamily: z.string().optional(),
-    fontSize: z.union([z.string(), z.number()]).optional(),
+    fontSize: responsiveCssSizeSchema.optional(),
     fontWeight: z.union([z.string(), z.number()]).optional(),
     letterSpacing: z.union([z.string(), z.number()]).optional(),
     color: themeStringSchema.optional(),

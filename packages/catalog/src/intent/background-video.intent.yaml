@@ -25,7 +25,7 @@ axes:
 
 covers:
   - description: "Hero section ambient video loop with color-mix overlay tint"
-    example: content/presets/bg-hero-video.json
+    example: content/validator-fragments/bg-hero-video.json
 
 does_not_cover:
   - what: "Static background image"

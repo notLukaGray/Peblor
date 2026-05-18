@@ -1,9 +1,0 @@
-{
-  "type": "revealSection",
-  "id": "motion_slide_left_example",
-  "triggerMode": "onVisible",
-  "motion": "slideLeft",
-  "motionDuration": 0.65,
-  "motionEasing": "easeOut",
-  "sections": []
-}

@@ -35,7 +35,7 @@ axes:
 
 covers:
   - description: "Video player module with positioned controls overlay"
-    example: content/presets/video-player-module.json
+    example: content/validator-fragments/video-player-module.json
 
 does_not_cover:
   - what: "Plain content section with no player context"

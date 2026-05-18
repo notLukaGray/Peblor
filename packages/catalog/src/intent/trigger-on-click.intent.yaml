@@ -22,7 +22,7 @@ axes:
 
 covers:
   - description: "Button click that toggles a reveal section with repeatable trigger"
-    example: content/presets/trigger-click-reveal.json
+    example: content/validator-fragments/trigger-click-reveal.json
 
 does_not_cover:
   - what: "Pointer down before click completes"

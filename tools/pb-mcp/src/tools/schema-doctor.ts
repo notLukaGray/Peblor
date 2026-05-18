@@ -9,10 +9,10 @@ import { scaffoldBgTypeTool } from "./scaffold-bg-type.js";
 import { scaffoldElementTypeTool } from "./scaffold-element-type.js";
 import { scaffoldSectionTypeTool } from "./scaffold-section-type.js";
 
-type Kind = "section" | "element" | "action" | "bg" | "module" | "overlay" | "preset";
+type Kind = "section" | "element" | "action" | "bg" | "module" | "overlay" | "fragment";
 
 function inferKind(value: unknown): Kind {
-  if (!value || typeof value !== "object" || Array.isArray(value)) return "preset";
+  if (!value || typeof value !== "object" || Array.isArray(value)) return "fragment";
   const rec = value as Record<string, unknown>;
   const type = typeof rec.type === "string" ? rec.type : "";
   if (type.startsWith("element")) return "element";
@@ -32,7 +32,7 @@ function inferKind(value: unknown): Kind {
     return "section";
   }
   if (type) return "action";
-  return "preset";
+  return "fragment";
 }
 
 function validatorCommand(kind: Kind): string {
@@ -42,7 +42,7 @@ function validatorCommand(kind: Kind): string {
   if (kind === "bg") return "validate-bg";
   if (kind === "module") return "validate-module-fragment";
   if (kind === "overlay") return "validate-overlay-fragment";
-  return "validate-preset";
+  return "validate-fragment";
 }
 
 function suggest(path: string, message: string): string {
@@ -102,7 +102,7 @@ export const schemaDoctor: Tool = {
         json: { type: "string", description: "Inline JSON fragment to diagnose" },
         kind: {
           type: "string",
-          enum: ["section", "element", "action", "bg", "module", "overlay", "preset"],
+          enum: ["section", "element", "action", "bg", "module", "overlay", "fragment"],
           description: "Optional explicit kind override",
         },
       },

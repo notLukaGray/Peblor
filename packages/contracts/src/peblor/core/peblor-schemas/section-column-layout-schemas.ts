@@ -73,8 +73,14 @@ export const responsiveColumnSpanSchema = z
     mobile: jsonNullishOptional(columnSpanMapSchema),
     desktop: jsonNullishOptional(columnSpanMapSchema),
   })
-  .refine((obj) => obj.mobile !== undefined || obj.desktop !== undefined, {
-    message: "At least one of mobile or desktop columnSpan must be provided",
+  .superRefine((obj, ctx) => {
+    if (obj.mobile !== undefined || obj.desktop !== undefined) return;
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message:
+        "columnSpan responsive shape must use breakpoint keys first: { mobile: { elementId: span }, desktop: { elementId: span } }",
+      path: [],
+    });
   });
 
 const gridModeSchema = z.enum(["columns", "grid"]);

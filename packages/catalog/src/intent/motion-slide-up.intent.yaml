@@ -21,7 +21,7 @@ axes:
 
 covers:
   - description: "Card that slides up and fades in when it enters the viewport"
-    example: content/presets/motion-slide-up.json
+    example: content/validator-fragments/motion-slide-up.json
 
 does_not_cover:
   - what: "Plain opacity fade with no translate"

@@ -21,7 +21,7 @@ axes:
 
 covers:
   - description: "Heading that fades in when scrolled into view"
-    example: content/presets/motion-fade.json
+    example: content/validator-fragments/motion-fade.json
 
 does_not_cover:
   - what: "Slide-up entrance with translate"

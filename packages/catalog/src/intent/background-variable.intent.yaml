@@ -24,7 +24,7 @@ axes:
 
 covers:
   - description: "Animated mesh gradient with loop motion and pointer-reactive radial glow"
-    example: content/presets/bg-gradient.json
+    example: content/validator-fragments/bg-gradient.json
     minimal: true
 
 does_not_cover:

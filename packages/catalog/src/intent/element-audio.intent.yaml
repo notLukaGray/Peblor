@@ -41,7 +41,7 @@ does_not_cover:
 
 covers:
   - description: "Audio player with waveform visualization, time display, and format fallbacks"
-    example: content/presets/element-audio.json
+    example: content/validator-fragments/element-audio.json
     minimal: true
 
 composes_with:

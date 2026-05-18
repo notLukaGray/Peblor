@@ -34,7 +34,7 @@ does_not_cover:
 
 covers:
   - description: "Image that scales to 1.05 on hover with a 0.2s transition"
-    example: content/presets/motion-while-hover.json
+    example: content/validator-fragments/motion-while-hover.json
 
 composes_with:
   parents: [section.*, element.*]

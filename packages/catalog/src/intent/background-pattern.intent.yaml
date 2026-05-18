@@ -22,7 +22,7 @@ axes:
 
 covers:
   - description: "Tiled dot-grid SVG background pattern"
-    example: content/presets/bg-dot-pattern.json
+    example: content/validator-fragments/bg-dot-pattern.json
     minimal: true
 
 does_not_cover:

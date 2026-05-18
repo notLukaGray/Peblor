@@ -53,9 +53,9 @@ axes:
 
 covers:
   - description: "Two-column feature block, desktop side-by-side / mobile stacked"
-    example: content/presets/two-column-feature.json
+    example: content/validator-fragments/two-column-feature.json
   - description: "Three-column card grid with equal widths"
-    example: content/presets/three-column-grid.json
+    example: content/validator-fragments/three-column-grid.json
 
 does_not_cover:
   - what: "Single-column vertical or horizontal flex stack"

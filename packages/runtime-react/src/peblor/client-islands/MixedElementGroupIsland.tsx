@@ -61,10 +61,10 @@ type LayoutOverrides = {
   rowGap?: string | number;
   columnGap?: string | number;
   padding?: string | [string, string];
-  paddingTop?: string | number;
-  paddingRight?: string | number;
-  paddingBottom?: string | number;
-  paddingLeft?: string | number;
+  paddingTop?: string | number | [string | number, string | number];
+  paddingRight?: string | number | [string | number, string | number];
+  paddingBottom?: string | number | [string | number, string | number];
+  paddingLeft?: string | number | [string | number, string | number];
   flex?: string | [string, string];
   flexDirection?: string | [string, string];
   alignItems?: string | [string, string];
@@ -168,6 +168,10 @@ export function MixedElementGroupIsland({
   const resolvedJustifyContentValue = resolveResponsiveValue(justifyContent, isMobile);
   const resolvedGapValue = resolveResponsiveValue(gap, isMobile);
   const resolvedPaddingValue = resolveResponsiveValue(padding, isMobile);
+  const resolvedPaddingTop = resolveResponsiveValue(paddingTop, isMobile);
+  const resolvedPaddingRight = resolveResponsiveValue(paddingRight, isMobile);
+  const resolvedPaddingBottom = resolveResponsiveValue(paddingBottom, isMobile);
+  const resolvedPaddingLeft = resolveResponsiveValue(paddingLeft, isMobile);
   const resolvedFlexValue = resolveResponsiveValue(flex, isMobile);
 
   const resolvedFlexDirection =
@@ -228,10 +232,10 @@ export function MixedElementGroupIsland({
     ...(resolvedRowGap != null ? { rowGap: resolvedRowGap } : {}),
     ...(resolvedColGap != null ? { columnGap: resolvedColGap } : {}),
     ...(resolvedPaddingValue != null ? { padding: resolvedPaddingValue } : {}),
-    ...(paddingTop != null ? { paddingTop } : {}),
-    ...(paddingRight != null ? { paddingRight } : {}),
-    ...(paddingBottom != null ? { paddingBottom } : {}),
-    ...(paddingLeft != null ? { paddingLeft } : {}),
+    ...(resolvedPaddingTop != null ? { paddingTop: resolvedPaddingTop } : {}),
+    ...(resolvedPaddingRight != null ? { paddingRight: resolvedPaddingRight } : {}),
+    ...(resolvedPaddingBottom != null ? { paddingBottom: resolvedPaddingBottom } : {}),
+    ...(resolvedPaddingLeft != null ? { paddingLeft: resolvedPaddingLeft } : {}),
     ...(!hasExplicitPadding
       ? { padding: scaleSpaceShorthandForDensity(pbContentGuidelines.framePaddingDefault) }
       : {}),

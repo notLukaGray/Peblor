@@ -21,7 +21,7 @@ axes:
 
 covers:
   - description: "Cursor-x position bound to a parallax variable with 16ms throttle"
-    example: content/presets/trigger-cursor-track.json
+    example: content/validator-fragments/trigger-cursor-track.json
 
 does_not_cover:
   - what: "Click or tap trigger"

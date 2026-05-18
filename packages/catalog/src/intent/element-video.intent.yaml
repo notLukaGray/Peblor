@@ -40,9 +40,9 @@ axes:
 
 covers:
   - description: "Hero reel, autoplay loop, full-bleed cover"
-    example: content/presets/hero-video.json
+    example: content/validator-fragments/hero-video.json
   - description: "Inline clip with poster and play button"
-    example: content/presets/inline-video.json
+    example: content/validator-fragments/inline-video.json
 
 does_not_cover:
   - what: "Still raster image"

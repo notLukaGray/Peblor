@@ -36,7 +36,7 @@ does_not_cover:
 
 covers:
   - description: "Heading that animates in on first viewport entry with fade preset"
-    example: content/presets/motion-trigger.json
+    example: content/validator-fragments/motion-trigger.json
 
 composes_with:
   parents: [section.*, element.*]

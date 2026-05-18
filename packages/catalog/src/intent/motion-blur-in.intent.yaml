@@ -22,7 +22,7 @@ axes:
 
 covers:
   - description: "Background image that sharpens into focus on section entrance"
-    example: content/presets/motion-blur-in.json
+    example: content/validator-fragments/motion-blur-in.json
 
 does_not_cover:
   - what: "Plain opacity fade"

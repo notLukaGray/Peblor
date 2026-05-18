@@ -116,6 +116,12 @@ export const elementLayoutSchema = z
     marginBottom: jsonNullishOptional(responsiveStringSchema),
     marginLeft: jsonNullishOptional(responsiveStringSchema),
     marginRight: jsonNullishOptional(responsiveStringSchema),
+    padding: jsonNullishOptional(responsiveStringSchema),
+    paddingTop: jsonNullishOptional(responsiveStringSchema),
+    paddingRight: jsonNullishOptional(responsiveStringSchema),
+    paddingBottom: jsonNullishOptional(responsiveStringSchema),
+    paddingLeft: jsonNullishOptional(responsiveStringSchema),
+    fill: jsonNullishOptional(themeStringSchema),
     zIndex: jsonNullishOptional(z.number()),
     /** When true, hint loader to prioritize this element's fetch (e.g. fetchPriority=high for images). */
     priority: jsonNullishOptional(z.boolean()),

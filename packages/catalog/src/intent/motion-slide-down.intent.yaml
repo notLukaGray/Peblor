@@ -21,7 +21,7 @@ axes:
 
 covers:
   - description: "Navigation bar that slides down from the top on page load"
-    example: content/presets/motion-slide-down.json
+    example: content/validator-fragments/motion-slide-down.json
 
 does_not_cover:
   - what: "Upward-sliding entrance"

@@ -50,7 +50,7 @@ does_not_cover:
 
 covers:
   - description: "Horizontal before/after slider with center start, hover follow, and labels"
-    example: content/presets/element-image-compare.json
+    example: content/validator-fragments/element-image-compare.json
     minimal: true
 
 composes_with:

@@ -21,7 +21,7 @@ axes:
 
 covers:
   - description: "Media preview panel that slides in from the left"
-    example: content/presets/motion-slide-right.json
+    example: content/validator-fragments/motion-slide-right.json
 
 does_not_cover:
   - what: "Leftward-sliding entrance"

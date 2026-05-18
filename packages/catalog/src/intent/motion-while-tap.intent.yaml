@@ -34,7 +34,7 @@ does_not_cover:
 
 covers:
   - description: "Button with press-scale 0.95 while-tap gesture"
-    example: content/presets/motion-while-tap.json
+    example: content/validator-fragments/motion-while-tap.json
 
 composes_with:
   parents: [section.*, element.*]

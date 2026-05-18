@@ -42,9 +42,9 @@ axes:
 
 covers:
   - description: "Display-size hero title with gradient text fill"
-    example: content/presets/hero-heading.json
+    example: content/validator-fragments/hero-heading.json
   - description: "Section label at h3 level with custom letter spacing"
-    example: content/presets/section-heading.json
+    example: content/validator-fragments/section-heading.json
 
 does_not_cover:
   - what: "Multi-paragraph body copy"

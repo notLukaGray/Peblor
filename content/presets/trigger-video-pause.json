@@ -1,9 +1,0 @@
-{
-  "type": "triggerSection",
-  "id": "trigger_video_pause_example",
-  "trigger": { "type": "onVideoPause", "target": "hero-video" },
-  "actions": [
-    { "type": "setVariant", "target": "playback-state", "value": "paused" },
-    { "type": "setVariant", "target": "resume-overlay", "value": "visible" }
-  ]
-}

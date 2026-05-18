@@ -30,6 +30,27 @@ function defType(schema: AnySchema): string {
   return (schema as AnySchema).def?.type ?? "unknown";
 }
 
+function unwrapFieldSchema(field: AnySchema): { schema: AnySchema; optional: boolean } {
+  let current = field;
+  let optional = false;
+
+  while (true) {
+    const type = defType(current);
+    if (type === "optional" && current.unwrap) {
+      optional = true;
+      current = current.unwrap();
+      continue;
+    }
+    if (type === "pipe" && current.def?.in) {
+      current = current.def.in;
+      continue;
+    }
+    break;
+  }
+
+  return { schema: current, optional };
+}
+
 /** Walk a ZodObject shape and return FieldMetadata for every key. */
 export function walkZodShape(schema: z.ZodType): Record<string, FieldMetadata> {
   const s = schema as AnySchema;
@@ -81,15 +102,10 @@ export function crossCheckAxes(
 // ---------------------------------------------------------------------------
 
 function analyzeField(name: string, field: AnySchema): FieldMetadata {
-  let current = field;
-  let optional = false;
+  const unwrapped = unwrapFieldSchema(field);
+  let current = unwrapped.schema;
+  const optional = unwrapped.optional;
   let responsive = false;
-
-  // Unwrap optional (Zod 4: def.type === "optional", unwrap() gives inner)
-  if (defType(current) === "optional" && current.unwrap) {
-    optional = true;
-    current = current.unwrap();
-  }
 
   // Detect responsive pattern: union[T, tuple[T, T]]
   if (defType(current) === "union") {

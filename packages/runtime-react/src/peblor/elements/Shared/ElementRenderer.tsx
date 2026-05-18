@@ -312,6 +312,7 @@ export function ElementRenderer({
     output = (
       <ElementEntranceWrapper
         motionTiming={motionTiming}
+        elementMotion={resolvedMotionFromJson}
         layoutFixed={fixed}
         wrapperStyle={entranceWrapperStyle}
         align={align}

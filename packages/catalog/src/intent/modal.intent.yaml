@@ -29,7 +29,7 @@ axes:
 
 covers:
   - description: "Contact form modal with form fields inside a contentBlock section"
-    example: content/presets/contact-modal.json
+    example: content/validator-fragments/contact-modal.json
 
 does_not_cover:
   - what: "In-flow expandable section"

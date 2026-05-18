@@ -35,7 +35,7 @@ does_not_cover:
 
 covers:
   - description: "Section that only shows when showPromo variable equals 'true'"
-    example: content/presets/section-visible-when.json
+    example: content/validator-fragments/section-visible-when.json
 
 composes_with:
   parents: [page]

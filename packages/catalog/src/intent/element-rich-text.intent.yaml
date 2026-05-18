@@ -25,7 +25,7 @@ axes:
 
 covers:
   - description: "CMS-sourced rich text with bold, italic, and inline anchor formatting"
-    example: content/presets/rich-text-body.json
+    example: content/validator-fragments/rich-text-body.json
 
 does_not_cover:
   - what: "Uniform heading or label copy"

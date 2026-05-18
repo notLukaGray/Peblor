@@ -22,7 +22,7 @@ axes:
 
 covers:
   - description: "Static hero background photo with WebP asset"
-    example: content/presets/bg-hero-image.json
+    example: content/validator-fragments/bg-hero-image.json
     minimal: true
 
 does_not_cover:

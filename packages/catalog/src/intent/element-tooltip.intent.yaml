@@ -48,7 +48,7 @@ does_not_cover:
 
 covers:
   - description: "Tooltip with top auto-position, 300ms show delay, arrow, and fade animation"
-    example: content/presets/element-tooltip.json
+    example: content/validator-fragments/element-tooltip.json
     minimal: true
 
 composes_with:

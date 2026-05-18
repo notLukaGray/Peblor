@@ -23,7 +23,7 @@ axes:
 
 covers:
   - description: "Intersection trigger that sets a variable on viewport entry with threshold and rootMargin"
-    example: content/presets/viewport-trigger.json
+    example: content/validator-fragments/viewport-trigger.json
 
 does_not_cover:
   - what: "Section with visual children wired to visibility triggers"

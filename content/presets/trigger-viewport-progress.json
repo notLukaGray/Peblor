@@ -1,8 +1,0 @@
-{
-  "type": "triggerSection",
-  "id": "trigger_viewport_progress_example",
-  "trigger": { "type": "onViewportProgress", "start": 0.1, "end": 0.9 },
-  "actions": [{ "type": "setVariable", "target": "opacity", "value": "progress" }],
-  "threshold": 0.1,
-  "rootMargin": "0px 0px 0px 0px"
-}
