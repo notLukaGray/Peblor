@@ -153,8 +153,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const headersList = await headers();
-  const nonce = headersList.get("x-nonce") || "";
+  await headers();
 
   // Fetch critical webfont CSS at render time — cached in memory so each server
   // instance fetches once. Skipped when self-hosted — @font-face rules are in the
@@ -171,14 +170,6 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={htmlFontClasses}>
       <head>
-        <script
-          nonce={nonce}
-          suppressHydrationWarning
-          dangerouslySetInnerHTML={{
-            __html:
-              '(function(){var d=document.documentElement;var t=d.dataset.pbForcedTheme||localStorage.getItem("theme");d.className+=" "+(t==="light"?"light":"dark");d.style.colorScheme=t==="light"?"light":"dark"})();',
-          }}
-        />
         {/* Weight vars + webfont family overrides. Injected before any stylesheet
             so CSS custom properties are available when globals.css is parsed. */}
         <style dangerouslySetInnerHTML={{ __html: fontCssVars }} />

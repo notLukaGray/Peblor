@@ -48,9 +48,17 @@ vi.mock("next/image", () => ({
 vi.mock("framer-motion", () => {
   const Passthrough = ({
     children,
+    whileHover: _whileHover,
+    whileTap: _whileTap,
+    whileFocus: _whileFocus,
+    onAnimationComplete: _onAnimationComplete,
     ...rest
   }: {
     children?: React.ReactNode;
+    whileHover?: unknown;
+    whileTap?: unknown;
+    whileFocus?: unknown;
+    onAnimationComplete?: unknown;
     [key: string]: unknown;
   }) => <div {...rest}>{children}</div>;
   return { motion: { div: Passthrough, nav: Passthrough } };

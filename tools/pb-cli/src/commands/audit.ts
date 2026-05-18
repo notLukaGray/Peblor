@@ -1,4 +1,7 @@
+import path from "node:path";
 import { findPagesDir, findPageFile, walkPages, readPageJson, isRecord } from "../lib/pages.js";
+import { readJsonFile } from "../lib/json-file.js";
+import { validateSectionValue } from "../lib/section-validate.js";
 import type { CommandIo } from "./types.js";
 
 type AuditArgs = {
@@ -52,7 +55,11 @@ function collectInternalHrefs(node: unknown, results: string[]): void {
   }
 }
 
-function auditPage(data: Record<string, unknown>, knownRoutes: Set<string>): AuditIssue[] {
+function auditPage(
+  data: Record<string, unknown>,
+  knownRoutes: Set<string>,
+  pageFile: string
+): AuditIssue[] {
   const issues: AuditIssue[] = [];
   const definitions = isRecord(data.definitions) ? data.definitions : {};
   const sectionOrder = Array.isArray(data.sectionOrder) ? (data.sectionOrder as string[]) : [];
@@ -161,6 +168,32 @@ function auditPage(data: Record<string, unknown>, knownRoutes: Set<string>): Aud
     }
   }
 
+  // Check 6: validate each loaded section file referenced by sectionOrder.
+  const pageDir = path.dirname(pageFile);
+  for (const key of sectionOrder) {
+    if (typeof key !== "string") continue;
+    const sectionPath = path.join(pageDir, `${key}.json`);
+    const read = readJsonFile(sectionPath);
+    if (!read.ok) {
+      issues.push({
+        severity: "error",
+        code: "section-load-failed",
+        message: "error" in read ? read.error : "Failed to read section file",
+        path: `definitions.${key}`,
+      });
+      continue;
+    }
+    const validated = validateSectionValue(read.value);
+    for (const diagnostic of validated.diagnostics) {
+      issues.push({
+        severity: diagnostic.severity,
+        code: diagnostic.code,
+        message: diagnostic.message,
+        path: `definitions.${key}${diagnostic.path === "$" ? "" : diagnostic.path.slice(1)}`,
+      });
+    }
+  }
+
   return issues;
 }
 
@@ -200,7 +233,7 @@ export async function runAudit(args: string[], io: CommandIo): Promise<number> {
     for (const { route: r, file } of allPages) {
       const read = readPageJson(file);
       if (!read.ok) continue;
-      const issues = auditPage(read.data, knownRoutes);
+      const issues = auditPage(read.data, knownRoutes, file);
       results.push({ route: r, file, issues });
     }
   } else {
@@ -217,7 +250,7 @@ export async function runAudit(args: string[], io: CommandIo): Promise<number> {
       else io.printErrorText(`Error: ${read.error}`);
       return 1;
     }
-    results.push({ route: route!, file, issues: auditPage(read.data, knownRoutes) });
+    results.push({ route: route!, file, issues: auditPage(read.data, knownRoutes, file) });
   }
 
   const totalIssues = results.reduce((n, r) => n + r.issues.length, 0);

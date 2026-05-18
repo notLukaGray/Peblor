@@ -1,6 +1,11 @@
 import { validatePage } from "./validate-page.js";
+import { validateSection } from "./validate-section.js";
+import { validateElement } from "./validate-element.js";
+import { validateBg } from "./validate-bg.js";
+import { validatePreset } from "./validate-preset.js";
 import { diffPages } from "./diff-pages.js";
 import { migrateContent } from "./migrate-content.js";
+import { batchValidateFragments } from "./batch-validate-fragments.js";
 import { doctorPage, doctorFragment } from "./doctor-page.js";
 import { previewPage } from "./preview-page.js";
 import { batchValidate } from "./batch-validate.js";
@@ -8,18 +13,41 @@ import { listPagesTool } from "./list-pages.js";
 import { listPresetsTool } from "./list-presets.js";
 import { listModals } from "./list-modals.js";
 import { listModules } from "./list-modules.js";
+import { listModuleTypes } from "./list-module-types.js";
+import { explainModuleType } from "./explain-module-type.js";
 import { listComponents } from "./list-components.js";
+import { listElementTypes } from "./list-element-types.js";
+import { explainElementType } from "./explain-element-type.js";
+import { listBgTypes } from "./list-bg-types.js";
+import { explainBgType } from "./explain-bg-type.js";
 import { searchPresets } from "./search-presets.js";
 import { readPage } from "./read-page.js";
 import { readPreset } from "./read-preset.js";
 import { readModal } from "./read-modal.js";
 import { readModule } from "./read-module.js";
 import { scaffoldPage } from "./scaffold-page.js";
+import { scaffoldElementTypeTool } from "./scaffold-element-type.js";
+import { scaffoldBgTypeTool } from "./scaffold-bg-type.js";
+import { scaffoldModuleTypeTool } from "./scaffold-module-type.js";
+import { scaffoldSectionTypeTool } from "./scaffold-section-type.js";
+import { scaffoldActionTypeTool } from "./scaffold-action-type.js";
+import { scaffoldPreset } from "./scaffold-preset.js";
 import { editPage } from "./edit-page.js";
 import { proposeComponent } from "./propose-component.js";
 import { probeComponents } from "./probe-components.js";
 import { explainComponent } from "./explain-component.js";
 import { getElementSchema } from "./get-element-schema.js";
+import { explainFieldPath } from "./explain-field-path.js";
+import { listFieldPaths } from "./list-field-paths.js";
+import { listActionTypes } from "./list-action-types.js";
+import { listSectionTypes } from "./list-section-types.js";
+import { explainActionType } from "./explain-action-type.js";
+import { validateAction } from "./validate-action.js";
+import { validateModuleFragment } from "./validate-module-fragment.js";
+import { validateOverlayFragment } from "./validate-overlay-fragment.js";
+import { suggestFix } from "./suggest-fix.js";
+import { schemaDoctor } from "./schema-doctor.js";
+import { explainSectionType } from "./explain-section-type.js";
 import { listSections, addSection, removeSection, moveSection } from "./section-surgery.js";
 import { grepPages } from "./grep-pages.js";
 import { writeModal, writeModule } from "./write-content.js";
@@ -68,8 +96,15 @@ import { exportSession, importSession } from "./session-persistence.js";
 export const allTools = [
   // pipeline / validation
   validatePage,
+  validateSection,
+  validateElement,
+  validateBg,
+  validatePreset,
+  validateModuleFragment,
+  validateOverlayFragment,
   diffPages,
   migrateContent,
+  batchValidateFragments,
   doctorPage,
   doctorFragment,
   previewPage,
@@ -80,7 +115,13 @@ export const allTools = [
   listPresetsTool,
   listModals,
   listModules,
+  listModuleTypes,
+  explainModuleType,
   listComponents,
+  listElementTypes,
+  explainElementType,
+  listBgTypes,
+  explainBgType,
   searchPresets,
   grepPages,
   // read content
@@ -90,6 +131,12 @@ export const allTools = [
   readModule,
   // write / generate
   scaffoldPage,
+  scaffoldElementTypeTool,
+  scaffoldBgTypeTool,
+  scaffoldModuleTypeTool,
+  scaffoldSectionTypeTool,
+  scaffoldActionTypeTool,
+  scaffoldPreset,
   editPage,
   addSection,
   removeSection,
@@ -106,6 +153,15 @@ export const allTools = [
   probeComponents,
   explainComponent,
   getElementSchema,
+  explainFieldPath,
+  listFieldPaths,
+  suggestFix,
+  schemaDoctor,
+  listActionTypes,
+  explainActionType,
+  validateAction,
+  listSectionTypes,
+  explainSectionType,
   // page sessions (MCP-native stateful editing)
   openPageSession,
   patchPageSession,

@@ -390,7 +390,7 @@ export function HomeView({ heroProjects }: HomeViewProps) {
 
               return (
                 <HomeHeroCarouselSlot
-                  key={project.id}
+                  key={`${project.id}-${slotIndex}`}
                   project={project}
                   slotIndex={slotIndex}
                   activeProjectIndex={activeProjectIndex}

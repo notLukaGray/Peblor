@@ -4,6 +4,14 @@ import { CONTRACT_VERSION } from "@pb/contracts";
 import { createPbClient } from "@pb/sdk";
 import { runConformance } from "./commands/conformance.js";
 import { runValidate, runDiff, runMigrate } from "./commands/core-ops.js";
+import { runValidateSection } from "./commands/validate-section.js";
+import { runValidateAction } from "./commands/validate-action.js";
+import { runValidateElement } from "./commands/validate-element.js";
+import { runValidateBg } from "./commands/validate-bg.js";
+import { runValidateModuleFragment } from "./commands/validate-module-fragment.js";
+import { runValidateOverlayFragment } from "./commands/validate-overlay-fragment.js";
+import { runValidateFragments } from "./commands/validate-fragments.js";
+import { runValidatePreset } from "./commands/validate-preset.js";
 import { runExplain } from "./commands/explain.js";
 import { runProbe } from "./commands/probe.js";
 import { runPropose } from "./commands/propose.js";
@@ -62,6 +70,14 @@ function printUsage(): void {
   printText("");
   printText("Commands:");
   printText("  validate <file>");
+  printText("  validate-section <file>");
+  printText("  validate-action <file>");
+  printText("  validate-element <file>");
+  printText("  validate-bg <file>");
+  printText("  validate-module-fragment <file>");
+  printText("  validate-overlay-fragment <file>");
+  printText("  validate-fragments <dir> --kind <section|element|action|bg|module|overlay>");
+  printText("  validate-preset <file>");
   printText("  diff <file-a> <file-b>");
   printText("  migrate <file> [--from <version>] [--to <version>]");
   printText("  conformance [fixtures-dir]");
@@ -163,6 +179,22 @@ export async function runCli(argv = process.argv): Promise<number> {
         return 0;
       }
       return args[0] ? runValidate(pb, io, args[0]) : (printUsage(), 2);
+    case "validate-section":
+      return runValidateSection(args, io);
+    case "validate-action":
+      return runValidateAction(args, io);
+    case "validate-element":
+      return runValidateElement(args, io);
+    case "validate-bg":
+      return runValidateBg(args, io);
+    case "validate-module-fragment":
+      return runValidateModuleFragment(args, io);
+    case "validate-overlay-fragment":
+      return runValidateOverlayFragment(args, io);
+    case "validate-fragments":
+      return runValidateFragments(args, io);
+    case "validate-preset":
+      return runValidatePreset(args, io);
     case "diff":
       if (wantsHelpFlag(args[0]) || wantsHelpFlag(args[1])) {
         printUsage();

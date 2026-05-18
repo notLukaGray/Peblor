@@ -1,12 +1,15 @@
+import fs from "node:fs";
+import path from "node:path";
 import { loadPage } from "@pb/core/load";
 import { validatePage } from "@pb/core/validate";
 import { expandPage } from "@pb/core/resolve";
 import { resolveAssets } from "@pb/core/resolve";
 import { loadCatalog } from "@pb/catalog";
 import type { CatalogEntry } from "@pb/catalog";
-import { sectionDefinitionBlockSchema, type Peblor } from "@pb/contracts";
+import type { Peblor } from "@pb/contracts";
 import { schemaTypeHint } from "./explain-schema.js";
 import { readJsonFile } from "../lib/json-file.js";
+import { validateSectionValue } from "../lib/section-validate.js";
 import type { CommandIo } from "./types.js";
 
 type StageName = "load" | "validate" | "expand" | "resolve" | "assets";
@@ -50,9 +53,37 @@ function parseDoctorArgs(args: string[]): {
   return { contentPath, fragmentPath, help, asJson, verbose, quiet, strict, stage };
 }
 
-function formatIssuePath(path: Array<string | number | symbol>): string {
-  if (path.length === 0) return "$";
-  return `$.${path.map((segment) => String(segment)).join(".")}`;
+export function resolveSectionFiles(
+  pageFile: string,
+  sectionOrder: string[]
+): {
+  sections: number;
+  loaded: number;
+  failed: number;
+  failures: Array<{ key: string; message: string }>;
+} {
+  const dir = path.dirname(pageFile);
+  const failures: Array<{ key: string; message: string }> = [];
+  let loaded = 0;
+  for (const key of sectionOrder) {
+    const file = path.join(dir, `${key}.json`);
+    if (!fs.existsSync(file)) {
+      failures.push({ key, message: `Section file not found: ${file}` });
+      continue;
+    }
+    const read = readJsonFile(file);
+    if (!read.ok) {
+      failures.push({ key, message: "error" in read ? read.error : "Failed to read section" });
+      continue;
+    }
+    const validated = validateSectionValue(read.value);
+    if (!validated.valid) {
+      failures.push({ key, message: validated.diagnostics.map((d) => d.message).join("; ") });
+      continue;
+    }
+    loaded += 1;
+  }
+  return { sections: sectionOrder.length, loaded, failed: failures.length, failures };
 }
 
 function collectAssetUrls(value: unknown, urls: Set<string>): void {
@@ -177,16 +208,14 @@ export async function runDoctor(args: string[], io: CommandIo): Promise<number> 
       return 2;
     }
 
-    const parsed = sectionDefinitionBlockSchema.safeParse(read.value);
-    const diagnostics = parsed.success
-      ? []
-      : parsed.error.issues.map((issue) => ({
-          severity: "error",
-          stage: "validate",
-          code: "PB_DOCTOR_FRAGMENT_INVALID",
-          path: formatIssuePath(issue.path),
-          message: issue.message,
-        }));
+    const validated = validateSectionValue(read.value);
+    const diagnostics = validated.diagnostics.map((diagnostic) => ({
+      severity: diagnostic.severity,
+      stage: "validate",
+      code: "PB_DOCTOR_FRAGMENT_INVALID",
+      path: diagnostic.path,
+      message: diagnostic.message,
+    }));
 
     if (asJson) {
       const payload = {
@@ -194,15 +223,15 @@ export async function runDoctor(args: string[], io: CommandIo): Promise<number> 
         mode: "fragment",
         schema_version: 1,
         input: fragmentPath,
-        schema: "sectionDefinitionBlockSchema",
-        valid: parsed.success,
+        schema: validated.schema,
+        valid: validated.valid,
         diagnostics,
       };
-      if (!parsed.success) io.printErrorJson(payload);
+      if (!validated.valid) io.printErrorJson(payload);
       else io.printJson(payload);
     } else {
       io.printText(`Validating fragment ${fragmentPath}`);
-      io.printText(`  Result:         ${parsed.success ? "OK" : "FAIL"}`);
+      io.printText(`  Result:         ${validated.valid ? "OK" : "FAIL"}`);
       for (const diagnostic of diagnostics)
         io.printErrorText(`ERROR [${diagnostic.stage}] ${diagnostic.path} ${diagnostic.message}`);
     }
@@ -247,7 +276,27 @@ export async function runDoctor(args: string[], io: CommandIo): Promise<number> 
   if (stages.validate.ok && (!stage || ["expand", "resolve", "assets"].includes(stage))) {
     try {
       expanded = expandPage(validated!.page as Peblor);
-      stages.expand = { ok: true, details: { sections: expanded.sections.length } };
+      const raw = loaded?.raw as Record<string, unknown>;
+      const sectionOrder = Array.isArray(raw.sectionOrder)
+        ? raw.sectionOrder.filter((value): value is string => typeof value === "string")
+        : [];
+      const sectionLoad = resolveSectionFiles(loaded!.filePath, sectionOrder);
+      stages.expand = {
+        ok: sectionLoad.failed === 0,
+        details: {
+          sections: sectionLoad.sections,
+          loaded: sectionLoad.loaded,
+          failed: sectionLoad.failed,
+          failures: sectionLoad.failures,
+        },
+        ...(sectionLoad.failed > 0
+          ? {
+              error: sectionLoad.failures
+                .map((failure) => `${failure.key}: ${failure.message}`)
+                .join("; "),
+            }
+          : {}),
+      };
     } catch (error) {
       stages.expand = { ok: false, error: error instanceof Error ? error.message : String(error) };
     }
