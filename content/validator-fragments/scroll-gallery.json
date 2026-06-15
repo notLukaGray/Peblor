@@ -6,7 +6,7 @@
     "start": 0,
     "end": 1
   },
-  "overflow": "hidden",
+  "scroll": "hidden",
   "width": "100%",
   "height": "100vh",
   "elements": [],

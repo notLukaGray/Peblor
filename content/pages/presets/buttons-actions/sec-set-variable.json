@@ -1,0 +1,209 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "entrancePreset": "slideUp",
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "variable-buttons", "indicator-panel"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "setVariable"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Buttons that set a page variable to different values. The variable can drive visibleWhen conditions, background switches, and other data-driven behaviors across the page."
+    },
+    "variable-buttons": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "align": "center",
+      "distribute": "center",
+      "gap": "1rem",
+      "section": {
+        "elementOrder": ["var-set-active", "var-set-idle", "var-set-paused"],
+        "definitions": {
+          "var-set-active": {
+            "preset": "btn-primary",
+            "label": "Set Active",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "demoStatus",
+              "value": "active"
+            },
+            "wrapperBorderRadius": "10px"
+          },
+          "var-set-idle": {
+            "preset": "btn-squircle",
+            "label": "Set Idle",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "demoStatus",
+              "value": "idle"
+            },
+            "wrapperBorderRadius": "10px",
+            "wrapperPadding": "0.7rem 1.5rem"
+          },
+          "var-set-paused": {
+            "preset": "btn-ghost",
+            "label": "Set Paused",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "demoStatus",
+              "value": "paused"
+            },
+            "wrapperBorderRadius": "10px"
+          }
+        }
+      }
+    },
+    "indicator-panel": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "center",
+      "distribute": "center",
+      "gap": "0.75rem",
+      "padding": "1.5rem 2rem",
+      "wrapperStyle": {
+        "background": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+        "borderRadius": "12px"
+      },
+      "width": "100%",
+      "constraints": {
+        "maxWidth": "400px"
+      },
+      "section": {
+        "elementOrder": ["indicator-label", "panel-active", "panel-idle", "panel-paused"],
+        "definitions": {
+          "indicator-label": {
+            "type": "elementBody",
+            "level": 5,
+            "text": "Current demoStatus value:",
+            "color": "color-mix(in oklab, var(--pb-on-secondary) 44%, transparent)",
+            "wordWrap": true,
+            "selfAlign": "center"
+          },
+          "panel-active": {
+            "type": "elementGroup",
+            "visibleWhen": {
+              "variable": "demoStatus",
+              "operator": "equals",
+              "value": "active"
+            },
+            "display": "flex",
+            "align": "center",
+            "distribute": "center",
+            "padding": "0.5rem 1rem",
+            "wrapperStyle": {
+              "background": "color-mix(in oklab, #22c55e 15%, transparent)",
+              "borderRadius": "8px"
+            },
+            "section": {
+              "elementOrder": ["active-badge", "active-text"],
+              "definitions": {
+                "active-badge": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "●",
+                  "color": "#22c55e",
+                  "fontFamily": "var(--font-mono)",
+                  "selfAlign": "center"
+                },
+                "active-text": {
+                  "type": "elementBody",
+                  "level": 3,
+                  "text": "Active",
+                  "fontFamily": "var(--font-mono)",
+                  "color": "#22c55e",
+                  "wordWrap": true,
+                  "selfAlign": "center"
+                }
+              }
+            }
+          },
+          "panel-idle": {
+            "type": "elementGroup",
+            "visibleWhen": {
+              "variable": "demoStatus",
+              "operator": "equals",
+              "value": "idle"
+            },
+            "display": "flex",
+            "align": "center",
+            "distribute": "center",
+            "padding": "0.5rem 1rem",
+            "wrapperStyle": {
+              "background": "color-mix(in oklab, var(--pb-accent) 15%, transparent)",
+              "borderRadius": "8px"
+            },
+            "section": {
+              "elementOrder": ["idle-badge", "idle-text"],
+              "definitions": {
+                "idle-badge": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "●",
+                  "color": "var(--pb-accent)",
+                  "fontFamily": "var(--font-mono)",
+                  "selfAlign": "center"
+                },
+                "idle-text": {
+                  "type": "elementBody",
+                  "level": 3,
+                  "text": "Idle",
+                  "fontFamily": "var(--font-mono)",
+                  "color": "var(--pb-accent)",
+                  "wordWrap": true,
+                  "selfAlign": "center"
+                }
+              }
+            }
+          },
+          "panel-paused": {
+            "type": "elementGroup",
+            "visibleWhen": {
+              "variable": "demoStatus",
+              "operator": "equals",
+              "value": "paused"
+            },
+            "display": "flex",
+            "align": "center",
+            "distribute": "center",
+            "padding": "0.5rem 1rem",
+            "wrapperStyle": {
+              "background": "color-mix(in oklab, #f59e0b 15%, transparent)",
+              "borderRadius": "8px"
+            },
+            "section": {
+              "elementOrder": ["paused-badge", "paused-text"],
+              "definitions": {
+                "paused-badge": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "●",
+                  "color": "#f59e0b",
+                  "fontFamily": "var(--font-mono)",
+                  "selfAlign": "center"
+                },
+                "paused-text": {
+                  "type": "elementBody",
+                  "level": 3,
+                  "text": "Paused",
+                  "fontFamily": "var(--font-mono)",
+                  "color": "#f59e0b",
+                  "wordWrap": true,
+                  "selfAlign": "center"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "id": "sec-set-variable"
+}

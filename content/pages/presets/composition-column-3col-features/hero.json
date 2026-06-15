@@ -1,0 +1,23 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Column · Feature Grid · Modular"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Composition Column 3 Col Features"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Three-column feature system with mobile-first collapse and equalized visual rhythm.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  },
+  "align": "start"
+}

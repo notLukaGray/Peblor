@@ -1,0 +1,11 @@
+{
+  "type": "elementBody",
+  "level": 5,
+  "textTransform": "uppercase",
+  "letterSpacing": "0.06em",
+  "color": "color-mix(in oklab, var(--pb-on-secondary) 48%, transparent)",
+  "textAlign": "center",
+  "width": "100%",
+  "wordWrap": false,
+  "text": ""
+}

@@ -1,0 +1,23 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Column · Metrics · Structured Data"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Composition Column KPI Matrix"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Dense metric matrix demonstrating structured numeric storytelling across viewports.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  },
+  "align": "start"
+}

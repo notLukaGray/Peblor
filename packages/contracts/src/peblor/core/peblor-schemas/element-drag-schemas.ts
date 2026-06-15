@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { elementLayoutSchema } from "./element-foundation-schemas";
 import { responsiveStringSchema } from "./schema-primitives";
+// B-4 / C-15: Cannot import elementBlockSchema from element-block-schemas.ts directly
+// (that file imports this one, creating a circular dep). Instead, import the shared lazy
+// ref from lazy-element-ref.ts, which is populated by element-block-schemas.ts after init.
+import { lazyElementBlock } from "./lazy-element-ref";
 
 const dragAxisSchema = z.enum(["x", "y", "both"]).optional();
 const dragSnapSchema = z
@@ -43,7 +47,8 @@ export const elementDragSchema = z
     children: z
       .object({
         elementOrder: z.array(z.string()).optional(),
-        definitions: z.record(z.string(), z.object({ type: z.string() }).passthrough()),
+        /** Lazy element block ref — fully typed via shared lazy ref (B-4). */
+        definitions: z.record(z.string(), lazyElementBlock),
       })
       .optional(),
     ariaLabel: z.string().optional(),

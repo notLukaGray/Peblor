@@ -1,0 +1,11 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "width": "100%",
+  "height": "150vh",
+  "selfAlign": "center",
+  "fill": "transparent",
+  "align": "center",
+  "distribute": "end",
+  "paddingBottom": "8rem"
+}

@@ -3,6 +3,10 @@
     "peblor": {
       "command": "npm",
       "args": ["run", "pb-mcp"]
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["chrome-devtools-mcp", "--isolated", "--headless"]
     }
   }
 }

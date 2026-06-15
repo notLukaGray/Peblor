@@ -1,0 +1,21 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Audio Minimal — Preset Demo",
+  "description": "Bare glass pill — play/pause, seek, time. Nothing else.",
+  "presets": [
+    "demo",
+    "type/core",
+    "ui/link",
+    "type/motion",
+    "player/surface",
+    "bg",
+    "player/section"
+  ],
+  "bgKey": "bg-players",
+  "sectionOrder": ["nav-header", "hero", "sec-player"],
+  "definitions": {
+    "bg-players": {
+      "preset": "bg-players"
+    }
+  }
+}

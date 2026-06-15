@@ -1,0 +1,21 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Buttons System — Preset Demo",
+  "description": "Visual button variants — primary, secondary, ghost, pill, quiet, and utility buttons with rich composition examples including grouped CTAs, stress states, and embedded card shells.",
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "ui/button", "bg"],
+  "sectionOrder": [
+    "nav-header",
+    "hero",
+    "sec-variants",
+    "sec-gradients",
+    "sec-grouped-ctas",
+    "sec-stress",
+    "sec-embedded-shells"
+  ],
+  "bgKey": "bg",
+  "definitions": {
+    "bg": {
+      "preset": "bg-solid"
+    }
+  }
+}

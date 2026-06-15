@@ -1,0 +1,6 @@
+{
+  "type": "elementAudio",
+  "module": "audio-player-minimal",
+  "src": "https://upload.wikimedia.org/wikipedia/commons/4/4e/BWV_543-fugue.ogg",
+  "width": "100%"
+}

@@ -1,0 +1,173 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Composition Column Rail Body — Preset Demo",
+  "description": "Persistent utility rail alongside narrative body for long-form guided reading layouts.",
+  "sectionOrder": ["nav-header", "hero", "demo-primary", "demo-stress"],
+  "definitions": {
+    "bg-composition": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "radial-gradient(120% 110% at 92% 2%, color-mix(in oklab, var(--pb-accent) 16%, transparent) 0%, transparent 54%), linear-gradient(160deg, color-mix(in oklab, var(--pb-primary) 11%, var(--pb-secondary)) 0%, var(--pb-secondary) 66%, color-mix(in oklab, var(--pb-accent) 6%, var(--pb-secondary)) 100%)"
+        }
+      ],
+      "preset": "bg-composition"
+    },
+    "nav-header": {
+      "preset": "preset-demo-nav-header"
+    },
+    "hero": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "align": "start",
+      "height": "hug",
+      "padding": {
+        "base": "10rem 0 6rem",
+        "md": "12rem 0 8rem"
+      },
+      "gap": "1rem",
+      "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+      "definitions": {
+        "hero-eyebrow": {
+          "preset": "type-kicker-badge",
+          "text": "Column · Rail · Reading Body"
+        },
+        "hero-title": {
+          "preset": "type-h1-display",
+          "text": "Composition Column Rail Body"
+        },
+        "hero-description": {
+          "preset": "type-body-standard",
+          "text": "Persistent utility rail alongside narrative body for long-form guided reading layouts.",
+          "width": {
+            "base": "100%",
+            "md": "72%"
+          }
+        }
+      }
+    },
+    "demo-primary": {
+      "preset": "composition-column-rail-body",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "1100px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "2rem 0 4rem",
+        "md": "2rem 0 5rem"
+      },
+      "definitions": {
+        "rail": {
+          "section": {
+            "definitions": {
+              "kicker": {
+                "text": "Playbook"
+              },
+              "title": {
+                "text": "Incident Rail"
+              },
+              "body": {
+                "text": "Pinned utility lane for runbooks, owners, and escalation links."
+              },
+              "link": {
+                "label": "Open procedures ->",
+                "href": "#"
+              }
+            }
+          }
+        },
+        "body": {
+          "section": {
+            "definitions": {
+              "article-a": {
+                "section": {
+                  "definitions": {
+                    "title": {
+                      "text": "Timeline Reconstruction"
+                    },
+                    "excerpt": {
+                      "text": "How teams rebuilt event order from logs, alerts, and operator notes."
+                    }
+                  }
+                }
+              },
+              "article-b": {
+                "section": {
+                  "definitions": {
+                    "title": {
+                      "text": "Decision Ledger"
+                    },
+                    "excerpt": {
+                      "text": "Why each mitigation step was chosen and what was deferred."
+                    }
+                  }
+                }
+              },
+              "article-c": {
+                "section": {
+                  "definitions": {
+                    "title": {
+                      "text": "Aftercare Tasks"
+                    },
+                    "excerpt": {
+                      "text": "Follow-up debt items with accountable owners and target windows."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "demo-stress": {
+      "preset": "composition-column-rail-body",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "1100px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 0 8rem",
+        "md": "0 0 12rem"
+      },
+      "definitions": {
+        "rail": {
+          "section": {
+            "definitions": {
+              "body": {
+                "text": "Stress copy in the rail validates that utility content can expand without collapsing the primary reading column or forcing unusable line lengths on narrow breakpoints."
+              }
+            }
+          }
+        },
+        "body": {
+          "section": {
+            "definitions": {
+              "article-a": {
+                "section": {
+                  "definitions": {
+                    "excerpt": {
+                      "text": "Extended summary paragraph testing long-copy endurance in the narrative stream with multiple clauses and contextual detail for incident review audiences."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "layout", "card", "bg"],
+  "bgKey": "bg-composition"
+}

@@ -1,0 +1,99 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Composition Column 70 30 Sidebar — Preset Demo",
+  "description": "Primary narrative with secondary sidebar metadata and clean responsive collapse behavior.",
+  "sectionOrder": ["nav-header", "hero", "demo-primary", "demo-stress"],
+  "definitions": {
+    "bg-composition": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "radial-gradient(120% 110% at 92% 2%, color-mix(in oklab, var(--pb-accent) 16%, transparent) 0%, transparent 54%), linear-gradient(160deg, color-mix(in oklab, var(--pb-primary) 11%, var(--pb-secondary)) 0%, var(--pb-secondary) 66%, color-mix(in oklab, var(--pb-accent) 6%, var(--pb-secondary)) 100%)"
+        }
+      ],
+      "preset": "bg-composition"
+    },
+    "nav-header": {
+      "preset": "preset-demo-nav-header"
+    },
+    "hero": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "align": "start",
+      "height": "hug",
+      "padding": {
+        "base": "10rem 0 6rem",
+        "md": "12rem 0 8rem"
+      },
+      "gap": "1rem",
+      "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+      "definitions": {
+        "hero-eyebrow": {
+          "preset": "type-kicker-badge",
+          "text": "Column · Sidebar · Priority Content"
+        },
+        "hero-title": {
+          "preset": "type-h1-display",
+          "text": "Composition Column 70 30 Sidebar"
+        },
+        "hero-description": {
+          "preset": "type-body-standard",
+          "text": "Primary narrative with secondary sidebar metadata and clean responsive collapse behavior.",
+          "width": {
+            "base": "100%",
+            "md": "72%"
+          }
+        }
+      }
+    },
+    "demo-primary": {
+      "preset": "composition-column-70-30-sidebar",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "1080px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "3rem 0 4rem",
+        "md": "3rem 0 5rem"
+      }
+    },
+    "demo-stress": {
+      "preset": "composition-column-70-30-sidebar",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "1080px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 0 8rem",
+        "md": "0 0 12rem"
+      },
+      "definitions": {
+        "title": {
+          "text": "Stress variant: dense sidebar content"
+        },
+        "narrative": {
+          "text": "The primary column carries the decision narrative while the sidebar absorbs operational detail. This pattern is useful for briefs, change logs, and implementation notes where metadata is important but must not overtake the main argument."
+        },
+        "meta-list": {
+          "text": "Owner: Growth + Platform\\nStatus: Blocked pending security review\\nWindow: Q3 migration\\nDependencies: Auth service, billing webhooks, analytics mapping\\nRisk: Medium-high due to legacy token assumptions"
+        },
+        "meta-link": {
+          "label": "Open issue board ->",
+          "href": "#"
+        }
+      }
+    }
+  },
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "layout", "card", "bg"],
+  "bgKey": "bg-composition"
+}

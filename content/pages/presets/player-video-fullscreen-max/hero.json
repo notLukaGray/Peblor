@@ -1,0 +1,21 @@
+{
+  "preset": "demo-hero",
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Immersive · Full Control"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Video Fullscreen Max"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Full-viewport video with layered controls — transport, chapter, quality, volume — all visibleWhen-gated.",
+      "width": {
+        "base": "100%",
+        "md": "78%"
+      }
+    }
+  }
+}

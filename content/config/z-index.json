@@ -1,0 +1,10 @@
+{
+  "layer": {
+    "base": 0,
+    "raised": 1,
+    "content": 2,
+    "overlay": 5,
+    "columnGrid": 10,
+    "fixedSection": 50
+  }
+}

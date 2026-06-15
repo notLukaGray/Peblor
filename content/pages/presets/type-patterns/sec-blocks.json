@@ -1,0 +1,92 @@
+{
+  "type": "sectionColumn",
+  "columns": {
+    "base": 1,
+    "md": 2
+  },
+  "columnWidths": {
+    "base": [1],
+    "md": [0.5, 0.5]
+  },
+  "columnGaps": {
+    "base": "2rem",
+    "md": "4rem"
+  },
+  "padding": {
+    "base": "7.25rem 0",
+    "md": "10.25rem 0"
+  },
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "900px",
+  "selfAlign": "center",
+  "elementOrder": ["left", "right"],
+  "columnAssignments": {
+    "base": {
+      "left": 0,
+      "right": 0
+    },
+    "md": {
+      "left": 0,
+      "right": 1
+    }
+  },
+  "definitions": {
+    "left": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "1.25rem",
+      "width": "100%",
+      "motionTiming": {
+        "staggerChildren": 0.1,
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": ["lbl", "cb", "cb-desc"],
+        "definitions": {
+          "lbl": {
+            "preset": "type-h3-label",
+            "text": "Copy Block"
+          },
+          "cb": {
+            "preset": "type-copy-block"
+          },
+          "cb-desc": {
+            "preset": "type-body-standard",
+            "text": "Kicker badge + section heading + lead body, stacked with tight gap. The foundational section intro unit."
+          }
+        }
+      }
+    },
+    "right": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "1.25rem",
+      "width": "100%",
+      "motionTiming": {
+        "staggerChildren": 0.1,
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": ["lbl", "hc", "hc-desc"],
+        "definitions": {
+          "lbl": {
+            "preset": "type-h3-label",
+            "text": "Hero Copy"
+          },
+          "hc": {
+            "preset": "type-hero-copy"
+          },
+          "hc-desc": {
+            "preset": "type-body-standard",
+            "text": "Centered kicker, display heading, lead, and nav link — the full hero copy unit with stagger built in."
+          }
+        }
+      }
+    }
+  }
+}

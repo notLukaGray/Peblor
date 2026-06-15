@@ -1,7 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
-import { DEFAULT_WHEEL_LOCK_MS, getNowMs } from "./infinite-scroll-math";
+import { useCallback, useEffect } from "react";
 import type { ScrollAxis } from "./infinite-scroll-types";
 
 type UseInfiniteScrollGesturesOptions = {
@@ -10,12 +9,12 @@ type UseInfiniteScrollGesturesOptions = {
   containerRef: React.RefObject<HTMLDivElement | null>;
   goToBaseIndex: (baseIndex: number) => void;
   itemCount: number;
+  loop: boolean;
   markMoving: () => void;
   selectableBaseIndices: number[];
   setPointerActive: (isPointerActive: boolean) => void;
   stepBy: (delta: number) => void;
   stepByPage: (direction: 1 | -1) => void;
-  wheelLockMs?: number;
 };
 
 export function useInfiniteScrollGestures({
@@ -24,42 +23,49 @@ export function useInfiniteScrollGestures({
   containerRef,
   goToBaseIndex,
   itemCount,
+  loop,
   markMoving,
   selectableBaseIndices,
   setPointerActive,
   stepBy,
   stepByPage,
-  wheelLockMs = DEFAULT_WHEEL_LOCK_MS,
 }: UseInfiniteScrollGesturesOptions) {
-  const wheelLockUntilRef = useRef(0);
-
+  // Vertical-wheel-drives-horizontal assist for horizontal carousels.
+  //
+  // Horizontal-dominant gestures (trackpad swipe, shift+wheel) are left to the native
+  // scroll container so its momentum + scroll-snap stay intact. Only vertical-dominant
+  // wheel/trackpad input is translated into horizontal travel — and unlike the old
+  // implementation there is no rolling "wheel lock": each delta scrolls natively and CSS
+  // scroll-snap settles it once the wheel stream stops, so it never fights an in-flight
+  // snap. A non-looping carousel releases the gesture at its edges so the page can still
+  // scroll past it; the capture only applies while the pointer is over the carousel.
   useEffect(() => {
     const container = containerRef.current;
     if (!container || itemCount <= 1 || axis !== "horizontal") return;
 
     const handleWheel = (event: WheelEvent) => {
-      const horizontalIntent = Math.abs(event.deltaX) > Math.abs(event.deltaY);
-      const lockActive = getNowMs() < wheelLockUntilRef.current;
-      if (!horizontalIntent && !lockActive) return;
+      const absX = Math.abs(event.deltaX);
+      const absY = Math.abs(event.deltaY);
+      if (absX === 0 && absY === 0) return;
+      if (absX >= absY) return; // horizontal intent → native handles it
 
-      const axisDelta = horizontalIntent
-        ? event.deltaX !== 0
-          ? event.deltaX
-          : event.deltaY
-        : event.deltaY;
-      if (axisDelta === 0) return;
+      if (!loop) {
+        const max = container.scrollWidth - container.clientWidth;
+        const atStart = container.scrollLeft <= 0;
+        const atEnd = container.scrollLeft >= max - 1;
+        const goingForward = event.deltaY > 0;
+        if ((goingForward && atEnd) || (!goingForward && atStart)) return; // let the page scroll
+      }
 
-      wheelLockUntilRef.current = getNowMs() + wheelLockMs;
-      cancelPendingSnapTarget();
       event.preventDefault();
-      event.stopPropagation();
-      container.scrollBy({ left: axisDelta });
+      cancelPendingSnapTarget();
+      container.scrollBy({ left: event.deltaY });
       markMoving();
     };
 
     container.addEventListener("wheel", handleWheel, { passive: false });
     return () => container.removeEventListener("wheel", handleWheel);
-  }, [axis, cancelPendingSnapTarget, containerRef, itemCount, markMoving, wheelLockMs]);
+  }, [axis, cancelPendingSnapTarget, containerRef, itemCount, loop, markMoving]);
 
   const onKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {

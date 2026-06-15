@@ -1,10 +1,16 @@
+"use client";
+
 import type { CSSProperties, ReactNode } from "react";
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useInsertionEffect, useMemo, useRef } from "react";
 import {
   getElementLayoutStyle,
   getElementTransformStyle,
+  sectionEffectsToStyle,
+  extractElementResponsiveLayoutStyles,
+  RESPONSIVE_LAYOUT_CSS_KEYS,
   type ElementLayoutTransformOptions,
 } from "@pb/core/layout";
+import { buildResponsiveStyle, type ResponsiveStyleInput } from "./responsive-style";
 import { firePeblorAction } from "@/peblor/triggers";
 import type {
   PeblorAction,
@@ -12,9 +18,14 @@ import type {
   SectionEffect,
 } from "@pb/contracts/peblor/core/peblor-schemas";
 import { SectionGlassEffect } from "@/peblor/section/stack/SectionGlassEffect";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
-import { resolveThemeStyleObject, resolveThemeValueDeep } from "@/peblor/theme/theme-string";
-import { coerceSectionEffects } from "@/peblor/elements/ElementModule/element-module-style-utils";
+import { globals } from "@pb/runtime-react/core/lib/globals";
+import { lowerThemeStyleObject } from "@/peblor/theme/theme-string";
+import {
+  useElementEffects,
+  hasElementInteractions,
+} from "@/peblor/elements/Shared/use-element-effects";
+import { useDeviceType } from "@pb/runtime-react/core/providers/device-type-provider";
+import { computeStateStyle, type StateStyleInput } from "./state-style";
 
 type LayoutProps = Pick<
   ElementLayoutTransformOptions,
@@ -53,6 +64,8 @@ type Props = {
   figureProps?: React.ComponentPropsWithoutRef<"figure">;
   /** Universal element interactions from JSON. */
   interactions?: ElementInteractions;
+  /** Universal state styles (hover/focus/focus-visible/active/disabled) from the element base schema. */
+  stateStyles?: StateStyleInput;
 };
 
 /**
@@ -67,32 +80,126 @@ export function ElementLayoutWrapper({
   overflow = "hidden",
   figureProps,
   interactions,
+  stateStyles,
 }: Props) {
-  const themeMode = usePeblorThemeMode();
-  const surfaceRef = useRef<HTMLElement | null>(null);
+  const { isMobile } = useDeviceType();
+  const surfaceRef = useRef<HTMLDivElement | null>(null);
+
+  // ── State styles (hover/focus/focus-visible/active/disabled) ────────────
+  // Merge explicit stateStyles prop with fields on layout (elements that spread their
+  // full block props into layout will carry hoverStyle/focusStyle/etc. via the catchall).
+  const resolvedStateStyles: StateStyleInput | null = useMemo(() => {
+    const fromLayout = layout as Record<string, unknown>;
+    const merged: StateStyleInput = {
+      id: (stateStyles?.id ?? (typeof fromLayout.id === "string" ? fromLayout.id : undefined)) as
+        | string
+        | undefined,
+      hoverStyle: (stateStyles?.hoverStyle ?? fromLayout.hoverStyle) as
+        | Record<string, string | number>
+        | undefined,
+      focusStyle: (stateStyles?.focusStyle ?? fromLayout.focusStyle) as
+        | Record<string, string | number>
+        | undefined,
+      focusVisibleStyle: (stateStyles?.focusVisibleStyle ?? fromLayout.focusVisibleStyle) as
+        | Record<string, string | number>
+        | undefined,
+      activeStyle: (stateStyles?.activeStyle ?? fromLayout.activeStyle) as
+        | Record<string, string | number>
+        | undefined,
+      disabledStyle: (stateStyles?.disabledStyle ?? fromLayout.disabledStyle) as
+        | Record<string, string | number>
+        | undefined,
+    };
+    return merged;
+  }, [layout, stateStyles]);
+  const { className: stateStyleClass, css: stateStyleCss } = useMemo(
+    () => computeStateStyle(resolvedStateStyles ?? {}),
+    [resolvedStateStyles]
+  );
+  useInsertionEffect(() => {
+    if (!stateStyleCss || !stateStyleClass) return;
+    // Deduplicate: SSR already emitted this <style> tag via ServerElementRenderer
+    // (hoisted to <head> by React 19). Check before injecting to avoid post-hydration
+    // duplicates that would persist in the DOM.
+    if (document.head.querySelector(`style[data-pb-st="${stateStyleClass}"]`)) return;
+    const el = document.createElement("style");
+    el.setAttribute("data-pb-st", stateStyleClass);
+    el.textContent = stateStyleCss;
+    document.head.appendChild(el);
+    return () => {
+      el.remove();
+    };
+  }, [stateStyleCss, stateStyleClass]);
+
+  // ── Responsive layout style injection (stage 3) ──────────────────────────
+  // Extract responsive layout values from the raw layout prop and emit as scoped <style>.
+  const responsiveLayoutResult = useMemo(() => {
+    const rawLayout = layout as Record<string, unknown>;
+    const styles = extractElementResponsiveLayoutStyles(rawLayout);
+    if (Object.keys(styles).length === 0) {
+      return {
+        className: undefined as string | undefined,
+        css: undefined as string | undefined,
+        needsContainer: false,
+      };
+    }
+    return buildResponsiveStyle({
+      id: typeof rawLayout.id === "string" ? rawLayout.id : undefined,
+      styles,
+    } as ResponsiveStyleInput);
+  }, [layout]);
+  const {
+    className: responsiveStyleClass,
+    css: responsiveStyleCss,
+    needsContainer: _responsiveNeedsContainer,
+  } = responsiveLayoutResult;
+  useInsertionEffect(() => {
+    if (!responsiveStyleCss || !responsiveStyleClass) return;
+    // Deduplicate: SSR already emitted this <style> tag via ServerElementRenderer
+    // (hoisted to <head> by React 19). Check before injecting to avoid post-hydration
+    // duplicates that would persist in the DOM.
+    if (document.head.querySelector(`style[data-pb-rs="${responsiveStyleClass}"]`)) return;
+    const el = document.createElement("style");
+    el.setAttribute("data-pb-rs", responsiveStyleClass);
+    el.textContent = responsiveStyleCss;
+    document.head.appendChild(el);
+    return () => {
+      el.remove();
+    };
+  }, [responsiveStyleCss, responsiveStyleClass]);
+
   const resolvedLayout = useMemo(
     () => ({
       ...layout,
-      wrapperStyle: resolveThemeStyleObject(
-        layout.wrapperStyle as Record<string, unknown> | undefined,
-        themeMode
+      wrapperStyle: lowerThemeStyleObject(
+        layout.wrapperStyle as Record<string, unknown> | undefined
       ),
-      effects: resolveThemeValueDeep(layout.effects, themeMode),
     }),
-    [layout, themeMode]
+    [layout]
   );
-  const surfaceEffects = useMemo(
-    () => coerceSectionEffects(resolvedLayout.effects),
-    [resolvedLayout.effects]
-  );
-  const hasGlassEffect = (surfaceEffects ?? []).some((effect) => effect.type === "glass");
+  const { resolvedEffects: surfaceEffects, hasGlassEffect } = useElementEffects(layout.effects);
   // When a glass effect has a clip-path (non-rectangular shape), skip overflow:hidden —
   // the SVG clipPath on the <figure> handles shape clipping instead.
   const glassHasClipPath = (surfaceEffects ?? []).some(
     (effect) => effect.type === "glass" && !!(effect as { clipPath?: string }).clipPath
   );
   const glassInForeground = hasGlassEffect && glassLayer === "foreground";
-  const layoutStyle = getElementLayoutStyle(resolvedLayout as Partial<ElementLayout>);
+  const nonGlassEffectStyle = useMemo(
+    () => sectionEffectsToStyle((surfaceEffects ?? []).filter((effect) => effect.type !== "glass")),
+    [surfaceEffects]
+  );
+  const layoutStyle: CSSProperties = (() => {
+    const raw = getElementLayoutStyle(resolvedLayout as Partial<ElementLayout>, isMobile);
+    if (!responsiveStyleClass) return raw;
+    const stripped = { ...raw };
+    for (const key of RESPONSIVE_LAYOUT_CSS_KEYS) {
+      const v = (layout as Record<string, unknown>)[key];
+      if (v !== undefined && v !== null && typeof v === "object") {
+        delete (stripped as Record<string, unknown>)[key];
+      }
+    }
+    return stripped;
+  })();
   const transformStyle = getElementTransformStyle(
     transform ? { ...resolvedLayout, ...transform } : undefined
   );
@@ -105,19 +212,15 @@ export function ElementLayoutWrapper({
     justifyContent: "center" as const,
     ...(layoutStyle.borderRadius != null ? { borderRadius: layoutStyle.borderRadius } : {}),
     ...(hasGlassEffect
-      ? { position: "relative" as const, ...(glassInForeground ? {} : { zIndex: 1 }) }
+      ? {
+          position: "relative" as const,
+          ...(glassInForeground ? {} : { zIndex: globals.zIndexRaised }),
+        }
       : {}),
     ...transformStyle,
   };
 
-  const hasInteractions = !!(
-    interactions?.onClick ||
-    interactions?.onHoverEnter ||
-    interactions?.onHoverLeave ||
-    interactions?.onPointerDown ||
-    interactions?.onPointerUp ||
-    interactions?.onDoubleClick
-  );
+  const hasInteractions = hasElementInteractions(interactions);
 
   const handleClick = useCallback(() => {
     if (interactions?.onClick) firePeblorAction(interactions.onClick, "trigger");
@@ -149,6 +252,7 @@ export function ElementLayoutWrapper({
     ...(hasGlassEffect && layoutStyle.borderRadius != null && !glassHasClipPath
       ? { overflow: "hidden" as const }
       : {}),
+    ...nonGlassEffectStyle,
   };
 
   const interactionProps = hasInteractions
@@ -168,8 +272,15 @@ export function ElementLayoutWrapper({
         style: baseFigureStyle,
       };
 
+  // Merge base class + state-style class + responsive-style class + any className from figureProps.
+  // figureProps is spread after, so we exclude its className to avoid overriding the merged value.
+  const { className: figureClassName, ...restFigureProps } = figureProps ?? {};
+  const wrapperClassName = ["shrink-0 m-0", stateStyleClass, responsiveStyleClass, figureClassName]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <figure ref={surfaceRef} className="shrink-0 m-0" {...interactionProps} {...figureProps}>
+    <div ref={surfaceRef} className={wrapperClassName} {...interactionProps} {...restFigureProps}>
       {!glassInForeground && (
         <SectionGlassEffect effects={surfaceEffects} sectionRef={surfaceRef} variant="auto" />
       )}
@@ -177,6 +288,6 @@ export function ElementLayoutWrapper({
       {glassInForeground && (
         <SectionGlassEffect effects={surfaceEffects} sectionRef={surfaceRef} variant="auto" />
       )}
-    </figure>
+    </div>
   );
 }

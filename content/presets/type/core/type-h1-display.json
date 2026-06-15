@@ -1,0 +1,16 @@
+{
+  "type": "elementHeading",
+  "level": 1,
+  "variant": "display",
+  "color": "var(--pb-on-secondary)",
+  "wordWrap": true,
+  "width": {
+    "base": "100%",
+    "md": "100%"
+  },
+  "motionTiming": {
+    "entrancePreset": "blurIn",
+    "trigger": "onFirstVisible"
+  },
+  "text": ""
+}

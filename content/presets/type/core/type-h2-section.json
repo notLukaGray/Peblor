@@ -1,0 +1,13 @@
+{
+  "type": "elementHeading",
+  "level": 2,
+  "variant": "section",
+  "color": "var(--pb-on-secondary)",
+  "wordWrap": true,
+  "width": "100%",
+  "motionTiming": {
+    "entrancePreset": "slideUp",
+    "trigger": "onFirstVisible"
+  },
+  "text": ""
+}

@@ -1,0 +1,19 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["sec-label", "reveal-desc"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Reveal"
+    },
+    "reveal-desc": {
+      "preset": "type-body-standard",
+      "text": "Collapsed to a fixed height, expanded on click with a smooth height tween. Collapse size, easing, and toggle label are configurable.",
+      "width": {
+        "base": "100%",
+        "md": "82%"
+      }
+    }
+  },
+  "align": "start"
+}

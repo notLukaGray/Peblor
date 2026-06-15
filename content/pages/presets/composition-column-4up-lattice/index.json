@@ -1,0 +1,209 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Composition Column 4 Up Lattice — Preset Demo",
+  "description": "Four-up to two-up to one-up adaptive lattice for scalable card collections.",
+  "sectionOrder": ["nav-header", "hero", "demo-primary", "demo-stress"],
+  "definitions": {
+    "bg-composition": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "radial-gradient(120% 110% at 92% 2%, color-mix(in oklab, var(--pb-accent) 16%, transparent) 0%, transparent 54%), linear-gradient(160deg, color-mix(in oklab, var(--pb-primary) 11%, var(--pb-secondary)) 0%, var(--pb-secondary) 66%, color-mix(in oklab, var(--pb-accent) 6%, var(--pb-secondary)) 100%)"
+        }
+      ],
+      "preset": "bg-composition"
+    },
+    "nav-header": {
+      "preset": "preset-demo-nav-header"
+    },
+    "hero": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "align": "start",
+      "height": "hug",
+      "padding": {
+        "base": "10rem 0 6rem",
+        "md": "12rem 0 8rem"
+      },
+      "gap": "1rem",
+      "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+      "definitions": {
+        "hero-eyebrow": {
+          "preset": "type-kicker-badge",
+          "text": "Column · Lattice · Cards"
+        },
+        "hero-title": {
+          "preset": "type-h1-display",
+          "text": "Composition Column 4 Up Lattice"
+        },
+        "hero-description": {
+          "preset": "type-body-standard",
+          "text": "Four-up to two-up to one-up adaptive lattice for scalable card collections.",
+          "width": {
+            "base": "100%",
+            "md": "72%"
+          }
+        }
+      }
+    },
+    "demo-primary": {
+      "preset": "composition-column-4up-lattice",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "1100px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "2rem 0 4rem",
+        "md": "2rem 0 5rem"
+      },
+      "definitions": {
+        "card-a": {
+          "section": {
+            "definitions": {
+              "kicker": {
+                "text": "Ops"
+              },
+              "title": {
+                "text": "Deploy Pipelines"
+              },
+              "body": {
+                "text": "Ship safely with repeatable CI checks and confidence gates."
+              },
+              "link": {
+                "label": "Runbook ->",
+                "href": "#"
+              }
+            }
+          }
+        },
+        "card-b": {
+          "section": {
+            "definitions": {
+              "kicker": {
+                "text": "UX"
+              },
+              "title": {
+                "text": "Research Summaries"
+              },
+              "body": {
+                "text": "Condense interview transcripts into directional findings quickly."
+              },
+              "link": {
+                "label": "Read notes ->",
+                "href": "#"
+              }
+            }
+          }
+        },
+        "card-c": {
+          "section": {
+            "definitions": {
+              "kicker": {
+                "text": "Infra"
+              },
+              "title": {
+                "text": "Service Health"
+              },
+              "body": {
+                "text": "Track error budgets and release drift across environments."
+              },
+              "link": {
+                "label": "View status ->",
+                "href": "#"
+              }
+            }
+          }
+        },
+        "card-d": {
+          "section": {
+            "definitions": {
+              "kicker": {
+                "text": "Growth"
+              },
+              "title": {
+                "text": "Activation Tests"
+              },
+              "body": {
+                "text": "Compare onboarding variants with guarded rollout controls."
+              },
+              "link": {
+                "label": "Open dashboard ->",
+                "href": "#"
+              }
+            }
+          }
+        }
+      }
+    },
+    "demo-stress": {
+      "preset": "composition-column-4up-lattice",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "1100px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 0 8rem",
+        "md": "0 0 12rem"
+      },
+      "definitions": {
+        "card-a": {
+          "section": {
+            "definitions": {
+              "body": {
+                "text": "A long-form operational narrative that intentionally stretches this card and tests whether adjacent cards maintain clean vertical rhythm when one column carries significantly more copy than the others in the same row."
+              }
+            }
+          }
+        },
+        "card-b": {
+          "section": {
+            "definitions": {
+              "title": {
+                "text": "Cross-team Handovers"
+              },
+              "body": {
+                "text": "Shared ownership notes, acceptance criteria, and release timing."
+              }
+            }
+          }
+        },
+        "card-c": {
+          "section": {
+            "definitions": {
+              "title": {
+                "text": "Observability Debt"
+              },
+              "body": {
+                "text": "Instrument gaps before they compound into hidden outages."
+              }
+            }
+          }
+        },
+        "card-d": {
+          "section": {
+            "definitions": {
+              "title": {
+                "text": "Support Signals"
+              },
+              "body": {
+                "text": "Escalation tags grouped by severity and customer impact."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "layout", "card", "bg"],
+  "bgKey": "bg-composition"
+}

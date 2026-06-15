@@ -109,8 +109,9 @@ export function scaffoldActionType(type: string): Record<string, unknown> | null
 export async function scaffoldModuleType(id: string): Promise<Record<string, unknown> | null> {
   try {
     const value = (await readContentFile(MODULES_DIR, id)) as Record<string, unknown>;
-    return JSON.parse(JSON.stringify(value)) as Record<string, unknown>;
-  } catch {
+    return structuredClone(value) as Record<string, unknown>;
+  } catch (err) {
+    console.warn("[pb-mcp] Failed to scaffold module type", id, err);
     return null;
   }
 }

@@ -549,5 +549,27 @@
   },
 
   "defaultSlideDistancePx": 24,
-  "defaultFeedbackDurationMs": 400
+  "defaultFeedbackDurationMs": 400,
+
+  "tooltipEnterDurationSec": 0.35,
+  "tooltipExitDurationSec": 0.2,
+  "tooltipShowDelayMs": 200,
+
+  "snapDurationMs": 420,
+
+  "bgLayerPointerLerpFactor": 0.08,
+  "bgLayerTriggerDurationSec": 0.8,
+
+  "groupEntranceDurationSec": 0.8,
+
+  "scrollContainerLerpFactor": 0.06,
+
+  "buttonPointerLerpFactor": 0.08,
+
+  "smoothScrollBaseFactor": 0.25,
+  "smoothScrollRangeFactor": 0.2,
+
+  "revealItemDurationMs": 300,
+
+  "snapBackDurationMs": 300
 }

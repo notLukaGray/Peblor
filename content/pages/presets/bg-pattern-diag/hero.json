@@ -1,0 +1,17 @@
+{
+  "definitions": {
+    "hero-badge": {
+      "preset": "demo-hero-badge",
+      "text": "backgroundVariable · entrance + loop"
+    },
+    "hero-title": {
+      "preset": "demo-hero-title",
+      "text": "bg-pattern-diag"
+    },
+    "hero-desc": {
+      "preset": "demo-hero-description",
+      "text": "45° repeating line grid via CSS repeating-linear-gradient at 22px pitch. Fades in from invisible on mount, then breathes between 70–100% opacity on an 8s mirror loop. A centre vignette keeps the middle clear for content."
+    }
+  },
+  "preset": "demo-hero-100vh"
+}

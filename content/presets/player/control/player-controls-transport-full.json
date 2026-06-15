@@ -1,0 +1,71 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "row",
+  "align": "center",
+  "gap": "0.5rem",
+  "padding": "0.4rem 0",
+  "section": {
+    "elementOrder": ["btn-seek-back", "btn-play", "btn-seek-fwd"],
+    "definitions": {
+      "btn-seek-back": {
+        "type": "elementButton",
+        "label": "−5s",
+        "action": "assetSeek",
+        "actionPayload": {
+          "time": -5
+        },
+        "wrapperPadding": "0.45rem 0.65rem",
+        "wrapperBorderRadius": "999px",
+        "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+        "level": 5,
+        "motion": {
+          "onHover": {
+            "scale": 1.1
+          },
+          "transition": {
+            "duration": 0.15
+          }
+        }
+      },
+      "btn-play": {
+        "type": "elementButton",
+        "label": "⏯",
+        "action": "assetTogglePlay",
+        "actionPayload": {},
+        "wrapperPadding": "0.6rem",
+        "wrapperBorderRadius": "999px",
+        "wrapperFill": "var(--pb-on-secondary)",
+        "level": 5,
+        "motion": {
+          "onHover": {
+            "scale": 1.08
+          },
+          "transition": {
+            "duration": 0.15
+          }
+        }
+      },
+      "btn-seek-fwd": {
+        "type": "elementButton",
+        "label": "+5s",
+        "action": "assetSeek",
+        "actionPayload": {
+          "time": 5
+        },
+        "wrapperPadding": "0.45rem 0.65rem",
+        "wrapperBorderRadius": "999px",
+        "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+        "level": 5,
+        "motion": {
+          "onHover": {
+            "scale": 1.1
+          },
+          "transition": {
+            "duration": 0.15
+          }
+        }
+      }
+    }
+  }
+}

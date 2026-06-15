@@ -1,0 +1,26 @@
+{
+  "preset": "demo-hero",
+  "maxWidth": "820px",
+  "padding": {
+    "base": "8rem 0 5rem",
+    "md": "10rem 0 7rem"
+  },
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Tabs · Tooltips · Infinite Scroll · Selector"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Interactive Selection"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Selection and preview UI patterns — tabbed content panels, hover tooltips, infinite scroll carousels, and selector-detail reveal layouts.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  }
+}

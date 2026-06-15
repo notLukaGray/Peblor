@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { resolveThemeString, resolveThemeStyleObject, resolveThemeValueDeep } from "./theme-string";
+import {
+  lowerThemeStringToCss,
+  resolveThemeString,
+  resolveThemeStyleObject,
+  resolveThemeValueDeep,
+} from "./theme-string";
 
 describe("theme paint string resolution", () => {
   it("keeps plain strings as the default path", () => {
@@ -19,6 +24,14 @@ describe("theme paint string resolution", () => {
     expect(resolveThemeString({ value: "#base", light: "#light" }, "dark")).toBe("#base");
     expect(resolveThemeString({ light: "#light" }, "dark")).toBe("#light");
     expect(resolveThemeString(undefined, "dark")).toBeUndefined();
+  });
+
+  it("lowers theme strings into css that preserves light/dark fallbacks", () => {
+    expect(lowerThemeStringToCss("#abc")).toBe("#abc");
+    expect(lowerThemeStringToCss({ light: "#fff", dark: "#000" })).toBe("light-dark(#fff, #000)");
+    expect(lowerThemeStringToCss({ value: "#base", light: "#fff" })).toBe(
+      "light-dark(#fff, #base)"
+    );
   });
 
   it("resolves inline style values shallowly", () => {

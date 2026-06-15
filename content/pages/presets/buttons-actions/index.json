@@ -1,0 +1,23 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Buttons As Actions — Preset Demo",
+  "description": "Buttons wired to Peblor's action system — setVariable, modalOpen/Close, copyToClipboard, scrollTo, setTheme, and fireMultiple action types demonstrated with live interactive examples.",
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "ui/button", "ui/panel", "bg"],
+  "modals": ["unlock"],
+  "sectionOrder": [
+    "nav-header",
+    "hero",
+    "sec-set-variable",
+    "sec-modal",
+    "sec-copy-clipboard",
+    "sec-scroll-to",
+    "sec-set-theme",
+    "sec-fire-multiple"
+  ],
+  "bgKey": "bg",
+  "definitions": {
+    "bg": {
+      "preset": "bg-solid"
+    }
+  }
+}

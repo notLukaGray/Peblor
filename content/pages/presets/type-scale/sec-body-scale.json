@@ -1,0 +1,104 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "align": "start",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "1000px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "0 0 10rem",
+    "md": "0 0 14rem"
+  },
+  "gap": "3rem",
+  "height": "hug",
+  "motionTiming": {
+    "staggerChildren": 0.1,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "body-cols"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Body Scale"
+    },
+    "body-cols": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "gap": "3rem",
+      "width": "100%",
+      "motionTiming": {
+        "staggerChildren": 0.08,
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": ["left", "right"],
+        "definitions": {
+          "left": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "1rem",
+            "width": {
+              "base": "100%",
+              "md": "55%"
+            },
+            "flex": "1 1 300px",
+            "section": {
+              "elementOrder": ["lead", "standard", "serif", "mono", "fine", "truncated"],
+              "definitions": {
+                "lead": {
+                  "preset": "type-body-lead",
+                  "text": "Lead body — sets tone and scale. The opening statement of any section."
+                },
+                "standard": {
+                  "preset": "type-body-standard",
+                  "text": "Standard body is the workhorse. Long reads, descriptions, supporting copy — it carries the page from section to section."
+                },
+                "serif": {
+                  "preset": "type-body-serif",
+                  "text": "Vollkorn — the secondary typeface. Brings warmth and editorial weight to long-form reading."
+                },
+                "mono": {
+                  "preset": "type-body-mono",
+                  "text": "mono · system · code · metadata"
+                },
+                "fine": {
+                  "preset": "type-body-fine",
+                  "text": "Fine print. Captions, footnotes, timestamps, metadata."
+                },
+                "truncated": {
+                  "preset": "type-body-truncated",
+                  "text": "Truncated body clips to a fixed number of lines with an ellipsis. Use for card descriptions, preview text, or any overflow-constrained context regardless of content length."
+                }
+              }
+            }
+          },
+          "right": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0",
+            "width": {
+              "base": "100%",
+              "md": "40%"
+            },
+            "flex": "1 1 260px",
+            "section": {
+              "elementOrder": ["rp"],
+              "definitions": {
+                "rp": {
+                  "preset": "type-rich-prose"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

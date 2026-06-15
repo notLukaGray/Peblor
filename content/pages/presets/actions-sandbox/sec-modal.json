@@ -1,0 +1,86 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "entrancePreset": "fade"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "demo-buttons", "modal-simulator"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "modalOpen / modalClose — Modal Pattern"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "The modalOpen and modalClose actions open and close modal overlays by id. This section simulates the pattern using setVariable + visibleWhen — the same state-driven approach that powers actual modals."
+    },
+    "demo-buttons": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "gap": "0.75rem",
+      "section": {
+        "elementOrder": ["btn-modal-open", "btn-modal-close"],
+        "definitions": {
+          "btn-modal-open": {
+            "preset": "btn-primary",
+            "label": "Open Modal (simulated)",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "modalState",
+              "value": "open"
+            },
+            "wrapperBorderRadius": "10px"
+          },
+          "btn-modal-close": {
+            "preset": "btn-squircle",
+            "label": "Close Modal",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "modalState",
+              "value": "closed"
+            },
+            "wrapperBorderRadius": "10px",
+            "wrapperPadding": "0.7rem 1.5rem"
+          }
+        }
+      }
+    },
+    "modal-simulator": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "1rem",
+      "padding": "1.5rem",
+      "wrapperStyle": {
+        "background": "color-mix(in oklab, var(--pb-secondary) 96%, transparent)",
+        "borderRadius": "12px",
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 16%, transparent)",
+        "boxShadow": "0 8px 32px rgba(0,0,0,0.3)"
+      },
+      "visibleWhen": {
+        "variable": "modalState",
+        "operator": "equals",
+        "value": "open"
+      },
+      "section": {
+        "elementOrder": ["modal-heading", "modal-body"],
+        "definitions": {
+          "modal-heading": {
+            "type": "elementHeading",
+            "level": 4,
+            "text": "Simulated Modal",
+            "color": "var(--pb-on-secondary)"
+          },
+          "modal-body": {
+            "type": "elementBody",
+            "level": 4,
+            "text": "This overlay panel mimics a modal dialog using visibleWhen. In production, modalOpen/modalClose would trigger an actual modal overlay defined in content/modals/.",
+            "color": "color-mix(in oklab, var(--pb-on-secondary) 68%, transparent)"
+          }
+        }
+      }
+    }
+  },
+  "id": "sec-modal"
+}

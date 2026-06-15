@@ -1,4 +1,4 @@
-id: motion.whileTap
+id: motion.onPress
 kind: cluster
 package: "@pb/contracts"
 stability: stable
@@ -15,11 +15,11 @@ feels_like: >
 not_this_if:
   - "you need a click action trigger (use trigger.onClick)"
   - "you need pointer-down event separately from pointer-up (use trigger.pointerDown / trigger.pointerUp)"
-  - "you need hover feedback with no press state (use motion.whileHover)"
+  - "you need hover feedback with no press state (use motion.onHover)"
 
 axes:
   - name: keyframes
-    fields: [whileTap]
+    fields: [onPress]
     note: "z.union([motionKeyframesSchema, string]) — any known FM property"
 
 does_not_cover:
@@ -28,7 +28,7 @@ does_not_cover:
   - what: "Separate pointer-down and pointer-up actions"
     use_instead: trigger.pointerDown
   - what: "Hover-only visual feedback"
-    use_instead: motion.whileHover
+    use_instead: motion.onHover
   - what: "Drag interaction"
     use_instead: motion.drag
 
@@ -38,12 +38,12 @@ covers:
 
 composes_with:
   parents: [section.*, element.*]
-  siblings_typical: [motion.whileHover, motion.whileFocus]
-  motion: "whileTap on motionProps — merged from motion defaults"
+  siblings_typical: [motion.onHover, motion.onFocus]
+  motion: "onPress on motionProps — merged from motion defaults"
 
 known_limitations:
-  - "whileTap keyframes are stripped of layout-owned keys — use scale/opacity/color"
-  - "whileTap fires on pointer-down and reverses on pointer-up"
+  - "onPress keyframes are stripped of layout-owned keys — use scale/opacity/color"
+  - "onPress fires on pointer-down and reverses on pointer-up"
   - "Transition for the tap animation comes from the shared transition config"
 
 proposal_hints:

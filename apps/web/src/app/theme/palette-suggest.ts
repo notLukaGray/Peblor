@@ -665,7 +665,8 @@ export function contrastPair(foregroundCss: string, backgroundCss: string): numb
     const b = parse(backgroundCss);
     if (!a || !b) return undefined;
     return wcagContrast(a, b);
-  } catch {
+  } catch (err) {
+    console.warn("[web] Failed to compute contrast pair", err);
     return undefined;
   }
 }

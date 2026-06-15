@@ -19,7 +19,7 @@ not_this_if:
 
 axes:
   - name: layout
-    fields: [display, flexDirection, alignItems, justifyContent, gap, rowGap, flexWrap]
+    fields: [display, flow, align, distribute, gap, rowGap, wrap]
     responsive: true
   - name: columns
     fields: [columnCount, columnGap]

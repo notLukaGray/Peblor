@@ -1,0 +1,61 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "entrancePreset": "slideUp",
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "copy-buttons"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "copyToClipboard"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Buttons that copy text to the clipboard. Click the button to copy the code snippet or share link to your clipboard."
+    },
+    "copy-buttons": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "align": "center",
+      "distribute": "center",
+      "gap": "1rem",
+      "section": {
+        "elementOrder": ["copy-code", "copy-link", "copy-email"],
+        "definitions": {
+          "copy-code": {
+            "preset": "btn-primary",
+            "label": "Copy Code Snippet",
+            "action": "copyToClipboard",
+            "actionPayload": {
+              "text": "<elementButton label=\"Hello\" level={4} wrapperFill=\"var(--pb-on-secondary)\" linkDefault=\"var(--pb-secondary)\" />"
+            },
+            "wrapperBorderRadius": "10px"
+          },
+          "copy-link": {
+            "preset": "btn-squircle",
+            "label": "Copy Share Link",
+            "action": "copyToClipboard",
+            "actionPayload": {
+              "text": "https://peblor.dev/presets/buttons-actions"
+            },
+            "wrapperBorderRadius": "10px",
+            "wrapperPadding": "0.7rem 1.5rem"
+          },
+          "copy-email": {
+            "preset": "btn-ghost",
+            "label": "Copy Email",
+            "action": "copyToClipboard",
+            "actionPayload": {
+              "text": "hello@peblor.dev"
+            },
+            "wrapperBorderRadius": "10px"
+          }
+        }
+      }
+    }
+  },
+  "id": "sec-copy-clipboard"
+}

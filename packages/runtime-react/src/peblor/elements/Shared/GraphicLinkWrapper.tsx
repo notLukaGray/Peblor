@@ -5,8 +5,7 @@ import { TransitionLink } from "./TransitionLink";
 import { usePathname } from "next/navigation";
 import type { ElementGraphicLink } from "@pb/contracts/types";
 import type { ThemeString } from "@pb/contracts/types";
-import { type PeblorThemeMode, resolveThemeString } from "@/peblor/theme/theme-string";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
+import { lowerThemeStringToCss } from "@/peblor/theme/theme-string";
 import { GraphicLinkHoverContext } from "./GraphicLinkHoverContext";
 import { resolveGraphicLinkHref } from "@pb/runtime-react/core/lib/url-policy";
 
@@ -36,27 +35,32 @@ function toDuration(value: string | number | undefined): string | undefined {
 
 function resolveStateRefToColor(
   ref: ThemeString | undefined,
-  elementGradients: GradientForResolve[] | undefined,
-  themeMode: PeblorThemeMode
+  elementGradients: GradientForResolve[] | undefined
 ): string | undefined {
-  const resolvedRef = resolveThemeString(ref, themeMode);
+  const resolvedRef = lowerThemeStringToCss(ref);
   if (resolvedRef == null || resolvedRef === "") return undefined;
   if (resolvedRef.startsWith("#")) return resolvedRef;
   const gradient = elementGradients?.find((g) => g?.id === resolvedRef);
   const firstStop = gradient?.stops?.find((s): s is NonNullable<typeof s> => s != null);
-  return resolveThemeString(firstStop?.color, themeMode) ?? resolvedRef;
+  return lowerThemeStringToCss(firstStop?.color) ?? resolvedRef;
 }
 
 const hoverHandlers = (
   setHover: (v: boolean) => void
-): { onMouseEnter: () => void; onMouseLeave: () => void } => ({
+): {
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+  onFocus: () => void;
+  onBlur: () => void;
+} => ({
   onMouseEnter: () => setHover(true),
   onMouseLeave: () => setHover(false),
+  onFocus: () => setHover(true),
+  onBlur: () => setHover(false),
 });
 
 export const GraphicLinkWrapper = forwardRef<HTMLAnchorElement | HTMLDivElement, Props>(
   ({ link, gradients: elementGradients, children, className, style }, ref) => {
-    const themeMode = usePeblorThemeMode();
     const [isHover, setIsHover] = useState(false);
     const pathname = usePathname();
     const duration = toDuration(link?.vectorTransition);
@@ -110,7 +114,8 @@ export const GraphicLinkWrapper = forwardRef<HTMLAnchorElement | HTMLDivElement,
 
     const isInternal = !isExternal && href.startsWith("/");
     const isActive =
-      isInternal && (pathname === href || (href !== "/" && pathname.startsWith(href)));
+      isInternal &&
+      (pathname === href || (href !== "/" && pathname != null && pathname.startsWith(href + "/")));
 
     const hoverScale = link.hoverScale;
     const hoverFillRef = link.hoverFill;
@@ -118,11 +123,11 @@ export const GraphicLinkWrapper = forwardRef<HTMLAnchorElement | HTMLDivElement,
     const disabledFillRef = link.disabledFill;
     // Resolve to CSS colors (for CSS variables). Only use flat CSS hover when the ref is NOT a gradient
     // (when it's a gradient id, elementVector already switches fill/stroke via React; CSS would override with solid color).
-    const hoverColor = resolveStateRefToColor(hoverFillRef, elementGradients, themeMode);
-    const activeColor = resolveStateRefToColor(activeFillRef, elementGradients, themeMode);
-    const disabledColor = resolveStateRefToColor(disabledFillRef, elementGradients, themeMode);
+    const hoverColor = resolveStateRefToColor(hoverFillRef, elementGradients);
+    const activeColor = resolveStateRefToColor(activeFillRef, elementGradients);
+    const disabledColor = resolveStateRefToColor(disabledFillRef, elementGradients);
     const isGradientRef = (ref: ThemeString | undefined) => {
-      const resolvedRef = resolveThemeString(ref, themeMode);
+      const resolvedRef = lowerThemeStringToCss(ref);
       return resolvedRef != null && elementGradients?.some((g) => g?.id === resolvedRef);
     };
     const useFlatHoverFill = hoverColor != null && !isGradientRef(hoverFillRef);

@@ -41,8 +41,11 @@ export function buildContainerStyle({ axis }: InfiniteScrollContainerStyleOption
     msOverflowStyle: "none",
     WebkitTapHighlightColor: "transparent",
     scrollBehavior: "auto",
-    // `proximity` keeps snap assistance without fighting wheel deltas the way `mandatory` can.
-    scrollSnapType: isHorizontal ? "x proximity" : "y proximity",
+    // `mandatory` lets the browser own momentum + settling identically across touch,
+    // trackpad, and mouse — that consistency is what makes the carousel feel native.
+    // The JS layer only reads the settled item (`scrollend`) and recenters the loop at
+    // rest, so it never fights the in-flight snap the way the old velocity engine did.
+    scrollSnapType: isHorizontal ? "x mandatory" : "y mandatory",
     cursor: "default",
     userSelect: "none",
     touchAction: isHorizontal ? "pan-x" : "pan-y",

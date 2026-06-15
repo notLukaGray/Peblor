@@ -6,6 +6,10 @@
 
 import { resolveAuthoredUrl } from "./url-policy";
 
+// ---------------------------------------------------------------------------
+// Allowlists
+// ---------------------------------------------------------------------------
+
 /** Allowlist of safe SVG tag names (lowercase). */
 export const TAGS_ALLOWED = new Set([
   "svg",
@@ -205,6 +209,10 @@ function serializeNode(node: Node, inheritedFill?: string): string {
   return `<${tag}${attrStr}>${children}</${tag}>`;
 }
 
+// ---------------------------------------------------------------------------
+// Sanitization
+// ---------------------------------------------------------------------------
+
 /**
  * Server-safe SVG sanitizer: uses a regex-based allowlist to produce sanitized markup
  * in environments where DOMParser is unavailable (Node SSR).
@@ -230,9 +238,10 @@ export function sanitizeSvgMarkupServer(markup: string): string {
     .replace(/<style\b[^>]*\/?\s*>/gi, "")
     .replace(/<!--[\s\S]*?-->/g, "");
 
-  // Process each tag
+  // Process each tag — attribute values may contain `>` when quoted, so
+  // match quoted strings atomically rather than stopping at the first `>`.
   result = result.replace(
-    /<\/?([a-zA-Z][a-zA-Z0-9]*)([^>]*)>/g,
+    /<\/?([a-zA-Z][a-zA-Z0-9]*)((?:[^>"']|"[^"]*"|'[^']*')*)>/g,
     (_match, tagName: string, attrsStr: string) => {
       const tag = tagName.toLowerCase();
       if (!isAllowedTag(tag)) return "";
@@ -277,31 +286,37 @@ export function sanitizeSvgMarkupServer(markup: string): string {
  * Sanitize SVG markup: allowlist tags and attributes, strip scripts and dangerous refs.
  * Uses DOMParser in browser; falls back to regex-based server sanitizer in Node SSR.
  */
-export function sanitizeSvgMarkup(markup: string): string {
+export async function sanitizeSvgMarkup(markup: string): Promise<string> {
   const trimmed = markup.trim();
   if (!trimmed) return "";
 
+  let safe: string;
+
   if (typeof DOMParser === "undefined") {
-    return sanitizeSvgMarkupServer(trimmed);
-  }
+    safe = sanitizeSvgMarkupServer(trimmed);
+  } else {
+    const maybeUnescaped = trimmed
+      .replace(/\\n/g, "\n")
+      .replace(/\\t/g, "\t")
+      .replace(/\\"/g, '"')
+      .replace(/\\'/g, "'");
+    const candidates = maybeUnescaped === trimmed ? [trimmed] : [trimmed, maybeUnescaped];
 
-  const maybeUnescaped = trimmed
-    .replace(/\\n/g, "\n")
-    .replace(/\\t/g, "\t")
-    .replace(/\\"/g, '"')
-    .replace(/\\'/g, "'");
-  const candidates = maybeUnescaped === trimmed ? [trimmed] : [trimmed, maybeUnescaped];
-
-  try {
-    const parser = new DOMParser();
-    for (const candidate of candidates) {
-      const doc = parser.parseFromString(candidate, "image/svg+xml");
-      const root = doc.documentElement;
-      if (!root || root.tagName.toLowerCase() !== "svg") continue;
-      return serializeNode(root);
+    try {
+      const parser = new DOMParser();
+      safe = "";
+      for (const candidate of candidates) {
+        const doc = parser.parseFromString(candidate, "image/svg+xml");
+        const root = doc.documentElement;
+        if (!root || root.tagName.toLowerCase() !== "svg") continue;
+        safe = serializeNode(root);
+        break;
+      }
+    } catch (err) {
+      console.warn("[pb-runtime-react] SVG sanitization failed", err);
+      return "";
     }
-    return "";
-  } catch {
-    return "";
   }
+
+  return safe;
 }

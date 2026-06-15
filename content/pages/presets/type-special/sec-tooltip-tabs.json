@@ -1,0 +1,121 @@
+{
+  "type": "sectionColumn",
+  "columns": {
+    "base": 1,
+    "md": 2
+  },
+  "columnWidths": {
+    "base": [1],
+    "md": [0.5, 0.5]
+  },
+  "columnGaps": {
+    "base": "2rem",
+    "md": "4rem"
+  },
+  "padding": {
+    "base": "0 0 10rem",
+    "md": "0 0 14rem"
+  },
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "900px",
+  "selfAlign": "center",
+  "elementOrder": ["tooltip-col", "tabs-col"],
+  "columnAssignments": {
+    "base": {
+      "tooltip-col": 0,
+      "tabs-col": 0
+    },
+    "md": {
+      "tooltip-col": 0,
+      "tabs-col": 1
+    }
+  },
+  "definitions": {
+    "tooltip-col": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "1rem",
+      "width": "100%",
+      "motionTiming": {
+        "staggerChildren": 0.1,
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": ["t-label", "t-row", "t-desc"],
+        "definitions": {
+          "t-label": {
+            "preset": "type-h3-label",
+            "text": "Tooltip"
+          },
+          "t-row": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "row",
+            "wrap": "wrap",
+            "align": "baseline",
+            "gap": "0.3rem",
+            "section": {
+              "elementOrder": ["pre", "tooltip", "post"],
+              "definitions": {
+                "pre": {
+                  "type": "elementBody",
+                  "level": 3,
+                  "text": "Hover the term",
+                  "wordWrap": true,
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 68%, transparent)",
+                  "width": "auto"
+                },
+                "tooltip": {
+                  "preset": "type-tooltip-text"
+                },
+                "post": {
+                  "type": "elementBody",
+                  "level": 3,
+                  "text": "to reveal supplemental context.",
+                  "wordWrap": true,
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 68%, transparent)",
+                  "width": "auto"
+                }
+              }
+            }
+          },
+          "t-desc": {
+            "preset": "type-body-standard",
+            "text": "Hover-triggered tooltip with configurable position, delay, arrow, and blur fill. Interactive mode keeps it open when the cursor is inside."
+          }
+        }
+      }
+    },
+    "tabs-col": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "1rem",
+      "width": "100%",
+      "motionTiming": {
+        "staggerChildren": 0.1,
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": ["tabs-label", "tabs", "tabs-desc"],
+        "definitions": {
+          "tabs-label": {
+            "preset": "type-h3-label",
+            "text": "Tabs"
+          },
+          "tabs": {
+            "preset": "type-tabs-content"
+          },
+          "tabs-desc": {
+            "preset": "type-body-standard",
+            "text": "Tab bar with keyboard navigation and fade transition between panels. Font size, active colour, padding, and content animation are configurable."
+          }
+        }
+      }
+    }
+  }
+}

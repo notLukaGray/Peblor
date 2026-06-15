@@ -1,0 +1,28 @@
+{
+  "type": "elementGroup",
+  "width": "100%",
+  "flex": {
+    "base": "0 0 auto",
+    "md": "0 0 auto"
+  },
+  "height": {
+    "base": "hug",
+    "md": "hug"
+  },
+  "display": "flex",
+  "flow": "column",
+  "align": {
+    "base": "center",
+    "md": "start"
+  },
+  "distribute": "start",
+  "gap": {
+    "base": "0.45rem",
+    "md": "0.8rem"
+  },
+  "padding": {
+    "base": "0.85rem 1.1rem 1rem",
+    "md": "1.35rem 1.45rem 1.5rem"
+  },
+  "scroll": "hidden"
+}

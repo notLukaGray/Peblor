@@ -1,0 +1,883 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "State Machine Demo",
+  "description": "Demonstrates the full peblor state machine — showToast, computeVariable, appendToArray, fetchApi, dispatchCustomEvent, conditionalAction with elseIf/else, fireMultiple with breakIf.",
+  "sectionOrder": [
+    "hero",
+    "sec-toast",
+    "sec-compute",
+    "sec-array",
+    "sec-fetch",
+    "sec-event-bus",
+    "sec-conditional"
+  ],
+  "definitions": {
+    "bg": {
+      "preset": "bg-solid"
+    },
+    "hero": {
+      "preset": "demo-hero",
+      "definitions": {
+        "hero-title": {
+          "preset": "type-h1-display",
+          "text": "State Machine Demo"
+        },
+        "hero-description": {
+          "preset": "type-body-standard",
+          "text": "A sandbox for the new state machine surface — actions, triggers, conditions, and live bindings. Open PB Dev (⌘⇧D) to watch variables and mutations update in real time.",
+          "width": {
+            "base": "100%",
+            "md": "78%"
+          }
+        },
+        "hero-eyebrow": {
+          "preset": "type-kicker-badge",
+          "text": "showToast · computeVariable · appendToArray · fetchApi · dispatchCustomEvent · conditionalAction"
+        }
+      },
+      "maxWidth": "900px",
+      "padding": {
+        "base": "8rem 0 5rem",
+        "md": "10rem 0 7rem"
+      }
+    },
+    "sec-toast": {
+      "preset": "demo-section",
+      "motionTiming": {
+        "entrancePreset": "fade"
+      },
+      "elementOrder": ["sec-label", "sec-desc", "demo-buttons"],
+      "definitions": {
+        "sec-label": {
+          "preset": "type-h3-label",
+          "text": "showToast — In-App Notifications"
+        },
+        "sec-desc": {
+          "preset": "type-body-fine",
+          "text": "showToast fires a transient notification (info / success / error / warning). Max 5 stacked. Each auto-dismisses after 3 seconds or on click."
+        },
+        "demo-buttons": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "row",
+          "wrap": "wrap",
+          "gap": "0.75rem",
+          "section": {
+            "elementOrder": ["btn-info", "btn-success", "btn-error", "btn-warning"],
+            "definitions": {
+              "btn-info": {
+                "preset": "btn-primary",
+                "label": "Info",
+                "action": "showToast",
+                "actionPayload": {
+                  "message": "This is an info toast.",
+                  "variant": "info"
+                }
+              },
+              "btn-success": {
+                "preset": "btn-primary",
+                "label": "Success",
+                "action": "showToast",
+                "actionPayload": {
+                  "message": "Action completed successfully.",
+                  "variant": "success"
+                }
+              },
+              "btn-error": {
+                "preset": "btn-primary",
+                "label": "Error",
+                "action": "showToast",
+                "actionPayload": {
+                  "message": "Something went wrong.",
+                  "variant": "error"
+                }
+              },
+              "btn-warning": {
+                "preset": "btn-primary",
+                "label": "Warning",
+                "action": "showToast",
+                "actionPayload": {
+                  "message": "Proceed with caution.",
+                  "variant": "warning",
+                  "durationMs": 5000
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-compute": {
+      "preset": "demo-section",
+      "motionTiming": {
+        "entrancePreset": "fade"
+      },
+      "elementOrder": ["sec-label", "sec-desc", "demo-buttons", "result-panel"],
+      "definitions": {
+        "sec-label": {
+          "preset": "type-h3-label",
+          "text": "computeVariable — Derived State"
+        },
+        "sec-desc": {
+          "preset": "type-body-fine",
+          "text": "computeVariable derives a new variable from existing ones. The counter uses incrementVariable for ±1 and computeVariable multiply for ×2. The result label uses bindings to stay live."
+        },
+        "demo-buttons": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "row",
+          "wrap": "wrap",
+          "gap": "0.75rem",
+          "section": {
+            "elementOrder": ["btn-inc", "btn-dec", "btn-double", "btn-reset"],
+            "definitions": {
+              "btn-inc": {
+                "preset": "btn-primary",
+                "label": "+ 1",
+                "action": "incrementVariable",
+                "actionPayload": {
+                  "key": "counter",
+                  "by": 1
+                }
+              },
+              "btn-dec": {
+                "preset": "btn-primary",
+                "label": "− 1",
+                "action": "incrementVariable",
+                "actionPayload": {
+                  "key": "counter",
+                  "by": -1
+                }
+              },
+              "btn-double": {
+                "preset": "btn-primary",
+                "label": "× 2",
+                "action": "computeVariable",
+                "actionPayload": {
+                  "key": "counter",
+                  "operation": "multiply",
+                  "left": "$var.counter",
+                  "right": 2
+                }
+              },
+              "btn-reset": {
+                "preset": "btn-squircle",
+                "label": "Reset",
+                "action": "setVariable",
+                "actionPayload": {
+                  "key": "counter",
+                  "value": 0
+                }
+              }
+            }
+          }
+        },
+        "result-panel": {
+          "preset": "ui-indicator-panel",
+          "bindings": {
+            "section.definitions.result-text.text": "counter"
+          },
+          "section": {
+            "elementOrder": ["result-text"],
+            "definitions": {
+              "result-text": {
+                "type": "elementBody",
+                "level": 4,
+                "text": "0",
+                "color": "var(--pb-on-secondary)",
+                "bindings": {
+                  "text": "counter"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-array": {
+      "preset": "demo-section",
+      "motionTiming": {
+        "entrancePreset": "fade"
+      },
+      "elementOrder": ["sec-label", "sec-desc", "demo-buttons"],
+      "definitions": {
+        "sec-label": {
+          "preset": "type-h3-label",
+          "text": "appendToArray / removeFromArray — Dynamic Lists"
+        },
+        "sec-desc": {
+          "preset": "type-body-fine",
+          "text": "appendToArray pushes a value onto an array variable, creating it if absent. removeFromArray removes by index or by matching a condition on item fields. Check the Mutations tab in PB Dev as you click."
+        },
+        "demo-buttons": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "row",
+          "wrap": "wrap",
+          "gap": "0.75rem",
+          "section": {
+            "elementOrder": ["btn-add", "btn-remove", "btn-clear"],
+            "definitions": {
+              "btn-add": {
+                "preset": "btn-primary",
+                "label": "Append",
+                "action": "appendToArray",
+                "actionPayload": {
+                  "actions": [
+                    {
+                      "type": "appendToArray",
+                      "payload": {
+                        "key": "items",
+                        "value": "Item"
+                      }
+                    },
+                    {
+                      "type": "computeVariable",
+                      "payload": {
+                        "key": "itemCount",
+                        "operation": "length",
+                        "from": "items"
+                      }
+                    }
+                  ],
+                  "mode": "sequence",
+                  "key": "items",
+                  "value": "item"
+                }
+              },
+              "btn-remove": {
+                "preset": "btn-primary",
+                "label": "Remove First",
+                "action": "removeFromArray",
+                "actionPayload": {
+                  "actions": [
+                    {
+                      "type": "removeFromArray",
+                      "payload": {
+                        "key": "items",
+                        "index": -1
+                      }
+                    },
+                    {
+                      "type": "computeVariable",
+                      "payload": {
+                        "key": "itemCount",
+                        "operation": "length",
+                        "from": "items"
+                      }
+                    },
+                    {
+                      "type": "showToast",
+                      "payload": {
+                        "message": "Item removed.",
+                        "variant": "info"
+                      }
+                    }
+                  ],
+                  "mode": "sequence",
+                  "breakIf": {
+                    "variable": "items",
+                    "operator": "isEmpty",
+                    "value": null
+                  },
+                  "key": "items",
+                  "index": 0
+                }
+              },
+              "btn-clear": {
+                "preset": "btn-squircle",
+                "label": "Clear All",
+                "action": "setVariable",
+                "actionPayload": {
+                  "actions": [
+                    {
+                      "type": "setVariable",
+                      "payload": {
+                        "key": "items",
+                        "value": []
+                      }
+                    },
+                    {
+                      "type": "setVariable",
+                      "payload": {
+                        "key": "itemCount",
+                        "value": 0
+                      }
+                    },
+                    {
+                      "type": "showToast",
+                      "payload": {
+                        "message": "List cleared.",
+                        "variant": "warning"
+                      }
+                    }
+                  ],
+                  "key": "items",
+                  "value": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-fetch": {
+      "preset": "demo-section",
+      "motionTiming": {
+        "entrancePreset": "fade"
+      },
+      "elementOrder": [
+        "sec-label",
+        "sec-desc",
+        "demo-buttons",
+        "loading-panel",
+        "result-panel",
+        "error-panel"
+      ],
+      "definitions": {
+        "sec-label": {
+          "preset": "type-h3-label",
+          "text": "fetchApi — Data Loading"
+        },
+        "sec-desc": {
+          "preset": "type-body-fine",
+          "text": "fetchApi fetches data and tracks statusKey (loading → loaded / error). responsePath extracts a nested field. cancelKey lets abortFetch cancel the request mid-flight."
+        },
+        "demo-buttons": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "row",
+          "wrap": "wrap",
+          "gap": "0.75rem",
+          "section": {
+            "elementOrder": ["btn-fetch", "btn-abort"],
+            "definitions": {
+              "btn-fetch": {
+                "preset": "btn-primary",
+                "label": "Fetch Post Title",
+                "action": "fetchApi",
+                "actionPayload": {
+                  "url": "https://jsonplaceholder.typicode.com/posts/1",
+                  "method": "GET",
+                  "responseKey": "fetchResult",
+                  "responsePath": "title",
+                  "statusKey": "fetchStatus",
+                  "errorKey": "fetchError",
+                  "cancelKey": "demo-fetch",
+                  "retries": 1,
+                  "retryDelay": 500
+                }
+              },
+              "btn-abort": {
+                "preset": "btn-squircle",
+                "label": "Abort",
+                "action": "abortFetch",
+                "actionPayload": {
+                  "cancelKey": "demo-fetch"
+                }
+              }
+            }
+          }
+        },
+        "loading-panel": {
+          "preset": "ui-indicator-panel",
+          "visibleWhen": {
+            "variable": "fetchStatus",
+            "operator": "equals",
+            "value": "loading"
+          },
+          "section": {
+            "elementOrder": ["t"],
+            "definitions": {
+              "t": {
+                "type": "elementBody",
+                "level": 4,
+                "text": "Loading…",
+                "color": "var(--pb-on-secondary)"
+              }
+            }
+          }
+        },
+        "result-panel": {
+          "preset": "ui-indicator-panel",
+          "visibleWhen": {
+            "variable": "fetchStatus",
+            "operator": "equals",
+            "value": "loaded"
+          },
+          "bindings": {
+            "section.definitions.t.text": "fetchResult"
+          },
+          "section": {
+            "elementOrder": ["t"],
+            "definitions": {
+              "t": {
+                "type": "elementBody",
+                "level": 4,
+                "text": "—",
+                "color": "var(--pb-on-secondary)",
+                "bindings": {
+                  "text": "fetchResult"
+                }
+              }
+            }
+          }
+        },
+        "error-panel": {
+          "preset": "ui-indicator-panel",
+          "visibleWhen": {
+            "variable": "fetchStatus",
+            "operator": "equals",
+            "value": "error"
+          },
+          "section": {
+            "elementOrder": ["t"],
+            "definitions": {
+              "t": {
+                "type": "elementBody",
+                "level": 4,
+                "text": "Fetch failed — check fetchError in PB Dev.",
+                "color": "var(--pb-on-secondary)"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-event-bus": {
+      "preset": "demo-section",
+      "motionTiming": {
+        "entrancePreset": "fade"
+      },
+      "customEventTriggers": [
+        {
+          "name": "demo-ping",
+          "action": {
+            "type": "setVariable",
+            "payload": {
+              "key": "pingReceived",
+              "value": true
+            }
+          }
+        },
+        {
+          "name": "demo-ping",
+          "action": {
+            "type": "showToast",
+            "payload": {
+              "message": "Custom event received by this section.",
+              "variant": "success"
+            }
+          }
+        }
+      ],
+      "elementOrder": ["sec-label", "sec-desc", "demo-buttons", "ping-panel"],
+      "definitions": {
+        "sec-label": {
+          "preset": "type-h3-label",
+          "text": "dispatchCustomEvent + customEventTriggers — Event Bus"
+        },
+        "sec-desc": {
+          "preset": "type-body-fine",
+          "text": "dispatchCustomEvent fires a named CustomEvent on window. Any section with a matching customEventTriggers entry reacts — decoupled inter-section messaging with no shared variable wiring needed."
+        },
+        "demo-buttons": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "row",
+          "wrap": "wrap",
+          "gap": "0.75rem",
+          "section": {
+            "elementOrder": ["btn-dispatch", "btn-reset"],
+            "definitions": {
+              "btn-dispatch": {
+                "preset": "btn-primary",
+                "label": "Dispatch demo-ping",
+                "action": "dispatchCustomEvent",
+                "actionPayload": {
+                  "name": "demo-ping",
+                  "detail": {
+                    "source": "button"
+                  }
+                }
+              },
+              "btn-reset": {
+                "preset": "btn-squircle",
+                "label": "Reset",
+                "action": "setVariable",
+                "actionPayload": {
+                  "key": "pingReceived",
+                  "value": false
+                }
+              }
+            }
+          }
+        },
+        "ping-panel": {
+          "preset": "ui-indicator-panel",
+          "visibleWhen": {
+            "variable": "pingReceived",
+            "operator": "equals",
+            "value": true
+          },
+          "section": {
+            "elementOrder": ["t"],
+            "definitions": {
+              "t": {
+                "type": "elementBody",
+                "level": 4,
+                "text": "ping received — customEventTriggers fired this section's reaction.",
+                "color": "var(--pb-on-secondary)"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-conditional": {
+      "preset": "demo-section",
+      "motionTiming": {
+        "entrancePreset": "fade"
+      },
+      "elementOrder": ["sec-label", "sec-desc", "demo-buttons", "result-panel"],
+      "definitions": {
+        "sec-label": {
+          "preset": "type-h3-label",
+          "text": "conditionalAction — Branching Logic"
+        },
+        "sec-desc": {
+          "preset": "type-body-fine",
+          "text": "conditionalAction evaluates conditions at runtime and branches to then / elseIf / else. Supports nested ConditionGroups, 18 operators, and dot-path variable resolution."
+        },
+        "demo-buttons": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "row",
+          "wrap": "wrap",
+          "gap": "0.75rem",
+          "section": {
+            "elementOrder": ["btn-low", "btn-mid", "btn-high"],
+            "definitions": {
+              "btn-low": {
+                "preset": "btn-primary",
+                "label": "score = 20",
+                "action": "conditionalAction",
+                "actionPayload": {
+                  "actions": [
+                    {
+                      "type": "setVariable",
+                      "payload": {
+                        "key": "score",
+                        "value": 20
+                      }
+                    },
+                    {
+                      "type": "conditionalAction",
+                      "payload": {
+                        "conditions": [
+                          {
+                            "variable": "score",
+                            "operator": "lte",
+                            "value": 33
+                          }
+                        ],
+                        "then": {
+                          "type": "setVariable",
+                          "payload": {
+                            "key": "grade",
+                            "value": "F — needs work"
+                          }
+                        },
+                        "elseIf": [
+                          {
+                            "conditions": [
+                              {
+                                "variable": "score",
+                                "operator": "lte",
+                                "value": 66
+                              }
+                            ],
+                            "then": {
+                              "type": "setVariable",
+                              "payload": {
+                                "key": "grade",
+                                "value": "C — getting there"
+                              }
+                            }
+                          }
+                        ],
+                        "else": {
+                          "type": "setVariable",
+                          "payload": {
+                            "key": "grade",
+                            "value": "A — excellent"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "variable": "score",
+                  "operator": "lte",
+                  "value": 33,
+                  "then": {
+                    "type": "setVariable",
+                    "payload": {
+                      "key": "grade",
+                      "value": "F — needs work"
+                    }
+                  },
+                  "elseIf": [
+                    {
+                      "conditions": [
+                        {
+                          "variable": "score",
+                          "operator": "lte",
+                          "value": 66
+                        }
+                      ],
+                      "then": {
+                        "type": "setVariable",
+                        "payload": {
+                          "key": "grade",
+                          "value": "C — getting there"
+                        }
+                      }
+                    }
+                  ],
+                  "else": {
+                    "type": "setVariable",
+                    "payload": {
+                      "key": "grade",
+                      "value": "A — excellent"
+                    }
+                  }
+                }
+              },
+              "btn-mid": {
+                "preset": "btn-primary",
+                "label": "score = 55",
+                "action": "conditionalAction",
+                "actionPayload": {
+                  "actions": [
+                    {
+                      "type": "setVariable",
+                      "payload": {
+                        "key": "score",
+                        "value": 55
+                      }
+                    },
+                    {
+                      "type": "conditionalAction",
+                      "payload": {
+                        "conditions": [
+                          {
+                            "variable": "score",
+                            "operator": "lte",
+                            "value": 33
+                          }
+                        ],
+                        "then": {
+                          "type": "setVariable",
+                          "payload": {
+                            "key": "grade",
+                            "value": "F — needs work"
+                          }
+                        },
+                        "elseIf": [
+                          {
+                            "conditions": [
+                              {
+                                "variable": "score",
+                                "operator": "lte",
+                                "value": 66
+                              }
+                            ],
+                            "then": {
+                              "type": "setVariable",
+                              "payload": {
+                                "key": "grade",
+                                "value": "C — getting there"
+                              }
+                            }
+                          }
+                        ],
+                        "else": {
+                          "type": "setVariable",
+                          "payload": {
+                            "key": "grade",
+                            "value": "A — excellent"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "variable": "score",
+                  "operator": "lte",
+                  "value": 33,
+                  "then": {
+                    "type": "setVariable",
+                    "payload": {
+                      "key": "grade",
+                      "value": "F — needs work"
+                    }
+                  },
+                  "elseIf": [
+                    {
+                      "conditions": [
+                        {
+                          "variable": "score",
+                          "operator": "lte",
+                          "value": 66
+                        }
+                      ],
+                      "then": {
+                        "type": "setVariable",
+                        "payload": {
+                          "key": "grade",
+                          "value": "C — getting there"
+                        }
+                      }
+                    }
+                  ],
+                  "else": {
+                    "type": "setVariable",
+                    "payload": {
+                      "key": "grade",
+                      "value": "A — excellent"
+                    }
+                  }
+                }
+              },
+              "btn-high": {
+                "preset": "btn-primary",
+                "label": "score = 90",
+                "action": "conditionalAction",
+                "actionPayload": {
+                  "actions": [
+                    {
+                      "type": "setVariable",
+                      "payload": {
+                        "key": "score",
+                        "value": 90
+                      }
+                    },
+                    {
+                      "type": "conditionalAction",
+                      "payload": {
+                        "conditions": [
+                          {
+                            "variable": "score",
+                            "operator": "lte",
+                            "value": 33
+                          }
+                        ],
+                        "then": {
+                          "type": "setVariable",
+                          "payload": {
+                            "key": "grade",
+                            "value": "F — needs work"
+                          }
+                        },
+                        "elseIf": [
+                          {
+                            "conditions": [
+                              {
+                                "variable": "score",
+                                "operator": "lte",
+                                "value": 66
+                              }
+                            ],
+                            "then": {
+                              "type": "setVariable",
+                              "payload": {
+                                "key": "grade",
+                                "value": "C — getting there"
+                              }
+                            }
+                          }
+                        ],
+                        "else": {
+                          "type": "setVariable",
+                          "payload": {
+                            "key": "grade",
+                            "value": "A — excellent"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "variable": "score",
+                  "operator": "lte",
+                  "value": 33,
+                  "then": {
+                    "type": "setVariable",
+                    "payload": {
+                      "key": "grade",
+                      "value": "F — needs work"
+                    }
+                  },
+                  "elseIf": [
+                    {
+                      "conditions": [
+                        {
+                          "variable": "score",
+                          "operator": "lte",
+                          "value": 66
+                        }
+                      ],
+                      "then": {
+                        "type": "setVariable",
+                        "payload": {
+                          "key": "grade",
+                          "value": "C — getting there"
+                        }
+                      }
+                    }
+                  ],
+                  "else": {
+                    "type": "setVariable",
+                    "payload": {
+                      "key": "grade",
+                      "value": "A — excellent"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "result-panel": {
+          "preset": "ui-indicator-panel",
+          "visibleWhen": {
+            "variable": "grade",
+            "operator": "isNotNull"
+          },
+          "bindings": {
+            "section.definitions.grade-text.text": "grade"
+          },
+          "section": {
+            "elementOrder": ["grade-text"],
+            "definitions": {
+              "grade-text": {
+                "type": "elementBody",
+                "level": 4,
+                "text": "—",
+                "color": "var(--pb-on-secondary)",
+                "bindings": {
+                  "text": "grade"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "presets": ["demo", "type/core", "ui/button", "ui/panel", "bg"],
+  "bgKey": "bg",
+  "scroll": {
+    "smooth": true,
+    "lockBody": true,
+    "scrollX": "hidden"
+  }
+}

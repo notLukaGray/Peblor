@@ -1,0 +1,26 @@
+{
+  "preset": "demo-hero",
+  "maxWidth": "820px",
+  "padding": {
+    "base": "10rem 0 6rem",
+    "md": "12rem 0 8rem"
+  },
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Accent Bar · Tooltip · Links · Tabs"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Type Special"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Interactive and compositional text treatments — a left-accent heading, inline tooltip, three link styles, and a tabbed content panel.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  }
+}

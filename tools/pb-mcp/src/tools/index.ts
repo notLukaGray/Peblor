@@ -62,12 +62,18 @@ import {
   patchPageSession,
   undoPageSession,
   previewPageSession,
+  inspectPageSession,
   commitPageSession,
   closePageSession,
   listPageSessions,
+  sessionDiff,
+  getSessionValue,
+  setSessionValue,
 } from "./page-session.js";
 // New tools
 import { generatePage } from "./generate-page.js";
+import { validateAndFix } from "./validate-and-fix.js";
+import { stealPage } from "./steal-page.js";
 import { fillSection } from "./fill-section.js";
 import { suggestLayout } from "./suggest-layout.js";
 import { clonePage } from "./clone-page.js";
@@ -92,6 +98,16 @@ import { listCapabilities } from "./list-capabilities.js";
 import { validateCapability } from "./validate-capability.js";
 import { exportPage } from "./export-page.js";
 import { exportSession, importSession } from "./session-persistence.js";
+import { importFigma } from "./import-figma.js";
+import {
+  probePresetUsage,
+  probeModuleUsage,
+  probeOverlayUsage,
+  probeElementUsage,
+} from "./probe-usage.js";
+import { pageOutline } from "./page-outline.js";
+import { explainDiagnostic } from "./explain-diagnostic.js";
+import { previewPresetChange } from "./preset-dry-run.js";
 
 export const allTools = [
   // pipeline / validation
@@ -167,13 +183,19 @@ export const allTools = [
   patchPageSession,
   undoPageSession,
   previewPageSession,
+  inspectPageSession,
   commitPageSession,
   closePageSession,
   listPageSessions,
+  sessionDiff,
+  getSessionValue,
+  setSessionValue,
   // AI generation (Theme A)
   generatePage,
   fillSection,
   suggestLayout,
+  validateAndFix,
+  stealPage,
   // cross-page operations (Theme B)
   clonePage,
   renameRoute,
@@ -206,7 +228,17 @@ export const allTools = [
   listCapabilities,
   validateCapability,
   exportPage,
+  importFigma,
   // session persistence (Theme I)
   exportSession,
   importSession,
+  // impact analysis (Theme J)
+  probePresetUsage,
+  probeModuleUsage,
+  probeOverlayUsage,
+  probeElementUsage,
+  // navigation & diagnostics (Theme K)
+  pageOutline,
+  explainDiagnostic,
+  previewPresetChange,
 ];

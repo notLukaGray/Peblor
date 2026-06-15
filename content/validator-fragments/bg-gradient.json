@@ -9,7 +9,7 @@
           "type": "loop",
           "loopDuration": 16,
           "loopEasing": "linear",
-          "animate": {},
+          "to": {},
           "transition": { "duration": 0.1 }
         }
       ]
@@ -22,7 +22,7 @@
         {
           "type": "pointer",
           "pointerFactor": 0.015,
-          "animate": {},
+          "to": {},
           "transition": { "duration": 0.1 }
         }
       ]

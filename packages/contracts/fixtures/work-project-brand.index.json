@@ -30,7 +30,12 @@
           "blendMode": "screen"
         }
       ]
-    }
+    },
+    "brand_a": { "type": "contentBlock", "elementOrder": [], "definitions": {} },
+    "brand_b": { "type": "contentBlock", "elementOrder": [], "definitions": {} },
+    "brand_c": { "type": "contentBlock", "elementOrder": [], "definitions": {} },
+    "brand_d": { "type": "contentBlock", "elementOrder": [], "definitions": {} },
+    "brand_e": { "type": "contentBlock", "elementOrder": [], "definitions": {} }
   },
   "transitions": [
     {

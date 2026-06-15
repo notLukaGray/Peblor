@@ -1,0 +1,120 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "staggerChildren": 0.15,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "field-group"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Standalone Form Fields"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Standalone form fields rendered outside a form wrapper. Each field demonstrates a different field type with labels, placeholders, and styling."
+    },
+    "field-group": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "1.5rem",
+      "width": "100%",
+      "motionTiming": {
+        "staggerChildren": 0.1,
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": [
+          "field-text",
+          "field-email",
+          "field-select",
+          "field-textarea",
+          "field-switch"
+        ],
+        "definitions": {
+          "field-text": {
+            "type": "elementFormField",
+            "field": {
+              "type": "formField",
+              "fieldType": "text",
+              "label": "Full Name",
+              "placeholder": "Enter your full name",
+              "name": "userName",
+              "required": true
+            },
+            "width": "100%",
+            "height": "hug"
+          },
+          "field-email": {
+            "type": "elementFormField",
+            "field": {
+              "type": "formField",
+              "fieldType": "email",
+              "label": "Email Address",
+              "placeholder": "name@example.com",
+              "name": "userEmail",
+              "required": true,
+              "autocomplete": "email"
+            },
+            "width": "100%",
+            "height": "hug"
+          },
+          "field-select": {
+            "type": "elementFormField",
+            "field": {
+              "type": "formField",
+              "fieldType": "select",
+              "label": "Role",
+              "name": "userRole",
+              "options": [
+                {
+                  "value": "designer",
+                  "label": "Designer"
+                },
+                {
+                  "value": "developer",
+                  "label": "Developer"
+                },
+                {
+                  "value": "product-manager",
+                  "label": "Product Manager"
+                },
+                {
+                  "value": "other",
+                  "label": "Other"
+                }
+              ]
+            },
+            "width": "100%",
+            "height": "hug"
+          },
+          "field-textarea": {
+            "type": "elementFormField",
+            "field": {
+              "type": "formField",
+              "fieldType": "paragraph",
+              "label": "Message",
+              "placeholder": "Write your message here...",
+              "name": "userMessage",
+              "rows": 4
+            },
+            "width": "100%",
+            "height": "hug"
+          },
+          "field-switch": {
+            "type": "elementFormField",
+            "field": {
+              "type": "formField",
+              "fieldType": "switch",
+              "label": "Subscribe to newsletter",
+              "name": "newsletter"
+            },
+            "width": "100%",
+            "height": "hug"
+          }
+        }
+      }
+    }
+  }
+}

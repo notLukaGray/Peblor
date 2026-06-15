@@ -1,0 +1,14 @@
+{
+  "type": "elementRichText",
+  "content": "**Rich text in context**\n\nThis block uses **bold**, _italic_, and [inline links](#) to show how prose composes inside peblor. Use it anywhere a CMS drives long-form copy.\n\n- Supports heading levels inside prose\n- Lists, blockquotes, inline code\n- Any HTML that a rich text editor produces",
+  "level": 3,
+  "wordWrap": true,
+  "width": {
+    "base": "100%",
+    "md": "64%"
+  },
+  "motionTiming": {
+    "entrancePreset": "fade",
+    "trigger": "onFirstVisible"
+  }
+}

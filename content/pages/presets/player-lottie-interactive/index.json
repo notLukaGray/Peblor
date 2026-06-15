@@ -1,0 +1,13 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Lottie Interactive — Preset Demo",
+  "description": "Lottie mounted on demand with load trigger and full playback controls — all baked inside the player card.",
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "bg", "player/section"],
+  "bgKey": "bg-players",
+  "sectionOrder": ["nav-header", "hero", "sec-player"],
+  "definitions": {
+    "bg-players": {
+      "preset": "bg-players"
+    }
+  }
+}

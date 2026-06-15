@@ -6,6 +6,7 @@ import {
   type ElementLayoutTransformOptions,
 } from "@pb/core/layout";
 import { resolveElementImageLink } from "./element-image-link";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
 
 type ElementImageProps = Extract<ElementBlock, { type: "elementImage" }>;
 
@@ -108,21 +109,21 @@ export function computeElementImagePresentation(
     height,
     borderRadius,
     constraints,
-    align,
+    selfAlign,
     alignY,
     marginTop,
     marginBottom,
     marginLeft,
     marginRight,
-    zIndex,
+    layer,
     effects,
     wrapperStyle,
     opacity,
     blendMode,
     boxShadow,
     filter,
-    backdropFilter,
-    overflow,
+    bgBlur,
+    scroll,
     hidden,
     objectFit = "cover",
     objectPosition,
@@ -144,13 +145,13 @@ export function computeElementImagePresentation(
     height: fillHeight ? undefined : height,
     borderRadius,
     constraints,
-    align,
+    selfAlign,
     alignY,
     marginTop,
     marginBottom,
     marginLeft,
     marginRight,
-    zIndex,
+    layer,
     figmaConstraints,
     effects,
     wrapperStyle,
@@ -158,8 +159,8 @@ export function computeElementImagePresentation(
     blendMode,
     boxShadow,
     filter,
-    backdropFilter,
-    overflow,
+    bgBlur,
+    scroll,
     hidden,
   });
 
@@ -167,7 +168,7 @@ export function computeElementImagePresentation(
     ...getElementTransformStyle({
       width,
       height,
-      align,
+      selfAlign,
       marginTop,
       marginBottom,
       marginLeft,
@@ -191,7 +192,7 @@ export function computeElementImagePresentation(
 
   const resolvedObjectPosition =
     objectPosition ??
-    (align === "left" ? "left center" : align === "right" ? "right center" : "50% 50%");
+    (selfAlign === "left" ? "left center" : selfAlign === "right" ? "right center" : "50% 50%");
 
   const imgStyle: CSSProperties = {
     display: "block",
@@ -274,15 +275,25 @@ export function computeElementImagePresentation(
     targetStyle.transform = composeTransform(targetStyle.transform, "translateZ(0)");
   }
 
+  // Resolve responsive constraints to a single object (desktop SSR default) before reading.
+  const resolvedConstraints = resolveResponsiveValue(constraints, false);
   const effectiveMinHeight =
-    constraints && !Array.isArray(constraints) ? constraints.minHeight : undefined;
+    resolvedConstraints && !Array.isArray(resolvedConstraints)
+      ? resolvedConstraints.minHeight
+      : undefined;
 
+  // Object-shaped responsive aspectRatio (tier/container/{mobile,desktop}) collapses to a
+  // scalar first; the legacy 2-tuple keeps its "w/h" ratio-pair meaning.
+  const resolvedAspectRatio =
+    aspectRatio != null && typeof aspectRatio === "object" && !Array.isArray(aspectRatio)
+      ? resolveResponsiveValue(aspectRatio, false)
+      : aspectRatio;
   const cssAspectRatio: CSSProperties["aspectRatio"] =
-    aspectRatio == null
+    resolvedAspectRatio == null
       ? undefined
-      : Array.isArray(aspectRatio)
-        ? `${aspectRatio[0]}/${aspectRatio[1]}`
-        : aspectRatio;
+      : Array.isArray(resolvedAspectRatio)
+        ? `${resolvedAspectRatio[0]}/${resolvedAspectRatio[1]}`
+        : resolvedAspectRatio;
 
   /** Only suppress aspect for full-bleed fill (`width` + `height` both `100%`). `fillHeight` already implies `height === "100%"`. */
   const suppressAspectForFullBleedFill =

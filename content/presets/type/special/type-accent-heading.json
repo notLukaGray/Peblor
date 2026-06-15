@@ -1,0 +1,16 @@
+{
+  "type": "elementHeading",
+  "level": 2,
+  "color": "var(--pb-on-secondary)",
+  "wordWrap": true,
+  "width": "100%",
+  "wrapperStyle": {
+    "borderLeft": "3px solid var(--pb-accent)",
+    "paddingLeft": "1rem"
+  },
+  "motionTiming": {
+    "entrancePreset": "slideRight",
+    "trigger": "onFirstVisible"
+  },
+  "text": ""
+}

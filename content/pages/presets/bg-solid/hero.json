@@ -1,0 +1,17 @@
+{
+  "definitions": {
+    "hero-badge": {
+      "preset": "demo-hero-badge",
+      "text": "backgroundVariable"
+    },
+    "hero-title": {
+      "preset": "demo-hero-title",
+      "text": "bg-solid"
+    },
+    "hero-desc": {
+      "preset": "demo-hero-description",
+      "text": "The simplest background — pure secondary token, no layers. Every other bg preset builds on this baseline."
+    }
+  },
+  "preset": "demo-hero-100vh"
+}

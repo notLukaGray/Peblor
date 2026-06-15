@@ -1,26 +1,26 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-14T12:10:00.000Z",
+  "generatedAt": "2026-06-13T21:33:11.743Z",
   "routes": {
     "/": {
-      "bytes": 304166,
-      "chunkCount": 6
+      "bytes": 433936,
+      "chunkCount": 13
     },
     "/[...slug]": {
-      "bytes": 502728,
-      "chunkCount": 15
+      "bytes": 400730,
+      "chunkCount": 14
     },
-    "/playground": {
-      "bytes": 1080876,
-      "chunkCount": 17
-    },
-    "/robots.txt": {
-      "bytes": 0,
-      "chunkCount": 0
+    "/stolen/[...slug]": {
+      "bytes": 400018,
+      "chunkCount": 13
     },
     "/style-guide": {
-      "bytes": 88897,
-      "chunkCount": 2
+      "bytes": 368201,
+      "chunkCount": 11
+    },
+    "/unlock": {
+      "bytes": 391608,
+      "chunkCount": 12
     }
   },
   "exceptions": {}

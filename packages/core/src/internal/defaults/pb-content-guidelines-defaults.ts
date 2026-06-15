@@ -15,7 +15,7 @@ export const defaultPbContentGuidelines: PbContentGuidelines =
 
 export function applyPbDefaultTextAlign(
   blockStyle: CSSProperties,
-  align: ElementLayout["align"],
+  align: ElementLayout["selfAlign"],
   textAlign: ElementLayout["textAlign"],
   guidelines: PbContentGuidelines = defaultPbContentGuidelines
 ): void {

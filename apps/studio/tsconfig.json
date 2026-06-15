@@ -1,0 +1,48 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/peblor/*": ["../../packages/runtime-react/src/peblor/*"],
+      "@pb/core": ["../../packages/core/src/root.ts"],
+      "@pb/core/*": ["../../packages/core/src/*"],
+      "@pb/runtime-react/*": ["../../packages/runtime-react/src/*"],
+      "@/*": ["./src/*"],
+      "@/app/theme/*": ["../web/src/app/theme/*"],
+      "@/app/fonts/*": ["../web/src/app/fonts/*"],
+      "@/core/lib/assert-dev": ["../web/src/core/lib/assert-dev"],
+      "@/core/providers/theme-provider": ["../web/src/core/providers/theme-provider"],
+      "@content/*": ["../../content/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules", ".dead", "temp"]
+}

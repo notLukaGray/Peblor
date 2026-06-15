@@ -4,46 +4,15 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import type { Tool } from "../types.js";
 import { runCli } from "../lib/cli.js";
+import {
+  inferFragmentKind,
+  fragmentKindToCliCommand,
+  type FragmentKind,
+} from "../lib/fragment-kind.js";
 import { scaffoldActionTypeTool } from "./scaffold-action-type.js";
 import { scaffoldBgTypeTool } from "./scaffold-bg-type.js";
 import { scaffoldElementTypeTool } from "./scaffold-element-type.js";
 import { scaffoldSectionTypeTool } from "./scaffold-section-type.js";
-
-type Kind = "section" | "element" | "action" | "bg" | "module" | "overlay" | "fragment";
-
-function inferKind(value: unknown): Kind {
-  if (!value || typeof value !== "object" || Array.isArray(value)) return "fragment";
-  const rec = value as Record<string, unknown>;
-  const type = typeof rec.type === "string" ? rec.type : "";
-  if (type.startsWith("element")) return "element";
-  if (type.startsWith("background")) return "bg";
-  if (type === "module") return "module";
-  if (
-    [
-      "contentBlock",
-      "scrollContainer",
-      "sectionColumn",
-      "revealSection",
-      "divider",
-      "formBlock",
-      "sectionTrigger",
-    ].includes(type)
-  ) {
-    return "section";
-  }
-  if (type) return "action";
-  return "fragment";
-}
-
-function validatorCommand(kind: Kind): string {
-  if (kind === "section") return "validate-section";
-  if (kind === "element") return "validate-element";
-  if (kind === "action") return "validate-action";
-  if (kind === "bg") return "validate-bg";
-  if (kind === "module") return "validate-module-fragment";
-  if (kind === "overlay") return "validate-overlay-fragment";
-  return "validate-fragment";
-}
 
 function suggest(path: string, message: string): string {
   const msg = message.toLowerCase();
@@ -58,7 +27,7 @@ function suggest(path: string, message: string): string {
   return "Match this field shape/type to schema expectations.";
 }
 
-async function scaffoldHint(value: unknown, kind: Kind): Promise<unknown | null> {
+async function scaffoldHint(value: unknown, kind: FragmentKind): Promise<unknown | null> {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   const type = (value as Record<string, unknown>).type;
   if (typeof type !== "string") return null;
@@ -83,7 +52,9 @@ async function runCliSafe(args: string[]): Promise<Record<string, unknown>> {
       if (raw) {
         try {
           return JSON.parse(raw) as Record<string, unknown>;
-        } catch {}
+        } catch (err) {
+          console.warn("[pb-mcp] Failed to parse CLI output as JSON", err);
+        }
       }
     }
     throw err;
@@ -109,7 +80,7 @@ export const schemaDoctor: Tool = {
     },
   },
   run: async (args) => {
-    const { file, json, kind } = args as { file?: string; json?: string; kind?: Kind };
+    const { file, json, kind } = args as { file?: string; json?: string; kind?: FragmentKind };
     if (!file && !json) throw new Error("Provide either 'file' or 'json'");
 
     let value: unknown = null;
@@ -121,14 +92,73 @@ export const schemaDoctor: Tool = {
     } else if (file) {
       try {
         value = JSON.parse(await readFile(file, "utf-8")) as unknown;
-      } catch {
+      } catch (err) {
+        console.warn("[pb-mcp] Failed to parse file as JSON for schema doctor", file, err);
         value = null;
       }
     }
 
     try {
-      const inferred = kind ?? inferKind(value ?? {});
-      const cmd = validatorCommand(inferred);
+      const explicitKind = kind as FragmentKind | undefined;
+      const inferred = explicitKind ?? inferFragmentKind(value ?? {});
+
+      // Preset files have multiple definitions — validate each inner block individually
+      if (
+        !explicitKind &&
+        inferred !== "fragment" &&
+        value &&
+        typeof value === "object" &&
+        !Array.isArray(value)
+      ) {
+        const rec = value as Record<string, unknown>;
+        const innerBlocks: Array<{ key: string; val: unknown }> = [];
+        for (const [k, v] of Object.entries(rec)) {
+          if (
+            v &&
+            typeof v === "object" &&
+            !Array.isArray(v) &&
+            ((v as Record<string, unknown>).type as string | undefined)
+          ) {
+            innerBlocks.push({ key: k, val: v });
+          }
+        }
+        if (innerBlocks.length > 0) {
+          const allDiags: Array<{ path: string; message: string }> = [];
+          let allValid = true;
+          for (const { key, val } of innerBlocks) {
+            const innerKind = explicitKind ?? inferFragmentKind(val);
+            const cmd = fragmentKindToCliCommand(innerKind);
+            const tmpFile = join(tmpdir(), `pb-sd-inner-${Date.now()}-${key}.json`);
+            await writeFile(tmpFile, JSON.stringify(val), "utf-8");
+            try {
+              const vres = (await runCliSafe([cmd, tmpFile])) as {
+                valid: boolean;
+                diagnostics?: Array<{ path: string; message: string }>;
+              };
+              if (!vres.valid) allValid = false;
+              for (const d of vres.diagnostics ?? []) {
+                allDiags.push({ path: `${key}.${d.path}`, message: d.message });
+              }
+            } finally {
+              await unlink(tmpFile).catch((err) =>
+                console.warn("[pb-mcp] Failed to clean up temp file", tmpFile, err)
+              );
+            }
+          }
+          return {
+            inferredKind: inferred,
+            valid: allValid,
+            diagnostics: allDiags,
+            suggestions: allDiags.map((d) => ({
+              path: d.path,
+              suggestion: suggest(d.path, d.message),
+            })),
+            scaffoldHint: null,
+          };
+        }
+      }
+
+      const cmd = fragmentKindToCliCommand(inferred);
       const validation = (await runCliSafe([cmd, sourceFile!])) as {
         valid: boolean;
         diagnostics?: Array<{ path: string; message: string }>;
@@ -148,7 +178,10 @@ export const schemaDoctor: Tool = {
         scaffoldHint: scaffold,
       };
     } finally {
-      if (json && sourceFile) await unlink(sourceFile).catch(() => {});
+      if (json && sourceFile)
+        await unlink(sourceFile).catch((err) =>
+          console.warn("[pb-mcp] Failed to clean up source temp file", sourceFile, err)
+        );
     }
   },
 };

@@ -15,15 +15,18 @@ import {
 } from "./element-layout-utils";
 import { scaleSpaceShorthandForDensity } from "@pb/contracts/peblor/core/page-density";
 import type { ElementBlock } from "@pb/contracts/types";
+import { BREAKPOINT_TIER_NAMES } from "@pb/contracts/peblor/core/breakpoint-tiers";
+import type { DefinitionsMap } from "./peblor-expand/section-shapes";
 import type { ModuleSlotConfig } from "./module-slot-types";
+import { resolveElements } from "./peblor-expand/element-resolution";
 
 /**
  * Honor `elementOrder` for keys present in `definitions`, ignore stale keys, append keys that
  * were never listed (deterministic nested group / module resolution).
- * Accepts both flat string[] and responsive { mobile, desktop } shapes.
+ * Accepts both flat string[] and responsive tier-map shapes.
  */
 export function reconcileElementOrderWithDefinitions(
-  elementOrder: string[] | { mobile: string[]; desktop: string[] } | undefined,
+  elementOrder: string[] | { [K in (typeof BREAKPOINT_TIER_NAMES)[number]]?: string[] } | undefined,
   definitions: Record<string, unknown>
 ): string[] {
   const definitionKeys = Object.keys(definitions);
@@ -32,7 +35,8 @@ export function reconcileElementOrderWithDefinitions(
       ? undefined
       : Array.isArray(elementOrder)
         ? elementOrder
-        : (elementOrder.desktop ?? elementOrder.mobile);
+        : ((elementOrder as Record<string, string[] | undefined>).md ??
+          (elementOrder as Record<string, string[] | undefined>).base);
   const orderedFromJson = (resolvedOrder ?? definitionKeys).filter((key) => key in definitions);
   const orderedSet = new Set(orderedFromJson);
   return [...orderedFromJson, ...definitionKeys.filter((key) => !orderedSet.has(key))];
@@ -42,23 +46,22 @@ export function reconcileElementOrderWithDefinitions(
 export function resolveSlotElements(slot: ModuleSlotConfig): ElementBlock[] {
   const section = slot.section;
   if (!section?.definitions) return [];
-  const definitions = section.definitions as Record<string, unknown>;
+  const definitions = section.definitions as DefinitionsMap;
   const order = reconcileElementOrderWithDefinitions(section.elementOrder, definitions);
-  const idCounts = new Map<string, number>();
-  return order
-    .map((key) => {
-      const el = section.definitions![key] as unknown;
-      if (!el || typeof el !== "object" || !("type" in el) || el.type === "cssGradient")
-        return null;
-      const candidate = el as ElementBlock & { id?: unknown };
-      const baseId =
-        typeof candidate.id === "string" && candidate.id.trim().length > 0 ? candidate.id : key;
-      const nextCount = (idCounts.get(baseId) ?? 0) + 1;
-      idCounts.set(baseId, nextCount);
-      const uniqueId = nextCount === 1 ? baseId : `${baseId}__${nextCount}`;
-      return { ...candidate, id: uniqueId } as ElementBlock;
-    })
-    .filter((x): x is ElementBlock => x != null);
+  // Filter out null/missing keys and cssGradient (private visual type) before resolving.
+  // resolveElements throws on missing refs (K-13), so we sanitize the order first.
+  const validOrder = order.filter((k) => {
+    const d = definitions[k];
+    return d != null && typeof d === "object" && "type" in d;
+  });
+  try {
+    return resolveElements(validOrder, definitions).filter(
+      (el) => (el as Record<string, unknown>).type !== "cssGradient"
+    );
+  } catch (err) {
+    console.warn("[pb-core] Failed to resolve slot elements", err);
+    return [];
+  }
 }
 
 export type SlotRegion = "left" | "center" | "right";

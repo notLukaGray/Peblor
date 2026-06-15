@@ -1,9 +1,15 @@
 /**
- * Legacy flat peblor defaults (frames, rich-text rhythm, button chrome).
- * Source-of-truth now lives in `pb-builder-defaults.ts` (grouped by sections/modules/elements),
- * and this file derives the runtime flat shape for backward compatibility.
+ * @deprecated Use `@/app/theme/pb-content-guidelines` instead.
  *
- * **Colors** → `theme/config.ts`; **type scale** → `fonts/type-scale.ts`.
+ * Dual defaults model bridge.
+ *
+ * This file derives a flat `PbContentGuidelines` shape from the grouped
+ * `PbBuilderDefaults` model (source of truth in `pb-builder-defaults.ts`).
+ *
+ * **Migration:** Once the runtime fully consumes `PbBuilderDefaultsV3` directly,
+ * remove this file and use `resolvePbDefaultsLayers()` from `pb-defaults-architecture.ts`.
+ *
+ * **Colors** -> `theme/config.ts`; **type scale** -> `fonts/type-scale.ts`.
  */
 import {
   type PbContentGuidelines,
@@ -20,7 +26,7 @@ export type { PbContentGuidelines } from "@/app/theme/pb-guidelines-expand";
 /** Grouped defaults model (sections/modules/elements), source-of-truth for style defaults. */
 export const pbBuilderDefaults: PbBuilderDefaults = pbBuilderDefaultsV1;
 
-/** Legacy flat shape consumed by runtime today. Derived from grouped defaults for compatibility. */
+/** @deprecated Legacy flat shape derived from grouped defaults for backward compatibility. */
 export const pbContentGuidelines: PbContentGuidelines = toPbContentGuidelines(pbBuilderDefaults);
 
 export function pbContentGuidelinesCssInline(): string {
@@ -64,6 +70,7 @@ const CONFIG_EXPORT_KEY_ORDER: (keyof PbContentGuidelines)[] = [
   "buttonNakedPaddingY",
   "buttonNakedPaddingX",
   "buttonNakedBorderRadius",
+  "sectionGap",
 ];
 
 /** Legacy flat-file export used by `/dev/style` until grouped defaults editor lands. */

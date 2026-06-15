@@ -1,4 +1,6 @@
-import { findPagesDir, walkPages, readPageJson, isRecord } from "../lib/pages.js";
+import fs from "node:fs";
+import path from "node:path";
+import { findPagesDir, walkPages, readPageJson, isRecord, findPresetsDir } from "../lib/pages.js";
 import type { CommandIo } from "./types.js";
 
 type CheckRoutesArgs = {
@@ -73,11 +75,44 @@ export async function runCheckRoutes(args: string[], io: CommandIo): Promise<num
   const broken: BrokenLink[] = [];
   let totalLinksChecked = 0;
 
+  // Cache preset files across pages.
+  const presetsDir = findPresetsDir();
+  const presetHrefCache = new Map<string, Array<{ href: string; path: string }>>();
+
   for (const { route, file } of allPageEntries) {
     const read = readPageJson(file);
     if (!read.ok) continue;
     const found: Array<{ href: string; path: string }> = [];
     collectHrefs(read.data, [], found);
+
+    // Also collect hrefs from preset files the page imports.
+    const presets = Array.isArray(read.data.presets)
+      ? (read.data.presets as unknown[]).filter(
+          (p): p is string => typeof p === "string" && p.endsWith(".json")
+        )
+      : [];
+    if (presetsDir) {
+      for (const presetFilename of presets) {
+        let presetHrefs = presetHrefCache.get(presetFilename);
+        if (presetHrefs === undefined) {
+          const presetPath = path.join(presetsDir, presetFilename);
+          try {
+            const presetData = JSON.parse(fs.readFileSync(presetPath, "utf8")) as Record<
+              string,
+              unknown
+            >;
+            presetHrefs = [];
+            collectHrefs(presetData, [`$(preset:${presetFilename})`], presetHrefs);
+          } catch (err) {
+            console.warn("[pb-cli] Failed to parse preset for route check", presetPath, err);
+            presetHrefs = [];
+          }
+          presetHrefCache.set(presetFilename, presetHrefs);
+        }
+        found.push(...presetHrefs);
+      }
+    }
+
     for (const { href, path } of found) {
       const normalized = href.replace(/\/$/, "").split("?")[0]!.replace(/\/$/, "") || "/";
       totalLinksChecked++;

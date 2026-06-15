@@ -1,4 +1,9 @@
 import type { ElementBlock, PageTags, ProjectGroupsMap, SectionBlock } from "@pb/contracts";
+import {
+  BREAKPOINT_TIER_NAMES,
+  type BreakpointTierName,
+} from "@pb/contracts/peblor/core/breakpoint-tiers";
+import { NESTED_SECTION_ELEMENT_TYPES } from "@pb/contracts";
 
 export type FilterPassInput = {
   sections: SectionBlock[];
@@ -13,6 +18,18 @@ export type FilterPassResult = {
   sections: SectionBlock[];
   /** Element keys removed by the filter pass. Empty when filters are inactive or every project matched. */
   removedKeys: ReadonlySet<string>;
+};
+
+export type PeblorPageFilterIndex = {
+  filterCategories: string[];
+  elementKeysByProject: Record<string, string[]>;
+  projectTagsBySlug: Record<string, PageTags>;
+};
+
+export type FilterIndexPassInput = {
+  sections: SectionBlock[];
+  filterIndex: PeblorPageFilterIndex;
+  activeFilters: PageTags;
 };
 
 export function filterPageByActiveTags(input: FilterPassInput): FilterPassResult {
@@ -36,6 +53,39 @@ export function filterPageByActiveTags(input: FilterPassInput): FilterPassResult
 
   return {
     sections: sections.map((s) => stripFromSection(s, removedKeys)),
+    removedKeys,
+  };
+}
+
+export function filterPageByFilterIndex(input: FilterIndexPassInput): FilterPassResult {
+  const { sections, filterIndex, activeFilters } = input;
+
+  if (!hasActiveFilters(activeFilters)) {
+    return { sections, removedKeys: new Set() };
+  }
+
+  const activeCategoryKeys = new Set(filterIndex.filterCategories);
+  const filteredActiveFilters = Object.fromEntries(
+    Object.entries(activeFilters).filter(([category]) => activeCategoryKeys.has(category))
+  ) as PageTags;
+  if (!hasActiveFilters(filteredActiveFilters)) {
+    return { sections, removedKeys: new Set() };
+  }
+
+  const removedKeys = new Set<string>();
+  for (const [projectSlug, elementKeys] of Object.entries(filterIndex.elementKeysByProject)) {
+    const tags = filterIndex.projectTagsBySlug[projectSlug];
+    if (!projectMatchesFilters(tags, filteredActiveFilters)) {
+      for (const key of elementKeys) removedKeys.add(key);
+    }
+  }
+
+  if (removedKeys.size === 0) {
+    return { sections, removedKeys };
+  }
+
+  return {
+    sections: sections.map((section) => stripFromSection(section, removedKeys)),
     removedKeys,
   };
 }
@@ -73,26 +123,32 @@ function projectMatchesFilters(
   return true;
 }
 
-type ResponsiveOrder = { mobile?: string[]; desktop?: string[] };
-type ResponsiveLayoutMap = { mobile?: Record<string, unknown>; desktop?: Record<string, unknown> };
+type TierResponsiveOrder = {
+  [K in BreakpointTierName]?: string[];
+};
+type ResponsiveLayoutMap = {
+  [K in BreakpointTierName]?: Record<string, unknown>;
+} & {
+  "@container"?: Record<string, unknown>;
+};
 
 function filterElementOrder(
   order: unknown,
   removedKeys: ReadonlySet<string>
-): string[] | ResponsiveOrder | undefined {
+): string[] | TierResponsiveOrder | undefined {
   if (Array.isArray(order)) {
     return order.filter(
       (k): k is string => typeof k === "string" && !idMatchesRemovedKey(k, removedKeys)
     );
   }
   if (order && typeof order === "object") {
-    const obj = order as ResponsiveOrder;
-    const mobile = obj.mobile?.filter((k) => !idMatchesRemovedKey(k, removedKeys));
-    const desktop = obj.desktop?.filter((k) => !idMatchesRemovedKey(k, removedKeys));
-    return {
-      ...(mobile !== undefined ? { mobile } : {}),
-      ...(desktop !== undefined ? { desktop } : {}),
-    };
+    const obj = order as Record<string, string[] | undefined>;
+    const result: Record<string, string[] | undefined> = {};
+    for (const tier of BREAKPOINT_TIER_NAMES) {
+      const filtered = obj[tier]?.filter((k) => !idMatchesRemovedKey(k, removedKeys));
+      if (filtered !== undefined) result[tier] = filtered;
+    }
+    return Object.keys(result).length > 0 ? (result as TierResponsiveOrder) : undefined;
   }
   return undefined;
 }
@@ -102,15 +158,33 @@ function filterLayoutMap(map: unknown, removedKeys: ReadonlySet<string>): unknow
   if (Array.isArray(map)) return map;
 
   const obj = map as Record<string, unknown>;
-  const hasResponsiveKeys = "mobile" in obj || "desktop" in obj;
-  if (hasResponsiveKeys) {
+
+  // Check if this is a responsive wrapper (tier-map or @container)
+  const hasTierKeys = (BREAKPOINT_TIER_NAMES as readonly string[]).some((tier) => tier in obj);
+  const hasContainerKey = "@container" in obj;
+  const isResponsiveWrapper = hasTierKeys || hasContainerKey;
+
+  if (isResponsiveWrapper) {
     const responsive = obj as ResponsiveLayoutMap;
-    return {
-      ...(responsive.mobile ? { mobile: filterLayoutMap(responsive.mobile, removedKeys) } : {}),
-      ...(responsive.desktop ? { desktop: filterLayoutMap(responsive.desktop, removedKeys) } : {}),
-    };
+    const result: Record<string, unknown> = {};
+
+    // Handle tier-map branches
+    for (const tier of BREAKPOINT_TIER_NAMES) {
+      const tierValue = (responsive as Record<string, unknown>)[tier];
+      if (tierValue) {
+        result[tier] = filterLayoutMap(tierValue, removedKeys);
+      }
+    }
+
+    // Handle @container branch
+    if (responsive["@container"]) {
+      result["@container"] = filterLayoutMap(responsive["@container"], removedKeys);
+    }
+
+    return result;
   }
 
+  // This is an id → value map, filter by id
   return Object.fromEntries(
     Object.entries(obj).filter(([key]) => !idMatchesRemovedKey(key, removedKeys))
   );
@@ -159,7 +233,10 @@ function stripFromElement(element: ElementBlock, removedKeys: ReadonlySet<string
     type: string;
     section?: { elementOrder?: unknown; definitions?: Record<string, unknown> };
   };
-  if (el.type !== "elementGroup" && el.type !== "elementInfiniteScroll") return element;
+  if (
+    !NESTED_SECTION_ELEMENT_TYPES.includes(el.type as (typeof NESTED_SECTION_ELEMENT_TYPES)[number])
+  )
+    return element;
   const nested = el.section;
   if (!nested) return element;
 

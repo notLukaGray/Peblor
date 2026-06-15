@@ -8,7 +8,7 @@ describe("hasValidSectionColumnAssignments", () => {
     expect(
       hasValidSectionColumnAssignments({
         elements,
-        columns: { mobile: 2, desktop: 4 },
+        columns: { base: 2, md: 4 },
         columnAssignments: { a: 3 },
       })
     ).toBe(false);
@@ -18,7 +18,7 @@ describe("hasValidSectionColumnAssignments", () => {
     expect(
       hasValidSectionColumnAssignments({
         elements,
-        columns: { mobile: 2, desktop: 4 },
+        columns: { base: 2, md: 4 },
         columnAssignments: { a: 0, b: 1 },
       })
     ).toBe(true);

@@ -1,0 +1,21 @@
+{
+  "preset": "work-bg-overlay",
+  "fill": "radial-gradient(ellipse 140% 120% at 62% 50%, oklch(0.82 0.03 175 / 0.55) 0%, oklch(0.82 0.01 175 / 0.08) 100%)",
+  "visibleWhen": {
+    "variable": "selectedProject",
+    "operator": "equals",
+    "value": "process"
+  },
+  "motion": {
+    "from": {
+      "opacity": 0
+    },
+    "to": {
+      "opacity": 1
+    },
+    "transition": {
+      "duration": 1.1,
+      "ease": "easeInOut"
+    }
+  }
+}

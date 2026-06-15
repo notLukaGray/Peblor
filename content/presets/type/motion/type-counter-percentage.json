@@ -1,0 +1,15 @@
+{
+  "type": "elementCounter",
+  "level": 1,
+  "target": 94,
+  "suffix": "%",
+  "decimals": 0,
+  "trigger": "onVisible",
+  "tween": {
+    "duration": 2600,
+    "easing": "easeOut"
+  },
+  "color": "var(--pb-on-secondary)",
+  "textAlign": "center",
+  "width": "100%"
+}

@@ -4,10 +4,10 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import type { ElementBlock, SectionBlock } from "@pb/contracts/peblor/core/peblor-schemas";
 import type { MotionPropsFromJson } from "@pb/contracts/types";
-import { resolveResponsiveValue } from "@pb/runtime-react/core/lib/responsive-value";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
 import { useDeviceType } from "@pb/runtime-react/core/providers/device-type-provider";
 import { SectionMotionWrapper } from "@/peblor/integrations/framer-motion";
-import { motion } from "@/peblor/integrations/framer-motion";
+import { m } from "@/peblor/integrations/framer-motion";
 import type { Easing } from "@/peblor/integrations/framer-motion";
 import {
   MOTION_DEFAULTS,
@@ -21,8 +21,7 @@ import { ElementRenderer } from "@/peblor/elements/Shared/ElementRenderer";
 import { generateElementKey } from "@pb/core/keys";
 import { useRevealExternalTrigger } from "@/peblor/triggers/core/use-reveal-external-trigger";
 import { useSectionCustomTriggers } from "@/peblor/triggers/core/use-section-custom-triggers";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
-import { resolveThemeString } from "@/peblor/theme/theme-string";
+import { lowerThemeStringToCss } from "@/peblor/theme/theme-string";
 
 const MOTION_DISPLAY_CONTENTS: CSSProperties = { display: "contents" };
 
@@ -42,7 +41,7 @@ export function SectionReveal({
   maxWidth,
   minHeight,
   maxHeight,
-  align,
+  selfAlign,
   marginLeft,
   marginRight,
   marginTop,
@@ -51,14 +50,14 @@ export function SectionReveal({
   border,
   boxShadow,
   filter,
-  backdropFilter,
-  clipPath,
+  bgBlur,
+  clipShape,
   cursor,
   aspectRatio,
   scrollSpeed,
   initialX,
   initialY,
-  zIndex,
+  layer,
   motion: motionFromJson,
   motionTiming,
   reduceMotion,
@@ -85,13 +84,19 @@ export function SectionReveal({
   cursorTriggers,
   scrollDirectionTriggers,
   idleTriggers,
+  variableTriggers,
+  tabVisibilityTriggers,
+  mediaEndTriggers,
+  customEventTriggers,
+  elementEventTriggers,
+  scrollThresholdTriggers,
+  mediaProgressTriggers,
 }: Props) {
   const sectionRef = useRef<HTMLElement>(null);
   const { isMobile } = useDeviceType();
-  const themeMode = usePeblorThemeMode();
   const [isRevealed, setRevealed] = useState(initialRevealed);
 
-  const resolvedFill = resolveThemeString(resolveResponsiveValue(fill, isMobile), themeMode);
+  const resolvedFill = lowerThemeStringToCss(resolveResponsiveValue(fill, isMobile));
 
   useRevealExternalTrigger(externalTriggerKey, externalTriggerMode, setRevealed);
 
@@ -101,9 +106,16 @@ export function SectionReveal({
     cursorTriggers,
     scrollDirectionTriggers,
     idleTriggers,
+    variableTriggers,
+    tabVisibilityTriggers,
+    mediaEndTriggers,
+    customEventTriggers,
+    elementEventTriggers,
+    scrollThresholdTriggers,
+    mediaProgressTriggers,
   });
 
-  const { baseStyle } = useSectionBaseStyles({
+  const { baseStyle, parallaxY } = useSectionBaseStyles({
     fill,
     width,
     height,
@@ -111,7 +123,7 @@ export function SectionReveal({
     maxWidth,
     minHeight,
     maxHeight,
-    align,
+    selfAlign,
     marginLeft,
     marginRight,
     marginTop,
@@ -120,17 +132,16 @@ export function SectionReveal({
     border,
     boxShadow,
     filter,
-    backdropFilter,
-    clipPath,
+    bgBlur,
+    clipShape,
     cursor,
     aspectRatio,
     scrollSpeed,
     initialX,
     initialY,
-    zIndex,
+    layer,
     effects,
     sectionRef,
-    usePadding: true,
     reduceMotion,
   });
 
@@ -141,11 +152,11 @@ export function SectionReveal({
   }, [expandDurationMs, collapseDurationMs]);
 
   const safeCollapsedElements = useMemo(
-    () => (Array.isArray(collapsedElements) ? collapsedElements : []),
+    () => (Array.isArray(collapsedElements) ? collapsedElements : []) as ElementBlock[],
     [collapsedElements]
   );
   const safeRevealedElements = useMemo(
-    () => (Array.isArray(revealedElements) ? revealedElements : []),
+    () => (Array.isArray(revealedElements) ? revealedElements : []) as ElementBlock[],
     [revealedElements]
   );
 
@@ -163,7 +174,7 @@ export function SectionReveal({
         duration: durationSec.expand,
         ease: transitionEasing ?? "easeInOut",
       },
-    };
+    } as MotionPropsFromJson;
   }, [motionFromJson, durationSec.expand, transitionEasing]);
 
   const handleMouseEnter = useCallback(() => {
@@ -179,7 +190,8 @@ export function SectionReveal({
   }, [revealOnHover, triggerMode]);
 
   const handleClick = useCallback(() => {
-    if (!revealOnClick && triggerMode !== "click" && triggerMode !== "combined") return;
+    if (!revealOnClick && !toggleOnClick && triggerMode !== "click" && triggerMode !== "combined")
+      return;
     if (toggleOnClick) {
       setRevealed((prev) => !prev);
     } else {
@@ -191,7 +203,7 @@ export function SectionReveal({
   const hasClick =
     revealOnClick !== undefined
       ? revealOnClick
-      : triggerMode === "click" || triggerMode === "combined";
+      : toggleOnClick || triggerMode === "click" || triggerMode === "combined";
 
   /** A11Y-10: when the section acts as a button, name the control action (placeholder copy). */
   const resolvedAriaLabel = useMemo(() => {
@@ -227,7 +239,7 @@ export function SectionReveal({
     safeRevealedElements.length > 0 &&
     (revealStaggerMs != null || revealDurationMs != null || revealPreset != null);
   const staggerMs = revealStaggerMs ?? 50;
-  const itemDurationMs = revealDurationMs ?? 300;
+  const itemDurationMs = revealDurationMs ?? MOTION_DEFAULTS.revealItemDurationMs;
   const easing = transitionEasing ?? "easeOut";
 
   const staggerVariants = useMemo(() => {
@@ -239,11 +251,8 @@ export function SectionReveal({
           : undefined))
       : undefined;
     const mc = MOTION_DEFAULTS.motionComponent;
-    const initial = (preset?.initial ?? mc.initial) as Record<string, string | number | number[]>;
-    const animateBase = (preset?.animate ?? mc.animate) as Record<
-      string,
-      string | number | number[]
-    >;
+    const initial = (preset?.initial ?? mc.from) as Record<string, string | number | number[]>;
+    const animateBase = (preset?.animate ?? mc.to) as Record<string, string | number | number[]>;
     return {
       container: {
         initial: {},
@@ -270,22 +279,22 @@ export function SectionReveal({
   const renderRevealedElements = () => {
     if (hasStaggerReveal) {
       return (
-        <motion.div
+        <m.div
           variants={staggerVariants.container}
           initial="initial"
           animate="animate"
           style={MOTION_DISPLAY_CONTENTS}
         >
-          {safeRevealedElements.map((block: ElementBlock, i: number) => (
-            <motion.div
+          {safeRevealedElements.map((block, i) => (
+            <m.div
               key={generateElementKey(block, safeCollapsedElements.length + i)}
               variants={staggerVariants.item}
               style={MOTION_DISPLAY_CONTENTS}
             >
               <ElementRenderer block={block} />
-            </motion.div>
+            </m.div>
           ))}
-        </motion.div>
+        </m.div>
       );
     }
     return safeRevealedElements.map((block, i) => (
@@ -298,10 +307,12 @@ export function SectionReveal({
 
   return (
     <SectionMotionWrapper
+      id={id}
       sectionRef={sectionRef}
       motion={sectionMotion}
       motionTiming={motionTiming}
       reduceMotion={reduceMotion}
+      parallaxY={parallaxY}
       className="relative z-[var(--pb-z-raised)] flex shrink-0 flex-col min-h-0"
       style={applySectionFillStyle(resolvedFill, layers, baseStyle)}
       aria-label={resolvedAriaLabel}
@@ -323,7 +334,7 @@ export function SectionReveal({
     >
       {layers?.length ? <LayerStack layers={layers} /> : null}
       <SectionGlassEffect effects={effects} sectionRef={sectionRef} />
-      <motion.div
+      <m.div
         layout
         transition={{
           duration: isRevealed ? durationSec.expand : durationSec.collapse,
@@ -336,7 +347,7 @@ export function SectionReveal({
           <ElementRenderer key={generateElementKey(block, i)} block={block} />
         ))}
         {isRevealed && renderRevealedElements()}
-      </motion.div>
+      </m.div>
     </SectionMotionWrapper>
   );
 }

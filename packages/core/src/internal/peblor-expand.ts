@@ -26,36 +26,6 @@ export type ExpandPeblorOptions = {
   viewportWidthPx?: number;
 };
 
-function warnExpandFallbacks(page: Peblor): void {
-  if (process.env.NODE_ENV !== "development") return;
-  const defs = page.definitions;
-  const slug = page.slug ?? "(unknown)";
-
-  // bgKey fallback
-  if (!page.bgKey) {
-    console.warn(
-      `[peblor] ${slug}: bgKey not set — defaulting to "bg". Set bgKey explicitly to suppress this warning.`
-    );
-  }
-
-  // section-order drops
-  for (const key of page.sectionOrder ?? []) {
-    const block = defs[key];
-    if (block == null || typeof block !== "object" || !("type" in block)) {
-      console.warn(
-        `[peblor] ${slug}: sectionOrder key "${key}" has no matching definition — dropped.`
-      );
-      continue;
-    }
-    const type = (block as { type: string }).type;
-    if (!SECTION_TYPE_STRINGS.has(type)) {
-      console.warn(
-        `[peblor] ${slug}: sectionOrder key "${key}" has type "${type}" which is not a section type — dropped.`
-      );
-    }
-  }
-}
-
 /** Expand Peblor into bg + sections; section.elements are refs into definitions. */
 export function expandPeblor(
   page: Peblor,
@@ -66,12 +36,19 @@ export function expandPeblor(
 } {
   const defs = page.definitions;
   const displayOrder = buildDisplayOrder(page);
-  const bgKey = page.bgKey ?? "bg";
+  const sectionKeys = new Set(page.sectionOrder ?? []);
+  const slug = page.slug ?? "(unknown)";
 
-  warnExpandFallbacks(page);
+  // bgKey is optional (z.string().optional() in the schema). When unset, no background
+  // is resolved. The old `?? "bg"` default was removed per K-10 — callers that want a
+  // background must set bgKey explicitly in the page data.
+  const bgKey = page.bgKey;
 
   const bg: bgBlock | null =
-    defs[bgKey] != null && typeof defs[bgKey] === "object" && "type" in (defs[bgKey] as object)
+    bgKey != null &&
+    defs[bgKey] != null &&
+    typeof defs[bgKey] === "object" &&
+    "type" in (defs[bgKey] as object)
       ? (defs[bgKey] as bgBlock)
       : null;
 
@@ -79,11 +56,25 @@ export function expandPeblor(
 
   for (let i = 0; i < displayOrder.length; i++) {
     const key = displayOrder[i];
-    if (!key) continue;
+    if (key == null) continue;
     const block = defs[key];
-    if (block == null || typeof block !== "object" || !("type" in block)) continue;
+    if (block == null || typeof block !== "object" || !("type" in block)) {
+      if (sectionKeys.has(key)) {
+        throw new Error(
+          `[peblor] ${slug}: sectionOrder key "${key}" has no matching definition — fail (K-11).`
+        );
+      }
+      continue;
+    }
     const type = (block as { type: string }).type;
-    if (!SECTION_TYPE_STRINGS.has(type)) continue;
+    if (!SECTION_TYPE_STRINGS.has(type)) {
+      if (sectionKeys.has(key)) {
+        throw new Error(
+          `[peblor] ${slug}: sectionOrder key "${key}" has type "${type}" which is not a section type — fail (K-11).`
+        );
+      }
+      continue;
+    }
 
     const section = { ...block } as SectionWithElements;
     if (
@@ -102,7 +93,7 @@ export function expandPeblor(
       const sectionDefs = (section as { definitions?: DefinitionsMap }).definitions;
       const defsForElements: DefinitionsMap =
         sectionDefs && typeof sectionDefs === "object" && !Array.isArray(sectionDefs)
-          ? { ...sectionDefs, ...defs }
+          ? { ...defs, ...sectionDefs }
           : defs;
       section.elements = resolveElements(order, defsForElements);
     }
@@ -111,9 +102,7 @@ export function expandPeblor(
       section.id && typeof section.id === "string" ? section.id : `${type}_${i}`;
     applyElementIdsAndModules(section, defs, namespacePrefix);
     applyColumnNamespace(section, namespacePrefix);
-    resolveSectionTriggerPayloads(section, defs);
-
-    sections.push(section as SectionBlock);
+    sections.push(resolveSectionTriggerPayloads(section, defs) as SectionBlock);
   }
 
   const finalSections =

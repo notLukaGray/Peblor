@@ -1,0 +1,170 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "staggerChildren": 0.15,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "tabs-1", "tabs-2", "tabs-3"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Tabbed Content Panels"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Three tab variants: pill, underline, and contained. Each switches between related content panels with keyboard navigation support."
+    },
+    "tabs-1": {
+      "type": "elementTabs",
+      "variant": "pill",
+      "tabs": [
+        {
+          "label": "Design",
+          "elements": [
+            {
+              "type": "elementBody",
+              "level": 3,
+              "text": "Design tokens define the visual language \u2014 colour palettes, spacing scales, and typographic hierarchy. Every component consumes these tokens through CSS custom properties, ensuring consistency across light and dark mode.",
+              "color": "color-mix(in oklab, var(--pb-on-secondary) 70%, transparent)"
+            }
+          ]
+        },
+        {
+          "label": "Develop",
+          "elements": [
+            {
+              "type": "elementBody",
+              "level": 3,
+              "text": "Component API references and usage guidelines. Each component exposes a minimal set of props that map directly to the JSON schema. TypeScript types are auto-generated from the Zod schemas.",
+              "color": "color-mix(in oklab, var(--pb-on-secondary) 70%, transparent)"
+            }
+          ]
+        },
+        {
+          "label": "Ship",
+          "elements": [
+            {
+              "type": "elementBody",
+              "level": 3,
+              "text": "Deployment pipelines and release strategies. Content is validated and migrated through CI, with preview environments for every pull request.",
+              "color": "color-mix(in oklab, var(--pb-on-secondary) 70%, transparent)"
+            }
+          ]
+        }
+      ],
+      "contentAnimation": "fade",
+      "lazyLoad": true,
+      "keyboardNav": true,
+      "width": "100%",
+      "height": "hug"
+    },
+    "tabs-2": {
+      "type": "elementTabs",
+      "variant": "underline",
+      "tabs": [
+        {
+          "label": "Colour",
+          "elements": [
+            {
+              "type": "elementBody",
+              "level": 3,
+              "text": "OKLCH-based colour system with CSS color-mix() for contextual blending. Each palette includes primary, secondary, accent, and surface tokens with light and dark variants.",
+              "color": "color-mix(in oklab, var(--pb-on-secondary) 70%, transparent)"
+            }
+          ]
+        },
+        {
+          "label": "Typography",
+          "elements": [
+            {
+              "type": "elementBody",
+              "level": 3,
+              "text": "Variable font scale from display H1 down to meta H5, plus body copy at four levels. All sizes are fluid via clamp() and respond to viewport width.",
+              "color": "color-mix(in oklab, var(--pb-on-secondary) 70%, transparent)"
+            }
+          ]
+        },
+        {
+          "label": "Spacing",
+          "elements": [
+            {
+              "type": "elementBody",
+              "level": 3,
+              "text": "8-point grid spacing system. Padding, gap, and margin values follow a consistent scale from 0.25rem through 4rem.",
+              "color": "color-mix(in oklab, var(--pb-on-secondary) 70%, transparent)"
+            }
+          ]
+        },
+        {
+          "label": "Motion",
+          "elements": [
+            {
+              "type": "elementBody",
+              "level": 3,
+              "text": "Framer Motion presets for entrance, exit, and gesture animations. Duration and easing curves are standardised across all components.",
+              "color": "color-mix(in oklab, var(--pb-on-secondary) 70%, transparent)"
+            }
+          ]
+        }
+      ],
+      "contentAnimation": "fade",
+      "lazyLoad": true,
+      "keyboardNav": true,
+      "width": "100%",
+      "height": "hug",
+      "tabGap": "0",
+      "tabColor": "color-mix(in oklab, var(--pb-on-secondary) 55%, transparent)",
+      "tabActiveColor": "var(--pb-accent)"
+    },
+    "tabs-3": {
+      "type": "elementTabs",
+      "variant": "contained",
+      "tabs": [
+        {
+          "label": "Basics",
+          "elements": [
+            {
+              "type": "elementBody",
+              "level": 3,
+              "text": "Core layout components \u2014 contentBlock, sectionColumn, and sectionTrigger. These form the structural foundation of every page.",
+              "color": "color-mix(in oklab, var(--pb-on-secondary) 70%, transparent)"
+            }
+          ]
+        },
+        {
+          "label": "Media",
+          "elements": [
+            {
+              "type": "elementBody",
+              "level": 3,
+              "text": "Image, video, 3D, Rive, Lottie, and audio players. Each media element supports responsive sizing, aspect ratio, and motion presets.",
+              "color": "color-mix(in oklab, var(--pb-on-secondary) 70%, transparent)"
+            }
+          ]
+        },
+        {
+          "label": "Interactive",
+          "elements": [
+            {
+              "type": "elementBody",
+              "level": 3,
+              "text": "Tabs, tooltips, drag, range sliders, image comparison, and infinite scroll. Interactive elements respond to user input through hover, click, drag, and scroll events.",
+              "color": "color-mix(in oklab, var(--pb-on-secondary) 70%, transparent)"
+            }
+          ]
+        }
+      ],
+      "contentAnimation": "fade",
+      "lazyLoad": true,
+      "keyboardNav": true,
+      "width": "100%",
+      "height": "hug",
+      "tabGap": "0.25rem",
+      "tabPadding": "0.5rem 1rem",
+      "tabColor": "color-mix(in oklab, var(--pb-on-secondary) 55%, transparent)",
+      "tabActiveColor": "var(--pb-on-secondary)",
+      "tabActiveBackground": "color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)",
+      "tabBackground": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)"
+    }
+  }
+}

@@ -1,7 +1,7 @@
 {
   "type": "elementDivider",
   "orientation": "horizontal",
-  "length": ["60%", "80%"],
+  "length": { "base": "60%", "md": "80%" },
   "thickness": "1px",
   "color": "border",
   "style": "solid"

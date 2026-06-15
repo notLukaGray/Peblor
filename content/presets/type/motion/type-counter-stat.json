@@ -1,0 +1,16 @@
+{
+  "type": "elementCounter",
+  "level": 1,
+  "target": 100,
+  "suffix": "+",
+  "separator": true,
+  "locale": "en-US",
+  "trigger": "onVisible",
+  "tween": {
+    "duration": 3000,
+    "easing": "easeOut"
+  },
+  "color": "var(--pb-on-secondary)",
+  "textAlign": "center",
+  "width": "100%"
+}

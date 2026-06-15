@@ -1,0 +1,19 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "bg-dark-moody — Preset Demo",
+  "description": "Always-dark base with slowly pulsing colored accents",
+  "presets": ["demo", "bg"],
+  "sectionOrder": ["nav-header", "hero"],
+  "bgKey": "bg-dark-moody",
+  "scroll": {
+    "smooth": false,
+    "lockBody": true,
+    "scrollX": "hidden",
+    "scrollY": "hidden"
+  },
+  "definitions": {
+    "bg-dark-moody": {
+      "preset": "bg-dark-moody"
+    }
+  }
+}

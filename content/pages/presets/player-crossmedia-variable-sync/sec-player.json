@@ -1,0 +1,643 @@
+{
+  "preset": "player-section",
+  "elementOrder": [
+    "player-label",
+    "sync-explainer",
+    "sync-grid",
+    "rive-direct-bridge",
+    "manual-triggers",
+    "state-panel"
+  ],
+  "definitions": {
+    "player-label": {
+      "preset": "type-h3-label",
+      "text": "Crossmedia Variable Sync — Lottie → 3D"
+    },
+    "sync-explainer": {
+      "preset": "type-body-fine",
+      "text": "Lottie loops set playerScene → section variableTriggers move the 3D camera. Rive buttons fire directly into 3D + video (fireMultiple) and can also set riveScene for variable-driven camera presets."
+    },
+    "sync-grid": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": {
+        "base": "column",
+        "md": "row"
+      },
+      "align": "stretch",
+      "gap": "1rem",
+      "width": "100%",
+      "section": {
+        "elementOrder": ["lottie-driver", "model-receiver"],
+        "definitions": {
+          "lottie-driver": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0",
+            "flex": "1",
+            "borderRadius": "14px",
+            "scroll": "hidden",
+            "fill": "color-mix(in oklab, var(--pb-primary) 8%, transparent)",
+            "wrapperStyle": {
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+            },
+            "section": {
+              "elementOrder": ["lottie-header", "lottie-el"],
+              "definitions": {
+                "lottie-header": {
+                  "type": "elementGroup",
+                  "padding": "0.75rem 1rem 0.5rem",
+                  "section": {
+                    "elementOrder": ["lh"],
+                    "definitions": {
+                      "lh": {
+                        "preset": "type-h5-meta",
+                        "text": "Lottie Driver — fires playerScene"
+                      }
+                    }
+                  }
+                },
+                "lottie-el": {
+                  "type": "elementLottie",
+                  "id": "sync-lottie",
+                  "src": "https://assets10.lottiefiles.com/packages/lf20_tll0j4bb.json",
+                  "autoplay": true,
+                  "loop": true,
+                  "width": "100%",
+                  "aspectRatio": "1 / 1",
+                  "onComplete": {
+                    "type": "setVariable",
+                    "payload": {
+                      "key": "playerScene",
+                      "value": "segment-b"
+                    }
+                  },
+                  "onLoop": {
+                    "type": "setVariable",
+                    "payload": {
+                      "key": "playerScene",
+                      "value": "segment-a"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "model-receiver": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0",
+            "flex": "1",
+            "borderRadius": "14px",
+            "scroll": "hidden",
+            "fill": "color-mix(in oklab, var(--pb-accent) 6%, transparent)",
+            "wrapperStyle": {
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+            },
+            "section": {
+              "elementOrder": ["model-header", "model-el", "cam-indicator"],
+              "definitions": {
+                "model-header": {
+                  "type": "elementGroup",
+                  "padding": "0.75rem 1rem 0.5rem",
+                  "section": {
+                    "elementOrder": ["mh"],
+                    "definitions": {
+                      "mh": {
+                        "preset": "type-h5-meta",
+                        "text": "3D Receiver — reacts to playerScene"
+                      }
+                    }
+                  }
+                },
+                "model-el": {
+                  "type": "elementModel3D",
+                  "id": "sync-model",
+                  "width": "100%",
+                  "aspectRatio": "1 / 1",
+                  "initiallyLoaded": true,
+                  "models": {
+                    "bird": {
+                      "geometry": "https://threejs.org/examples/models/gltf/Flamingo.glb"
+                    }
+                  },
+                  "scene": {
+                    "camera": {
+                      "type": "perspective",
+                      "position": [0, 1, 3.5],
+                      "fov": 45
+                    },
+                    "cameraPresets": {
+                      "front": {
+                        "position": [0, 1, 3.5],
+                        "lookAt": [0, 0.2, 0]
+                      },
+                      "top": {
+                        "position": [0, 3.8, 0.6],
+                        "lookAt": [0, 0.4, 0],
+                        "fov": 42
+                      }
+                    },
+                    "controls": {
+                      "mode": "orbit"
+                    },
+                    "lights": [
+                      {
+                        "type": "ambient",
+                        "intensity": 0.5
+                      },
+                      {
+                        "type": "directional",
+                        "position": [2, 3, 3],
+                        "intensity": 1.1
+                      }
+                    ],
+                    "background": {
+                      "type": "color",
+                      "color": "#1a1a2e"
+                    },
+                    "contents": {
+                      "models": [
+                        {
+                          "model": "bird"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "cam-indicator": {
+                  "type": "elementGroup",
+                  "display": "flex",
+                  "flow": "column",
+                  "gap": "0.4rem",
+                  "padding": "0.5rem 0.75rem 0.75rem",
+                  "section": {
+                    "elementOrder": ["indicator-a", "indicator-b"],
+                    "definitions": {
+                      "indicator-a": {
+                        "type": "elementGroup",
+                        "padding": "0.4rem 0.75rem",
+                        "borderRadius": "8px",
+                        "fill": "color-mix(in oklab, var(--pb-primary) 12%, transparent)",
+                        "visibleWhen": {
+                          "variable": "playerScene",
+                          "operator": "equals",
+                          "value": "segment-a"
+                        },
+                        "section": {
+                          "elementOrder": ["ia-label"],
+                          "definitions": {
+                            "ia-label": {
+                              "preset": "type-h5-meta",
+                              "text": "Camera: Front (segment-a active)"
+                            }
+                          }
+                        }
+                      },
+                      "indicator-b": {
+                        "type": "elementGroup",
+                        "padding": "0.4rem 0.75rem",
+                        "borderRadius": "8px",
+                        "fill": "color-mix(in oklab, var(--pb-accent) 12%, transparent)",
+                        "visibleWhen": {
+                          "variable": "playerScene",
+                          "operator": "equals",
+                          "value": "segment-b"
+                        },
+                        "section": {
+                          "elementOrder": ["ib-label"],
+                          "definitions": {
+                            "ib-label": {
+                              "preset": "type-h5-meta",
+                              "text": "Camera: Top (segment-b active)"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "rive-direct-bridge": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "1rem",
+      "width": "100%",
+      "section": {
+        "elementOrder": ["bridge-label", "bridge-grid"],
+        "definitions": {
+          "bridge-label": {
+            "preset": "type-h5-meta",
+            "text": "Direct cross-runtime bridge — Rive button → 3D camera + video"
+          },
+          "bridge-grid": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": {
+              "base": "column",
+              "md": "row"
+            },
+            "align": "stretch",
+            "gap": "1rem",
+            "width": "100%",
+            "section": {
+              "elementOrder": ["sync-rive-panel", "sync-video-panel"],
+              "definitions": {
+                "sync-rive-panel": {
+                  "type": "elementGroup",
+                  "flex": "1",
+                  "borderRadius": "14px",
+                  "scroll": "hidden",
+                  "fill": "color-mix(in oklab, var(--pb-primary) 8%, transparent)",
+                  "wrapperStyle": {
+                    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+                  },
+                  "section": {
+                    "elementOrder": ["sr-head", "sr-rive", "sr-btns"],
+                    "definitions": {
+                      "sr-head": {
+                        "type": "elementGroup",
+                        "padding": "0.65rem 1rem 0.35rem",
+                        "section": {
+                          "elementOrder": ["srh"],
+                          "definitions": {
+                            "srh": {
+                              "preset": "type-h5-meta",
+                              "text": "Rive Driver"
+                            }
+                          }
+                        }
+                      },
+                      "sr-rive": {
+                        "type": "elementRive",
+                        "id": "sync-rive",
+                        "src": "https://cdn.rive.app/animations/vehicles.riv",
+                        "autoplay": false,
+                        "loop": true,
+                        "hover": true,
+                        "width": "100%",
+                        "aspectRatio": "1 / 1",
+                        "interactivity": [
+                          {
+                            "event": "hoverEnter",
+                            "input": "hover",
+                            "value": true
+                          },
+                          {
+                            "event": "hoverLeave",
+                            "input": "hover",
+                            "value": false
+                          }
+                        ],
+                        "onStateChange": {
+                          "type": "setVariable",
+                          "payload": {
+                            "key": "riveState",
+                            "value": "$event.stateName"
+                          }
+                        }
+                      },
+                      "sr-btns": {
+                        "type": "elementGroup",
+                        "display": "flex",
+                        "flow": "row",
+                        "wrap": "wrap",
+                        "gap": "0.45rem",
+                        "padding": "0.5rem 0.75rem 0.75rem",
+                        "section": {
+                          "elementOrder": ["btn-rive-orbit", "btn-rive-front"],
+                          "definitions": {
+                            "btn-rive-orbit": {
+                              "type": "elementButton",
+                              "label": "Rive Jump → Orbit + Play Video",
+                              "action": "fireMultiple",
+                              "actionPayload": {
+                                "actions": [
+                                  {
+                                    "type": "rive.fireTrigger",
+                                    "payload": {
+                                      "id": "sync-rive",
+                                      "input": "jump"
+                                    }
+                                  },
+                                  {
+                                    "type": "three.orbitEnable",
+                                    "payload": {
+                                      "id": "sync-model",
+                                      "autoRotate": true,
+                                      "autoRotateSpeed": 2
+                                    }
+                                  },
+                                  {
+                                    "type": "assetPlay",
+                                    "payload": {
+                                      "id": "sync-video"
+                                    }
+                                  },
+                                  {
+                                    "type": "setVariable",
+                                    "payload": {
+                                      "key": "riveScene",
+                                      "value": "orbit"
+                                    }
+                                  }
+                                ]
+                              },
+                              "level": 5,
+                              "wrapperPadding": "0.45rem 0.85rem",
+                              "wrapperBorderRadius": "10px",
+                              "wrapperFill": "color-mix(in oklab, var(--pb-accent) 18%, transparent)",
+                              "linkDefault": "var(--pb-on-secondary)"
+                            },
+                            "btn-rive-front": {
+                              "type": "elementButton",
+                              "label": "Rive Hover → Front + Pause Video",
+                              "action": "fireMultiple",
+                              "actionPayload": {
+                                "actions": [
+                                  {
+                                    "type": "rive.setInput",
+                                    "payload": {
+                                      "id": "sync-rive",
+                                      "input": "hover",
+                                      "value": true
+                                    }
+                                  },
+                                  {
+                                    "type": "three.setCameraPreset",
+                                    "payload": {
+                                      "id": "sync-model",
+                                      "preset": "front"
+                                    }
+                                  },
+                                  {
+                                    "type": "assetPause",
+                                    "payload": {
+                                      "id": "sync-video"
+                                    }
+                                  },
+                                  {
+                                    "type": "setVariable",
+                                    "payload": {
+                                      "key": "riveScene",
+                                      "value": "front"
+                                    }
+                                  }
+                                ]
+                              },
+                              "level": 5,
+                              "wrapperPadding": "0.45rem 0.85rem",
+                              "wrapperBorderRadius": "10px",
+                              "wrapperFill": "color-mix(in oklab, var(--pb-primary) 16%, transparent)",
+                              "linkDefault": "var(--pb-on-secondary)"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "sync-video-panel": {
+                  "type": "elementGroup",
+                  "flex": "1",
+                  "borderRadius": "14px",
+                  "scroll": "hidden",
+                  "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+                  "wrapperStyle": {
+                    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+                  },
+                  "section": {
+                    "elementOrder": ["sv-head", "sv-video"],
+                    "definitions": {
+                      "sv-head": {
+                        "type": "elementGroup",
+                        "padding": "0.65rem 1rem 0.35rem",
+                        "section": {
+                          "elementOrder": ["svh"],
+                          "definitions": {
+                            "svh": {
+                              "preset": "type-h5-meta",
+                              "text": "Video Target"
+                            }
+                          }
+                        }
+                      },
+                      "sv-video": {
+                        "type": "elementVideo",
+                        "id": "sync-video",
+                        "src": "https://samplelib.com/preview/mp4/sample-10s.mp4",
+                        "poster": "https://picsum.photos/id/1036/1280/720",
+                        "module": "video-player-minimal-noplay",
+                        "width": "100%",
+                        "aspectRatio": "16 / 9",
+                        "autoplay": false,
+                        "loop": true,
+                        "muted": true,
+                        "objectFit": "cover",
+                        "onVideoPlay": {
+                          "type": "setVariable",
+                          "payload": {
+                            "key": "videoStatus",
+                            "value": "playing"
+                          }
+                        },
+                        "onVideoPause": {
+                          "type": "setVariable",
+                          "payload": {
+                            "key": "videoStatus",
+                            "value": "paused"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "manual-triggers": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "0.75rem",
+      "section": {
+        "elementOrder": ["trigger-label", "trigger-btns"],
+        "definitions": {
+          "trigger-label": {
+            "preset": "type-h5-meta",
+            "text": "Manual Override — fire variables directly"
+          },
+          "trigger-btns": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "row",
+            "wrap": "wrap",
+            "gap": "0.5rem",
+            "section": {
+              "elementOrder": ["btn-seg-a", "btn-seg-b", "btn-rive-idle", "btn-rive-active"],
+              "definitions": {
+                "btn-seg-a": {
+                  "type": "elementButton",
+                  "label": "playerScene → segment-a",
+                  "action": "setVariable",
+                  "actionPayload": {
+                    "key": "playerScene",
+                    "value": "segment-a"
+                  },
+                  "level": 5,
+                  "wrapperPadding": "0.45rem 0.9rem",
+                  "wrapperBorderRadius": "10px",
+                  "wrapperFill": "color-mix(in oklab, var(--pb-primary) 18%, transparent)",
+                  "linkDefault": "var(--pb-on-secondary)",
+                  "motion": {
+                    "onHover": {
+                      "scale": 1.04
+                    },
+                    "transition": {
+                      "duration": 0.15
+                    }
+                  }
+                },
+                "btn-seg-b": {
+                  "type": "elementButton",
+                  "label": "playerScene → segment-b",
+                  "action": "setVariable",
+                  "actionPayload": {
+                    "key": "playerScene",
+                    "value": "segment-b"
+                  },
+                  "level": 5,
+                  "wrapperPadding": "0.45rem 0.9rem",
+                  "wrapperBorderRadius": "10px",
+                  "wrapperFill": "color-mix(in oklab, var(--pb-accent) 18%, transparent)",
+                  "linkDefault": "var(--pb-on-secondary)",
+                  "motion": {
+                    "onHover": {
+                      "scale": 1.04
+                    },
+                    "transition": {
+                      "duration": 0.15
+                    }
+                  }
+                },
+                "btn-rive-idle": {
+                  "type": "elementButton",
+                  "label": "riveState → Idle",
+                  "action": "setVariable",
+                  "actionPayload": {
+                    "key": "riveState",
+                    "value": "Idle"
+                  },
+                  "level": 5,
+                  "wrapperPadding": "0.45rem 0.9rem",
+                  "wrapperBorderRadius": "10px",
+                  "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+                  "linkDefault": "var(--pb-on-secondary)",
+                  "motion": {
+                    "onHover": {
+                      "scale": 1.04
+                    },
+                    "transition": {
+                      "duration": 0.15
+                    }
+                  }
+                },
+                "btn-rive-active": {
+                  "type": "elementButton",
+                  "label": "riveState → Active",
+                  "action": "setVariable",
+                  "actionPayload": {
+                    "key": "riveState",
+                    "value": "Active"
+                  },
+                  "level": 5,
+                  "wrapperPadding": "0.45rem 0.9rem",
+                  "wrapperBorderRadius": "10px",
+                  "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+                  "linkDefault": "var(--pb-on-secondary)",
+                  "motion": {
+                    "onHover": {
+                      "scale": 1.04
+                    },
+                    "transition": {
+                      "duration": 0.15
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "state-panel": {
+      "preset": "player-variable-panel"
+    }
+  },
+  "variableTriggers": [
+    {
+      "variable": "playerScene",
+      "operator": "equals",
+      "value": "segment-a",
+      "action": {
+        "type": "three.animateCamera",
+        "payload": {
+          "id": "sync-model",
+          "position": [0, 1, 3.5],
+          "lookAt": [0, 0.25, 0],
+          "durationMs": 520
+        }
+      }
+    },
+    {
+      "variable": "playerScene",
+      "operator": "equals",
+      "value": "segment-b",
+      "action": {
+        "type": "three.animateCamera",
+        "payload": {
+          "id": "sync-model",
+          "position": [0, 2.4, 2.1],
+          "lookAt": [0, 0.3, 0],
+          "durationMs": 520
+        }
+      }
+    },
+    {
+      "variable": "riveScene",
+      "operator": "equals",
+      "value": "orbit",
+      "action": {
+        "type": "three.orbitEnable",
+        "payload": {
+          "id": "sync-model",
+          "autoRotate": true,
+          "autoRotateSpeed": 1.8
+        }
+      }
+    },
+    {
+      "variable": "riveScene",
+      "operator": "equals",
+      "value": "front",
+      "action": {
+        "type": "three.setCameraPreset",
+        "payload": {
+          "id": "sync-model",
+          "preset": "front"
+        }
+      }
+    }
+  ]
+}

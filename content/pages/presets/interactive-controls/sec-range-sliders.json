@@ -1,0 +1,252 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "width": {
+    "base": "88%",
+    "md": "52%"
+  },
+  "maxWidth": "640px",
+  "scroll": "visible",
+  "selfAlign": "center",
+  "padding": {
+    "base": "0 0 8rem",
+    "md": "0 0 12rem"
+  },
+  "gap": "2.5rem",
+  "height": "hug",
+  "motionTiming": {
+    "staggerChildren": 0.15,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "range-group"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Range Sliders"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Custom range sliders with variant styling, track colours, and configurable min/max/step values. Each slider demonstrates a different visual treatment — including a glass-thumb variant with real-time refraction."
+    },
+    "range-group": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "2.5rem",
+      "width": "100%",
+      "scroll": "visible",
+      "motionTiming": {
+        "staggerChildren": 0.1,
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": [
+          "range-default",
+          "range-accent",
+          "range-slim",
+          "range-custom",
+          "range-glass"
+        ],
+        "definitions": {
+          "range-default": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.75rem",
+            "width": "100%",
+            "scroll": "visible",
+            "motionTiming": {
+              "entrancePreset": "fade",
+              "trigger": "onFirstVisible"
+            },
+            "section": {
+              "elementOrder": ["r-label", "r-slider"],
+              "definitions": {
+                "r-label": {
+                  "type": "elementBody",
+                  "level": 4,
+                  "text": "Default variant — 0 to 100 with step 1",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 60%, transparent)",
+                  "width": "auto"
+                },
+                "r-slider": {
+                  "type": "elementRange",
+                  "variant": "default",
+                  "min": 0,
+                  "max": 100,
+                  "step": 1,
+                  "width": "100%",
+                  "height": "hug"
+                }
+              }
+            }
+          },
+          "range-accent": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.75rem",
+            "width": "100%",
+            "scroll": "visible",
+            "motionTiming": {
+              "entrancePreset": "fade",
+              "trigger": "onFirstVisible"
+            },
+            "section": {
+              "elementOrder": ["r-label", "r-slider"],
+              "definitions": {
+                "r-label": {
+                  "type": "elementBody",
+                  "level": 4,
+                  "text": "Accent variant — 0 to 1 with fine step 0.01",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 60%, transparent)",
+                  "width": "auto"
+                },
+                "r-slider": {
+                  "type": "elementRange",
+                  "variant": "accent",
+                  "min": 0,
+                  "max": 1,
+                  "step": 0.01,
+                  "width": "100%",
+                  "height": "hug"
+                }
+              }
+            }
+          },
+          "range-slim": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.75rem",
+            "width": "100%",
+            "scroll": "visible",
+            "motionTiming": {
+              "entrancePreset": "fade",
+              "trigger": "onFirstVisible"
+            },
+            "section": {
+              "elementOrder": ["r-label", "r-slider"],
+              "definitions": {
+                "r-label": {
+                  "type": "elementBody",
+                  "level": 4,
+                  "text": "Slim variant — 0 to 50, width constrained to 50%",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 60%, transparent)",
+                  "width": "auto"
+                },
+                "r-slider": {
+                  "type": "elementRange",
+                  "variant": "slim",
+                  "min": 0,
+                  "max": 50,
+                  "step": 1,
+                  "width": "50%",
+                  "height": "hug"
+                }
+              }
+            }
+          },
+          "range-custom": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.75rem",
+            "width": "100%",
+            "scroll": "visible",
+            "motionTiming": {
+              "entrancePreset": "fade",
+              "trigger": "onFirstVisible"
+            },
+            "section": {
+              "elementOrder": ["r-label", "r-slider"],
+              "definitions": {
+                "r-label": {
+                  "type": "elementBody",
+                  "level": 4,
+                  "text": "Custom style — custom track and fill colours",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 60%, transparent)",
+                  "width": "auto"
+                },
+                "r-slider": {
+                  "type": "elementRange",
+                  "variant": "default",
+                  "min": 0,
+                  "max": 100,
+                  "step": 5,
+                  "width": "100%",
+                  "height": "hug",
+                  "style": {
+                    "trackColor": "color-mix(in oklab, var(--pb-on-secondary) 15%, transparent)",
+                    "fillColor": "var(--pb-accent)",
+                    "trackHeight": "6px",
+                    "thumbSize": "18px"
+                  }
+                }
+              }
+            }
+          },
+          "range-glass": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.75rem",
+            "width": "100%",
+            "scroll": "visible",
+            "motionTiming": {
+              "entrancePreset": "fade",
+              "trigger": "onFirstVisible"
+            },
+            "section": {
+              "elementOrder": ["r-label", "r-slider"],
+              "definitions": {
+                "r-label": {
+                  "type": "elementBody",
+                  "level": 4,
+                  "text": "Glass thumb — refractive glass effect on the drag handle",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 60%, transparent)",
+                  "width": "auto"
+                },
+                "r-slider": {
+                  "type": "elementRange",
+                  "min": 0,
+                  "max": 100,
+                  "step": 1,
+                  "width": "100%",
+                  "height": "hug",
+                  "style": {
+                    "trackColor": "color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)",
+                    "fillColor": "color-mix(in oklab, var(--pb-primary) 60%, var(--pb-accent) 40%)",
+                    "trackHeight": "8px",
+                    "thumbSize": "44px",
+                    "thumbWidth": "72px",
+                    "glassOnThumb": "true",
+                    "thumbIdleScale": 0.7,
+                    "thumbActiveScale": 1,
+                    "thumbIdleOpacity": 1,
+                    "thumbActiveOpacity": 0.08
+                  },
+                  "effects": [
+                    {
+                      "type": "glass",
+                      "bezelType": "convex_squircle",
+                      "bezelWidth": 10,
+                      "glassThickness": 44,
+                      "refractiveIndex": 1.45,
+                      "blur": 0.25,
+                      "scaleRatio": 0.88,
+                      "specularOpacity": 0.55,
+                      "specularSaturation": 5,
+                      "magnifyingScale": 0,
+                      "dropShadow": true
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

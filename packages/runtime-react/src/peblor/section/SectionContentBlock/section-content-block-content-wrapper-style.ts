@@ -45,9 +45,13 @@ export function buildSectionContentWrapperStyle(args: {
     style.minHeight = 0;
   }
 
-  // Use explicit `undefined` check — `minHeight: 0` is valid (flex shrink) but falsy, so
-  // `!style.minHeight` would wrongly replace it with `min-content` and break nested scroll
-  // (e.g. work index `contentHeight: "full"` + `elementInfiniteScroll` height 100%).
+  // The `undefined` check is intentional, not `!style.minHeight`:
+  // - `style.minHeight === undefined` means no explicit minHeight was set — default to min-content.
+  // - `style.minHeight = 0` is a legitimate flex shrink value (when contentHeight is "full")
+  //   that allows the content area to shrink below its natural height. Using `!style.minHeight`
+  //   would falsely treat `minHeight: 0` as "not set" and overwrite it with `min-content`,
+  //   which prevents nested scroll containers (e.g., InfiniteScroll) from scrolling because
+  //   the content overflows its parent rather than triggering overflow.
   if (elementCount > 0 && style.minHeight === undefined) {
     style.minHeight = "min-content";
   }

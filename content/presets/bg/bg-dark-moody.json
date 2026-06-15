@@ -1,0 +1,43 @@
+{
+  "type": "backgroundVariable",
+  "layers": [
+    {
+      "fill": {
+        "light": "oklch(0.07 0.025 272)",
+        "dark": "oklch(0.04 0.02 270)"
+      }
+    },
+    {
+      "fill": "radial-gradient(ellipse 72% 52% at 50% 100%, color-mix(in oklab, var(--pb-primary) 18%, transparent) 0%, transparent 100%)",
+      "motion": [
+        {
+          "type": "loop",
+          "to": {
+            "opacity": [0.6, 1.0, 0.6]
+          },
+          "transition": {
+            "duration": 5.0,
+            "ease": "easeInOut",
+            "repeatType": "mirror"
+          }
+        }
+      ]
+    },
+    {
+      "fill": "radial-gradient(ellipse 50% 32% at 82% 18%, color-mix(in oklab, var(--pb-accent) 12%, transparent) 0%, transparent 100%)",
+      "motion": [
+        {
+          "type": "loop",
+          "to": {
+            "opacity": [0.35, 0.8, 0.35]
+          },
+          "transition": {
+            "duration": 7.5,
+            "ease": "easeInOut",
+            "repeatType": "mirror"
+          }
+        }
+      ]
+    }
+  ]
+}

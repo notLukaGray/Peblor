@@ -1,0 +1,13 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Type Scale — Preset Demo",
+  "description": "The complete heading and body scale — every level, every variant, truncation, rich text, and secondary typeface.",
+  "presets": ["demo", "type/core", "ui/link", "bg"],
+  "sectionOrder": ["nav-header", "hero", "sec-heading-scale", "sec-body-scale", "sec-editorial"],
+  "bgKey": "bg-type",
+  "definitions": {
+    "bg-type": {
+      "preset": "bg-type"
+    }
+  }
+}

@@ -1,7 +1,7 @@
 {
   "type": "contentBlock",
-  "flexDirection": "column",
-  "alignItems": "flex-start",
+  "flow": "column",
+  "align": "start",
   "gap": "1.5rem",
   "elements": []
 }

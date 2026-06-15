@@ -1,0 +1,55 @@
+{
+  "preset": "composition-column-mixed-spans",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "1100px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "0 0 8rem",
+    "md": "0 0 12rem"
+  },
+  "definitions": {
+    "lead": {
+      "section": {
+        "definitions": {
+          "body": {
+            "text": "Stress variant: this lead card carries intentionally dense text across several clauses to confirm span behavior remains stable, line lengths stay readable, and compact companions in neighboring tracks do not collapse into awkward gutters at desktop or mobile widths."
+          }
+        }
+      }
+    },
+    "detail-a": {
+      "section": {
+        "definitions": {
+          "body": {
+            "text": "Supporting datum one with constrained width."
+          }
+        }
+      }
+    },
+    "detail-b": {
+      "section": {
+        "definitions": {
+          "body": {
+            "text": "Supporting datum two with asymmetrical rhythm."
+          }
+        }
+      }
+    },
+    "aside": {
+      "section": {
+        "definitions": {
+          "quote": {
+            "text": "If mobile remains single-track here, the irregular desktop structure is still preserved semantically through ordering and emphasis."
+          }
+        }
+      }
+    }
+  },
+  "marginBottom": {
+    "base": "4rem",
+    "md": "8rem"
+  }
+}

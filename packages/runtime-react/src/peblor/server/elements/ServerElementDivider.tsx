@@ -1,7 +1,13 @@
 import type { CSSProperties } from "react";
 import type { ElementBlock } from "@pb/contracts/types";
-import { getElementLayoutStyle, getElementTransformStyle } from "@pb/core/layout";
-import { resolveThemeString } from "../../theme/theme-string";
+import {
+  getElementLayoutStyle,
+  getElementTransformStyle,
+  stripResponsiveLayoutKeys,
+} from "@pb/core/layout";
+import { lowerThemeStringToCss } from "../../theme/theme-string";
+import type { ServerElementComponentProps } from "../server-element-types";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
 
 type Props = Extract<ElementBlock, { type: "elementDivider" }>;
 
@@ -14,11 +20,18 @@ export function ServerElementDivider({
   rotate,
   flipHorizontal,
   flipVertical,
+  stateStyleClass,
+  responsiveStyleClass,
+  responsiveLayoutKeys,
   ...layout
-}: Props) {
+}: Props &
+  Pick<
+    ServerElementComponentProps,
+    "stateStyleClass" | "responsiveStyleClass" | "responsiveLayoutKeys"
+  >) {
   const isHorizontal = orientation !== "vertical";
-  const resolvedLength = Array.isArray(length) ? length[0] : length;
-  const resolvedColor = resolveThemeString(color, "light") ?? "currentColor";
+  const resolvedLength = resolveResponsiveValue(length, true);
+  const resolvedColor = lowerThemeStringToCss(color) ?? "currentColor";
   const lineStyle: CSSProperties = isHorizontal
     ? style === "solid"
       ? { width: resolvedLength, height: thickness, backgroundColor: resolvedColor }
@@ -27,7 +40,11 @@ export function ServerElementDivider({
       ? { width: thickness, height: resolvedLength, backgroundColor: resolvedColor }
       : { width: 0, height: resolvedLength, borderLeft: `${thickness} ${style} ${resolvedColor}` };
 
-  const layoutStyle = getElementLayoutStyle(layout);
+  const filteredLayout = stripResponsiveLayoutKeys(
+    layout,
+    responsiveStyleClass ? responsiveLayoutKeys : undefined
+  );
+  const layoutStyle = getElementLayoutStyle(filteredLayout);
   const innerStyle: CSSProperties = {
     width: "100%",
     height: "100%",
@@ -39,10 +56,13 @@ export function ServerElementDivider({
   };
 
   return (
-    <figure className="shrink-0 m-0" style={layoutStyle}>
+    <div
+      className={["shrink-0 m-0", stateStyleClass, responsiveStyleClass].filter(Boolean).join(" ")}
+      style={layoutStyle}
+    >
       <div style={innerStyle}>
         <span aria-hidden style={{ display: "block", ...lineStyle }} />
       </div>
-    </figure>
+    </div>
   );
 }

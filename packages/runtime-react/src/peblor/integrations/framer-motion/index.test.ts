@@ -7,13 +7,11 @@ import * as Animations from "./animations";
 import * as Presence from "./presence";
 import * as MotionValues from "./motion-values";
 import * as Triggers from "./triggers";
-import * as Layout from "./layout";
 import * as Gestures from "./gestures";
 import * as VideoLazyLoad from "./use-video-lazy-load";
 import * as SectionMotionWrapperModule from "./section-motion-wrapper";
 import * as SectionScrollProgressBarModule from "./section-scroll-progress-bar";
 import * as MotionFromJsonModule from "./motion-from-json";
-import * as DragHandleControlsModule from "./drag-handle-controls";
 import * as ScrollStyleModule from "./scroll-style";
 
 describe("framer-motion integration index", () => {
@@ -28,7 +26,7 @@ describe("framer-motion integration index", () => {
   });
 
   it("re-exports animation primitives", () => {
-    expect(FM.motion).toBe(Animations.motion);
+    expect(FM.m).toBe(Animations.m);
     expect(FM.animate).toBe(Animations.animate);
     expect(FM.AnimatePresence).toBe(Animations.AnimatePresence);
     expect(FM.delay).toBe(Animations.delay);
@@ -51,14 +49,7 @@ describe("framer-motion integration index", () => {
     expect(FM.useScroll).toBe(Triggers.useScroll);
   });
 
-  it("re-exports layout hooks", () => {
-    expect(FM.useInstantLayoutTransition).toBe(Layout.useInstantLayoutTransition);
-    expect(FM.useInstantTransition).toBe(Layout.useInstantTransition);
-    expect(FM.useResetProjection).toBe(Layout.useResetProjection);
-  });
-
   it("re-exports gestures (ReorderGroup/ReorderItem, not raw Reorder)", () => {
-    expect(FM.useDragControls).toBe(Gestures.useDragControls);
     expect(FM.ReorderGroup).toBe(Gestures.ReorderGroup);
     expect(FM.ReorderItem).toBe(Gestures.ReorderItem);
   });
@@ -74,8 +65,7 @@ describe("framer-motion integration index", () => {
     );
   });
 
-  it("re-exports drag/scroll helpers and MotionFromJson", () => {
-    expect(FM.useDragHandleControls).toBe(DragHandleControlsModule.useDragHandleControls);
+  it("re-exports scroll/entrance helpers and MotionFromJson", () => {
     expect(FM.useSectionScrollOpacityStyle).toBe(ScrollStyleModule.useSectionScrollOpacityStyle);
     expect(FM.MotionFromJson).toBe(MotionFromJsonModule.MotionFromJson);
   });

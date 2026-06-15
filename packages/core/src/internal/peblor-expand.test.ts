@@ -3,11 +3,12 @@ import { expandPeblor } from "./peblor-expand";
 import type { Peblor, SectionBlock } from "@pb/contracts/peblor/core/peblor-schemas";
 
 describe("expandPeblor", () => {
-  it("uses default bg key when bgKey is omitted", () => {
+  it("resolves bg when bgKey references a valid background definition", () => {
     const page: Peblor = {
       slug: "test",
       title: "Test",
       sectionOrder: [],
+      bgKey: "bg",
       definitions: {
         bg: {
           type: "backgroundImage",
@@ -20,11 +21,22 @@ describe("expandPeblor", () => {
     expect((bg as { type?: string }).type).toBe("backgroundImage");
   });
 
-  it("ignores entries in sectionOrder that are not valid section blocks", () => {
+  it("resolves bg as null when bgKey is omitted (no default)", () => {
     const page: Peblor = {
       slug: "test",
       title: "Test",
-      sectionOrder: ["badType", "missing", "valid"],
+      sectionOrder: [],
+      definitions: {},
+    } as Peblor;
+    const { bg } = expandPeblor(page);
+    expect(bg).toBeNull();
+  });
+
+  it("throws on invalid entries in sectionOrder", () => {
+    const page: Peblor = {
+      slug: "test",
+      title: "Test",
+      sectionOrder: ["badType", "valid"],
       definitions: {
         badType: { type: "notASection" } as unknown as Peblor["definitions"][string],
         valid: {
@@ -32,11 +44,9 @@ describe("expandPeblor", () => {
           elements: [],
         } as unknown as Peblor["definitions"][string],
       },
-      bgKey: "_none",
+      bgKey: undefined,
     };
-    const { sections } = expandPeblor(page);
-    expect(sections).toHaveLength(1);
-    expect(sections[0]?.type).toBe("contentBlock");
+    expect(() => expandPeblor(page)).toThrow(/sectionOrder/i);
   });
 
   it("resolves trigger payload URLs when assetBase is provided", () => {
@@ -55,7 +65,7 @@ describe("expandPeblor", () => {
           image: "work/hero.jpg",
         } as unknown as Peblor["definitions"][string],
       },
-      bgKey: "_none",
+      bgKey: undefined,
     };
 
     const { sections } = expandPeblor(page, { assetBase: "/work" });
@@ -85,7 +95,7 @@ describe("expandPeblor", () => {
           image: "work/hero.jpg",
         } as unknown as Peblor["definitions"][string],
       },
-      bgKey: "_none",
+      bgKey: undefined,
     };
 
     const { sections } = expandPeblor(page);
@@ -111,7 +121,7 @@ describe("expandPeblor", () => {
           image: "work/hero.jpg",
         } as unknown as Peblor["definitions"][string],
       },
-      bgKey: "_none",
+      bgKey: undefined,
     };
 
     const { sections } = expandPeblor(page, { assetBase: "" });
@@ -121,7 +131,7 @@ describe("expandPeblor", () => {
     expect(payload.image).toContain("/api/media/");
   });
 
-  it("does not throw when sectionOrder contains empty keys", () => {
+  it("throws when sectionOrder contains empty keys", () => {
     const page: Peblor = {
       slug: "test",
       title: "Test",
@@ -132,14 +142,12 @@ describe("expandPeblor", () => {
           elements: [],
         } as unknown as Peblor["definitions"][string],
       },
-      bgKey: "_none",
+      bgKey: undefined,
     };
-    const { sections } = expandPeblor(page);
-    expect(sections).toHaveLength(1);
-    expect(sections[0]?.type).toBe("contentBlock");
+    expect(() => expandPeblor(page)).toThrow(/sectionOrder/i);
   });
 
-  it("resolves responsive elementOrder.mobile when viewport is below custom desktop breakpoint", () => {
+  it("inlines the union of base+md elementOrder keys (expand does not filter by viewport)", () => {
     const page: Peblor = {
       slug: "test",
       title: "Test",
@@ -149,8 +157,8 @@ describe("expandPeblor", () => {
           id: "hero",
           type: "contentBlock",
           elementOrder: {
-            mobile: ["mobileEl"],
-            desktop: ["desktopEl"],
+            base: ["mobileEl"],
+            md: ["desktopEl"],
           },
         } as unknown as Peblor["definitions"][string],
         mobileEl: {
@@ -162,7 +170,7 @@ describe("expandPeblor", () => {
           text: "Desktop",
         } as unknown as Peblor["definitions"][string],
       },
-      bgKey: "_none",
+      bgKey: undefined,
     };
 
     const { sections } = expandPeblor(page, {
@@ -171,10 +179,10 @@ describe("expandPeblor", () => {
     });
     const section = sections[0] as SectionBlock & { elements?: Array<{ id?: string }> };
     const resolvedIds = (section.elements ?? []).map((element: { id?: string }) => element.id);
-    expect(resolvedIds).toEqual(["hero:desktopEl", "hero:mobileEl"]);
+    expect(resolvedIds).toEqual(["hero:mobileEl", "hero:desktopEl"]);
   });
 
-  it("resolves responsive elementOrder.desktop when viewport is at custom desktop breakpoint", () => {
+  it("inlines the union of md+base elementOrder keys regardless of viewport width", () => {
     const page: Peblor = {
       slug: "test",
       title: "Test",
@@ -184,8 +192,8 @@ describe("expandPeblor", () => {
           id: "hero",
           type: "contentBlock",
           elementOrder: {
-            mobile: ["mobileEl"],
-            desktop: ["desktopEl"],
+            base: ["mobileEl"],
+            md: ["desktopEl"],
           },
         } as unknown as Peblor["definitions"][string],
         mobileEl: {
@@ -197,7 +205,7 @@ describe("expandPeblor", () => {
           text: "Desktop",
         } as unknown as Peblor["definitions"][string],
       },
-      bgKey: "_none",
+      bgKey: undefined,
     };
 
     const { sections } = expandPeblor(page, {
@@ -206,7 +214,7 @@ describe("expandPeblor", () => {
     });
     const section = sections[0] as SectionBlock & { elements?: Array<{ id?: string }> };
     const resolvedIds = (section.elements ?? []).map((element: { id?: string }) => element.id);
-    expect(resolvedIds).toEqual(["hero:desktopEl", "hero:mobileEl"]);
+    expect(resolvedIds).toEqual(["hero:mobileEl", "hero:desktopEl"]);
   });
 
   it("produces identical output when called twice on the same definitions object", () => {
@@ -214,13 +222,13 @@ describe("expandPeblor", () => {
       slug: "immutability-test",
       title: "Immutability Test",
       sectionOrder: ["hero"],
-      bgKey: "_none",
+      bgKey: undefined,
       definitions: {
         hero: {
           id: "hero",
           type: "sectionColumn",
-          elementOrder: { mobile: ["card"], desktop: ["card"] },
-          columnAssignments: { mobile: { card: 1 }, desktop: { card: 2 } },
+          elementOrder: { base: ["card"], md: ["card"] },
+          columnAssignments: { base: { card: 1 }, md: { card: 2 } },
         } as unknown as Peblor["definitions"][string],
         card: {
           id: "card",
@@ -251,5 +259,51 @@ describe("expandPeblor", () => {
     const first = expandPeblor(page);
     const second = expandPeblor(page);
     expect(second).toEqual(first);
+  });
+
+  it("injects module configs into nested group elements", () => {
+    const page: Peblor = {
+      slug: "nested-module-test",
+      title: "Nested Module Test",
+      sectionOrder: ["hero"],
+      bgKey: undefined,
+      definitions: {
+        hero: {
+          id: "hero",
+          type: "contentBlock",
+          elementOrder: ["player"],
+          definitions: {
+            player: {
+              type: "elementGroup",
+              section: {
+                elementOrder: ["video"],
+                definitions: {
+                  video: {
+                    type: "elementVideo",
+                    module: "video-player",
+                    src: "https://example.com/video.mp4",
+                    poster: "https://example.com/poster.jpg",
+                    objectFit: "cover",
+                  },
+                },
+              },
+            },
+          },
+        } as unknown as Peblor["definitions"][string],
+        "video-player": {
+          type: "module",
+          contextType: "video",
+          contentSlot: "main",
+          slots: { main: { section: { elementOrder: [], definitions: {} } } },
+        } as unknown as Peblor["definitions"][string],
+      },
+    };
+
+    const { sections } = expandPeblor(page);
+    const group = (sections[0] as SectionBlock & { elements?: Array<Record<string, unknown>> })
+      .elements?.[0] as { section?: { elements?: Array<Record<string, unknown>> } };
+    const video = group.section?.elements?.[0] as { moduleConfig?: { type?: string } };
+
+    expect(video.moduleConfig?.type).toBe("module");
   });
 });

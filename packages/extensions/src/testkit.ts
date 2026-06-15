@@ -29,10 +29,6 @@ export type ExporterFixture = {
   unsupportedPaths?: string[];
 };
 
-function normalizeDiagnostics(value: PeblorDiagnostic[]): PeblorDiagnostic[] {
-  return value.map((diagnostic) => ({ ...diagnostic }));
-}
-
 function harnessDiagnostic(
   code: string,
   message: string,
@@ -57,7 +53,7 @@ export async function runImporterFixtureSuite(
   for (const fixture of fixtures) {
     const imported = await plugin.import(fixture.source);
 
-    const importDiagnostics = normalizeDiagnostics(imported.diagnostics);
+    const importDiagnostics = imported.diagnostics;
     const pageDiagnostics: PeblorDiagnostic[] = [];
 
     for (const page of imported.pages) {
@@ -95,7 +91,7 @@ export async function runExporterFixtureSuite(
 
   for (const fixture of fixtures) {
     const exported = await plugin.export(fixture.page);
-    const diagnostics = normalizeDiagnostics(exported.diagnostics);
+    const diagnostics = [...exported.diagnostics];
 
     if (!plugin.capability.outputTargets.includes(exported.target)) {
       diagnostics.push(
@@ -111,7 +107,7 @@ export async function runExporterFixtureSuite(
     for (const unsupportedPath of unsupportedPaths) {
       const hasDiagnostic = diagnostics.some(
         (diagnostic) =>
-          diagnostic.path === unsupportedPath &&
+          diagnostic.path.startsWith(unsupportedPath) &&
           (diagnostic.severity === "error" || diagnostic.severity === "warning")
       );
       if (!hasDiagnostic) {

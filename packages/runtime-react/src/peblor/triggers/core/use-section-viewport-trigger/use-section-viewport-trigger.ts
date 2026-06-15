@@ -131,6 +131,7 @@ export function useSectionViewportTrigger(
       if (pendingTimeout.current != null) clearTimeout(pendingTimeout.current);
       observer.disconnect();
       state.lastFiredState = null;
+      state.hasFiredInvisibleOnce = false;
       lastViewportProgressRef.current = null;
     };
   }, [

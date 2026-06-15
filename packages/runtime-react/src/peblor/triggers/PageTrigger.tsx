@@ -22,7 +22,7 @@ export function PageTrigger({
   delay,
   width,
   height = "1px",
-  align,
+  selfAlign,
   marginLeft,
   marginRight,
   marginTop,
@@ -35,6 +35,13 @@ export function PageTrigger({
   cursorTriggers,
   scrollDirectionTriggers,
   idleTriggers,
+  variableTriggers,
+  tabVisibilityTriggers,
+  mediaEndTriggers,
+  customEventTriggers,
+  elementEventTriggers,
+  scrollThresholdTriggers,
+  mediaProgressTriggers,
 }: Props) {
   const sentinelRef = useRef<HTMLElement>(null);
   const hasFiredVisibleOnce = useRef(false);
@@ -73,6 +80,13 @@ export function PageTrigger({
     cursorTriggers,
     scrollDirectionTriggers,
     idleTriggers,
+    variableTriggers,
+    tabVisibilityTriggers,
+    mediaEndTriggers,
+    customEventTriggers,
+    elementEventTriggers,
+    scrollThresholdTriggers,
+    mediaProgressTriggers,
   });
 
   // Handle scroll progress tracking
@@ -85,13 +99,13 @@ export function PageTrigger({
       : undefined,
   });
 
-  const { baseStyle } = useSectionBaseStyles({
+  const { baseStyle, parallaxY } = useSectionBaseStyles({
     fill: undefined,
     layers: undefined,
     effects: undefined,
     width,
     height,
-    align,
+    selfAlign,
     marginLeft,
     marginRight,
     marginTop,
@@ -102,7 +116,6 @@ export function PageTrigger({
     initialX,
     initialY,
     sectionRef: sentinelRef,
-    usePadding: false,
   });
 
   useEffect(() => {
@@ -166,7 +179,7 @@ export function PageTrigger({
       },
       {
         threshold: hasViewportProgressTrigger
-          ? Array.from({ length: 101 }, (_, i) => i / 100)
+          ? Array.from({ length: 21 }, (_, i) => i / 20)
           : threshold,
         rootMargin: rootMargin ?? undefined,
       }
@@ -176,6 +189,7 @@ export function PageTrigger({
     return () => {
       if (pendingTimeout.current != null) clearTimeout(pendingTimeout.current);
       observer.disconnect();
+      hasFiredVisibleOnce.current = false;
       lastViewportProgressRef.current = null;
     };
   }, [
@@ -197,6 +211,7 @@ export function PageTrigger({
     <SectionMotionWrapper
       sectionRef={sentinelRef}
       motion={motionFromJson}
+      parallaxY={parallaxY}
       className="pointer-events-none invisible shrink-0"
       style={{ ...baseStyle, visibility: "hidden", minHeight: 0 }}
       aria-hidden

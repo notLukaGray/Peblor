@@ -29,6 +29,10 @@ export function readTargetId(payload: unknown): string | null {
   return null;
 }
 
+export function isBroadcastTargetId(targetId: string | null | undefined): boolean {
+  return targetId == null || targetId === "all" || targetId === "*";
+}
+
 export function matchesTargetId(elementId: string | undefined, targetId: string): boolean {
   if (!elementId) return false;
   if (elementId === targetId) return true;
@@ -62,6 +66,16 @@ function parseVec3(value: unknown): Vec3Tuple | undefined {
   const z = parseNumber(value[2]);
   if (x == null || y == null || z == null) return undefined;
   return [x, y, z];
+}
+
+export function resolveSceneCameraPreset(
+  value: unknown,
+  scenePresets: Record<string, Model3DCameraPreset> | undefined
+): Model3DCameraPreset | null {
+  if (typeof value === "string" && value.trim() && scenePresets?.[value]) {
+    return scenePresets[value];
+  }
+  return parseCameraPreset(value);
 }
 
 export function parseCameraPreset(value: unknown): Model3DCameraPreset | null {

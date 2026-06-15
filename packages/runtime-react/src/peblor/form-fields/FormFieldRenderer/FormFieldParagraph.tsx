@@ -16,8 +16,7 @@ import {
   REQUIRED_INDICATOR,
   STRUCTURAL_TEXTAREA,
 } from "./form-field-typography";
-import { resolveThemeStyleObject } from "@/peblor/theme/theme-string";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
+import { lowerThemeStyleObject } from "@/peblor/theme/theme-string";
 
 type Props = {
   field: FormFieldBlock;
@@ -38,7 +37,6 @@ export function FormFieldParagraph({
   style,
   resolvedLevel,
 }: Props) {
-  const themeMode = usePeblorThemeMode();
   if (field.fieldType !== "paragraph") return null;
 
   const fieldDisabled = disabled || field.disabled === true;
@@ -83,9 +81,7 @@ export function FormFieldParagraph({
         aria-required={field.required}
         className={inputClass}
         style={{
-          ...(resolveThemeStyleObject(field.inputStyle, themeMode) as
-            | React.CSSProperties
-            | undefined),
+          ...(lowerThemeStyleObject(field.inputStyle) as React.CSSProperties | undefined),
           borderColor: hasError ? formFieldStructuralClasses.inputBorderError : undefined,
         }}
       />

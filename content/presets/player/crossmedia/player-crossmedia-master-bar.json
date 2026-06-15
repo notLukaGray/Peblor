@@ -1,0 +1,138 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "row",
+  "align": "center",
+  "wrap": "wrap",
+  "gap": "0.65rem",
+  "padding": "0.85rem 1.25rem",
+  "borderRadius": "16px",
+  "fill": "color-mix(in oklab, var(--pb-secondary) 88%, transparent)",
+  "bgBlur": "blur(20px)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+  },
+  "section": {
+    "elementOrder": ["bar-label", "btn-load", "btn-play", "btn-pause"],
+    "definitions": {
+      "bar-label": {
+        "preset": "type-h5-meta",
+        "text": "Stress transport:"
+      },
+      "btn-load": {
+        "type": "elementButton",
+        "label": "Load 3D",
+        "action": "fireMultiple",
+        "actionPayload": {
+          "actions": [
+            {
+              "type": "three.load",
+              "payload": {
+                "id": "stress-3d"
+              }
+            }
+          ]
+        },
+        "level": 4,
+        "wrapperPadding": "0.5rem 1rem",
+        "wrapperBorderRadius": "999px",
+        "wrapperFill": "color-mix(in oklab, var(--pb-primary) 20%, transparent)",
+        "linkDefault": "var(--pb-on-secondary)",
+        "motion": {
+          "onHover": {
+            "scale": 1.05
+          },
+          "transition": {
+            "duration": 0.15
+          }
+        }
+      },
+      "btn-play": {
+        "type": "elementButton",
+        "label": "▶ Play All",
+        "action": "fireMultiple",
+        "actionPayload": {
+          "actions": [
+            {
+              "type": "three.load",
+              "payload": {
+                "id": "stress-3d"
+              }
+            },
+            {
+              "type": "assetPlay",
+              "payload": {
+                "target": "all"
+              }
+            },
+            {
+              "type": "rive.play",
+              "payload": {
+                "target": "all"
+              }
+            },
+            {
+              "type": "three.playAnimation",
+              "payload": {
+                "id": "stress-3d"
+              }
+            }
+          ]
+        },
+        "level": 4,
+        "wrapperPadding": "0.5rem 1.1rem",
+        "wrapperBorderRadius": "999px",
+        "wrapperFill": "color-mix(in oklab, var(--pb-accent) 22%, transparent)",
+        "linkDefault": "var(--pb-on-secondary)",
+        "motion": {
+          "onHover": {
+            "scale": 1.05
+          },
+          "transition": {
+            "duration": 0.15
+          }
+        }
+      },
+      "btn-pause": {
+        "type": "elementButton",
+        "label": "⏸ Pause All",
+        "action": "fireMultiple",
+        "actionPayload": {
+          "actions": [
+            {
+              "type": "assetPause",
+              "payload": {
+                "target": "all"
+              }
+            },
+            {
+              "type": "rive.pause",
+              "payload": {
+                "target": "all"
+              }
+            },
+            {
+              "type": "three.pauseAnimation",
+              "payload": {
+                "id": "stress-3d"
+              }
+            }
+          ]
+        },
+        "level": 4,
+        "wrapperPadding": "0.5rem 1.1rem",
+        "wrapperBorderRadius": "999px",
+        "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)",
+        "linkDefault": "var(--pb-on-secondary)",
+        "motion": {
+          "onHover": {
+            "scale": 1.05
+          },
+          "transition": {
+            "duration": 0.15
+          }
+        }
+      }
+    }
+  }
+}

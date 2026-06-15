@@ -1,0 +1,15 @@
+{
+  "type": "elementCounter",
+  "level": 2,
+  "target": 100,
+  "suffix": "%",
+  "decimals": 0,
+  "trigger": "onScroll",
+  "counterScroll": {
+    "scrollStart": 0,
+    "scrollEnd": 1
+  },
+  "color": "var(--pb-on-secondary)",
+  "textAlign": "center",
+  "width": "100%"
+}

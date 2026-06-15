@@ -1,0 +1,16 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "1000px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "5rem 0",
+    "md": "8rem 0"
+  },
+  "gap": "2.5rem",
+  "height": "hug"
+}

@@ -1,0 +1,133 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Composition Flow Hero Stack — Preset Demo",
+  "description": "Single-lane flow composition for strong hero storytelling with clean spacing ramps across breakpoints.",
+  "sectionOrder": ["nav-header", "hero", "demo-label", "demo-primary", "demo-stress"],
+  "definitions": {
+    "bg-composition": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "radial-gradient(120% 110% at 92% 2%, color-mix(in oklab, var(--pb-accent) 16%, transparent) 0%, transparent 54%), linear-gradient(160deg, color-mix(in oklab, var(--pb-primary) 11%, var(--pb-secondary)) 0%, var(--pb-secondary) 66%, color-mix(in oklab, var(--pb-accent) 6%, var(--pb-secondary)) 100%)"
+        }
+      ],
+      "preset": "bg-composition"
+    },
+    "nav-header": {
+      "preset": "preset-demo-nav-header"
+    },
+    "hero": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "align": "start",
+      "height": "hug",
+      "padding": {
+        "base": "10rem 0 6rem",
+        "md": "12rem 0 8rem"
+      },
+      "gap": "1rem",
+      "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+      "definitions": {
+        "hero-eyebrow": {
+          "preset": "type-kicker-badge",
+          "text": "Flow · Narrative · Vertical Rhythm"
+        },
+        "hero-title": {
+          "preset": "type-h1-display",
+          "text": "Composition Flow Hero Stack"
+        },
+        "hero-description": {
+          "preset": "type-body-standard",
+          "text": "Single-lane flow composition for strong hero storytelling with clean spacing ramps across breakpoints.",
+          "width": {
+            "base": "100%",
+            "md": "72%"
+          }
+        }
+      }
+    },
+    "demo-label": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "align": "start",
+      "height": "hug",
+      "padding": {
+        "base": "3rem 0 0.75rem",
+        "md": "4rem 0 0.75rem"
+      },
+      "elementOrder": ["label"],
+      "definitions": {
+        "label": {
+          "preset": "type-h3-label",
+          "text": "Primary + Stress Variant"
+        }
+      }
+    },
+    "demo-primary": {
+      "preset": "composition-flow-hero-stack",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "marginBottom": {
+        "base": "2rem",
+        "md": "3rem"
+      }
+    },
+    "demo-stress": {
+      "preset": "composition-flow-hero-stack",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "definitions": {
+        "eyebrow": {
+          "text": "Flow Hero Stress"
+        },
+        "title": {
+          "text": "A longer hero title that deliberately tests wrap behavior on compact mobile widths"
+        },
+        "lead": {
+          "text": "This stress variant keeps the same preset shape while pushing denser explanatory copy, ensuring spacing cadence and readability hold even when a content editor writes more than expected.",
+          "width": "100%"
+        },
+        "actions": {
+          "section": {
+            "definitions": {
+              "primary": {
+                "label": "Launch trial",
+                "href": "/presets/composition-flow-hero-stack"
+              },
+              "secondary": {
+                "label": "See all composition demos ->",
+                "href": "/presets"
+              }
+            }
+          }
+        }
+      },
+      "marginBottom": {
+        "base": "4rem",
+        "md": "8rem"
+      }
+    }
+  },
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "layout", "bg"],
+  "bgKey": "bg-composition"
+}

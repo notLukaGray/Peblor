@@ -4,6 +4,7 @@ import { createElement } from "react";
 import type { CSSProperties } from "react";
 import type { bgBlock } from "@pb/contracts/types";
 import { BG_COMPONENTS, isKnownBgType } from "@/peblor/background";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 type Props = {
   fromBg: bgBlock | null;
@@ -77,7 +78,7 @@ export function BackgroundTransitionEffectLayers({
         <BackgroundLayer
           bg={fromBg}
           opacity={fromOpacity}
-          zIndex={0}
+          zIndex={globals.zIndexBase}
           transitionStyle={transitionStyle}
         />
       )}
@@ -85,7 +86,7 @@ export function BackgroundTransitionEffectLayers({
         <BackgroundLayer
           bg={toBg}
           opacity={toOpacity}
-          zIndex={1}
+          zIndex={globals.zIndexRaised}
           transitionStyle={transitionStyle}
         />
       )}

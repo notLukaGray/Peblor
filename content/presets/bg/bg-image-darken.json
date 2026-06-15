@@ -1,0 +1,21 @@
+{
+  "type": "backgroundVariable",
+  "layers": [
+    {
+      "fill": "linear-gradient(180deg, color-mix(in oklab, var(--pb-on-secondary) 5%, transparent) 0%, color-mix(in oklab, var(--pb-secondary) 62%, transparent) 100%)"
+    },
+    {
+      "fill": "url(https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1600&q=80)",
+      "backgroundSize": "180%",
+      "backgroundPosition": "center 50%",
+      "backgroundRepeat": "no-repeat",
+      "motion": [
+        {
+          "type": "parallax",
+          "speed": 0.3,
+          "axis": "y"
+        }
+      ]
+    }
+  ]
+}

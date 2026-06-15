@@ -3,7 +3,7 @@ import { peblorSchema } from "./page-definition-and-resolution-schemas";
 import { baseSectionPropsSchema } from "./section-block-base-schemas";
 import { elementBlockSchema } from "./element-block-schemas";
 import { formFieldBlockSchema } from "./form-field-schemas";
-import { triggerActionSchema } from "./schema-primitives";
+import { triggerActionSchemaCore } from "./schema-primitives";
 
 const MINIMAL_PAGE = {
   title: "Test Page",
@@ -113,24 +113,24 @@ describe("analytics extension — backwards compatibility", () => {
     expect(result.success).toBe(false);
   });
 
-  it("triggerActionSchema accepts valid trackEvent with known event", () => {
-    const result = triggerActionSchema.safeParse({
+  it("triggerActionSchemaCore accepts valid trackEvent with known event", () => {
+    const result = triggerActionSchemaCore.safeParse({
       type: "trackEvent",
       payload: { event: "page_view" },
     });
     expect(result.success).toBe(true);
   });
 
-  it("triggerActionSchema accepts trackEvent with custom: prefix", () => {
-    const result = triggerActionSchema.safeParse({
+  it("triggerActionSchemaCore accepts trackEvent with custom: prefix", () => {
+    const result = triggerActionSchemaCore.safeParse({
       type: "trackEvent",
       payload: { event: "custom:my_event" },
     });
     expect(result.success).toBe(true);
   });
 
-  it("triggerActionSchema rejects trackEvent with unknown event name", () => {
-    const result = triggerActionSchema.safeParse({
+  it("triggerActionSchemaCore rejects trackEvent with unknown event name", () => {
+    const result = triggerActionSchemaCore.safeParse({
       type: "trackEvent",
       payload: { event: "unknown_event" },
     });

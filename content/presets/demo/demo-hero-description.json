@@ -1,0 +1,16 @@
+{
+  "type": "elementBody",
+  "level": 3,
+  "text": "",
+  "selfAlign": "center",
+  "textAlign": "center",
+  "width": {
+    "base": "100%",
+    "md": "58%"
+  },
+  "wordWrap": true,
+  "color": "color-mix(in oklab, var(--pb-on-secondary) 62%, transparent)",
+  "motionTiming": {
+    "entrancePreset": "fade"
+  }
+}

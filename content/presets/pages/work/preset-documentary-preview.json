@@ -1,0 +1,46 @@
+{
+  "preset": "work-preview-card",
+  "visibleWhen": {
+    "variable": "selectedProject",
+    "operator": "equals",
+    "value": "documentary"
+  },
+  "section": {
+    "elementOrder": ["preview-image-wrap", "preview-content"],
+    "definitions": {
+      "preview-image-wrap": {
+        "preset": "work-preview-image-wrap",
+        "section": {
+          "elementOrder": ["preview-image"],
+          "definitions": {
+            "preview-image": {
+              "preset": "work-preview-image",
+              "src": "work/project-documentary/doc-still-wide.webp"
+            }
+          }
+        }
+      },
+      "preview-content": {
+        "preset": "work-preview-content",
+        "section": {
+          "elementOrder": ["preview-title", "preview-desc", "preview-cta"],
+          "definitions": {
+            "preview-title": {
+              "preset": "work-preview-title",
+              "text": "Still Water \u2014 Documentary"
+            },
+            "preview-desc": {
+              "preset": "work-preview-desc",
+              "text": "A 38-minute essay film about a coastal community's relationship with a river system changed beyond recognition."
+            },
+            "preview-cta": {
+              "preset": "work-preview-cta",
+              "label": "View project",
+              "href": "/work/project-documentary"
+            }
+          }
+        }
+      }
+    }
+  }
+}

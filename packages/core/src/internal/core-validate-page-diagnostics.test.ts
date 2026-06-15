@@ -7,7 +7,7 @@ describe("@pb/core validatePage diagnostics", () => {
 
     expect(result.valid).toBe(false);
     expect(result.diagnostics.length).toBeGreaterThan(0);
-    expect(result.diagnostics[0]?.code).toBe("invalid_type");
+    expect(result.diagnostics[0]?.code).toBe("PB_VALIDATION_ERROR");
     expect(result.diagnostics.every((diagnostic) => typeof diagnostic.code === "string")).toBe(
       true
     );

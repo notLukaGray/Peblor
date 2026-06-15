@@ -1,0 +1,26 @@
+{
+  "preset": "demo-hero",
+  "maxWidth": "820px",
+  "padding": {
+    "base": "10rem 0 6rem",
+    "md": "12rem 0 8rem"
+  },
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Shadow · Gradient · Outline · Gleam · Blur · Blend · Knockout · Reflection · Typewriter"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Type Effects"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Ten typography effect presets — single-element references. Shadow, gradient, outline, animated gradient, gleam, blur, blend mode, knockout, reflection, and typewriter reveal.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  }
+}

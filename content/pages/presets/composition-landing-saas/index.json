@@ -1,0 +1,628 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "SaaS Landing — Composition Demo",
+  "description": "A complete SaaS product landing page assembled from the preset kit: gradient hero, marquee, feature grid, KPI counters, media split, testimonials, and CTA.",
+  "sectionOrder": [
+    "nav-header",
+    "hero",
+    "sec-marquee",
+    "sec-features",
+    "sec-stats",
+    "sec-media",
+    "sec-testimonials-label",
+    "sec-testimonials",
+    "sec-cta",
+    "sec-footer-marquee"
+  ],
+  "definitions": {
+    "bg-page": {
+      "preset": "bg-spotlight"
+    },
+    "nav-header": {
+      "preset": "preset-demo-nav-header"
+    },
+    "hero": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "height": "hug",
+      "selfAlign": "center",
+      "align": "center",
+      "gap": "2rem",
+      "padding": {
+        "base": "5rem 1.5rem 8rem",
+        "md": "14rem 2rem 12rem"
+      },
+      "motionTiming": {
+        "staggerChildren": 0.12,
+        "trigger": "onMount"
+      },
+      "elementOrder": ["hero-kicker", "hero-title", "hero-body", "hero-actions"],
+      "definitions": {
+        "hero-kicker": {
+          "preset": "type-kicker-badge",
+          "text": "Ship faster · Build smarter",
+          "selfAlign": "center",
+          "width": "auto"
+        },
+        "hero-title": {
+          "preset": "type-gradient-heading",
+          "text": "The platform that turns ideas into shipped products",
+          "width": {
+            "base": "100%",
+            "md": "72%"
+          },
+          "textAlign": "center",
+          "selfAlign": "center"
+        },
+        "hero-body": {
+          "preset": "type-body-lead",
+          "text": "Compose complete pages from a library of proven sections. Stop rebuilding the same layouts from scratch.",
+          "textAlign": "center",
+          "width": {
+            "base": "100%",
+            "md": "52%"
+          },
+          "selfAlign": "center"
+        },
+        "hero-actions": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": {
+            "base": "column",
+            "md": "row"
+          },
+          "align": {
+            "base": "stretch",
+            "md": "center"
+          },
+          "gap": "0.85rem",
+          "section": {
+            "elementOrder": ["btn-start", "btn-demo"],
+            "definitions": {
+              "btn-start": {
+                "preset": "btn-primary",
+                "label": "Get started free",
+                "href": "#",
+                "wrapperPadding": "0.9rem 1.75rem",
+                "wrapperBorderRadius": "12px"
+              },
+              "btn-demo": {
+                "preset": "btn-ghost",
+                "label": "Watch demo",
+                "href": "#",
+                "wrapperPadding": "0.9rem 1.75rem",
+                "wrapperBorderRadius": "12px"
+              }
+            }
+          },
+          "selfAlign": "center"
+        }
+      },
+      "maxWidth": "1000px"
+    },
+    "sec-marquee": {
+      "type": "contentBlock",
+      "width": "100%",
+      "height": "hug",
+      "padding": {
+        "base": "3rem 0",
+        "md": "4rem 0"
+      },
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+      "elementOrder": ["marquee-band"],
+      "definitions": {
+        "marquee-band": {
+          "preset": "type-marquee-label",
+          "text": "CI/CD Pipelines · Feature Flags · API Gateway · Observability · Edge Functions · Analytics · Auth · Storage · Queues · Webhooks · SDKs · Documentation"
+        }
+      }
+    },
+    "sec-features": {
+      "preset": "composition-column-3col-features",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "5rem 0 5rem",
+        "md": "10rem 0 7rem"
+      },
+      "definitions": {
+        "feature-a": {
+          "section": {
+            "definitions": {
+              "kicker": {
+                "text": "Velocity"
+              },
+              "title": {
+                "text": "Ship 10x faster with composable sections"
+              },
+              "body": {
+                "text": "A shared library of proven layouts eliminates repetitive assembly work and accelerates every page sprint."
+              },
+              "link": {
+                "label": "Explore layouts →",
+                "href": "#"
+              }
+            }
+          }
+        },
+        "feature-b": {
+          "section": {
+            "definitions": {
+              "kicker": {
+                "text": "Reliability"
+              },
+              "title": {
+                "text": "Production-hardened patterns, every time"
+              },
+              "body": {
+                "text": "Every section is stress-tested across breakpoints and content edge cases before it reaches your team."
+              },
+              "link": {
+                "label": "See reliability →",
+                "href": "#"
+              }
+            }
+          }
+        },
+        "feature-c": {
+          "section": {
+            "definitions": {
+              "kicker": {
+                "text": "Scale"
+              },
+              "title": {
+                "text": "Grows with your team and your codebase"
+              },
+              "body": {
+                "text": "From solo projects to multi-team platforms, the preset system scales without accumulating layout debt."
+              },
+              "link": {
+                "label": "View scale story →",
+                "href": "#"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-stats": {
+      "preset": "composition-column-kpi-matrix",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "4rem 0 6rem",
+        "md": "6rem 0 10rem"
+      },
+      "definitions": {
+        "kpi-1": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 10,
+                "suffix": "x",
+                "tween": {
+                  "duration": 1200
+                }
+              },
+              "label": {
+                "text": "Faster shipping"
+              },
+              "body": {
+                "text": "Average reduction in page assembly time across all teams."
+              }
+            }
+          }
+        },
+        "kpi-2": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 97,
+                "suffix": "%",
+                "tween": {
+                  "duration": 1400
+                }
+              },
+              "label": {
+                "text": "Test coverage"
+              },
+              "body": {
+                "text": "Every layout primitive is validated against real content before release."
+              }
+            }
+          }
+        },
+        "kpi-3": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 200,
+                "suffix": "+",
+                "tween": {
+                  "duration": 1600
+                }
+              },
+              "label": {
+                "text": "Preset components"
+              },
+              "body": {
+                "text": "Backgrounds, cards, layouts, buttons, players — all composable."
+              }
+            }
+          }
+        },
+        "kpi-4": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 40,
+                "suffix": "k",
+                "tween": {
+                  "duration": 1000
+                }
+              },
+              "label": {
+                "text": "Pages deployed"
+              },
+              "body": {
+                "text": "Production pages running the preset system worldwide."
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-media": {
+      "preset": "composition-column-30-70-media",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "5rem 0 7rem",
+        "md": "8rem 0 12rem"
+      },
+      "definitions": {
+        "media": {
+          "src": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=900&q=80&auto=format&fit=crop",
+          "alt": "Developer workspace"
+        },
+        "title": {
+          "text": "Built for the way teams actually work"
+        },
+        "description": {
+          "text": "Start with a preset that's already 90% done. Override only what's specific to your page. Ship without design review cycles."
+        },
+        "detail": {
+          "text": "The system is entirely JSON-driven — no custom components, no framework lock-in. Any team member can assemble a page in minutes."
+        },
+        "cta": {
+          "label": "See it in action →",
+          "href": "#"
+        }
+      }
+    },
+    "sec-testimonials": {
+      "type": "sectionColumn",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 0 8rem",
+        "md": "0 0 12rem"
+      },
+      "elementOrder": ["testimonials-heading", "testimonials-row", "t-a", "t-b", "t-c"],
+      "definitions": {
+        "testimonials-heading": {
+          "preset": "type-h3-label",
+          "text": "What teams are saying",
+          "textAlign": "center"
+        },
+        "testimonials-row": {
+          "preset": "card-row-editorial",
+          "section": {
+            "definitions": {
+              "article-a": {
+                "section": {
+                  "definitions": {
+                    "meta": {
+                      "text": "Head of Design"
+                    },
+                    "title": {
+                      "text": "\"Cut our design-to-code cycle from weeks to days\""
+                    },
+                    "excerpt": {
+                      "text": "We stopped rewriting the same hero layouts and started shipping features instead."
+                    },
+                    "link": {
+                      "label": "Read story →",
+                      "href": "#"
+                    }
+                  }
+                }
+              },
+              "article-b": {
+                "section": {
+                  "definitions": {
+                    "meta": {
+                      "text": "Frontend Lead"
+                    },
+                    "title": {
+                      "text": "\"The preset system is the infrastructure layer we never had\""
+                    },
+                    "excerpt": {
+                      "text": "Every page now starts from a solid baseline instead of a blank file."
+                    },
+                    "link": {
+                      "label": "Read story →",
+                      "href": "#"
+                    }
+                  }
+                }
+              },
+              "article-c": {
+                "section": {
+                  "definitions": {
+                    "meta": {
+                      "text": "Product Manager"
+                    },
+                    "title": {
+                      "text": "\"Our non-technical team can now contribute pages confidently\""
+                    },
+                    "excerpt": {
+                      "text": "JSON composition is the right level of abstraction — powerful but approachable."
+                    },
+                    "link": {
+                      "label": "Read story →",
+                      "href": "#"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "t-a": {
+          "preset": "card-testimonial-person",
+          "section": {
+            "definitions": {
+              "quote": {
+                "text": "\"Cut our design-to-code cycle from weeks to days. We stopped rewriting the same hero layouts.\""
+              },
+              "person": {
+                "section": {
+                  "definitions": {
+                    "avatar": {
+                      "src": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80&auto=format&fit=crop&crop=face",
+                      "alt": "Sarah Kim"
+                    },
+                    "meta": {
+                      "section": {
+                        "definitions": {
+                          "name": {
+                            "text": "Sarah Kim"
+                          },
+                          "role": {
+                            "text": "Head of Design, Axiom"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "t-b": {
+          "preset": "card-testimonial-person",
+          "section": {
+            "definitions": {
+              "quote": {
+                "text": "\"The preset system is the infrastructure layer we never had. Every page starts from a solid baseline.\""
+              },
+              "person": {
+                "section": {
+                  "definitions": {
+                    "avatar": {
+                      "src": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80&auto=format&fit=crop&crop=face",
+                      "alt": "Marcus Webb"
+                    },
+                    "meta": {
+                      "section": {
+                        "definitions": {
+                          "name": {
+                            "text": "Marcus Webb"
+                          },
+                          "role": {
+                            "text": "Frontend Lead, Stackform"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "t-c": {
+          "preset": "card-testimonial-person",
+          "section": {
+            "definitions": {
+              "quote": {
+                "text": "\"Our non-technical team can now contribute pages confidently. JSON composition is the right abstraction.\""
+              },
+              "person": {
+                "section": {
+                  "definitions": {
+                    "avatar": {
+                      "src": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80&auto=format&fit=crop&crop=face",
+                      "alt": "Priya Nair"
+                    },
+                    "meta": {
+                      "section": {
+                        "definitions": {
+                          "name": {
+                            "text": "Priya Nair"
+                          },
+                          "role": {
+                            "text": "Product Manager, Luma"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "columns": {
+        "base": 1,
+        "md": 3
+      },
+      "columnWidths": {
+        "base": [1],
+        "md": [1, 1, 1]
+      },
+      "columnGaps": {
+        "base": "1.5rem",
+        "md": "2rem"
+      },
+      "columnAssignments": {
+        "base": {
+          "t-a": 0,
+          "t-b": 0,
+          "t-c": 0
+        },
+        "md": {
+          "t-a": 0,
+          "t-b": 1,
+          "t-c": 2
+        }
+      },
+      "contentWidth": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "contentHeight": "hug",
+      "gridMode": "grid",
+      "gridAutoRows": "auto"
+    },
+    "sec-footer-marquee": {
+      "type": "contentBlock",
+      "width": "100%",
+      "height": "hug",
+      "padding": {
+        "base": "3.5rem 0 4rem",
+        "md": "5rem 0 6rem"
+      },
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+      "elementOrder": ["footer-marquee"],
+      "definitions": {
+        "footer-marquee": {
+          "preset": "type-marquee-display",
+          "text": "Ship faster · Build smarter · Compose anything · Ship faster · Build smarter · Compose anything",
+          "pauseOnHover": true
+        }
+      }
+    },
+    "sec-cta": {
+      "preset": "composition-flow-hero-stack",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "860px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "2.5rem 1.5rem 2.5rem",
+        "md": "4rem 2rem 10rem"
+      },
+      "definitions": {
+        "eyebrow": {
+          "text": "Start today"
+        },
+        "title": {
+          "text": "Ready to build faster?"
+        },
+        "lead": {
+          "text": "Join thousands of teams using the preset system to ship better pages in less time."
+        },
+        "actions": {
+          "section": {
+            "definitions": {
+              "primary": {
+                "label": "Start for free",
+                "href": "#"
+              },
+              "secondary": {
+                "label": "Talk to sales",
+                "href": "#"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-testimonials-label": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "5rem 0 3rem",
+        "md": "10rem 0 4rem"
+      },
+      "elementOrder": ["testimonials-heading"],
+      "definitions": {
+        "testimonials-heading": {
+          "preset": "type-h3-label",
+          "text": "What teams are saying",
+          "selfAlign": "center",
+          "width": "auto"
+        }
+      }
+    }
+  },
+  "presets": [
+    "demo",
+    "type/core",
+    "type/effects",
+    "type/motion",
+    "ui/button",
+    "ui/link",
+    "layout",
+    "card",
+    "bg"
+  ],
+  "bgKey": "bg-page",
+  "scroll": {
+    "smooth": true,
+    "lockBody": true,
+    "scrollX": "hidden"
+  }
+}

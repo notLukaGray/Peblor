@@ -5,8 +5,14 @@ import {
   referrerPolicySchema,
   responsiveStringSchema,
   themeStringSchema,
-  triggerActionSchema,
+  triggerActionSchemaCore,
+  variantWithAliases,
 } from "./schema-primitives";
+import {
+  headingLevelSchema,
+  textFillBaseSchema,
+  typographyOverridesSchema,
+} from "./schema-shared-primitives";
 import {
   buttonActionSchema,
   elementButtonSchema,
@@ -27,97 +33,125 @@ import {
 import { elementRangeSchema } from "./element-range-schemas";
 import { elementInputSchema } from "./element-input-schemas";
 
-const headingLevelSchema = z.union([
-  z.literal(1),
-  z.literal(2),
-  z.literal(3),
-  z.literal(4),
-  z.literal(5),
-  z.literal(6),
+const textFillSchema = z.union([
+  ...textFillBaseSchema.options,
+  z.object({ type: z.literal("image"), value: z.string() }),
 ]);
 
-const textFillSchema = z.union([
-  z.object({ type: z.literal("color"), value: themeStringSchema }),
-  z.object({ type: z.literal("gradient"), value: themeStringSchema }),
-]);
+const HEADING_VARIANT_ALIASES = {
+  headline: "display",
+  title: "display",
+  subheading: "section",
+  subhead: "section",
+  eyebrow: "label",
+  overline: "label",
+} as const;
+
+const IMAGE_VARIANT_ALIASES = {
+  cover: "fullCover",
+  full: "fullCover",
+  fullscreen: "fullCover",
+  fullbleed: "fullCover",
+  featured: "feature",
+  cropped: "crop",
+} as const;
+
+const LINK_VARIANT_ALIASES = {
+  primary: "inline",
+  cta: "emphasis",
+  navigation: "nav",
+  navbar: "nav",
+  menu: "nav",
+} as const;
+
+const VIDEO_VARIANT_ALIASES = {
+  full: "fullcover",
+  fullscreen: "fullcover",
+  cover: "fullcover",
+  featured: "hero",
+} as const;
+
+const SPACER_VARIANT_ALIASES = {
+  small: "sm",
+  medium: "md",
+  large: "lg",
+  xs: "sm",
+  xl: "lg",
+} as const;
 
 const elementHeadingSchema = z
   .object({
     type: z.literal("elementHeading"),
     /** Preset key for `pbBuilderDefaultsV1.elements.heading` variant templates. */
-    variant: jsonNullishOptional(z.enum(["display", "section", "label"])),
+    variant: jsonNullishOptional(
+      variantWithAliases(["display", "section", "label"] as const, HEADING_VARIANT_ALIASES)
+    ),
     level: jsonNullishOptional(headingLevelSchema),
     /** Optional semantic heading level (h1–h6) for document outline. When set, used for the element tag; `level` still drives typography style. Use to fix heading order (e.g. level 4 style with semanticLevel 2 for correct outline). */
     semanticLevel: jsonNullishOptional(headingLevelSchema),
     text: z.string(),
     wordWrap: jsonNullishOptional(z.boolean()),
-    letterSpacing: jsonNullishOptional(z.union([z.string(), z.number()])),
-    lineSpacing: jsonNullishOptional(z.union([z.string(), z.number()])),
-    lineHeight: jsonNullishOptional(z.union([z.string(), z.number()])),
     color: jsonNullishOptional(themeStringSchema),
     textFill: jsonNullishOptional(textFillSchema),
     /** When set, renders the variable value from the store instead of static `text`. */
     variableKey: jsonNullishOptional(z.string()),
-    /**
-     * Font family override. Use a named slot to follow the active typeface:
-     * `"primary"` | `"secondary"` | `"mono"`.
-     * Any other string is passed through as a raw CSS font-family value.
-     */
-    fontFamily: jsonNullishOptional(z.string()),
-    fontSize: jsonNullishOptional(z.union([z.string(), z.number()])),
-    fontWeight: jsonNullishOptional(z.union([z.string(), z.number()])),
-    fontFeatureSettings: jsonNullishOptional(z.string()),
-    textOverflow: jsonNullishOptional(z.string()),
-    textStroke: jsonNullishOptional(z.string()),
-    verticalAlign: jsonNullishOptional(z.string()),
-    paragraphSpacing: jsonNullishOptional(z.union([z.string(), z.number()])),
     maxLines: jsonNullishOptional(z.number().int().positive()),
   })
+  .merge(typographyOverridesSchema)
   .merge(elementLayoutSchema);
+
+const BODY_VARIANT_ALIASES = {
+  intro: "lead",
+  paragraph: "standard",
+  body: "standard",
+  bodytext: "standard",
+  caption: "fine",
+  fineprint: "fine",
+  small: "fine",
+} as const;
 
 const elementBodySchema = z
   .object({
     type: z.literal("elementBody"),
     /** Preset key for `pbBuilderDefaultsV1.elements.body` variant templates. */
-    variant: jsonNullishOptional(z.enum(["lead", "standard", "fine"])),
+    variant: jsonNullishOptional(
+      variantWithAliases(["lead", "standard", "fine"] as const, BODY_VARIANT_ALIASES)
+    ),
     text: z.string(),
     level: responsiveElementBodyVariantSchema.optional(),
-    wordWrap: z.boolean().optional(),
-    letterSpacing: z.union([z.string(), z.number()]).optional(),
-    lineSpacing: z.union([z.string(), z.number()]).optional(),
+    wordWrap: jsonNullishOptional(z.boolean()),
     /** When set, renders the variable value from the store instead of static `text`. */
-    variableKey: z.string().optional(),
+    variableKey: jsonNullishOptional(z.string()),
     /**
      * When true and this body sits under `elementAudio` transport context, `text` is ignored and
      * the label shows live current time / duration (e.g. module chrome).
      */
     bindAudioTransportTime: z.literal(true).optional(),
     /**
-     * Font family override. Use a named slot to follow the active typeface:
-     * `"primary"` | `"secondary"` | `"mono"`.
-     * Any other string is passed through as a raw CSS font-family value.
+     * When true and this body sits under `elementAudio` transport context, `text` is ignored and
+     * the label shows the live current playback time (e.g. "1:23").
      */
-    fontFamily: z.string().optional(),
-    fontSize: z.union([z.string(), z.number()]).optional(),
-    fontWeight: z.union([z.string(), z.number()]).optional(),
-    lineHeight: z.union([z.string(), z.number()]).optional(),
+    bindAudioCurrentTime: z.literal(true).optional(),
+    /**
+     * When true and this body sits under `elementAudio` transport context, `text` is ignored and
+     * the label shows the total track duration (e.g. "5:53").
+     */
+    bindAudioDuration: z.literal(true).optional(),
     /** Direct text color override. Takes precedence over typography class color. */
-    color: themeStringSchema.optional(),
-    textFill: textFillSchema.optional(),
-    fontFeatureSettings: z.string().optional(),
-    textOverflow: z.string().optional(),
-    textStroke: z.string().optional(),
-    verticalAlign: z.string().optional(),
-    paragraphSpacing: z.union([z.string(), z.number()]).optional(),
-    maxLines: z.number().int().positive().optional(),
+    color: jsonNullishOptional(themeStringSchema),
+    textFill: jsonNullishOptional(textFillSchema),
+    maxLines: jsonNullishOptional(z.number().int().positive()),
   })
+  .merge(typographyOverridesSchema)
   .merge(elementLayoutSchema);
 
 const elementLinkSchema = z
   .object({
     type: z.literal("elementLink"),
     /** Preset key for `pbBuilderDefaultsV1.elements.link` variant templates. */
-    variant: jsonNullishOptional(z.enum(["inline", "emphasis", "nav"])),
+    variant: jsonNullishOptional(
+      variantWithAliases(["inline", "emphasis", "nav"] as const, LINK_VARIANT_ALIASES)
+    ),
     label: z.string(),
     href: z.string(),
     external: z.boolean().optional(),
@@ -127,29 +161,17 @@ const elementLinkSchema = z
     hreflang: z.string().optional(),
     ping: z.string().optional(),
     referrerPolicy: referrerPolicySchema.optional(),
-    copyType: z.enum(["heading", "body"]),
+    copyType: z.enum(["heading", "body"]).optional(),
     level: responsiveElementBodyVariantSchema.optional(),
-    wordWrap: z.boolean().optional(),
+    wordWrap: jsonNullishOptional(z.boolean()),
     linkDefault: themeStringSchema.optional(),
     linkHover: themeStringSchema.optional(),
     linkActive: themeStringSchema.optional(),
     linkDisabled: themeStringSchema.optional(),
     linkTransition: z.union([z.string(), z.number()]).optional(),
     disabled: z.boolean().optional(),
-    /**
-     * Font family override. Use a named slot to follow the active typeface:
-     * `"primary"` | `"secondary"` | `"mono"`.
-     * Any other string is passed through as a raw CSS font-family value.
-     */
-    fontFamily: z.string().optional(),
-    fontSize: z.union([z.string(), z.number()]).optional(),
-    fontWeight: z.union([z.string(), z.number()]).optional(),
-    fontFeatureSettings: z.string().optional(),
-    textOverflow: z.string().optional(),
-    textStroke: z.string().optional(),
-    verticalAlign: z.string().optional(),
-    paragraphSpacing: z.union([z.string(), z.number()]).optional(),
   })
+  .merge(typographyOverridesSchema)
   .merge(elementLayoutSchema)
   .refine(
     (data) => {
@@ -163,7 +185,12 @@ const elementImageSchema = z
   .object({
     type: z.literal("elementImage"),
     /** Optional image variant key. Runtime defaults can map this to fit/aspect/animation behavior. */
-    variant: jsonNullishOptional(z.enum(["hero", "inline", "fullCover", "feature", "crop"])),
+    variant: jsonNullishOptional(
+      variantWithAliases(
+        ["hero", "inline", "fullCover", "feature", "crop"] as const,
+        IMAGE_VARIANT_ALIASES
+      )
+    ),
     src: z.string(),
     alt: z.string(),
     objectFit: responsiveImageObjectFitSchema,
@@ -205,6 +232,8 @@ const elementImageSchema = z
     srcSet: z.string().optional(),
     /** Sizes attribute paired with srcSet (e.g. "(max-width: 600px) 480px, 800px"). */
     sizes: z.string().optional(),
+    /** Low-quality image placeholder URL, resolved at build time via CDN blur params. */
+    blurDataURL: z.string().optional(),
   })
   .merge(elementLayoutSchema);
 
@@ -212,7 +241,9 @@ const elementVideoSchema = z
   .object({
     type: z.literal("elementVideo"),
     /** Preset key for `pbBuilderDefaultsV1.elements.video` variant templates. */
-    variant: jsonNullishOptional(z.enum(["inline", "compact", "fullcover", "hero"])),
+    variant: jsonNullishOptional(
+      variantWithAliases(["inline", "compact", "fullcover", "hero"] as const, VIDEO_VARIANT_ALIASES)
+    ),
     src: z.string(),
     /** Ordered playback sources. Runtime tries the first supported source and falls back downward. */
     sources: z
@@ -243,11 +274,11 @@ const elementVideoSchema = z
     aspectRatio: responsiveStringSchema.optional(),
     module: z.string().optional(),
     /** Action to fire when video starts playing. */
-    onVideoPlay: triggerActionSchema.optional(),
+    onVideoPlay: triggerActionSchemaCore.optional(),
     /** Action to fire when video is paused. */
-    onVideoPause: triggerActionSchema.optional(),
+    onVideoPause: triggerActionSchemaCore.optional(),
     /** Action to fire when video ends. */
-    onVideoEnd: triggerActionSchema.optional(),
+    onVideoEnd: triggerActionSchemaCore.optional(),
     /**
      * Fine-grained control over adaptive streaming behaviour (HLS / DASH).
      * All fields are optional — omitting them applies sensible defaults that
@@ -279,6 +310,35 @@ const elementVideoSchema = z
     crossOrigin: z.enum(["anonymous", "use-credentials"]).optional(),
     /** Space-separated list of controls to disable (e.g. "nodownload nofullscreen noremoteplayback"). */
     controlsList: z.string().optional(),
+    /**
+     * WebVTT subtitle/caption tracks rendered as `<track>` children of the video element.
+     * Each entry maps to one `<track>` element. At most one entry should have `default: true`.
+     *
+     * `kind` mirrors the HTML `<track kind>` attribute:
+     *   - "subtitles"    — translated text of the audio (default)
+     *   - "captions"     — transcription including non-speech sounds (a11y)
+     *   - "descriptions" — audio description of video content for visually-impaired users
+     *   - "chapters"     — chapter titles for navigation
+     *   - "metadata"     — machine-readable data, not shown to users
+     */
+    tracks: z
+      .array(
+        z.object({
+          /** WebVTT file URL. */
+          src: z.string(),
+          /** Track kind. Defaults to "subtitles" when omitted. */
+          kind: z
+            .enum(["subtitles", "captions", "descriptions", "chapters", "metadata"])
+            .optional(),
+          /** BCP-47 language tag, e.g. "en", "fr", "zh-Hant". */
+          srclang: z.string().optional(),
+          /** Human-readable track name shown in the browser's track menu. */
+          label: z.string().optional(),
+          /** When true this track is enabled by default. Only one track per kind should be default. */
+          default: z.boolean().optional(),
+        })
+      )
+      .optional(),
   })
   .merge(elementLayoutSchema);
 
@@ -311,6 +371,20 @@ const elementVectorSchema = z
 const elementSVGSchema = z
   .object({
     type: z.literal("elementSVG"),
+    /**
+     * Raw SVG markup string to render inline.
+     *
+     * **SECURITY CONTRACT: the runtime SANITIZES this field before rendering.**
+     * ElementSVG passes `markup` through `sanitizeSvgMarkup()` (packages/runtime-react/src/core/lib/sanitize-svg.ts)
+     * which allowlists safe SVG tags and attributes, strips `<script>`, event handlers (on*),
+     * and external resource references (data: URIs, external hrefs, xlink:href).
+     * The sanitized string is then set via `dangerouslySetInnerHTML` — the XSS risk
+     * is mitigated by the sanitizer, not by avoiding innerHTML.
+     *
+     * Consumers supplying this field should still validate their input, but are not
+     * required to pre-sanitize: the runtime sanitizer is the authoritative enforcement
+     * point at render time.
+     */
     markup: z.string(),
     ariaLabel: z.string().optional(),
     rotate: z.union([z.number(), z.string()]).optional(),
@@ -352,7 +426,9 @@ const elementSpacerSchema = z
   .object({
     type: z.literal("elementSpacer"),
     /** Preset key for `pbBuilderDefaultsV1.elements.spacer` variant templates. */
-    variant: jsonNullishOptional(z.enum(["sm", "md", "lg"])),
+    variant: jsonNullishOptional(
+      variantWithAliases(["sm", "md", "lg"] as const, SPACER_VARIANT_ALIASES)
+    ),
   })
   .merge(elementLayoutSchema);
 

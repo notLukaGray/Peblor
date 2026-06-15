@@ -1,0 +1,39 @@
+{
+  "preset": "composition-flow-asymmetric-stack",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "900px",
+  "selfAlign": "center",
+  "definitions": {
+    "kicker": {
+      "text": "Stress"
+    },
+    "headline": {
+      "text": "Long-copy stack with intentionally uneven line lengths"
+    },
+    "body": {
+      "text": "When editorial teams add dense context, this variant keeps hierarchy legible by preserving asymmetry while allowing larger paragraphs to wrap naturally across mobile and desktop widths."
+    },
+    "quote": {
+      "text": "\"Even with verbose legal and operational language, the single-lane stack still reads in one clear top-to-bottom flow.\""
+    },
+    "actions": {
+      "section": {
+        "definitions": {
+          "primary": {
+            "label": "Review compliance language"
+          },
+          "secondary": {
+            "label": "Open full editorial guidance"
+          }
+        }
+      }
+    }
+  },
+  "marginBottom": {
+    "base": "4rem",
+    "md": "8rem"
+  }
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useId } from "react";
 import type { ElementBlock } from "@pb/contracts/types";
 import { generateElementKey } from "@pb/core/keys";
 import { ElementLayoutWrapper } from "./Shared/ElementLayoutWrapper";
@@ -18,6 +18,8 @@ export function ElementTabs({
   scrollable,
   keyboardNav,
   mobileCollapse,
+  orientation,
+  activationMode = "automatic",
   tabColor,
   tabActiveColor,
   tabActiveBackground,
@@ -31,12 +33,12 @@ export function ElementTabs({
   ariaLabel,
   width,
   height,
-  align,
+  selfAlign,
   marginTop,
   marginBottom,
   marginLeft,
   marginRight,
-  zIndex,
+  layer,
   constraints,
   effects,
   interactions,
@@ -45,11 +47,14 @@ export function ElementTabs({
   blendMode,
   boxShadow,
   filter,
-  backdropFilter,
+  bgBlur,
   hidden,
 }: Props) {
+  const instanceId = useId();
   const clampedInitial = Math.max(0, Math.min(initialTab, Math.max(0, tabs.length - 1)));
   const [active, setActive] = useState(clampedInitial);
+  // In manual mode, track focused tab separately from selected tab.
+  const [focused, setFocused] = useState(clampedInitial);
   const [loaded, setLoaded] = useState<Set<number>>(
     new Set(lazyLoad ? [clampedInitial] : tabs.map((_, i) => i))
   );
@@ -58,9 +63,23 @@ export function ElementTabs({
     (index: number) => {
       if (tabs[index]?.disabled) return;
       setActive(index);
+      setFocused(index);
       if (lazyLoad) setLoaded((prev) => new Set(prev).add(index));
     },
     [tabs, lazyLoad]
+  );
+
+  const focusTab = useCallback(
+    (index: number) => {
+      if (tabs[index]?.disabled) return;
+      setFocused(index);
+      // In automatic mode, focusing also selects.
+      if (activationMode === "automatic") {
+        setActive(index);
+        if (lazyLoad) setLoaded((prev) => new Set(prev).add(index));
+      }
+    },
+    [tabs, activationMode, lazyLoad]
   );
 
   const handleKeyDown = useCallback(
@@ -70,28 +89,33 @@ export function ElementTabs({
         e.preventDefault();
         let next = index + 1;
         while (next < tabs.length && tabs[next]?.disabled) next++;
-        if (next < tabs.length) selectTab(next);
+        if (next < tabs.length) focusTab(next);
       }
       if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
         e.preventDefault();
         let prev = index - 1;
         while (prev >= 0 && tabs[prev]?.disabled) prev--;
-        if (prev >= 0) selectTab(prev);
+        if (prev >= 0) focusTab(prev);
       }
       if (e.key === "Home") {
         e.preventDefault();
         let first = 0;
         while (first < tabs.length && tabs[first]?.disabled) first++;
-        if (first < tabs.length) selectTab(first);
+        if (first < tabs.length) focusTab(first);
       }
       if (e.key === "End") {
         e.preventDefault();
         let last = tabs.length - 1;
         while (last >= 0 && tabs[last]?.disabled) last--;
-        if (last >= 0) selectTab(last);
+        if (last >= 0) focusTab(last);
+      }
+      // In manual mode: Enter or Space selects the currently focused tab.
+      if (activationMode === "manual" && (e.key === "Enter" || e.key === " ")) {
+        e.preventDefault();
+        selectTab(focused);
       }
     },
-    [keyboardNav, tabs, selectTab]
+    [keyboardNav, tabs, focusTab, activationMode, focused, selectTab]
   );
 
   const variantClasses: Record<string, string> = {
@@ -101,17 +125,18 @@ export function ElementTabs({
     vertical: "border-l-2 border-transparent aria-selected:border-current pl-3 py-2",
   };
 
-  const isVertical = variant === "vertical";
+  // `orientation` takes precedence; fall back to the `variant === "vertical"` legacy signal.
+  const isVertical = orientation != null ? orientation === "vertical" : variant === "vertical";
 
   const layout = {
     width: width as string | undefined,
     height: height as string | undefined,
-    align: align as "left" | "center" | "right" | undefined,
+    align: selfAlign as "left" | "center" | "right" | undefined,
     marginTop: marginTop as string | undefined,
     marginBottom: marginBottom as string | undefined,
     marginLeft: marginLeft as string | undefined,
     marginRight: marginRight as string | undefined,
-    zIndex,
+    zIndex: layer,
     constraints,
     effects,
     wrapperStyle,
@@ -119,7 +144,7 @@ export function ElementTabs({
     blendMode,
     boxShadow,
     filter,
-    backdropFilter,
+    bgBlur,
     hidden,
   };
 
@@ -129,6 +154,7 @@ export function ElementTabs({
         className={`flex ${isVertical ? "flex-row" : "flex-col"}`}
         role="tablist"
         aria-label={ariaLabel}
+        aria-orientation={isVertical ? "vertical" : "horizontal"}
       >
         {mobileCollapse ? (
           <select
@@ -163,7 +189,7 @@ export function ElementTabs({
               role="tab"
               aria-selected={active === i}
               aria-disabled={tab.disabled}
-              aria-controls={`tabpanel-${i}`}
+              aria-controls={`tabpanel-${instanceId}-${i}`}
               disabled={tab.disabled}
               tabIndex={active === i ? 0 : -1}
               onClick={() => selectTab(i)}
@@ -193,7 +219,7 @@ export function ElementTabs({
           {tabs.map((tab, i) => (
             <div
               key={i}
-              id={`tabpanel-${i}`}
+              id={`tabpanel-${instanceId}-${i}`}
               role="tabpanel"
               aria-hidden={active !== i}
               className={contentAnimation === "fade" ? "transition-opacity duration-200" : ""}

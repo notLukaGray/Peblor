@@ -1,0 +1,24 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "bg-solid — Preset Demo",
+  "description": "Single solid color — the baseline background token",
+  "presets": ["demo"],
+  "sectionOrder": ["nav-header", "hero"],
+  "bgKey": "bg-solid",
+  "scroll": {
+    "smooth": false,
+    "lockBody": true,
+    "scrollX": "hidden",
+    "scrollY": "hidden"
+  },
+  "definitions": {
+    "bg-solid": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "var(--pb-secondary)"
+        }
+      ]
+    }
+  }
+}

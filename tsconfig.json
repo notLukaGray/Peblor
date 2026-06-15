@@ -28,6 +28,7 @@
       "@pb/runtime-react/*": ["./packages/runtime-react/src/*"],
       "@/core/*": ["./apps/web/src/core/*"],
       "@/content/*": ["./content/*"],
+      "@content/*": ["./content/*"],
       "@/*": ["./apps/web/src/*"]
     }
   },

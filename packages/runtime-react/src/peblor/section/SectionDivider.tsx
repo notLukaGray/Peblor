@@ -3,7 +3,7 @@
 import { useMemo, useRef, type CSSProperties } from "react";
 import type { SectionBlock } from "@pb/contracts/types";
 import { handleSectionWheel, getDefaultScrollSpeed } from "@pb/core/layout";
-import { resolveResponsiveValue } from "@pb/runtime-react/core/lib/responsive-value";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
 import { useSectionBaseStyles } from "@/peblor/section/position/use-section-base-styles";
 import { useStickyTrait } from "@/peblor/section/position/use-sticky-trait";
 import { useFixedTrait } from "@/peblor/section/position/use-fixed-trait";
@@ -15,8 +15,7 @@ import { useSectionViewportTrigger } from "@/peblor/triggers/core/use-section-vi
 import { useSectionCustomTriggers } from "@/peblor/triggers/core/use-section-custom-triggers";
 import { SectionMotionWrapper } from "@/peblor/integrations/framer-motion";
 import { SectionScrollTargetProvider } from "@/peblor/section/position/SectionScrollTargetContext";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
-import { resolveThemeString } from "@/peblor/theme/theme-string";
+import { lowerThemeStringToCss } from "@/peblor/theme/theme-string";
 
 type Props = Extract<SectionBlock, { type: "divider" }>;
 
@@ -32,7 +31,7 @@ export function SectionDivider({
   maxWidth,
   minHeight,
   maxHeight,
-  align,
+  selfAlign,
   marginLeft,
   marginRight,
   marginTop,
@@ -41,14 +40,14 @@ export function SectionDivider({
   border,
   boxShadow,
   filter,
-  backdropFilter,
-  clipPath,
+  bgBlur,
+  clipShape,
   cursor,
   aspectRatio,
   scrollSpeed = getDefaultScrollSpeed(),
   initialX,
   initialY,
-  zIndex,
+  layer,
   sticky,
   stickyOffset = "0px",
   stickyPosition = "top",
@@ -71,13 +70,19 @@ export function SectionDivider({
   cursorTriggers,
   scrollDirectionTriggers,
   idleTriggers,
+  variableTriggers,
+  tabVisibilityTriggers,
+  mediaEndTriggers,
+  customEventTriggers,
+  elementEventTriggers,
+  scrollThresholdTriggers,
+  mediaProgressTriggers,
 }: Props) {
   const sectionRef = useRef<HTMLElement>(null);
   const placeholderRef = useRef<HTMLDivElement>(null);
   const { isMobile } = useDeviceType();
-  const themeMode = usePeblorThemeMode();
   const resolvedAriaLabel = resolveResponsiveValue(ariaLabel, isMobile) ?? id;
-  const resolvedFill = resolveThemeString(resolveResponsiveValue(fill, isMobile), themeMode);
+  const resolvedFill = lowerThemeStringToCss(resolveResponsiveValue(fill, isMobile));
   const resolvedStickyOffset = resolveResponsiveValue(stickyOffset, isMobile) ?? "0px";
   const resolvedFixedOffset = resolveResponsiveValue(fixedOffset, isMobile) ?? "0px";
 
@@ -98,9 +103,16 @@ export function SectionDivider({
     cursorTriggers,
     scrollDirectionTriggers,
     idleTriggers,
+    variableTriggers,
+    tabVisibilityTriggers,
+    mediaEndTriggers,
+    customEventTriggers,
+    elementEventTriggers,
+    scrollThresholdTriggers,
+    mediaProgressTriggers,
   });
 
-  const { baseStyle, resolvedLayout, alignStyle, transformY, hasInitialPosition } =
+  const { baseStyle, resolvedLayout, alignStyle, parallaxY, hasInitialPosition } =
     useSectionBaseStyles({
       fill,
       width,
@@ -109,7 +121,7 @@ export function SectionDivider({
       maxWidth,
       minHeight,
       maxHeight,
-      align,
+      selfAlign,
       marginLeft,
       marginRight,
       marginTop,
@@ -118,18 +130,17 @@ export function SectionDivider({
       border,
       boxShadow,
       filter,
-      backdropFilter,
-      clipPath,
+      bgBlur,
+      clipShape,
       cursor,
       aspectRatio,
       scrollSpeed,
       initialX,
       initialY,
-      zIndex,
+      layer,
       effects,
       sectionRef,
       reduceMotion,
-      usePadding: false,
     });
 
   const { styleOverrides, placeholderStyle, showPlaceholder } = useStickyTrait({
@@ -141,7 +152,6 @@ export function SectionDivider({
     hasInitialPosition,
     resolvedLayout,
     alignStyle,
-    transformY,
   });
 
   const fixedStyleOverrides = useFixedTrait({
@@ -149,7 +159,7 @@ export function SectionDivider({
     fixedPosition,
     fixedOffset: resolvedFixedOffset,
     resolvedLayout,
-    zIndex,
+    zIndex: layer,
   });
 
   const finalStyle = useMemo(() => {
@@ -173,13 +183,14 @@ export function SectionDivider({
 
   const sectionProps = useMemo(
     () => ({
+      id,
       className: "relative z-[var(--pb-z-raised)] shrink-0 min-h-0",
       style: sectionDividerStyle,
       "aria-hidden": resolvedAriaLabel ? undefined : true,
       ...(resolvedAriaLabel && { "aria-label": resolvedAriaLabel }),
       onWheel: fixed ? undefined : wheelHandler,
     }),
-    [sectionDividerStyle, resolvedAriaLabel, fixed, wheelHandler]
+    [id, sectionDividerStyle, resolvedAriaLabel, fixed, wheelHandler]
   );
 
   return (
@@ -192,6 +203,7 @@ export function SectionDivider({
         motion={motionFromJson}
         motionTiming={motionTiming}
         reduceMotion={reduceMotion}
+        parallaxY={parallaxY}
         {...sectionProps}
       >
         <SectionScrollTargetProvider sectionRef={sectionRef}>

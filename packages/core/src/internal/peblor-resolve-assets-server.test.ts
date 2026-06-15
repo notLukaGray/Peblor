@@ -19,7 +19,7 @@ describe("resolvePeblorAssetsOnServer", () => {
     }
   });
 
-  it("routes non-hug element images to direct signed Bunny urls", () => {
+  it("routes non-hug element images to stable media aliases", () => {
     const { resolvedSections } = resolvePeblorAssetsOnServer(
       null,
       [
@@ -44,13 +44,18 @@ describe("resolvePeblorAssetsOnServer", () => {
 
     const src = (resolvedSections[0] as unknown as { elements: Array<{ src: string }> })
       .elements[0]!.src;
-    const url = new URL(src);
-    expect(url.origin).toBe("https://media.example.com");
-    expect(url.pathname).toBe("/website/work/pic.webp");
+    const url = new URL(src, "http://localhost");
+    expect(url.pathname).toBe("/api/media/work/pic.webp");
     expect(Number(url.searchParams.get("width"))).toBeGreaterThan(0);
+    expect(url.searchParams.get("quality")).toBe("75");
+    expect(url.searchParams.get("format")).toBe("webp");
+    expect(
+      (resolvedSections[0] as unknown as { elements: Array<{ srcSet?: string }> }).elements[0]!
+        .srcSet
+    ).toContain("/api/media/work/pic.webp");
   });
 
-  it("keeps intrinsic element images on fixed signed urls", () => {
+  it("keeps intrinsic element images on fixed media aliases", () => {
     const { resolvedSections } = resolvePeblorAssetsOnServer(
       null,
       [
@@ -75,15 +80,14 @@ describe("resolvePeblorAssetsOnServer", () => {
 
     const src = (resolvedSections[0] as unknown as { elements: Array<{ src: string }> })
       .elements[0]!.src;
-    const url = new URL(src);
-    expect(url.origin).toBe("https://media.example.com");
-    expect(url.pathname).toBe("/website/work/pic.webp");
+    const url = new URL(src, "http://localhost");
+    expect(url.pathname).toBe("/api/media/work/pic.webp");
     expect(url.searchParams.get("width")).toBe("400");
     expect(url.searchParams.get("quality")).toBe("75");
     expect(url.searchParams.get("format")).toBe("webp");
   });
 
-  it("routes fill-height element images to direct signed Bunny urls", () => {
+  it("routes fill-height element images to stable media aliases", () => {
     const { resolvedSections } = resolvePeblorAssetsOnServer(
       null,
       [
@@ -110,9 +114,8 @@ describe("resolvePeblorAssetsOnServer", () => {
 
     const src = (resolvedSections[0] as unknown as { elements: Array<{ src: string }> })
       .elements[0]!.src;
-    const url = new URL(src);
-    expect(url.origin).toBe("https://media.example.com");
-    expect(url.pathname).toBe("/website/work/pic.webp");
+    const url = new URL(src, "http://localhost");
+    expect(url.pathname).toBe("/api/media/work/pic.webp");
     const width = Number(url.searchParams.get("width"));
     const quality = Number(url.searchParams.get("quality"));
     expect(Number.isFinite(width)).toBe(true);
@@ -147,13 +150,13 @@ describe("resolvePeblorAssetsOnServer", () => {
 
     const src = (resolvedSections[0] as unknown as { elements: Array<{ src: string }> })
       .elements[0]!.src;
-    const url = new URL(src);
+    const url = new URL(src, "http://localhost");
     const width = Number(url.searchParams.get("width"));
     expect(Number.isFinite(width)).toBe(true);
     expect(width).toBeGreaterThan(0);
   });
 
-  it("routes percent-height images (e.g. 90%) to direct signed Bunny urls", () => {
+  it("routes percent-height images (e.g. 90%) to stable media aliases", () => {
     const { resolvedSections } = resolvePeblorAssetsOnServer(
       null,
       [
@@ -180,7 +183,7 @@ describe("resolvePeblorAssetsOnServer", () => {
 
     const src = (resolvedSections[0] as unknown as { elements: Array<{ src: string }> })
       .elements[0]!.src;
-    const url = new URL(src);
+    const url = new URL(src, "http://localhost");
     const width = Number(url.searchParams.get("width"));
     const quality = Number(url.searchParams.get("quality"));
     expect(Number.isFinite(width)).toBe(true);
@@ -188,7 +191,7 @@ describe("resolvePeblorAssetsOnServer", () => {
     expect(quality).toBeGreaterThan(0);
   });
 
-  it("routes fill-width intrinsic images to direct signed Bunny urls", () => {
+  it("routes fill-width intrinsic images to stable media aliases", () => {
     const { resolvedSections } = resolvePeblorAssetsOnServer(
       null,
       [
@@ -215,7 +218,7 @@ describe("resolvePeblorAssetsOnServer", () => {
 
     const src = (resolvedSections[0] as unknown as { elements: Array<{ src: string }> })
       .elements[0]!.src;
-    const url = new URL(src);
+    const url = new URL(src, "http://localhost");
     const width = Number(url.searchParams.get("width"));
     const quality = Number(url.searchParams.get("quality"));
     expect(Number.isFinite(width)).toBe(true);
@@ -223,7 +226,7 @@ describe("resolvePeblorAssetsOnServer", () => {
     expect(quality).toBeGreaterThan(0);
   });
 
-  it("routes percent-width intrinsic images (e.g. 90%) to direct signed Bunny urls", () => {
+  it("routes percent-width intrinsic images (e.g. 90%) to stable media aliases", () => {
     const { resolvedSections } = resolvePeblorAssetsOnServer(
       null,
       [
@@ -250,7 +253,7 @@ describe("resolvePeblorAssetsOnServer", () => {
 
     const src = (resolvedSections[0] as unknown as { elements: Array<{ src: string }> })
       .elements[0]!.src;
-    const url = new URL(src);
+    const url = new URL(src, "http://localhost");
     const width = Number(url.searchParams.get("width"));
     const quality = Number(url.searchParams.get("quality"));
     expect(Number.isFinite(width)).toBe(true);
@@ -285,12 +288,12 @@ describe("resolvePeblorAssetsOnServer", () => {
 
     const src = (resolvedSections[0] as unknown as { elements: Array<{ src: string }> })
       .elements[0]!.src;
-    const url = new URL(src);
+    const url = new URL(src, "http://localhost");
     const width = Number(url.searchParams.get("width"));
     expect(width).toBeGreaterThan(0);
   });
 
-  it("routes background video posters to direct signed Bunny urls", () => {
+  it("routes background video posters to stable media aliases", () => {
     const { resolvedBg } = resolvePeblorAssetsOnServer(
       {
         type: "backgroundVideo",
@@ -303,10 +306,34 @@ describe("resolvePeblorAssetsOnServer", () => {
       { isMobile: false, viewportWidthPx: 1920 }
     );
 
-    const url = new URL((resolvedBg as { poster: string }).poster);
-    expect(url.origin).toBe("https://media.example.com");
-    expect(url.pathname).toBe("/website/work/hero.webp");
+    const url = new URL((resolvedBg as { poster: string }).poster, "http://localhost");
+    expect(url.pathname).toBe("/api/media/work/hero.webp");
     expect(url.searchParams.get("aspect_ratio")).toBe("16:9");
+  });
+
+  it("lowers static theme background fills to css-native light/dark strings", () => {
+    const { resolvedBg, bgDefinitions } = resolvePeblorAssetsOnServer(
+      {
+        type: "backgroundVariable",
+        layers: [{ fill: { light: "#fff", dark: "#000" } }],
+      } as never,
+      [],
+      {
+        themedBg: {
+          type: "backgroundVariable",
+          layers: [{ fill: { value: "#111", dark: "#eee" } }],
+        } as never,
+      },
+      [],
+      { isMobile: false, viewportWidthPx: 1920 }
+    );
+
+    expect((resolvedBg as { layers: Array<{ fill: string }> }).layers[0]?.fill).toBe(
+      "light-dark(#fff, #000)"
+    );
+    expect((bgDefinitions.themedBg as { layers: Array<{ fill: string }> }).layers[0]?.fill).toBe(
+      "light-dark(#111, #eee)"
+    );
   });
 
   it("does not evaluate vw-based sizes without explicit viewport width", () => {
@@ -336,7 +363,7 @@ describe("resolvePeblorAssetsOnServer", () => {
 
     const src = (resolvedSections[0] as unknown as { elements: Array<{ src: string }> })
       .elements[0]!.src;
-    const url = new URL(src);
+    const url = new URL(src, "http://localhost");
     const width = Number(url.searchParams.get("width"));
     expect(width).toBe(768);
   });
@@ -368,9 +395,9 @@ describe("resolvePeblorAssetsOnServer", () => {
 
     const src = (resolvedSections[0] as unknown as { elements: Array<{ src: string }> })
       .elements[0]!.src;
-    const url = new URL(src);
+    const url = new URL(src, "http://localhost");
     const width = Number(url.searchParams.get("width"));
-    // With direct Bunny delivery we now rely on normalized default width bounds.
+    // The stable media alias still carries normalized width bounds.
     expect(width).toBe(1536);
   });
 
@@ -401,7 +428,7 @@ describe("resolvePeblorAssetsOnServer", () => {
 
     const src = (resolvedSections[0] as unknown as { elements: Array<{ src: string }> })
       .elements[0]!.src;
-    const url = new URL(src);
+    const url = new URL(src, "http://localhost");
     const width = Number(url.searchParams.get("width"));
     // 100vw at 768 => 768; with 1.25x headroom => 960, then capped by mobile max width (768).
     expect(width).toBe(768);
@@ -434,9 +461,9 @@ describe("resolvePeblorAssetsOnServer", () => {
 
     const src = (resolvedSections[0] as unknown as { elements: Array<{ src: string }> })
       .elements[0]!.src;
-    const url = new URL(src);
+    const url = new URL(src, "http://localhost");
     const width = Number(url.searchParams.get("width"));
-    // With direct Bunny delivery we use bounded mobile width defaults.
+    // The stable media alias still uses bounded mobile width defaults.
     expect(width).toBe(768);
   });
 });

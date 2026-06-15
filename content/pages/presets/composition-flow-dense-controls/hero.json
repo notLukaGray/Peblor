@@ -1,0 +1,23 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Flow · Utility · Compact Systems"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Composition Flow Dense Controls"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Control-heavy, flow-only composition proving interaction density without switching to columns.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  },
+  "align": "start"
+}

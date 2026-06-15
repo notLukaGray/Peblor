@@ -19,7 +19,7 @@ not_this_if:
 
 axes:
   - name: layout
-    fields: [flexDirection, alignItems, justifyContent, flexWrap, gap, rowGap, columnGap]
+    fields: [flow, align, distribute, wrap, gap, rowGap, columnGap]
     responsive: true
   - name: sizing
     fields: [contentWidth, contentHeight, width, height, minHeight, maxWidth]
@@ -27,7 +27,7 @@ axes:
   - name: reorder
     fields: [reorderable, reorderAxis, reorderDragUnit, reorderDragBehavior]
   - name: appearance
-    fields: [fill, effects, layers, border, borderRadius, overflow]
+    fields: [fill, effects, layers, border, borderRadius, scroll]
     responsive: true
   - name: motion
     fields: [motionTiming, scrollSpeed, initialY, sticky, stickyOffset]
@@ -60,7 +60,7 @@ composes_with:
 known_limitations:
   - "Reorder requires reorderable: true; children must be elementGroup elements (not nested sections)"
   - "contentWidth/contentHeight control the inner content container, not the outer section wrapper"
-  - "flexWrap is ignored when reorderable is true — reorder only works on single-axis lists"
+  - "wrap is ignored when reorderable is true — reorder only works on single-axis lists"
 
 proposal_hints:
   new_variant_value: "N/A — no variant field on section.contentBlock"

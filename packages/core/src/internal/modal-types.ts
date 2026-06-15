@@ -1,4 +1,9 @@
-import type { MotionPropsFromJson, SectionBlock, SectionEffect } from "@pb/contracts";
+import type {
+  ModalBehaviorFromSchema,
+  MotionPropsFromJson,
+  SectionBlock,
+  SectionEffect,
+} from "@pb/contracts";
 
 /** Optional modal enter/exit animation config; when present, integration uses it (no hardcoding). */
 export type ModalTransitionConfig = {
@@ -21,4 +26,6 @@ export type ModalProps = {
   motion?: MotionPropsFromJson;
   /** Generic visual effects for the modal dialog surface, including glass. */
   effects?: SectionEffect[];
+  /** Behavior vocab: size, position, backdrop, interaction, accessibility (gap 2.4). */
+  behavior?: ModalBehaviorFromSchema;
 };

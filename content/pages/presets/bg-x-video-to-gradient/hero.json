@@ -1,0 +1,22 @@
+{
+  "elementOrder": ["hero-badge", "hero-title", "hero-desc", "hero-hint"],
+  "definitions": {
+    "hero-badge": {
+      "preset": "demo-hero-badge",
+      "text": "backgroundTransition · scroll"
+    },
+    "hero-title": {
+      "preset": "demo-hero-title",
+      "text": "bg-x-video-to-gradient"
+    },
+    "hero-desc": {
+      "preset": "demo-hero-description",
+      "text": "Looping video fades out as the user scrolls, replaced by a layered gradient. Transition runs between 20–50% of scroll progress — hero feels cinematic, body feels editorial."
+    },
+    "hero-hint": {
+      "preset": "demo-scroll-hint",
+      "text": "↓ Scroll to dissolve video into gradient ↓"
+    }
+  },
+  "preset": "demo-hero-100vh"
+}

@@ -1,7 +1,17 @@
-import type { WorkbenchSessionV2 } from "@/app/dev/workbench/workbench-defaults";
+import type { BreakpointDefinitions } from "@/app/theme/pb-breakpoint-tokens";
 import { breakpointsToCssVars } from "@/app/theme/pb-breakpoint-tokens";
+import type { MotionFoundations } from "@/app/theme/pb-motion-tokens";
 import { motionFoundationsToCssVars } from "@/app/theme/pb-motion-tokens";
+import type { ShadowScale } from "@/app/theme/pb-shadow-tokens";
 import { shadowScaleDarkToCssVars, shadowScaleToCssVars } from "@/app/theme/pb-shadow-tokens";
+import type {
+  BorderWidthScale,
+  ContentWidthPresets,
+  LetterSpacingScale,
+  LineHeightScale,
+  SectionMarginScale,
+  SpacingScale,
+} from "@/app/theme/pb-spacing-tokens";
 import {
   borderWidthScaleToCssVars,
   contentWidthPresetsToCssVars,
@@ -10,26 +20,33 @@ import {
   sectionMarginScaleToCssVars,
   spacingScaleToCssVars,
 } from "@/app/theme/pb-spacing-tokens";
+import type { ZIndexLayerScale } from "@/app/theme/pb-z-index-layers";
 import { zIndexLayersToCssVars } from "@/app/theme/pb-z-index-layers";
 import { typeScaleToCssVars } from "@/app/theme/pb-type-scale-tokens";
+import type { TypeScaleConfig } from "@/app/fonts/type-scale";
+import { mergeCssVars, serializeCssVarSelector } from "@/app/theme/pb-foundation-config";
 
-function mergeCssVars(...maps: Array<Record<string, string>>): Record<string, string> {
-  const out: Record<string, string> = {};
-  for (const map of maps) {
-    Object.assign(out, map);
-  }
-  return out;
-}
+/** Minimal structural subset of WorkbenchSessionV2 used by this module. */
+export type FoundationSession = {
+  style: {
+    spacingScale: SpacingScale;
+    shadowScale: ShadowScale;
+    shadowScaleDark: ShadowScale;
+    borderWidthScale: BorderWidthScale;
+    motion: MotionFoundations;
+    breakpoints: BreakpointDefinitions;
+    contentWidths: ContentWidthPresets;
+    sectionMarginScale: SectionMarginScale;
+    zIndexLayers: ZIndexLayerScale;
+  };
+  fonts: {
+    lineHeightScale: LineHeightScale;
+    letterSpacingScale: LetterSpacingScale;
+    typeScale: TypeScaleConfig;
+  };
+};
 
-function serializeCssVarSelector(selector: string, vars: Record<string, string>): string {
-  const lines = Object.keys(vars)
-    .sort()
-    .map((key) => `  ${key}: ${vars[key]};`)
-    .join("\n");
-  return `${selector} {\n${lines}\n}`;
-}
-
-export function getPbFoundationCssVarMaps(session: Pick<WorkbenchSessionV2, "style" | "fonts">): {
+export function getPbFoundationCssVarMaps(session: FoundationSession): {
   root: Record<string, string>;
   dark: Record<string, string>;
 } {
@@ -52,9 +69,7 @@ export function getPbFoundationCssVarMaps(session: Pick<WorkbenchSessionV2, "sty
   return { root, dark };
 }
 
-export function serializePbFoundationsCss(
-  session: Pick<WorkbenchSessionV2, "style" | "fonts">
-): string {
+export function serializePbFoundationsCss(session: FoundationSession): string {
   const vars = getPbFoundationCssVarMaps(session);
   return `${serializeCssVarSelector(":root", vars.root)}\n\n${serializeCssVarSelector(".dark", vars.dark)}`;
 }

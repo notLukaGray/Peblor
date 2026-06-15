@@ -11,11 +11,13 @@ async function main() {
   }
 
   const allUrls = new Set<string>();
+  let failed = false;
 
   for (const slug of slugs) {
     const page = await getPageAsync(slug);
     if (!page) {
-      process.exitCode = 1;
+      console.error(`[list-assets] Failed to load page: ${slug}`);
+      failed = true;
       continue;
     }
     const urls = getAllAssetUrlsFromPage(page);
@@ -26,6 +28,8 @@ async function main() {
       }
     }
   }
+
+  if (failed) process.exit(1);
 }
 
 main();

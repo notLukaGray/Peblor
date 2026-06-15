@@ -10,6 +10,13 @@ import dynamic from "next/dynamic";
 // Each is code-split into its own chunk — only loaded when the page actually
 // uses that element type. SSR renders full HTML (ssr:true is the default).
 // No loading override — the SSR output is the fallback, so layout never collapses.
+//
+// TypeScript note: next/dynamic returns DynamicComponentType<T> which is
+// functionally a ComponentType<T> but its generic parameter is the resolved
+// dynamic props, not ElementBlock directly. Casting through `unknown` is
+// required because DynamicComponentType and ComponentType have structurally
+// incompatible generics (Next.js internal wrapper) — the `as unknown as`
+// double-cast is the standard workaround (microsoft/TypeScript#35858).
 
 const ElementVector = dynamic(() =>
   import("./ElementVector").then((mod) => mod.ElementVector)
@@ -107,6 +114,26 @@ const ElementRichText = dynamic(() =>
   import("./ElementRichText").then((mod) => mod.ElementRichText)
 ) as unknown as ComponentType<ElementBlock>;
 
+const ElementEmbed = dynamic(() =>
+  import("./ElementEmbed").then((mod) => mod.ElementEmbed)
+) as unknown as ComponentType<ElementBlock>;
+
+const ElementList = dynamic(() =>
+  import("./ElementList").then((mod) => mod.ElementList)
+) as unknown as ComponentType<ElementBlock>;
+
+const ElementBlockquote = dynamic(() =>
+  import("./ElementBlockquote").then((mod) => mod.ElementBlockquote)
+) as unknown as ComponentType<ElementBlock>;
+
+const ElementTable = dynamic(() =>
+  import("./ElementTable").then((mod) => mod.ElementTable)
+) as unknown as ComponentType<ElementBlock>;
+
+const ElementCode = dynamic(() =>
+  import("./ElementCode").then((mod) => mod.ElementCode)
+) as unknown as ComponentType<ElementBlock>;
+
 const ElementVideo = dynamic(() =>
   import("./ElementVideo").then((mod) => mod.ElementVideo)
 ) as unknown as ComponentType<ElementBlock>;
@@ -143,4 +170,9 @@ export const ELEMENT_COMPONENTS: Record<string, ComponentType<ElementBlock>> = {
   elementTooltip: memo(ElementTooltip) as ComponentType<ElementBlock>,
   elementLottie: memo(ElementLottie) as ComponentType<ElementBlock>,
   elementDrag: memo(ElementDrag) as ComponentType<ElementBlock>,
+  elementEmbed: memo(ElementEmbed) as ComponentType<ElementBlock>,
+  elementList: memo(ElementList) as ComponentType<ElementBlock>,
+  elementBlockquote: memo(ElementBlockquote) as ComponentType<ElementBlock>,
+  elementTable: memo(ElementTable) as ComponentType<ElementBlock>,
+  elementCode: memo(ElementCode) as ComponentType<ElementBlock>,
 };

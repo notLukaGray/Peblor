@@ -135,8 +135,11 @@ export function buildGridLayoutItems<T extends ElementWithId>(
       rowSpan,
       justifySelf: toCssSelfX(layout?.alignX),
       alignSelf: toCssSelfY(layout?.alignY),
-      zIndex: layout?.zIndex,
+      zIndex: layout?.layer,
       order: layout?.order ?? index,
+      gridArea: layout?.gridArea,
+      gridColumn: layout?.gridColumn,
+      gridRow: layout?.gridRow,
     };
     return out;
   });

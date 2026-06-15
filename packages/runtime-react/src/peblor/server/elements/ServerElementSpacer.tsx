@@ -1,37 +1,50 @@
 import type { CSSProperties } from "react";
 import type { ElementBlock } from "@pb/contracts/types";
-import { getElementLayoutStyle } from "@pb/core/layout";
-import { resolveThemeStyleObject } from "../../theme/theme-string";
+import { getElementLayoutStyle, stripResponsiveLayoutKeys } from "@pb/core/layout";
+import { lowerThemeStyleObject } from "../../theme/theme-string";
+import type { ServerElementComponentProps } from "../server-element-types";
 
 type Props = Extract<ElementBlock, { type: "elementSpacer" }>;
 
 export function ServerElementSpacer({
   height,
   width,
-  align,
+  selfAlign,
   marginTop,
   marginBottom,
   marginLeft,
   marginRight,
-  zIndex,
+  layer,
   constraints,
   wrapperStyle,
-}: Props) {
-  const layoutStyle = getElementLayoutStyle({
-    height,
-    width,
-    align,
-    marginTop,
-    marginBottom,
-    marginLeft,
-    marginRight,
-    zIndex,
-    constraints,
-    wrapperStyle: resolveThemeStyleObject(
-      wrapperStyle as Record<string, unknown> | undefined,
-      "light"
-    ),
-  } as Parameters<typeof getElementLayoutStyle>[0]);
+  serverIsMobile,
+  stateStyleClass,
+  responsiveStyleClass,
+  responsiveLayoutKeys,
+}: Props &
+  Pick<
+    ServerElementComponentProps,
+    "serverIsMobile" | "stateStyleClass" | "responsiveStyleClass" | "responsiveLayoutKeys"
+  >) {
+  const layoutInput = stripResponsiveLayoutKeys(
+    {
+      height,
+      width,
+      selfAlign,
+      marginTop,
+      marginBottom,
+      marginLeft,
+      marginRight,
+      layer,
+      constraints,
+      wrapperStyle: lowerThemeStyleObject(wrapperStyle as Record<string, unknown> | undefined),
+    },
+    responsiveStyleClass ? responsiveLayoutKeys : undefined
+  );
+  const layoutStyle = getElementLayoutStyle(
+    layoutInput as Parameters<typeof getElementLayoutStyle>[0],
+    serverIsMobile
+  );
   const innerStyle: CSSProperties = {
     width: "100%",
     height: "100%",
@@ -40,8 +53,11 @@ export function ServerElementSpacer({
   };
 
   return (
-    <figure className="shrink-0 m-0" style={layoutStyle}>
+    <div
+      className={["shrink-0 m-0", stateStyleClass, responsiveStyleClass].filter(Boolean).join(" ")}
+      style={layoutStyle}
+    >
       <div style={innerStyle} />
-    </figure>
+    </div>
   );
 }

@@ -1,0 +1,149 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "entrancePreset": "fade",
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "glow-row"],
+  "definitions": {
+    "sec-label": {
+      "type": "elementGroup",
+      "display": "flex",
+      "align": "center",
+      "padding": "0.6rem 0",
+      "wrapperStyle": {
+        "position": "sticky",
+        "top": "3rem",
+        "layer": 10,
+        "backgroundColor": "color-mix(in oklab, var(--pb-secondary) 88%, transparent)",
+        "bgBlur": "blur(20px)",
+        "WebkitBackdropFilter": "blur(20px)",
+        "borderBottom": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["label-text"],
+        "definitions": {
+          "label-text": {
+            "preset": "type-h3-label",
+            "text": "Glow & Shadow"
+          }
+        }
+      }
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Glow effects using CSS box-shadow with accent-colored halos at different spread distances. Combine with subtle borders and translucent fills for luminous UI moments."
+    },
+    "glow-row": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": {
+        "base": "column",
+        "md": "row"
+      },
+      "gap": "1.5rem",
+      "width": "100%",
+      "padding": "0",
+      "scroll": "visible",
+      "section": {
+        "elementOrder": ["glow-card-1", "glow-card-2", "glow-card-3"],
+        "definitions": {
+          "glow-card-1": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "padding": "2rem",
+            "gap": "1rem",
+            "flex": "1 1 0px",
+            "borderRadius": "16px",
+            "wrapperStyle": {
+              "backgroundColor": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+              "boxShadow": "0 0 40px color-mix(in oklab, var(--pb-accent) 25%, transparent)",
+              "border": "1px solid color-mix(in oklab, var(--pb-accent) 15%, transparent)"
+            },
+            "motionTiming": {
+              "entrancePreset": "fade",
+              "trigger": "onFirstVisible"
+            },
+            "section": {
+              "elementOrder": ["title", "body"],
+              "definitions": {
+                "title": {
+                  "preset": "type-h4-card",
+                  "text": "Accent Glow"
+                },
+                "body": {
+                  "preset": "type-body-fine",
+                  "text": "40px spread using var(--pb-accent) at 25% opacity. A wide, soft colored halo that draws attention to the card edge."
+                }
+              }
+            }
+          },
+          "glow-card-2": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "padding": "2rem",
+            "gap": "1rem",
+            "flex": "1 1 0px",
+            "borderRadius": "16px",
+            "wrapperStyle": {
+              "backgroundColor": "color-mix(in oklab, var(--pb-primary) 8%, transparent)",
+              "boxShadow": "0 0 60px color-mix(in oklab, var(--pb-primary) 30%, transparent)",
+              "border": "1px solid color-mix(in oklab, var(--pb-primary) 12%, transparent)"
+            },
+            "motionTiming": {
+              "entrancePreset": "slideUp",
+              "trigger": "onFirstVisible"
+            },
+            "section": {
+              "elementOrder": ["title", "body"],
+              "definitions": {
+                "title": {
+                  "preset": "type-h4-card",
+                  "text": "Primary Glow"
+                },
+                "body": {
+                  "preset": "type-body-fine",
+                  "text": "60px spread using var(--pb-primary) at 30% opacity. A larger, softer bloom that creates an atmospheric presence around the card."
+                }
+              }
+            }
+          },
+          "glow-card-3": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "padding": "2rem",
+            "gap": "1rem",
+            "flex": "1 1 0px",
+            "borderRadius": "16px",
+            "wrapperStyle": {
+              "backgroundColor": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+              "boxShadow": "0 0 24px color-mix(in oklab, var(--pb-on-secondary) 18%, transparent), 0 4px 20px rgba(0,0,0,0.1)",
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+            },
+            "motionTiming": {
+              "entrancePreset": "blurIn",
+              "trigger": "onFirstVisible"
+            },
+            "section": {
+              "elementOrder": ["title", "body"],
+              "definitions": {
+                "title": {
+                  "preset": "type-h4-card",
+                  "text": "Soft Glow"
+                },
+                "body": {
+                  "preset": "type-body-fine",
+                  "text": "Dual shadow: a tight 24px neutral glow plus a subtle elevation shadow. Works well for elevated cards and floating elements."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "scroll": "visible"
+}

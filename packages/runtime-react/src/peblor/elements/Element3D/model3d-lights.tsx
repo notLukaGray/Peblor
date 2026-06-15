@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { SpotLightWithTarget } from "./model3d-spot-light";
 import type { SceneDef, LightDef } from "@pb/contracts/types";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 type LightRenderer = (light: LightDef, key: number) => ReactNode;
 
@@ -10,8 +11,8 @@ const LIGHT_RENDERERS: Record<string, LightRenderer> = {
   ambient: (light, key) => (
     <ambientLight
       key={key}
-      intensity={(light as { intensity?: number }).intensity ?? 0.5}
-      color={(light as { color?: string }).color ?? "#ffffff"}
+      intensity={(light as { intensity?: number }).intensity ?? globals.threeAmbientIntensity}
+      color={(light as { color?: string }).color ?? globals.colorLight3d}
     />
   ),
   spot: (light, key) => {
@@ -27,8 +28,8 @@ const LIGHT_RENDERERS: Record<string, LightRenderer> = {
         key={key}
         position={s.position}
         target={s.target}
-        angle={s.angle ?? 0.1}
-        penumbra={s.penumbra ?? 0.5}
+        angle={s.angle ?? globals.threeSpotAngle}
+        penumbra={s.penumbra ?? globals.threeSpotPenumbra}
         intensity={s.intensity ?? 1}
       />
     );
@@ -44,7 +45,7 @@ const LIGHT_RENDERERS: Record<string, LightRenderer> = {
         key={key}
         position={p.position}
         intensity={p.intensity ?? 1}
-        color={p.color ?? "#ffffff"}
+        color={p.color ?? globals.colorLight3d}
       />
     );
   },
@@ -59,7 +60,7 @@ const LIGHT_RENDERERS: Record<string, LightRenderer> = {
         key={key}
         position={d.position ?? [5, 5, 5]}
         intensity={d.intensity ?? 1}
-        color={d.color ?? "#ffffff"}
+        color={d.color ?? globals.colorLight3d}
       />
     );
   },

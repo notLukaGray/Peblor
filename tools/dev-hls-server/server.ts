@@ -183,7 +183,10 @@ async function findPosterSourceMaster(outputDir: string): Promise<string | null>
     "master.m3u8",
   ]) {
     const masterPath = path.join(outputDir, relativePath);
-    const stat = await fs.stat(masterPath).catch(() => null);
+    const stat = await fs.stat(masterPath).catch((err) => {
+      console.warn("[dev-hls] Failed to stat master playlist", masterPath, err);
+      return null;
+    });
     if (stat?.isFile()) return masterPath;
   }
   return null;
@@ -528,7 +531,10 @@ async function handleConvert(body: HlsConvertRequest): Promise<{
         enqueue(`Input: ${inputPath}\n`);
         enqueue(`Output: ${outputDir}\n\n`);
 
-        const inputStat = await fs.stat(inputPath).catch(() => null);
+        const inputStat = await fs.stat(inputPath).catch((err) => {
+          console.warn("[dev-hls] Failed to stat input path", inputPath, err);
+          return null;
+        });
         if (!inputStat || !inputStat.isFile()) {
           enqueue("Input path does not point to a readable file.\n");
           controller.close();
@@ -874,8 +880,8 @@ function shutdownMediaServer(signal: NodeJS.Signals): void {
   for (const child of Array.from(trackedMediaChildren)) {
     try {
       child.kill("SIGTERM");
-    } catch {
-      // ignore
+    } catch (err) {
+      console.warn("[dev-hls] Failed to kill media child process", err);
     }
   }
   server.close(() => {

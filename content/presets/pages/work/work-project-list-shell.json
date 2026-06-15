@@ -1,0 +1,67 @@
+{
+  "type": "elementInfiniteScroll",
+  "ariaLabel": "Project carousel",
+  "width": {
+    "base": "calc(100% + 1.25rem)",
+    "md": "calc(100% + 2.75rem)"
+  },
+  "height": "100%",
+  "minHeight": {
+    "base": "clamp(14rem, 42dvh, 26rem)",
+    "md": "clamp(16rem, 48dvh, 32rem)"
+  },
+  "scrollDirection": "vertical",
+  "loop": true,
+  "initialIndex": 0,
+  "selectedValueVariable": "selectedProject",
+  "selectedValues": {
+    "spinach-tiff-item": "spinach-tiff",
+    "brand-item": "brand",
+    "campaign-item": "campaign",
+    "cinematic-item": "cinematic",
+    "documentary-item": "documentary",
+    "editorial-item": "editorial",
+    "exhibition-item": "exhibition",
+    "immersive-item": "immersive",
+    "motion-item": "motion",
+    "photography-item": "photography",
+    "process-item": "process",
+    "systems-item": "systems",
+    "clean-it-up-item": "clean-it-up",
+    "lenero-item": "lenero"
+  },
+  "centerOnClick": true,
+  "wheelLockMs": 220,
+  "snapDurationMs": 520,
+  "activeScale": 1,
+  "inactiveScale": 0.9,
+  "activeOpacity": 1,
+  "inactiveOpacity": 0.42,
+  "activeItemStyle": {
+    "--work-list-title-color": "var(--pb-on-secondary)",
+    "--work-list-category-color": "color-mix(in oklab, var(--pb-on-secondary) 62%, transparent)",
+    "--work-list-arrow-color": "var(--pb-on-secondary)"
+  },
+  "inactiveItemStyle": {
+    "--work-list-title-color": "color-mix(in oklab, var(--pb-on-secondary) 62%, transparent)",
+    "--work-list-category-color": "color-mix(in oklab, var(--pb-on-secondary) 28%, transparent)",
+    "--work-list-arrow-color": "color-mix(in oklab, var(--pb-on-secondary) 26%, transparent)"
+  },
+  "display": "flex",
+  "flow": "column",
+  "align": "stretch",
+  "gap": "0",
+  "marginRight": {
+    "base": "-1.25rem",
+    "md": "-2.1rem"
+  },
+  "padding": {
+    "base": "0 1.25rem 0 0.85rem",
+    "md": "0 2rem 1rem 1.1rem"
+  },
+  "scroll": "auto",
+  "section": {
+    "elementOrder": [],
+    "definitions": {}
+  }
+}

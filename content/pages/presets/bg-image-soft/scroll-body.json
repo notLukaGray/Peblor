@@ -1,0 +1,11 @@
+{
+  "preset": "demo-scroll-body",
+  "height": "200vh",
+  "elementOrder": ["scroll-note"],
+  "definitions": {
+    "scroll-note": {
+      "preset": "demo-scroll-note",
+      "text": "Image drifts at 0.25× scroll speed. Overlay pulses on a 7s mirror loop independent of scroll."
+    }
+  }
+}

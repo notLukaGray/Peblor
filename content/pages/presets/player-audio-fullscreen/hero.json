@@ -1,0 +1,21 @@
+{
+  "preset": "demo-hero",
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Artwork · Play · Volume · Seek · Time"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Audio Card"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Card layout audio player. Glass bottomBar with play, volume, seek, and time — all owned by the module.",
+      "width": {
+        "base": "100%",
+        "md": "78%"
+      }
+    }
+  }
+}

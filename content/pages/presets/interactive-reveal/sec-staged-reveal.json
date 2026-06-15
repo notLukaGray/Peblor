@@ -1,0 +1,186 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "staggerChildren": 0.2,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "stage-1", "stage-2", "stage-3", "stage-4"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Staged Progressive Reveal"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Content sections that reveal progressively as the user scrolls. Each stage triggers at a different scroll position using entrance motion presets."
+    },
+    "stage-1": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "0.75rem",
+      "padding": "1.5rem",
+      "borderRadius": "8px",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 3%, transparent)",
+      "border": "1px solid color-mix(in oklab, var(--pb-accent) 30%, transparent)",
+      "motionTiming": {
+        "entrancePreset": "slideUp",
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": ["s-num", "s-title", "s-body"],
+        "definitions": {
+          "s-num": {
+            "type": "elementBody",
+            "level": 4,
+            "text": "STAGE 01",
+            "textTransform": "uppercase",
+            "letterSpacing": "0.1em",
+            "color": "var(--pb-accent)",
+            "width": "auto"
+          },
+          "s-title": {
+            "type": "elementHeading",
+            "level": 3,
+            "variant": "section",
+            "text": "Discovery",
+            "color": "var(--pb-on-secondary)",
+            "width": "auto"
+          },
+          "s-body": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "Initial research and user interviews establish the problem space. Stakeholder goals are aligned and success metrics defined before any design work begins.",
+            "color": "color-mix(in oklab, var(--pb-on-secondary) 65%, transparent)"
+          }
+        }
+      }
+    },
+    "stage-2": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "0.75rem",
+      "padding": "1.5rem",
+      "borderRadius": "8px",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 3%, transparent)",
+      "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+      "motionTiming": {
+        "entrancePreset": "slideUp",
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": ["s-num", "s-title", "s-body"],
+        "definitions": {
+          "s-num": {
+            "type": "elementBody",
+            "level": 4,
+            "text": "STAGE 02",
+            "textTransform": "uppercase",
+            "letterSpacing": "0.1em",
+            "color": "var(--pb-accent)",
+            "width": "auto"
+          },
+          "s-title": {
+            "type": "elementHeading",
+            "level": 3,
+            "variant": "section",
+            "text": "Ideation",
+            "color": "var(--pb-on-secondary)",
+            "width": "auto"
+          },
+          "s-body": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "Concepts are sketched, wireframed, and iterated through collaborative critique. Multiple directions are explored before committing to a single path.",
+            "color": "color-mix(in oklab, var(--pb-on-secondary) 65%, transparent)"
+          }
+        }
+      }
+    },
+    "stage-3": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "0.75rem",
+      "padding": "1.5rem",
+      "borderRadius": "8px",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 3%, transparent)",
+      "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+      "motionTiming": {
+        "entrancePreset": "slideUp",
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": ["s-num", "s-title", "s-body"],
+        "definitions": {
+          "s-num": {
+            "type": "elementBody",
+            "level": 4,
+            "text": "STAGE 03",
+            "textTransform": "uppercase",
+            "letterSpacing": "0.1em",
+            "color": "var(--pb-accent)",
+            "width": "auto"
+          },
+          "s-title": {
+            "type": "elementHeading",
+            "level": 3,
+            "variant": "section",
+            "text": "Prototyping",
+            "color": "var(--pb-on-secondary)",
+            "width": "auto"
+          },
+          "s-body": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "High-fidelity prototypes are built and tested with real users. Interaction patterns are refined through usability testing sessions.",
+            "color": "color-mix(in oklab, var(--pb-on-secondary) 65%, transparent)"
+          }
+        }
+      }
+    },
+    "stage-4": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "0.75rem",
+      "padding": "1.5rem",
+      "borderRadius": "8px",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 3%, transparent)",
+      "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+      "motionTiming": {
+        "entrancePreset": "slideUp",
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": ["s-num", "s-title", "s-body"],
+        "definitions": {
+          "s-num": {
+            "type": "elementBody",
+            "level": 4,
+            "text": "STAGE 04",
+            "textTransform": "uppercase",
+            "letterSpacing": "0.1em",
+            "color": "var(--pb-accent)",
+            "width": "auto"
+          },
+          "s-title": {
+            "type": "elementHeading",
+            "level": 3,
+            "variant": "section",
+            "text": "Delivery",
+            "color": "var(--pb-on-secondary)",
+            "width": "auto"
+          },
+          "s-body": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "Final designs are documented, assets handed off, and implementation supported through the development cycle with QA review.",
+            "color": "color-mix(in oklab, var(--pb-on-secondary) 65%, transparent)"
+          }
+        }
+      }
+    }
+  }
+}

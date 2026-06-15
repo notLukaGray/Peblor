@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import type { ElementBlock } from "@pb/contracts/types";
-import { type PeblorThemeMode, resolveThemeString } from "@/peblor/theme/theme-string";
+import { lowerThemeStringToCss } from "@/peblor/theme/theme-string";
 
 type ElementButtonProps = Extract<ElementBlock, { type: "elementButton" }>;
 
@@ -22,8 +22,7 @@ export function buildElementButtonLinkState(
     | "linkTransition"
     | "disabled"
   >,
-  typographyClass: string,
-  themeMode: PeblorThemeMode
+  typographyClass: string
 ) {
   const {
     href,
@@ -44,10 +43,10 @@ export function buildElementButtonLinkState(
     (pathname === href || (href !== "/" && pathname.startsWith(href)));
 
   const linkStyle: CSSProperties = {};
-  const resolvedLinkDefault = resolveThemeString(linkDefault, themeMode);
-  const resolvedLinkHover = resolveThemeString(linkHover, themeMode);
-  const resolvedLinkActive = resolveThemeString(linkActive, themeMode);
-  const resolvedLinkDisabled = resolveThemeString(linkDisabled, themeMode);
+  const resolvedLinkDefault = lowerThemeStringToCss(linkDefault);
+  const resolvedLinkHover = lowerThemeStringToCss(linkHover);
+  const resolvedLinkActive = lowerThemeStringToCss(linkActive);
+  const resolvedLinkDisabled = lowerThemeStringToCss(linkDisabled);
   if (resolvedLinkDefault != null)
     (linkStyle as Record<string, string>)["--element-link-color"] = resolvedLinkDefault;
   if (resolvedLinkHover != null)

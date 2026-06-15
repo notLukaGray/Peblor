@@ -1,0 +1,11 @@
+{
+  "type": "elementLink",
+  "copyType": "body",
+  "level": 3,
+  "linkDefault": "var(--pb-on-secondary)",
+  "linkHover": "var(--pb-accent)",
+  "linkTransition": ".2s",
+  "textDecoration": "underline",
+  "href": "#",
+  "label": "Learn more"
+}

@@ -1,0 +1,21 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Cards Basic — Preset Demo",
+  "description": "Reusable content-card primitives — feature cards, article previews, compact CTAs, and profile mini cards built from elementGroup presets.",
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "card", "bg"],
+  "sectionOrder": [
+    "nav-header",
+    "hero",
+    "sec-shells",
+    "sec-features",
+    "sec-editorial",
+    "sec-cta-profile",
+    "sec-variants"
+  ],
+  "bgKey": "bg-cards",
+  "definitions": {
+    "bg-cards": {
+      "preset": "bg-cards"
+    }
+  }
+}

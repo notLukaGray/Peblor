@@ -52,5 +52,4 @@ export const FORM_FIELD_COMPONENTS: Partial<
   hidden: FormFieldHidden as ComponentType<FormFieldRenderProps>,
   button: FormFieldButton as ComponentType<FormFieldRenderProps>,
   row: FormFieldRow as ComponentType<FormFieldRenderProps>,
-  submit: FormFieldButton as ComponentType<FormFieldRenderProps>,
 };

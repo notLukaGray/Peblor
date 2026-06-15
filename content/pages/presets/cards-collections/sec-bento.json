@@ -1,0 +1,17 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["sec-label", "sec-desc", "bento"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Bento Grid"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Mixed-size card composition using flex-wrap. Row one: 65% image card + 35% stat card. Row two: three equal feature cards. Stacks on mobile."
+    },
+    "bento": {
+      "preset": "card-bento-grid"
+    }
+  }
+}

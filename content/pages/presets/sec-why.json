@@ -1,0 +1,96 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "staggerChildren": 0.1,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["why-heading", "why-grid"],
+  "definitions": {
+    "why-heading": {
+      "preset": "type-h2-section",
+      "text": "Why Peblor is different",
+      "selfAlign": "center",
+      "textAlign": "center"
+    },
+    "why-grid": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": {
+        "base": "column",
+        "md": "row"
+      },
+      "wrap": "wrap",
+      "distribute": "center",
+      "gap": "1.5rem",
+      "section": {
+        "elementOrder": ["why-bg", "why-state", "why-runtime", "why-scroll"],
+        "definitions": {
+          "why-bg": {
+            "preset": "preset-demo-why-card",
+            "section": {
+              "definitions": {
+                "why-icon": {
+                  "text": "🎨"
+                },
+                "why-title": {
+                  "text": "Layered backgrounds"
+                },
+                "why-desc": {
+                  "text": "Multi-layer gradients, video, image, pattern — each with independent motion, scroll, and transition support."
+                }
+              }
+            }
+          },
+          "why-state": {
+            "preset": "preset-demo-why-card",
+            "section": {
+              "definitions": {
+                "why-icon": {
+                  "text": "⚡"
+                },
+                "why-title": {
+                  "text": "State & logic layer"
+                },
+                "why-desc": {
+                  "text": "Shared variables, visibleWhen, conditional actions, fireMultiple sequencing — interactions as data."
+                }
+              }
+            }
+          },
+          "why-runtime": {
+            "preset": "preset-demo-why-card",
+            "section": {
+              "definitions": {
+                "why-icon": {
+                  "text": "🔀"
+                },
+                "why-title": {
+                  "text": "Multi-runtime orchestration"
+                },
+                "why-desc": {
+                  "text": "Video, audio, Lottie, Rive, and 3D sharing variables, triggers, and control surfaces in one page."
+                }
+              }
+            }
+          },
+          "why-scroll": {
+            "preset": "preset-demo-why-card",
+            "section": {
+              "definitions": {
+                "why-icon": {
+                  "text": "📜"
+                },
+                "why-title": {
+                  "text": "Scroll-driven storytelling"
+                },
+                "why-desc": {
+                  "text": "Sticky sections, scroll-triggered animations, parallax layers, and background transitions mapped to progress."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

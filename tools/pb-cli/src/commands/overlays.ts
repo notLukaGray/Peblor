@@ -38,7 +38,8 @@ function listOverlayFiles(dir: string): Array<{ id: string; path: string }> {
   let entries: fs.Dirent[];
   try {
     entries = fs.readdirSync(dir, { withFileTypes: true });
-  } catch {
+  } catch (err) {
+    console.warn("[pb-cli] Failed to list overlay directory", dir, err);
     return [];
   }
   return entries

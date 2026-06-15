@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef } from "react";
 import type { CSSProperties } from "react";
 import type { SectionBlock } from "@pb/contracts/types";
 import { handleSectionWheel, getDefaultScrollSpeed } from "@pb/core/layout";
-import { resolveResponsiveValue } from "@pb/runtime-react/core/lib/responsive-value";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
 import { useSectionBaseStyles } from "@/peblor/section/position/use-section-base-styles";
 import { useDeviceType } from "@pb/runtime-react/core/providers/device-type-provider";
 import { applySectionFillStyle } from "@pb/core/layout";
@@ -16,8 +16,8 @@ import { SectionMotionWrapper } from "@/peblor/integrations/framer-motion";
 import { SectionScrollTargetProvider } from "@/peblor/section/position/SectionScrollTargetContext";
 import { useSectionViewportTrigger } from "@/peblor/triggers/core/use-section-viewport-trigger";
 import { useSectionCustomTriggers } from "@/peblor/triggers/core/use-section-custom-triggers";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
-import { resolveThemeString } from "@/peblor/theme/theme-string";
+import { lowerThemeStringToCss } from "@/peblor/theme/theme-string";
+import { MOTION_DEFAULTS } from "@pb/contracts/peblor/core/peblor-motion-defaults";
 
 type Props = Extract<SectionBlock, { type: "scrollContainer" }> & {};
 
@@ -33,7 +33,7 @@ export function ScrollContainerSection({
   maxWidth,
   minHeight,
   maxHeight,
-  align,
+  selfAlign,
   marginLeft,
   marginRight,
   marginTop,
@@ -42,14 +42,14 @@ export function ScrollContainerSection({
   border,
   boxShadow,
   filter,
-  backdropFilter,
-  clipPath,
+  bgBlur,
+  clipShape,
   cursor,
   aspectRatio,
   scrollSpeed = getDefaultScrollSpeed(),
   initialX,
   initialY,
-  zIndex,
+  layer,
   scrollDirection = "vertical",
   scrollProgressTrigger,
   scrollProgressTriggerId,
@@ -70,6 +70,13 @@ export function ScrollContainerSection({
   cursorTriggers,
   scrollDirectionTriggers,
   idleTriggers,
+  variableTriggers,
+  tabVisibilityTriggers,
+  mediaEndTriggers,
+  customEventTriggers,
+  elementEventTriggers,
+  scrollThresholdTriggers,
+  mediaProgressTriggers,
 }: Props) {
   const sectionRef = useRef<HTMLElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -91,6 +98,13 @@ export function ScrollContainerSection({
     cursorTriggers,
     scrollDirectionTriggers,
     idleTriggers,
+    variableTriggers,
+    tabVisibilityTriggers,
+    mediaEndTriggers,
+    customEventTriggers,
+    elementEventTriggers,
+    scrollThresholdTriggers,
+    mediaProgressTriggers,
   });
 
   const resolvedTriggerId = scrollProgressTrigger?.id ?? scrollProgressTriggerId;
@@ -104,11 +118,12 @@ export function ScrollContainerSection({
     if (!resolvedTriggerId) return;
     const el = scrollContainerRef.current;
     if (!el) return;
-    const ease = 0.06; // slow transition: lerp toward target each frame
+    const ease = MOTION_DEFAULTS.scrollContainerLerpFactor; // slow transition: lerp toward target each frame
     const tick = () => {
       const target = targetProgressRef.current;
       if (target == null) {
-        rafRef.current = requestAnimationFrame(tick);
+        // No target — stop the loop; handler will restart it when a target arrives.
+        rafRef.current = null;
         return;
       }
       if (scrollDirection === "horizontal") {
@@ -136,7 +151,6 @@ export function ScrollContainerSection({
       }
       rafRef.current = requestAnimationFrame(tick);
     };
-    rafRef.current = requestAnimationFrame(tick);
     const handler = (e: CustomEvent<{ id: string; progress: number }>) => {
       if (e.detail?.id !== resolvedTriggerId || typeof e.detail?.progress !== "number") return;
       let p = Math.max(0, Math.min(1, e.detail.progress));
@@ -147,6 +161,8 @@ export function ScrollContainerSection({
       }
       if (triggerInvert) p = 1 - p;
       targetProgressRef.current = p;
+      // Start the RAF loop if not already running.
+      if (rafRef.current == null) rafRef.current = requestAnimationFrame(tick);
     };
     window.addEventListener("update-transition-progress", handler as EventListener);
     return () => {
@@ -155,11 +171,10 @@ export function ScrollContainerSection({
     };
   }, [resolvedTriggerId, triggerInvert, inputRange, scrollDirection]);
   const { isMobile } = useDeviceType();
-  const themeMode = usePeblorThemeMode();
   const resolvedAriaLabel =
     resolveResponsiveValue(ariaLabel, isMobile) ?? id ?? "Scroll container section";
-  const resolvedFill = resolveThemeString(resolveResponsiveValue(fill, isMobile), themeMode);
-  const { baseStyle } = useSectionBaseStyles({
+  const resolvedFill = lowerThemeStringToCss(resolveResponsiveValue(fill, isMobile));
+  const { baseStyle, parallaxY } = useSectionBaseStyles({
     fill,
     width,
     height,
@@ -167,7 +182,7 @@ export function ScrollContainerSection({
     maxWidth,
     minHeight,
     maxHeight,
-    align,
+    selfAlign,
     marginLeft,
     marginRight,
     marginTop,
@@ -176,17 +191,16 @@ export function ScrollContainerSection({
     border,
     boxShadow,
     filter,
-    backdropFilter,
-    clipPath,
+    bgBlur,
+    clipShape,
     cursor,
     aspectRatio,
     scrollSpeed,
     initialX,
     initialY,
-    zIndex,
+    layer,
     effects,
     sectionRef,
-    usePadding: true, // Scroll containers use padding
     reduceMotion,
   });
 
@@ -194,6 +208,7 @@ export function ScrollContainerSection({
     const style: CSSProperties = {
       width: "100%",
       height: "100%",
+      containerType: "inline-size",
       overflowX: scrollDirection === "horizontal" ? "auto" : "hidden",
       overflowY: scrollDirection === "vertical" ? "auto" : "hidden",
       scrollBehavior: "smooth",
@@ -231,10 +246,12 @@ export function ScrollContainerSection({
 
   return (
     <SectionMotionWrapper
+      id={id}
       sectionRef={sectionRef}
       motion={motionFromJson}
       motionTiming={motionTiming}
       reduceMotion={reduceMotion}
+      parallaxY={parallaxY}
       className="relative z-[var(--pb-z-raised)] flex shrink-0 flex-col min-h-0"
       style={applySectionFillStyle(resolvedFill, layers, baseStyle)}
       aria-label={resolvedAriaLabel}

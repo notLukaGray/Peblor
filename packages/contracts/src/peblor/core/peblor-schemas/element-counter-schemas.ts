@@ -1,21 +1,22 @@
 import { z } from "zod";
 import { elementLayoutSchema } from "./element-foundation-schemas";
 import { jsonNullishOptional, themeStringSchema } from "./schema-primitives";
+import {
+  headingLevelSchema,
+  textFillBaseSchema,
+  typographyOverridesSchema,
+} from "./schema-shared-primitives";
 
 const counterVariantSchema = jsonNullishOptional(z.enum(["display", "section", "label"]));
-const responsiveCssSizeSchema = z.union([
-  z.union([z.string(), z.number()]),
-  z.tuple([z.union([z.string(), z.number()]), z.union([z.string(), z.number()])]),
-]);
-const headingLevelSchema = z.union([
-  z.literal(1),
-  z.literal(2),
-  z.literal(3),
-  z.literal(4),
-  z.literal(5),
-  z.literal(6),
-]);
-const counterTriggerSchema = z.enum(["onMount", "onVisible", "onScroll"]).optional();
+/**
+ * Counter trigger — when absent, defaults to "onVisible" (matches runtime behavior).
+ * Using .optional().default() keeps `trigger` optional in the TypeScript input type
+ * (so existing callers need not change) while making the default visible to JSON schema
+ * and MCP tooling in the output type.
+ */
+const counterTriggerSchema = jsonNullishOptional(
+  z.enum(["onMount", "onVisible", "onScroll"]).default("onVisible")
+);
 
 /** RAF tween: duration in ms; easing matches resolveEasing in ElementCounter (easeOut default when omitted). */
 export const counterTweenSchema = z.object({
@@ -43,25 +44,18 @@ export const elementCounterSchema = z
     trigger: counterTriggerSchema,
     tween: counterTweenSchema.optional(),
     variableTween: counterTweenSchema.optional(),
-    scroll: counterScrollSchema.optional(),
+    counterScroll: counterScrollSchema.optional(),
     level: headingLevelSchema.optional(),
     variant: counterVariantSchema,
-    fontFamily: z.string().optional(),
-    fontSize: responsiveCssSizeSchema.optional(),
-    fontWeight: z.union([z.string(), z.number()]).optional(),
-    letterSpacing: z.union([z.string(), z.number()]).optional(),
     color: themeStringSchema.optional(),
-    textFill: z
-      .union([
-        z.object({ type: z.literal("color"), value: themeStringSchema }),
-        z.object({ type: z.literal("gradient"), value: themeStringSchema }),
-      ])
-      .optional(),
+    textFill: textFillBaseSchema.optional(),
     variableKey: z.string().optional(),
   })
+  .merge(typographyOverridesSchema)
   .merge(elementLayoutSchema)
   .superRefine((data, ctx) => {
-    const trig = data.trigger ?? "onVisible";
+    // trigger now always has a value from z.default("onVisible") above — no fallback needed.
+    const trig = data.trigger;
     const isScroll = trig === "onScroll";
     const hasVar = Boolean(data.variableKey);
 
@@ -74,11 +68,11 @@ export const elementCounterSchema = z
     }
 
     if (isScroll) {
-      if (!data.scroll) {
+      if (!data.counterScroll) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "scroll is required when trigger is onScroll",
-          path: ["scroll"],
+          message: "counterScroll is required when trigger is onScroll",
+          path: ["counterScroll"],
         });
       }
     } else if (!hasVar) {

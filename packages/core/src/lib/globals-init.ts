@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { configureCoreGlobals } from "./globals";
 import { resolveContentDir as resolveContentDirFromConfig } from "./peblor-config";
+import { loadRootEnv } from "./load-root-env";
 
 function resolveContentDir(): string | null {
   const resolved = resolveContentDirFromConfig();
@@ -12,7 +13,8 @@ function readJsonFile(filePath: string): Record<string, unknown> | null {
   try {
     const raw = fs.readFileSync(filePath, "utf-8");
     return JSON.parse(raw) as Record<string, unknown>;
-  } catch {
+  } catch (err) {
+    console.warn("[pb-core] Failed to read/parse JSON file", filePath, err);
     return null;
   }
 }
@@ -20,6 +22,11 @@ function readJsonFile(filePath: string): Record<string, unknown> | null {
 export function initCoreGlobalsFromContent(): void {
   const contentDir = resolveContentDir();
   if (!contentDir) return;
+
+  // Next.js 16 Turbopack does not reliably inherit shell-sourced env vars into
+  // API route workers. Load .env explicitly as a safety net (proxy.ts also calls
+  // this, but the proxy middleware excludes /api/* routes).
+  loadRootEnv();
 
   const patch: Record<string, unknown> = {};
 

@@ -1,0 +1,50 @@
+{
+  "type": "sectionColumn",
+  "columns": {
+    "base": 1,
+    "md": 2
+  },
+  "columnWidths": {
+    "base": [1],
+    "md": [0.42, 1]
+  },
+  "columnGaps": {
+    "base": "1.5rem",
+    "md": "3rem"
+  },
+  "columnAssignments": {
+    "meta-heading": 0,
+    "meta-list": 0,
+    "meta-link": 0,
+    "title": 1,
+    "narrative": 1
+  },
+  "contentWidth": "100%",
+  "contentHeight": "hug",
+  "elementOrder": ["title", "narrative", "meta-heading", "meta-list", "meta-link"],
+  "gridMode": "grid",
+  "gridAutoRows": "auto",
+  "definitions": {
+    "title": {
+      "preset": "type-h3-label",
+      "text": "Primary content with utility sidebar"
+    },
+    "narrative": {
+      "preset": "type-body-standard",
+      "text": "Main column stays generous for readability while the sidebar tracks ownership, status, and resource links. On mobile, sidebar content follows naturally after the narrative."
+    },
+    "meta-heading": {
+      "preset": "type-h5-meta",
+      "text": "Sidebar metadata"
+    },
+    "meta-list": {
+      "preset": "type-body-fine",
+      "text": "Owner: Platform Team\nStatus: In review\nUpdated: 23 May 2026\nPriority: High"
+    },
+    "meta-link": {
+      "preset": "type-link-nav",
+      "label": "Open spec ->",
+      "href": "#"
+    }
+  }
+}

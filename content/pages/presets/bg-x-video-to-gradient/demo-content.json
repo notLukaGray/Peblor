@@ -1,0 +1,11 @@
+{
+  "preset": "demo-scroll-body",
+  "height": "200vh",
+  "elementOrder": ["scroll-note"],
+  "definitions": {
+    "scroll-note": {
+      "preset": "demo-scroll-note",
+      "text": "Transition runs from 20% → 50% of total scroll distance."
+    }
+  }
+}

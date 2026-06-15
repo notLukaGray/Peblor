@@ -1,0 +1,786 @@
+{
+  "templates": [
+    {
+      "name": "hero-cta",
+      "description": "Heading + body + call-to-action button — standard marketing page.",
+      "tags": ["landing", "marketing", "cta", "simple"],
+      "sections": [
+        {
+          "key": "hero",
+          "type": "contentBlock",
+          "elements": ["elementHeading", "elementBody", "elementButton"]
+        }
+      ]
+    },
+    {
+      "name": "hero-features",
+      "description": "Hero section followed by a grid of features or value props.",
+      "tags": ["landing", "marketing", "features", "grid", "product"],
+      "sections": [
+        {
+          "key": "hero",
+          "type": "contentBlock",
+          "elements": ["elementHeading", "elementBody", "elementButton"]
+        },
+        {
+          "key": "features",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody"]
+        }
+      ]
+    },
+    {
+      "name": "hero-features-cta",
+      "description": "Hero + feature grid + final CTA — complete marketing landing.",
+      "tags": ["landing", "marketing", "saas", "product", "features", "cta"],
+      "sections": [
+        {
+          "key": "hero",
+          "type": "contentBlock",
+          "elements": ["elementHeading", "elementBody", "elementButton"]
+        },
+        {
+          "key": "features",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody"]
+        },
+        { "key": "cta", "type": "contentBlock", "elements": ["elementHeading", "elementButton"] }
+      ]
+    },
+    {
+      "name": "hero-features-social-proof-cta",
+      "description": "Full marketing page: hero, features, testimonials/stats, CTA.",
+      "tags": ["landing", "marketing", "saas", "full", "testimonials", "social proof"],
+      "sections": [
+        {
+          "key": "hero",
+          "type": "contentBlock",
+          "elements": ["elementHeading", "elementBody", "elementButton"]
+        },
+        {
+          "key": "value-props",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody"]
+        },
+        {
+          "key": "social-proof",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody"]
+        },
+        {
+          "key": "final-cta",
+          "type": "contentBlock",
+          "elements": ["elementHeading", "elementButton"]
+        }
+      ]
+    },
+    {
+      "name": "gallery",
+      "description": "Grid of images or media — portfolio/work pages.",
+      "tags": ["portfolio", "gallery", "images", "grid", "work", "showcase"],
+      "sections": [
+        { "key": "header", "type": "contentBlock", "elements": ["elementHeading"] },
+        { "key": "gallery", "type": "sectionColumn", "elements": ["elementImage"] }
+      ]
+    },
+    {
+      "name": "gallery-with-cta",
+      "description": "Gallery page with header and contact CTA.",
+      "tags": ["portfolio", "gallery", "images", "work", "contact"],
+      "sections": [
+        { "key": "header", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        { "key": "gallery", "type": "sectionColumn", "elements": ["elementImage"] },
+        {
+          "key": "contact-cta",
+          "type": "contentBlock",
+          "elements": ["elementHeading", "elementButton"]
+        }
+      ]
+    },
+    {
+      "name": "video-hero",
+      "description": "Full-bleed video background hero with optional heading.",
+      "tags": ["video", "film", "media", "hero", "cinematic"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementVideo", "elementHeading"] }
+      ]
+    },
+    {
+      "name": "video-hero-playlist",
+      "description": "Video hero with a scrollable playlist grid below.",
+      "tags": ["video", "film", "media", "playlist", "player", "showcase"],
+      "sections": [
+        { "key": "hero-video", "type": "contentBlock", "elements": ["elementVideo"] },
+        { "key": "playlist", "type": "sectionColumn", "elements": ["elementImage", "elementBody"] },
+        {
+          "key": "description",
+          "type": "contentBlock",
+          "elements": ["elementHeading", "elementBody"]
+        }
+      ]
+    },
+    {
+      "name": "contact-form",
+      "description": "Contact or sign-up page with form.",
+      "tags": ["contact", "form", "inquiry", "signup", "newsletter", "waitlist"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        { "key": "form", "type": "formBlock", "elements": [] }
+      ]
+    },
+    {
+      "name": "contact-form-with-info",
+      "description": "Contact page with intro, form, and location/info grid.",
+      "tags": ["contact", "form", "about", "info", "location"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "contact-info",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody"]
+        },
+        { "key": "form", "type": "formBlock", "elements": [] }
+      ]
+    },
+    {
+      "name": "long-form",
+      "description": "Multi-section article or case study.",
+      "tags": ["article", "editorial", "case study", "long form", "blog", "story", "read"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        { "key": "intro", "type": "contentBlock", "elements": ["elementBody"] },
+        { "key": "body", "type": "contentBlock", "elements": ["elementBody", "elementImage"] },
+        {
+          "key": "conclusion",
+          "type": "contentBlock",
+          "elements": ["elementHeading", "elementButton"]
+        }
+      ]
+    },
+    {
+      "name": "editorial-grid",
+      "description": "Magazine-style editorial with hero and article grid.",
+      "tags": ["editorial", "magazine", "articles", "blog", "news", "grid"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "featured",
+          "type": "contentBlock",
+          "elements": ["elementImage", "elementHeading", "elementBody"]
+        },
+        {
+          "key": "articles",
+          "type": "sectionColumn",
+          "elements": ["elementImage", "elementHeading", "elementBody"]
+        }
+      ]
+    },
+    {
+      "name": "about-page",
+      "description": "Company/team about page with story and team grid.",
+      "tags": ["about", "company", "team", "people", "culture", "story"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "story",
+          "type": "contentBlock",
+          "elements": ["elementHeading", "elementBody", "elementImage"]
+        },
+        {
+          "key": "team",
+          "type": "sectionColumn",
+          "elements": ["elementImage", "elementHeading", "elementBody"]
+        }
+      ]
+    },
+    {
+      "name": "about-with-cta",
+      "description": "About page with story, values, team, and contact CTA.",
+      "tags": ["about", "company", "team", "culture", "values"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        { "key": "story", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        { "key": "values", "type": "sectionColumn", "elements": ["elementHeading", "elementBody"] },
+        { "key": "team", "type": "sectionColumn", "elements": ["elementImage", "elementHeading"] },
+        { "key": "cta", "type": "contentBlock", "elements": ["elementHeading", "elementButton"] }
+      ]
+    },
+    {
+      "name": "product-page",
+      "description": "Product or SaaS feature page with demo, features, pricing, CTA.",
+      "tags": ["product", "saas", "pricing", "features", "demo", "software"],
+      "sections": [
+        {
+          "key": "hero",
+          "type": "contentBlock",
+          "elements": ["elementHeading", "elementBody", "elementButton"]
+        },
+        {
+          "key": "features",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody"]
+        },
+        {
+          "key": "how-it-works",
+          "type": "contentBlock",
+          "elements": ["elementHeading", "elementBody"]
+        },
+        {
+          "key": "pricing",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody", "elementButton"]
+        },
+        { "key": "cta", "type": "contentBlock", "elements": ["elementHeading", "elementButton"] }
+      ]
+    },
+    {
+      "name": "stats-features",
+      "description": "Stats/metrics section followed by feature highlights.",
+      "tags": ["stats", "metrics", "numbers", "kpi", "features", "social proof"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        { "key": "stats", "type": "sectionColumn", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "features",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody"]
+        }
+      ]
+    },
+    {
+      "name": "hero-stats-testimonials-cta",
+      "description": "Proof-heavy page: hero + stats grid + testimonials + CTA.",
+      "tags": ["landing", "proof", "testimonials", "stats", "numbers", "trust"],
+      "sections": [
+        {
+          "key": "hero",
+          "type": "contentBlock",
+          "elements": ["elementHeading", "elementBody", "elementButton"]
+        },
+        { "key": "stats", "type": "sectionColumn", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "testimonials",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody"]
+        },
+        { "key": "cta", "type": "contentBlock", "elements": ["elementHeading", "elementButton"] }
+      ]
+    },
+    {
+      "name": "portfolio-project",
+      "description": "Single project case study with hero image/video, problem-solution, outcomes.",
+      "tags": ["portfolio", "project", "case study", "work", "client", "design"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementImage", "elementHeading"] },
+        {
+          "key": "overview",
+          "type": "contentBlock",
+          "elements": ["elementHeading", "elementBody"]
+        },
+        {
+          "key": "details",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody"]
+        },
+        { "key": "results", "type": "sectionColumn", "elements": ["elementHeading", "elementBody"] }
+      ]
+    },
+    {
+      "name": "portfolio-grid-detail",
+      "description": "Portfolio index with work grid and optional featured project.",
+      "tags": ["portfolio", "gallery", "work", "projects", "grid", "showcase"],
+      "sections": [
+        { "key": "header", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "featured",
+          "type": "contentBlock",
+          "elements": ["elementImage", "elementHeading", "elementBody"]
+        },
+        {
+          "key": "work-grid",
+          "type": "sectionColumn",
+          "elements": ["elementImage", "elementHeading"]
+        },
+        {
+          "key": "contact-cta",
+          "type": "contentBlock",
+          "elements": ["elementHeading", "elementButton"]
+        }
+      ]
+    },
+    {
+      "name": "pricing-page",
+      "description": "Pricing tiers + FAQ + conversion CTA.",
+      "tags": ["pricing", "plans", "tiers", "subscription", "saas", "cost"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "pricing-tiers",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody", "elementButton"]
+        },
+        { "key": "faq", "type": "revealSection", "elements": ["elementHeading", "elementBody"] },
+        { "key": "cta", "type": "contentBlock", "elements": ["elementHeading", "elementButton"] }
+      ]
+    },
+    {
+      "name": "faq-page",
+      "description": "FAQ page with expandable answers.",
+      "tags": ["faq", "questions", "answers", "support", "help", "accordion"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "faq-items",
+          "type": "revealSection",
+          "elements": ["elementHeading", "elementBody"]
+        },
+        { "key": "cta", "type": "contentBlock", "elements": ["elementHeading", "elementButton"] }
+      ]
+    },
+    {
+      "name": "newsletter-landing",
+      "description": "Newsletter signup with value proposition and signup form.",
+      "tags": ["newsletter", "email", "signup", "subscribe", "waitlist"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "value-props",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody"]
+        },
+        { "key": "signup", "type": "formBlock", "elements": [] }
+      ]
+    },
+    {
+      "name": "audio-player-page",
+      "description": "Audio-focused page with player and track list.",
+      "tags": ["audio", "music", "podcast", "player", "tracks", "sound"],
+      "sections": [
+        { "key": "header", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        { "key": "player", "type": "contentBlock", "elements": ["elementAudio"] },
+        {
+          "key": "track-list",
+          "type": "sectionColumn",
+          "elements": ["elementBody", "elementButton"]
+        }
+      ]
+    },
+    {
+      "name": "immersive-hero",
+      "description": "Immersive full-screen hero with scroll-triggered content below.",
+      "tags": ["immersive", "full screen", "cinematic", "dramatic", "scroll", "animation"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "content",
+          "type": "contentBlock",
+          "elements": ["elementHeading", "elementBody", "elementImage"]
+        },
+        { "key": "cta", "type": "contentBlock", "elements": ["elementHeading", "elementButton"] }
+      ]
+    },
+    {
+      "name": "scroll-reveal-story",
+      "description": "Narrative scrolling page with scroll-driven reveals.",
+      "tags": ["scroll", "story", "narrative", "animation", "reveal", "parallax"],
+      "sections": [
+        { "key": "intro", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "chapter-1",
+          "type": "contentBlock",
+          "elements": ["elementImage", "elementHeading", "elementBody"]
+        },
+        { "key": "chapter-2", "type": "contentBlock", "elements": ["elementBody", "elementImage"] },
+        { "key": "outro", "type": "contentBlock", "elements": ["elementHeading", "elementButton"] }
+      ]
+    },
+    {
+      "name": "team-page",
+      "description": "Team/people page with photo grid and bios.",
+      "tags": ["team", "people", "profiles", "bios", "company", "founders"],
+      "sections": [
+        { "key": "header", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "team-grid",
+          "type": "sectionColumn",
+          "elements": ["elementImage", "elementHeading", "elementBody"]
+        },
+        {
+          "key": "join-cta",
+          "type": "contentBlock",
+          "elements": ["elementHeading", "elementButton"]
+        }
+      ]
+    },
+    {
+      "name": "event-landing",
+      "description": "Event or conference page: date, speakers, schedule, registration.",
+      "tags": ["event", "conference", "talk", "seminar", "register", "dates"],
+      "sections": [
+        {
+          "key": "hero",
+          "type": "contentBlock",
+          "elements": ["elementHeading", "elementBody", "elementButton"]
+        },
+        {
+          "key": "speakers",
+          "type": "sectionColumn",
+          "elements": ["elementImage", "elementHeading", "elementBody"]
+        },
+        {
+          "key": "schedule",
+          "type": "contentBlock",
+          "elements": ["elementHeading", "elementBody"]
+        },
+        { "key": "register", "type": "formBlock", "elements": [] }
+      ]
+    },
+    {
+      "name": "404-error-page",
+      "description": "404 not-found page with navigation back home.",
+      "tags": ["404", "error", "not found", "missing", "page"],
+      "sections": [
+        {
+          "key": "error",
+          "type": "contentBlock",
+          "elements": ["elementHeading", "elementBody", "elementButton"]
+        }
+      ]
+    },
+    {
+      "name": "splash-countdown",
+      "description": "Coming soon page with email capture.",
+      "tags": ["coming soon", "launch", "countdown", "teaser", "waitlist"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        { "key": "signup", "type": "formBlock", "elements": [] }
+      ]
+    },
+    {
+      "name": "services-page",
+      "description": "Professional services listing with process and testimonials.",
+      "tags": ["services", "agency", "consulting", "offerings", "process", "freelance"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "services",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody"]
+        },
+        { "key": "process", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "testimonials",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody"]
+        },
+        { "key": "cta", "type": "contentBlock", "elements": ["elementHeading", "elementButton"] }
+      ]
+    },
+    {
+      "name": "legal-page",
+      "description": "Privacy policy or terms of service — long-form text.",
+      "tags": ["legal", "privacy", "terms", "policy", "long form text"],
+      "sections": [
+        { "key": "header", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        { "key": "content", "type": "contentBlock", "elements": ["elementRichText"] }
+      ]
+    },
+    {
+      "name": "hero-body",
+      "description": "Single content block — simplest possible page.",
+      "tags": ["simple", "minimal", "single section"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] }
+      ]
+    },
+    {
+      "name": "two-column-split",
+      "description": "Two-column split layout — text + image side by side.",
+      "tags": ["split", "two column", "editorial", "feature", "image"],
+      "sections": [
+        {
+          "key": "split",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody", "elementImage"]
+        }
+      ]
+    },
+    {
+      "name": "bento-grid",
+      "description": "Bento-box grid layout with varied card sizes.",
+      "tags": ["bento", "grid", "cards", "mosaic", "dashboard", "varied"],
+      "sections": [
+        { "key": "header", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "bento",
+          "type": "sectionColumn",
+          "elements": ["elementImage", "elementHeading", "elementBody"]
+        }
+      ]
+    },
+    {
+      "name": "interactive-3d",
+      "description": "3D model viewer page with description and controls.",
+      "tags": ["3d", "model", "interactive", "webgl", "product", "three"],
+      "sections": [
+        { "key": "viewer", "type": "contentBlock", "elements": ["elementModel3D"] },
+        {
+          "key": "description",
+          "type": "contentBlock",
+          "elements": ["elementHeading", "elementBody"]
+        },
+        { "key": "details", "type": "sectionColumn", "elements": ["elementHeading", "elementBody"] }
+      ]
+    },
+    {
+      "name": "rive-animation-page",
+      "description": "Page featuring Rive interactive animations.",
+      "tags": ["rive", "animation", "interactive", "motion", "lottie"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementRive", "elementHeading"] },
+        {
+          "key": "features",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody"]
+        }
+      ]
+    },
+    {
+      "name": "dashboard-layout",
+      "description": "Data/metrics dashboard with stat cards and visualizations.",
+      "tags": ["dashboard", "data", "metrics", "stats", "analytics", "admin"],
+      "sections": [
+        { "key": "header", "type": "contentBlock", "elements": ["elementHeading"] },
+        { "key": "stats", "type": "sectionColumn", "elements": ["elementHeading", "elementBody"] },
+        { "key": "charts", "type": "sectionColumn", "elements": ["elementImage", "elementBody"] }
+      ]
+    },
+    {
+      "name": "horizontal-scroll-gallery",
+      "description": "Horizontal-scrolling gallery or ticker.",
+      "tags": ["horizontal scroll", "marquee", "carousel", "slider", "ticker", "gallery"],
+      "sections": [
+        { "key": "header", "type": "contentBlock", "elements": ["elementHeading"] },
+        { "key": "scroller", "type": "scrollContainer", "elements": ["elementImage"] }
+      ]
+    },
+    {
+      "name": "job-listing",
+      "description": "Careers/jobs page with role listings and application form.",
+      "tags": ["jobs", "careers", "hiring", "apply", "work", "positions"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "culture",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody"]
+        },
+        {
+          "key": "roles",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody", "elementButton"]
+        },
+        { "key": "apply", "type": "formBlock", "elements": [] }
+      ]
+    },
+    {
+      "name": "press-kit",
+      "description": "Press/media kit with downloads, quotes, and assets.",
+      "tags": ["press", "media", "kit", "download", "pr", "brand"],
+      "sections": [
+        { "key": "header", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        { "key": "assets", "type": "sectionColumn", "elements": ["elementImage", "elementButton"] },
+        { "key": "quotes", "type": "sectionColumn", "elements": ["elementHeading", "elementBody"] }
+      ]
+    },
+    {
+      "name": "comparison-page",
+      "description": "Competitor or plan comparison table.",
+      "tags": ["comparison", "vs", "versus", "competitive", "table", "plans"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "comparison",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody"]
+        },
+        { "key": "cta", "type": "contentBlock", "elements": ["elementHeading", "elementButton"] }
+      ]
+    },
+    {
+      "name": "integrations-page",
+      "description": "App/platform integrations showcase grid.",
+      "tags": ["integrations", "apps", "plugins", "connect", "ecosystem", "partners"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "integrations-grid",
+          "type": "sectionColumn",
+          "elements": ["elementImage", "elementHeading"]
+        },
+        { "key": "cta", "type": "contentBlock", "elements": ["elementHeading", "elementButton"] }
+      ]
+    },
+    {
+      "name": "testimonials-page",
+      "description": "Full-page testimonials or social proof collection.",
+      "tags": ["testimonials", "reviews", "quotes", "social proof", "trust"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "testimonials",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody"]
+        },
+        { "key": "cta", "type": "contentBlock", "elements": ["elementHeading", "elementButton"] }
+      ]
+    },
+    {
+      "name": "waitlist-page",
+      "description": "Product waitlist or early-access landing.",
+      "tags": ["waitlist", "early access", "beta", "launch", "signup", "list"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "benefits",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody"]
+        },
+        { "key": "signup", "type": "formBlock", "elements": [] }
+      ]
+    },
+    {
+      "name": "photography-portfolio",
+      "description": "Photography portfolio with full-bleed image grid.",
+      "tags": ["photography", "photo", "images", "portfolio", "art", "creative"],
+      "sections": [
+        { "key": "header", "type": "contentBlock", "elements": ["elementHeading"] },
+        { "key": "photos", "type": "sectionColumn", "elements": ["elementImage"] },
+        { "key": "contact", "type": "contentBlock", "elements": ["elementButton"] }
+      ]
+    },
+    {
+      "name": "interactive-demo",
+      "description": "Interactive product demo with live state and triggers.",
+      "tags": ["demo", "interactive", "playground", "try", "live"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "demo",
+          "type": "contentBlock",
+          "elements": ["elementHeading", "elementBody", "elementButton"]
+        },
+        { "key": "cta", "type": "contentBlock", "elements": ["elementHeading", "elementButton"] }
+      ]
+    },
+    {
+      "name": "feature-detail",
+      "description": "Single feature or capability deep-dive.",
+      "tags": ["feature", "detail", "deep dive", "capability", "how it works"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "details",
+          "type": "contentBlock",
+          "elements": ["elementImage", "elementHeading", "elementBody"]
+        },
+        {
+          "key": "use-cases",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody"]
+        },
+        { "key": "cta", "type": "contentBlock", "elements": ["elementHeading", "elementButton"] }
+      ]
+    },
+    {
+      "name": "minimal-one-pager",
+      "description": "Minimal single-screen landing — no scroll, hero only.",
+      "tags": ["minimal", "one page", "single screen", "clean", "elegant"],
+      "sections": [
+        {
+          "key": "hero",
+          "type": "contentBlock",
+          "elements": ["elementHeading", "elementBody", "elementButton"]
+        }
+      ]
+    },
+    {
+      "name": "resources-page",
+      "description": "Docs/resources page with categories and links.",
+      "tags": ["resources", "docs", "documentation", "guides", "links", "knowledge"],
+      "sections": [
+        { "key": "header", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "categories",
+          "type": "sectionColumn",
+          "elements": ["elementHeading", "elementBody", "elementButton"]
+        }
+      ]
+    },
+    {
+      "name": "profile-page",
+      "description": "Personal profile or bio page.",
+      "tags": ["profile", "bio", "personal", "resume", "cv", "portfolio"],
+      "sections": [
+        {
+          "key": "hero",
+          "type": "contentBlock",
+          "elements": ["elementImage", "elementHeading", "elementBody"]
+        },
+        { "key": "work", "type": "sectionColumn", "elements": ["elementImage", "elementHeading"] },
+        { "key": "contact", "type": "contentBlock", "elements": ["elementButton"] }
+      ]
+    },
+    {
+      "name": "product-gallery",
+      "description": "E-commerce style product gallery with image carousel.",
+      "tags": ["product", "ecommerce", "shop", "buy", "gallery", "catalog"],
+      "sections": [
+        { "key": "header", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        {
+          "key": "products",
+          "type": "sectionColumn",
+          "elements": ["elementImage", "elementHeading", "elementButton"]
+        },
+        { "key": "cta", "type": "contentBlock", "elements": ["elementHeading", "elementButton"] }
+      ]
+    },
+    {
+      "name": "release-notes",
+      "description": "Product changelog or release notes.",
+      "tags": ["changelog", "release", "updates", "what's new", "version"],
+      "sections": [
+        { "key": "header", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        { "key": "releases", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] }
+      ]
+    },
+    {
+      "name": "partner-page",
+      "description": "Partner or sponsor showcase with logos and CTA.",
+      "tags": ["partners", "sponsors", "logos", "trusted by", "clients"],
+      "sections": [
+        { "key": "hero", "type": "contentBlock", "elements": ["elementHeading", "elementBody"] },
+        { "key": "logos", "type": "sectionColumn", "elements": ["elementImage"] },
+        { "key": "cta", "type": "contentBlock", "elements": ["elementHeading", "elementButton"] }
+      ]
+    },
+    {
+      "name": "media-brand-page",
+      "description": "Brand or media company landing with video and editorial.",
+      "tags": ["brand", "media", "editorial", "video", "publication"],
+      "sections": [
+        {
+          "key": "hero-video",
+          "type": "contentBlock",
+          "elements": ["elementVideo", "elementHeading"]
+        },
+        {
+          "key": "editorial",
+          "type": "sectionColumn",
+          "elements": ["elementImage", "elementHeading", "elementBody"]
+        },
+        { "key": "newsletter", "type": "formBlock", "elements": [] }
+      ]
+    }
+  ]
+}

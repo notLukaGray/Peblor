@@ -17,6 +17,11 @@
           "fill": "linear-gradient(180deg, #0a0a14 0%, #060606 60%)"
         }
       ]
-    }
+    },
+    "systems_a": { "type": "contentBlock", "elementOrder": [], "definitions": {} },
+    "systems_b": { "type": "contentBlock", "elementOrder": [], "definitions": {} },
+    "systems_c": { "type": "contentBlock", "elementOrder": [], "definitions": {} },
+    "systems_d": { "type": "contentBlock", "elementOrder": [], "definitions": {} },
+    "systems_e": { "type": "contentBlock", "elementOrder": [], "definitions": {} }
   }
 }

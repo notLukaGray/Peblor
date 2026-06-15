@@ -1,0 +1,46 @@
+{
+  "preset": "work-preview-card",
+  "visibleWhen": {
+    "variable": "selectedProject",
+    "operator": "equals",
+    "value": "exhibition"
+  },
+  "section": {
+    "elementOrder": ["preview-image-wrap", "preview-content"],
+    "definitions": {
+      "preview-image-wrap": {
+        "preset": "work-preview-image-wrap",
+        "section": {
+          "elementOrder": ["preview-image"],
+          "definitions": {
+            "preview-image": {
+              "preset": "work-preview-image",
+              "src": "work/project-exhibition/install-main.webp"
+            }
+          }
+        }
+      },
+      "preview-content": {
+        "preset": "work-preview-content",
+        "section": {
+          "elementOrder": ["preview-title", "preview-desc", "preview-cta"],
+          "definitions": {
+            "preview-title": {
+              "preset": "work-preview-title",
+              "text": "Shifting Ground \u2014 Exhibition"
+            },
+            "preview-desc": {
+              "preset": "work-preview-desc",
+              "text": "Identity and spatial design for Shifting Ground, a group exhibition of twelve international sculptors at Kunsthalle Oslo."
+            },
+            "preview-cta": {
+              "preset": "work-preview-cta",
+              "label": "View project",
+              "href": "/work/project-exhibition"
+            }
+          }
+        }
+      }
+    }
+  }
+}

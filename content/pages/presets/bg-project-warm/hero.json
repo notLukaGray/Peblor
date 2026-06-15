@@ -1,0 +1,22 @@
+{
+  "elementOrder": ["hero-badge", "hero-title", "hero-desc", "hero-hint"],
+  "definitions": {
+    "hero-badge": {
+      "preset": "demo-hero-badge",
+      "text": "backgroundVariable · parallax"
+    },
+    "hero-title": {
+      "preset": "demo-hero-title",
+      "text": "bg-project-warm"
+    },
+    "hero-desc": {
+      "preset": "demo-hero-description",
+      "text": "Warm golden gradient with a parallax accent orb — scroll to see the top-left glow drift at a different speed than the page, implying depth."
+    },
+    "hero-hint": {
+      "preset": "demo-scroll-hint",
+      "text": "↓ Scroll to feel the parallax ↓"
+    }
+  },
+  "preset": "demo-hero-100vh"
+}

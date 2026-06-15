@@ -2,6 +2,7 @@ import type { CanvasDef } from "./model3d-types";
 
 type RenderProfileInput = {
   canvas?: CanvasDef;
+  opaqueBackground?: boolean;
   isMobile: boolean;
   isHomepagePriority: boolean;
 };
@@ -17,6 +18,7 @@ type RenderProfile = {
 
 export function resolveModel3DRenderProfile({
   canvas,
+  opaqueBackground = false,
   isMobile,
   isHomepagePriority,
 }: RenderProfileInput): RenderProfile {
@@ -32,7 +34,7 @@ export function resolveModel3DRenderProfile({
       powerPreference:
         glOpts.powerPreference ??
         (isHomepagePriority && isMobile ? "low-power" : "high-performance"),
-      alpha: glOpts.alpha ?? true,
+      alpha: glOpts.alpha ?? !opaqueBackground,
     },
   };
 }

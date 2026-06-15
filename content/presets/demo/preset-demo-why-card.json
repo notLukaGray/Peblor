@@ -1,0 +1,44 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "flex": "1 1 200px",
+  "padding": "1.5rem",
+  "borderRadius": "14px",
+  "gap": "0.5rem",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+  },
+  "motionTiming": {
+    "entrancePreset": "fade"
+  },
+  "section": {
+    "elementOrder": ["why-icon", "why-title", "why-desc"],
+    "definitions": {
+      "why-icon": {
+        "type": "elementBody",
+        "level": 5,
+        "text": "",
+        "padding": "0",
+        "color": "var(--pb-accent)",
+        "wordWrap": false
+      },
+      "why-title": {
+        "type": "elementHeading",
+        "level": 5,
+        "color": "var(--pb-on-secondary)",
+        "text": ""
+      },
+      "why-desc": {
+        "type": "elementBody",
+        "level": 5,
+        "color": "color-mix(in oklab, var(--pb-on-secondary) 50%, transparent)",
+        "text": ""
+      }
+    }
+  },
+  "constraints": {
+    "minWidth": "180px"
+  }
+}

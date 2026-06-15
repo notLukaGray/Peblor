@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, type RefObject } from "react";
+import { useRef, type RefObject } from "react";
 import {
-  motion,
+  m,
   useScroll,
   useTransform,
   useMotionValueEvent,
@@ -10,6 +10,7 @@ import {
 import { useScrollContainerRef } from "@/peblor/section/position/use-scroll-container";
 import { MOTION_DEFAULTS } from "@pb/contracts/peblor/core/peblor-motion-defaults";
 import { useShouldReduceMotion } from "./reduced-motion";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 type SectionScrollProgressBarProps = {
   sectionRef: RefObject<HTMLElement | null>;
@@ -55,22 +56,23 @@ export function SectionScrollProgressBar({
 
   const scaleX = useTransform(scrollYProgress, [0, 1], shouldReduceMotion ? [0, 0] : [0, 1]);
 
-  const [progressForA11y, setProgressForA11y] = useState(
-    () => Math.round(Math.max(0, Math.min(1, scrollYProgress.get())) * 100) / 100
-  );
+  // Write aria-valuenow directly to the DOM on scroll — no React re-render needed.
+  const barRef = useRef<HTMLDivElement | null>(null);
+  const initialA11y = Math.round(Math.max(0, Math.min(1, scrollYProgress.get())) * 100) / 100;
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const clamped = Math.max(0, Math.min(1, latest));
-    setProgressForA11y(Math.round(clamped * 100) / 100);
+    barRef.current?.setAttribute("aria-valuenow", String(Math.round(clamped * 100) / 100));
   });
 
   return (
     <div
+      ref={barRef}
       className={className}
       role="progressbar"
       aria-valuemin={0}
       aria-valuemax={1}
-      aria-valuenow={progressForA11y}
-      aria-label="Section scroll progress"
+      aria-valuenow={initialA11y}
+      aria-label={globals.stringsAriaLabelSectionScrollProgress}
       style={{
         position: "absolute",
         top: 0,
@@ -79,10 +81,10 @@ export function SectionScrollProgressBar({
         height,
         background: trackBackground,
         transformOrigin: "0 0",
-        zIndex: 5,
+        zIndex: globals.zIndexOverlay,
       }}
     >
-      <motion.div
+      <m.div
         style={{
           scaleX,
           originX: 0,

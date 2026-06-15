@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useRef, useCallback, useLayoutEffect, useMemo } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import Image from "next/image";
 import type { ElementBlock } from "@pb/contracts/types";
 import { reconcileElementOrderWithDefinitions } from "@pb/core/modules";
 import { generateElementKey } from "@pb/core/keys";
-import { resolveThemeString } from "@/peblor/theme/theme-string";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
+import { lowerThemeStringToCss } from "@/peblor/theme/theme-string";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 import { ElementLayoutWrapper } from "./Shared/ElementLayoutWrapper";
 import { ElementRenderer } from "./Shared/ElementRenderer";
 
@@ -34,12 +34,12 @@ export function ElementImageCompare({
   ariaLabel,
   width,
   height,
-  align,
+  selfAlign,
   marginTop,
   marginBottom,
   marginLeft,
   marginRight,
-  zIndex,
+  layer,
   constraints,
   effects,
   interactions,
@@ -48,36 +48,18 @@ export function ElementImageCompare({
   blendMode,
   boxShadow,
   filter,
-  backdropFilter,
+  bgBlur,
   hidden,
 }: Props) {
-  const themeMode = usePeblorThemeMode();
   const [position, setPosition] = useState(initialPosition);
   const containerRef = useRef<HTMLDivElement>(null);
   const dragging = useRef(false);
   const activePointerId = useRef<number | null>(null);
 
-  const resolvedHandleColor = resolveThemeString(handleColor, themeMode);
-  const resolvedDividerColor = resolveThemeString(dividerColor, themeMode);
-  const handleFill = resolvedHandleColor ?? "#fff";
+  const resolvedHandleColor = lowerThemeStringToCss(handleColor);
+  const resolvedDividerColor = lowerThemeStringToCss(dividerColor);
+  const handleFill = resolvedHandleColor ?? globals.colorImageCompareHandle;
   const dividerFill = resolvedDividerColor;
-
-  const [trackPx, setTrackPx] = useState({ w: 0, h: 0 });
-
-  useLayoutEffect(() => {
-    const root = containerRef.current;
-    if (!root) return;
-    const measure = () => {
-      const r = root.getBoundingClientRect();
-      const w = Math.max(0, Math.round(r.width));
-      const h = Math.max(0, Math.round(r.height));
-      setTrackPx((prev) => (prev.w === w && prev.h === h ? prev : { w, h }));
-    };
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(root);
-    return () => ro.disconnect();
-  }, []);
 
   const handleBlocks = useMemo((): ElementBlock[] => {
     if (!handleElements?.definitions) return [];
@@ -125,8 +107,8 @@ export function ElementImageCompare({
     activePointerId.current = null;
     try {
       e.currentTarget.releasePointerCapture(e.pointerId);
-    } catch {
-      /* not captured */
+    } catch (err) {
+      console.warn("[pb-runtime-react] Failed to release pointer capture (ImageCompare)", err);
     }
   }, []);
 
@@ -183,12 +165,12 @@ export function ElementImageCompare({
   const layout = {
     width: width as string | undefined,
     height: height as string | undefined,
-    align: align as "left" | "center" | "right" | undefined,
+    align: selfAlign as "left" | "center" | "right" | undefined,
     marginTop: marginTop as string | undefined,
     marginBottom: marginBottom as string | undefined,
     marginLeft: marginLeft as string | undefined,
     marginRight: marginRight as string | undefined,
-    zIndex,
+    zIndex: layer,
     constraints,
     effects,
     wrapperStyle,
@@ -196,7 +178,7 @@ export function ElementImageCompare({
     blendMode,
     boxShadow,
     filter,
-    backdropFilter,
+    bgBlur,
     hidden,
   };
 
@@ -213,15 +195,17 @@ export function ElementImageCompare({
   const stepPct = (keyboardStep ?? 1) / 100;
 
   const trackTouchClass = isH ? "touch-pan-y" : "touch-pan-x";
-  const trackCursor = isH ? "cursor-ew-resize" : "cursor-ns-resize";
-  const hasTrackSize = trackPx.w > 0 && trackPx.h > 0;
+  const cursorStyle: React.CSSProperties = isH ? { cursor: "ew-resize" } : { cursor: "ns-resize" };
 
   return (
     <ElementLayoutWrapper layout={layout} interactions={interactions}>
       <div
         ref={containerRef}
-        className={`relative w-full overflow-hidden select-none outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${trackTouchClass} ${trackCursor}`}
-        style={{ aspectRatio: (aspectRatio as string) ?? "16/9" }}
+        className={`relative w-full overflow-hidden select-none outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${trackTouchClass}`}
+        style={{
+          aspectRatio: (aspectRatio as string) ?? globals.uiVideoDefaultAspectRatio,
+          ...cursorStyle,
+        }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -305,53 +289,27 @@ export function ElementImageCompare({
             alt={after.alt ?? ""}
             fill
             className="object-cover object-center"
-            sizes="(max-width: 768px) 100vw, min(900px, 90vw)"
+            sizes={`(max-width: ${globals.uiBreakpointDesktopPx}px) 100vw, min(900px, 90vw)`}
             draggable={false}
           />
         </div>
-        {isH ? (
-          <div
-            className="pointer-events-none absolute bottom-0 left-0 top-0 z-[var(--pb-z-raised)] overflow-hidden"
-            style={{ width: `${position * 100}%` }}
-          >
-            {hasTrackSize ? (
-              <div
-                className="absolute left-0 top-0"
-                style={{ width: trackPx.w, height: trackPx.h }}
-              >
-                <Image
-                  src={before.src}
-                  alt={before.alt ?? ""}
-                  fill
-                  className="object-cover object-center"
-                  sizes="(max-width: 768px) 100vw, min(900px, 90vw)"
-                  draggable={false}
-                />
-              </div>
-            ) : null}
-          </div>
-        ) : (
-          <div
-            className="pointer-events-none absolute bottom-0 left-0 right-0 top-0 z-[var(--pb-z-raised)] overflow-hidden"
-            style={{ height: `${position * 100}%` }}
-          >
-            {hasTrackSize ? (
-              <div
-                className="absolute left-0 top-0"
-                style={{ width: trackPx.w, height: trackPx.h }}
-              >
-                <Image
-                  src={before.src}
-                  alt={before.alt ?? ""}
-                  fill
-                  className="object-cover object-center"
-                  sizes="(max-width: 768px) 100vw, min(900px, 90vw)"
-                  draggable={false}
-                />
-              </div>
-            ) : null}
-          </div>
-        )}
+        <div
+          className="pointer-events-none absolute inset-0 z-[var(--pb-z-raised)]"
+          style={{
+            clipPath: isH
+              ? `inset(0 ${(1 - position) * 100}% 0 0)`
+              : `inset(0 0 ${(1 - position) * 100}% 0)`,
+          }}
+        >
+          <Image
+            src={before.src}
+            alt={before.alt ?? ""}
+            fill
+            className="object-cover object-center"
+            sizes={`(max-width: ${globals.uiBreakpointDesktopPx}px) 100vw, min(900px, 90vw)`}
+            draggable={false}
+          />
+        </div>
         {handleBlocks.length > 0 ? (
           <>
             {dividerFill ? (
@@ -367,8 +325,8 @@ export function ElementImageCompare({
               />
             ) : null}
             <div
-              className={`absolute z-[var(--pb-z-overlay)] flex min-h-11 min-w-11 flex-row items-center justify-center gap-1 ${trackCursor}`}
-              style={handlePos}
+              className="absolute z-[var(--pb-z-overlay)] flex min-h-11 min-w-11 flex-row items-center justify-center gap-1"
+              style={{ ...handlePos, ...cursorStyle }}
             >
               {handleBlocks.map((block, index) => (
                 <ElementRenderer key={generateElementKey(block, index)} block={block} />
@@ -390,8 +348,8 @@ export function ElementImageCompare({
               />
             ) : null}
             <div
-              className={`absolute z-[var(--pb-z-overlay)] flex min-h-11 min-w-11 items-center justify-center ${trackCursor}`}
-              style={handlePos}
+              className="absolute z-[var(--pb-z-overlay)] flex min-h-11 min-w-11 items-center justify-center"
+              style={{ ...handlePos, ...cursorStyle }}
             >
               <div
                 className="flex items-center justify-center rounded-full shadow-lg"

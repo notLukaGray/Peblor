@@ -1,0 +1,19 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "bg-x-gradient-shift — Preset Demo",
+  "description": "Scroll-triggered transition from primary-tinted gradient to accent-tinted gradient",
+  "presets": ["demo", "bg"],
+  "sectionOrder": ["nav-header", "hero", "demo-content"],
+  "bgKey": "bg-x-gradient-shift",
+  "scroll": {
+    "smooth": true,
+    "lockBody": false,
+    "scrollX": "hidden",
+    "scrollY": "auto"
+  },
+  "definitions": {
+    "bg-x-gradient-shift": {
+      "preset": "bg-x-gradient-shift"
+    }
+  }
+}

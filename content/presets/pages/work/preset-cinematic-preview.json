@@ -1,0 +1,46 @@
+{
+  "preset": "work-preview-card",
+  "visibleWhen": {
+    "variable": "selectedProject",
+    "operator": "equals",
+    "value": "cinematic"
+  },
+  "section": {
+    "elementOrder": ["preview-image-wrap", "preview-content"],
+    "definitions": {
+      "preview-image-wrap": {
+        "preset": "work-preview-image-wrap",
+        "section": {
+          "elementOrder": ["preview-image"],
+          "definitions": {
+            "preview-image": {
+              "preset": "work-preview-image",
+              "src": "work/project-cinematic/still-1.webp"
+            }
+          }
+        }
+      },
+      "preview-content": {
+        "preset": "work-preview-content",
+        "section": {
+          "elementOrder": ["preview-title", "preview-desc", "preview-cta"],
+          "definitions": {
+            "preview-title": {
+              "preset": "work-preview-title",
+              "text": "Golden Hour \u2014 Short Film"
+            },
+            "preview-desc": {
+              "preset": "work-preview-desc",
+              "text": "A 12-minute observational film about light, salt flats, and the hour before dark. Shot on 16mm over three days in southern Spain."
+            },
+            "preview-cta": {
+              "preset": "work-preview-cta",
+              "label": "View project",
+              "href": "/work/project-cinematic"
+            }
+          }
+        }
+      }
+    }
+  }
+}

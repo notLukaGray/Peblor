@@ -1,0 +1,17 @@
+{
+  "definitions": {
+    "hero-badge": {
+      "preset": "demo-hero-badge",
+      "text": "backgroundVariable · loop pulse"
+    },
+    "hero-title": {
+      "preset": "demo-hero-title",
+      "text": "bg-pattern-noise"
+    },
+    "hero-desc": {
+      "preset": "demo-hero-description",
+      "text": "SVG feTurbulence fractal noise at overlay blend mode, opacity breathing between 18–34% on a 6.5s mirror loop. Adds visible grain and texture without competing with content."
+    }
+  },
+  "preset": "demo-hero-100vh"
+}

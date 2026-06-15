@@ -34,44 +34,27 @@ export async function readJsonFileSafe(filePath: string): Promise<unknown | null
     const raw = await fsPromises.readFile(filePath, "utf-8");
     const result = parseJsonSafe<unknown>(raw);
     return result.ok ? result.data : null;
-  } catch {
+  } catch (err) {
+    console.warn("[pb-core] Failed to read JSON file", filePath, err);
     return null;
   }
 }
 
+/**
+ * Coerce unknown data into a preset map. Uses a lightweight type guard to filter
+ * invalid entries — full Zod validation happens when the assembled page is parsed
+ * in finalizeLoadedPeblor, so expensive per-preset parses here are redundant.
+ */
 export function coercePresetMap(data: unknown): Record<string, PeblorDefinitionBlock> {
   const out: Record<string, PeblorDefinitionBlock> = {};
   if (data == null || typeof data !== "object") return out;
   for (const [key, value] of Object.entries(data as Record<string, unknown>)) {
-    if (value != null && typeof value === "object") {
-      out[key] = value as PeblorDefinitionBlock;
-    }
+    if (value == null || typeof value !== "object" || Array.isArray(value)) continue;
+    const rec = value as Record<string, unknown>;
+    if (typeof rec.type !== "string" && typeof rec.preset !== "string") continue;
+    out[key] = rec as PeblorDefinitionBlock;
   }
   return out;
-}
-
-/** Async: read page JSON for parallel load phase. */
-export async function readPageJson(slug: string): Promise<Record<string, unknown> | null> {
-  if (!isSafePathSegment(slug)) return null;
-  const slugDir = resolveSlugDir(slug);
-  if (!slugDir) return null;
-  // Prefer index.json inside the directory (new convention), fall back to {slugDir}.json (legacy)
-  const indexPath = path.join(slugDir, "index.json");
-  let pagePath: string;
-  try {
-    try {
-      await fsPromises.access(indexPath);
-      pagePath = indexPath;
-    } catch {
-      pagePath = `${slugDir}.json`;
-    }
-    const raw = await fsPromises.readFile(pagePath, "utf-8");
-    const result = parseJsonSafe<Record<string, unknown>>(raw);
-    if (!result.ok) return null;
-    return { ...result.data, slug } as Record<string, unknown>;
-  } catch {
-    return null;
-  }
 }
 
 /**
@@ -90,7 +73,8 @@ export async function readPageJsonByPath(
     const result = parseJsonSafe<Record<string, unknown>>(raw);
     if (!result.ok) return null;
     return { ...result.data, slug } as Record<string, unknown>;
-  } catch {
+  } catch (err) {
+    console.warn("[pb-core] Failed to read/parse page JSON", absolutePath, slug, err);
     return null;
   }
 }

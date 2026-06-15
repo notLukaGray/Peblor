@@ -13,6 +13,8 @@ export type BlockCapabilityReason =
   | "store-read"
   | "static-capable";
 
+export type BlockHydrationPriority = "critical" | "approaching" | "idle";
+
 export type BlockCapabilityNode = {
   id?: string;
   type: string;
@@ -21,6 +23,7 @@ export type BlockCapabilityNode = {
   reasons: BlockCapabilityReason[];
   block?: SectionBlock | ElementBlock | bgBlock;
   children: BlockCapabilityNode[];
+  priority?: BlockHydrationPriority;
 };
 
 export type AnalyzeBlockCapabilitiesInput = {
@@ -43,6 +46,7 @@ export type AnalyzeBlockCapabilitiesResult = {
 export const STATIC_ELEMENT_TYPES = new Set([
   "elementHeading",
   "elementBody",
+  "elementRichText",
   "elementLink",
   "elementImage",
   "elementSpacer",
@@ -50,6 +54,12 @@ export const STATIC_ELEMENT_TYPES = new Set([
   "elementGroup",
   "elementVector",
   "elementCounter",
+  "elementEmbed",
+  "elementList",
+  "elementBlockquote",
+  "elementTable",
+  "elementCode",
+  "elementButton",
 ]);
 
 export const STATIC_SECTION_TYPES = new Set(["divider", "contentBlock", "sectionColumn"]);
@@ -65,7 +75,6 @@ const ALWAYS_CLIENT_ELEMENT_TYPES = new Set([
   "elementVideoTime",
   "elementVideoQualitySelect",
   "elementScrollProgressBar",
-  "elementButton",
   "elementLottie",
   "elementMarquee",
   "elementImageCompare",
@@ -80,14 +89,22 @@ const CLIENT_PROP_KEYS = new Set([
   "action",
   "actions",
   "cursorTriggers",
+  "disclosure",
   "dragAxis",
+  "fixed",
   "dragBehavior",
   "dragUnit",
   "exitPreset",
   "interactions",
   "keyboardTriggers",
-  "motion",
-  "motionTiming",
+  // "motion" and "motionTiming" are intentionally absent here for elements.
+  // Entrance and gesture animations are applied as a thin "use client" wrapper
+  // (ElementEntranceWrapper) in ServerElementRenderer — they never force the
+  // element's content into a ClientElementIsland with zero SSR.
+  // Exceptions (onTrigger, staggerChildren) are re-added in ownReasonsForElement.
+  // Sections still treat motionTiming as a client prop (handled via analyzeSection).
+  "motion", // kept for SECTION classification only — removed from element check below
+  "motionTiming", // kept for SECTION classification only — removed from element check below
   "onInvisible",
   "onPageProgress",
   "onProgress",
@@ -98,18 +115,23 @@ const CLIENT_PROP_KEYS = new Set([
   "scrollOpacityRange",
   "scrollProgressTrigger",
   "scrollProgressTriggerId",
-  "scrollSpeed",
+  // scrollSpeed intentionally omitted — default value (1) must not force client classification.
+  // Checked explicitly in ownReasonsForSection below.
   "timerTriggers",
   "visibleWhen",
   // New element client-only props
   "trigger", // element.counter scroll/visible trigger
-  "showWaveform", // element.audio waveform needs JS audio context
-  "hoverActivate", // element.imageCompare hover follow needs JS
-  "followCursor", // element.tooltip cursor tracking needs JS
-  "interactivity", // element.lottie/rive interactive event bindings
-  "pauseOnHover", // element.marquee JS hover pause
-  "pauseOnFocus", // element.marquee JS focus pause
+  // Removed: showWaveform, hoverActivate, followCursor, interactivity, pauseOnHover, pauseOnFocus.
+  // These only appear on types already in ALWAYS_CLIENT_ELEMENT_TYPES so they never change
+  // classification — including them adds a spurious "client-prop" reason.
 ]);
+
+/**
+ * Animation keys that get a thin "use client" wrapper in ServerElementRenderer
+ * rather than a full ClientElementIsland. Excluded from element client-prop checks
+ * (except for onTrigger / staggerChildren exceptions handled in ownReasonsForElement).
+ */
+const ELEMENT_ANIMATION_WRAPPER_KEYS = new Set(["motion", "motionTiming"]);
 
 const TEMPLATE_VARIABLE_PATTERN = /\{\s*[a-zA-Z_$][\w$-]*(?:\.[\w$-]+)+\s*\}/;
 
@@ -145,6 +167,37 @@ function hasClientProp(block: unknown): boolean {
 
   for (const key of CLIENT_PROP_KEYS) {
     if (hasMeaningfulValue(block[key])) return true;
+  }
+
+  return false;
+}
+
+/**
+ * Element-specific client-prop check. Excludes animation wrapper keys
+ * (motion, motionTiming) unless they contain exceptions that genuinely
+ * require a full client island:
+ *   - motionTiming.trigger === "onTrigger" — needs the trigger store
+ *   - motionTiming.staggerChildren on a group — needs MixedElementGroupIsland
+ */
+function hasClientPropForElement(block: unknown): boolean {
+  if (!isRecord(block)) return false;
+
+  for (const key of CLIENT_PROP_KEYS) {
+    if (ELEMENT_ANIMATION_WRAPPER_KEYS.has(key)) continue; // handled by thin wrapper
+    if (hasMeaningfulValue(block[key])) return true;
+  }
+
+  // Exception 1: onTrigger requires the trigger store — stays full client
+  const mt = block.motionTiming;
+  if (isRecord(mt) && mt.trigger === "onTrigger") return true;
+
+  // Exception 2: staggerChildren requires MixedElementGroupIsland — stays full client
+  if (
+    getBlockType(block) === "elementGroup" &&
+    isRecord(mt) &&
+    hasMeaningfulValue(mt.staggerChildren)
+  ) {
+    return true;
   }
 
   return false;
@@ -245,12 +298,39 @@ function ownReasonsForElement(
   const type = getBlockType(block);
   const reasons: BlockCapabilityReason[] = [];
 
+  // STATIC_* and ALWAYS_CLIENT_* sets must remain disjoint: a type in both would be
+  // incorrectly forced to client even if fully statically renderable.
   if (!STATIC_ELEMENT_TYPES.has(type) || ALWAYS_CLIENT_ELEMENT_TYPES.has(type)) {
     reasons.push("client-only-type");
   }
-  if (hasClientProp(block) || hasGlassEffect(block)) reasons.push("client-prop");
+  // Use element-specific check: excludes motion/motionTiming unless onTrigger/stagger exceptions apply
+  if (hasClientPropForElement(block) || hasGlassEffect(block)) reasons.push("client-prop");
   if (hasStoreRead(omitKeys(block, ["section", "elements", "definitions"]), variableBindings)) {
     reasons.push("store-read");
+  }
+
+  // Button-specific: vectorRef and fill/stroke refs require definitions context
+  // (not available in server components). Only force client when there's no fallback
+  // literal value — e.g. wrapperFillRef without wrapperFill needs definitions.
+  if (type === "elementButton" && isRecord(block)) {
+    const btnBlock = block as Record<string, unknown>;
+    if (typeof btnBlock.vectorRef === "string" && btnBlock.vectorRef !== "") {
+      reasons.push("client-prop");
+    }
+    if (
+      typeof btnBlock.wrapperFillRef === "string" &&
+      btnBlock.wrapperFillRef !== "" &&
+      (btnBlock.wrapperFill == null || btnBlock.wrapperFill === "")
+    ) {
+      reasons.push("client-prop");
+    }
+    if (
+      typeof btnBlock.wrapperStrokeRef === "string" &&
+      btnBlock.wrapperStrokeRef !== "" &&
+      (btnBlock.wrapperStroke == null || btnBlock.wrapperStroke === "")
+    ) {
+      reasons.push("client-prop");
+    }
   }
 
   return reasons.length > 0 ? reasonSet(reasons) : ["static-capable"];
@@ -267,6 +347,11 @@ function ownReasonsForSection(
     reasons.push("client-only-type");
   }
   if (hasClientProp(block) || hasGlassEffect(block)) reasons.push("client-prop");
+  // scrollSpeed: only client if it differs from the default (1). A section with the explicit
+  // default value scrollSpeed:1 must not be forced to a client island for no reason.
+  if (isRecord(block) && block.scrollSpeed != null && block.scrollSpeed !== 1) {
+    reasons.push("client-prop");
+  }
   if (
     hasStoreRead(
       omitKeys(block, ["elements", "definitions", "collapsedElements", "revealedElements"]),
@@ -276,18 +361,19 @@ function ownReasonsForSection(
     reasons.push("store-read");
   }
 
-  // sectionColumn with advanced layout props can't be rendered by the simplified static server renderer
+  // sectionColumn with advanced layout props that require the client island.
+  // columnWidths, columnStyles, and gridAutoRows are pure CSS resolved by ServerSectionColumn
+  // at build/render time — they do NOT force client classification.
+  // The remaining props (gridMode, itemStyles, itemLayout, contentWidth, contentHeight, columnSpan)
+  // are resolved through useColumnLayout which depends on useDeviceType() — genuinely client.
   if (type === "sectionColumn") {
     const col = block as Record<string, unknown>;
     if (
       col.gridMode != null ||
-      col.columnWidths != null ||
-      col.columnStyles != null ||
       col.itemStyles != null ||
       col.itemLayout != null ||
       col.contentWidth != null ||
       col.contentHeight != null ||
-      col.gridAutoRows != null ||
       col.columnSpan != null
     ) {
       if (!reasons.includes("client-prop")) reasons.push("client-prop");
@@ -371,6 +457,9 @@ function analyzeBackground(
   const hasTransitions = arrayHasItems(
     Array.isArray(transitions) ? transitions : transitions ? [transitions] : []
   );
+  // Only backgroundImage, backgroundPattern, and a layer-motion-free backgroundVariable are
+  // statically renderable. backgroundTransition and backgroundVideo are always client —
+  // they are not listed here, so staticCapable is false for them without a runtime check.
   const staticCapable =
     type === "backgroundImage" ||
     type === "backgroundPattern" ||
@@ -444,4 +533,21 @@ export function analyzeBlockCapabilities({
     usesPageRuntime: pageReasons.length > 0,
     tree,
   };
+}
+
+/**
+ * Assigns hydration priority to section nodes based on their position in the page.
+ * First `criticalCount` sections are "critical" (hydrate immediately).
+ * Next 3 are "approaching" (hydrate before entering viewport).
+ * The rest are "idle" (defer until near viewport or requestIdleCallback).
+ */
+export function assignSectionHydrationPriorities(
+  sectionNodes: BlockCapabilityNode[],
+  criticalCount = 2
+): BlockCapabilityNode[] {
+  return sectionNodes.map((node, index) => ({
+    ...node,
+    priority:
+      index < criticalCount ? "critical" : index < criticalCount + 3 ? "approaching" : "idle",
+  }));
 }

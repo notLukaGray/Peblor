@@ -18,6 +18,8 @@ type ModalAnimationWrapperProps = {
   transition?: ModalTransitionConfig;
   /** Full FM config from JSON; when set, overrides transition and gives full control. */
   motion?: MotionPropsFromJson;
+  /** Optional z-index override from behavior.zIndex (gap 2.4). When absent, CSS var is used. */
+  zIndex?: number;
   children: React.ReactNode;
 };
 
@@ -30,6 +32,7 @@ export function ModalAnimationWrapper({
   show,
   transition,
   motion: motionFromJson,
+  zIndex,
   children,
 }: ModalAnimationWrapperProps) {
   const fallbackMotion = useMemo((): MotionPropsFromJson => {
@@ -42,23 +45,29 @@ export function ModalAnimationWrapper({
       t.exitDurationMs ??
       (MOTION_DEFAULTS.transition.exitDuration ?? MOTION_DEFAULTS.transition.duration) * 1000;
     const ease = t.easing ?? MOTION_DEFAULTS.transition.ease;
-    return {
-      initial: mc.initial as Record<string, string | number | number[]>,
-      animate: {
-        ...(mc.animate as Record<string, string | number | number[]>),
-        transition: { duration: enterMs / 1000, ease },
-      },
-      exit: {
-        ...(mc.exit as Record<string, string | number | number[]>),
-        transition: { duration: exitMs / 1000, ease },
-      },
+    const from = mc.from as Record<string, string | number | number[]>;
+    const to = {
+      ...(mc.to as Record<string, string | number | number[]>),
+      transition: { duration: enterMs / 1000, ease },
+    };
+    const leave = {
+      ...(mc.leave as Record<string, string | number | number[]>),
       transition: { duration: exitMs / 1000, ease },
-    } as unknown as MotionPropsFromJson;
+    };
+    const motion: MotionPropsFromJson = {
+      from,
+      to,
+      leave,
+      transition: { duration: exitMs / 1000, ease },
+    };
+    return motion;
   }, [transition]);
 
   const motionConfig =
     motionFromJson && typeof motionFromJson === "object" ? motionFromJson : fallbackMotion;
   const merged = useMemo(() => mergeMotionDefaults(motionConfig) ?? {}, [motionConfig]);
+
+  const wrapperStyle = zIndex !== undefined ? { zIndex } : undefined;
 
   return (
     <AnimatePresence>
@@ -67,6 +76,7 @@ export function ModalAnimationWrapper({
           key={modalKey}
           motion={merged}
           className="fixed inset-0 z-[var(--pb-z-modal)]"
+          style={wrapperStyle}
         >
           {children}
         </MotionFromJson>

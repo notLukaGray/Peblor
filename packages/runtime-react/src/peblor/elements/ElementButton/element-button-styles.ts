@@ -6,7 +6,7 @@ import type {
   ThemeString,
 } from "@pb/contracts/peblor/core/peblor-schemas";
 import { getElementLayoutStyle } from "@pb/core/layout";
-import { type PeblorThemeMode, resolveThemeString } from "@/peblor/theme/theme-string";
+import { lowerThemeStringToCss } from "@/peblor/theme/theme-string";
 import {
   getBodyTypographyClass,
   getHeadingTypographyClass,
@@ -29,7 +29,7 @@ export function buildElementButtonBlockStyle(
     ElementButtonProps,
     | "width"
     | "height"
-    | "align"
+    | "selfAlign"
     | "textAlign"
     | "marginTop"
     | "marginBottom"
@@ -41,7 +41,7 @@ export function buildElementButtonBlockStyle(
 ): CSSProperties {
   const {
     wordWrap,
-    align,
+    selfAlign,
     textAlign,
     width,
     height,
@@ -55,7 +55,7 @@ export function buildElementButtonBlockStyle(
     ...getElementLayoutStyle({
       width,
       height,
-      align,
+      selfAlign,
       textAlign,
       marginTop,
       marginBottom,
@@ -64,7 +64,7 @@ export function buildElementButtonBlockStyle(
       ...rest,
     }),
   };
-  applyPbDefaultTextAlign(blockStyle, align, textAlign);
+  applyPbDefaultTextAlign(blockStyle, selfAlign, textAlign);
   // `wordWrap` only toggles wrapping (multi-line vs single-line). It does not imply overflow;
   // use layout `overflow` / `textOverflow` when you need clipping or ellipsis.
   blockStyle.whiteSpace = wordWrap ? "normal" : "nowrap";
@@ -74,10 +74,9 @@ export function buildElementButtonBlockStyle(
 function resolveCssGradientRef(
   definitions: Record<string, unknown> | null | undefined,
   ref: string | undefined,
-  literal: ThemeString | undefined,
-  themeMode: PeblorThemeMode
+  literal: ThemeString | undefined
 ): string | undefined {
-  const resolvedLiteral = resolveThemeString(literal, themeMode);
+  const resolvedLiteral = lowerThemeStringToCss(literal);
   if (ref == null || ref === "" || definitions == null) return resolvedLiteral;
   const def = definitions[ref];
   if (
@@ -87,7 +86,7 @@ function resolveCssGradientRef(
     (def as { type?: unknown }).type === "cssGradient" &&
     "value" in def
   ) {
-    return resolveThemeString((def as { value?: ThemeString }).value, themeMode);
+    return lowerThemeStringToCss((def as { value?: ThemeString }).value);
   }
   return resolvedLiteral;
 }
@@ -101,7 +100,7 @@ function clampWrapperStrokeWidthPx(raw: number | undefined): number {
 
 export function buildElementButtonWrapperStyles(
   definitions: Record<string, unknown> | null | undefined,
-  themeMode: PeblorThemeMode,
+
   props: Pick<
     ElementButtonProps,
     | "wrapperFill"
@@ -125,6 +124,7 @@ export function buildElementButtonWrapperStyles(
     | "wrapperFillDisabled"
     | "wrapperTransition"
     | "wrapperInteractionVars"
+    | "bgFill"
   >
 ) {
   const {
@@ -149,18 +149,18 @@ export function buildElementButtonWrapperStyles(
     wrapperFillDisabled,
     wrapperTransition,
     wrapperInteractionVars,
+    bgFill,
   } = props;
-  const resolvedFill = resolveCssGradientRef(definitions, wrapperFillRef, wrapperFill, themeMode);
-  const resolvedStroke = resolveCssGradientRef(
-    definitions,
-    wrapperStrokeRef,
-    wrapperStroke,
-    themeMode
-  );
-  const resolvedWrapperFillHover = resolveThemeString(wrapperFillHover, themeMode);
-  const resolvedWrapperStrokeHover = resolveThemeString(wrapperStrokeHover, themeMode);
-  const resolvedWrapperFillActive = resolveThemeString(wrapperFillActive, themeMode);
-  const resolvedWrapperFillDisabled = resolveThemeString(wrapperFillDisabled, themeMode);
+  const bgFillResolved = bgFill?.fill != null ? lowerThemeStringToCss(bgFill.fill) : undefined;
+  const resolvedFill =
+    bgFillResolved != null
+      ? bgFillResolved
+      : resolveCssGradientRef(definitions, wrapperFillRef, wrapperFill);
+  const resolvedStroke = resolveCssGradientRef(definitions, wrapperStrokeRef, wrapperStroke);
+  const resolvedWrapperFillHover = lowerThemeStringToCss(wrapperFillHover);
+  const resolvedWrapperStrokeHover = lowerThemeStringToCss(wrapperStrokeHover);
+  const resolvedWrapperFillActive = lowerThemeStringToCss(wrapperFillActive);
+  const resolvedWrapperFillDisabled = lowerThemeStringToCss(wrapperFillDisabled);
 
   const strokeWidth = clampWrapperStrokeWidthPx(wrapperStrokeWidth);
   const isGradientStroke = resolvedStroke != null && String(resolvedStroke).includes("gradient");
@@ -171,8 +171,8 @@ export function buildElementButtonWrapperStyles(
   const wrapperStyle = (
     hasWrapper
       ? {
-          ...(resolvedFill != null && !useRoundedGradientStroke && { background: resolvedFill }),
-          ...(wrapperPadding != null && !useRoundedGradientStroke && { padding: wrapperPadding }),
+          ...(resolvedFill != null &&
+            !useRoundedGradientStroke && { "--element-btn-fill": resolvedFill }),
           ...(wrapperBorderRadius != null && { borderRadius: wrapperBorderRadius }),
           ...(wrapperWidth != null && { width: wrapperWidth }),
           ...(wrapperHeight != null && { height: wrapperHeight }),
@@ -187,12 +187,15 @@ export function buildElementButtonWrapperStyles(
                     borderImage: `${resolvedStroke} 1`,
                     borderImageSlice: 1,
                   }
-                : { border: `${strokeWidth}px solid ${resolvedStroke}` })),
+                : { borderWidth: strokeWidth, borderStyle: "solid" })),
+          ...(bgFill?.backgroundSize != null && { backgroundSize: bgFill.backgroundSize }),
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
         }
-      : {}
+      : {
+          ...(bgFill?.backgroundSize != null && { backgroundSize: bgFill.backgroundSize }),
+        }
   ) as CSSProperties;
 
   const innerWrapperStyle = (
@@ -274,7 +277,7 @@ export function buildElementButtonWrapperStyles(
   const customVars: CSSProperties = {};
   if (wrapperInteractionVars) {
     for (const [key, val] of Object.entries(wrapperInteractionVars)) {
-      const resolvedValue = resolveThemeString(val as ThemeString, themeMode);
+      const resolvedValue = lowerThemeStringToCss(val as ThemeString);
       if (typeof key === "string" && key.startsWith("--") && resolvedValue != null) {
         (customVars as Record<string, string>)[key] = resolvedValue;
       }

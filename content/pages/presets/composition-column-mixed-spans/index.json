@@ -1,0 +1,195 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Composition Column Mixed Spans — Preset Demo",
+  "description": "Non-uniform spans and assignments proving peblor can support irregular composition systems.",
+  "sectionOrder": ["nav-header", "hero", "demo-primary", "demo-stress"],
+  "definitions": {
+    "bg-composition": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "radial-gradient(120% 110% at 92% 2%, color-mix(in oklab, var(--pb-accent) 16%, transparent) 0%, transparent 54%), linear-gradient(160deg, color-mix(in oklab, var(--pb-primary) 11%, var(--pb-secondary)) 0%, var(--pb-secondary) 66%, color-mix(in oklab, var(--pb-accent) 6%, var(--pb-secondary)) 100%)"
+        }
+      ],
+      "preset": "bg-composition"
+    },
+    "nav-header": {
+      "preset": "preset-demo-nav-header"
+    },
+    "hero": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "align": "start",
+      "height": "hug",
+      "padding": {
+        "base": "10rem 0 6rem",
+        "md": "12rem 0 8rem"
+      },
+      "gap": "1rem",
+      "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+      "definitions": {
+        "hero-eyebrow": {
+          "preset": "type-kicker-badge",
+          "text": "Column · Mixed Span · Irregular Rhythm"
+        },
+        "hero-title": {
+          "preset": "type-h1-display",
+          "text": "Composition Column Mixed Spans"
+        },
+        "hero-description": {
+          "preset": "type-body-standard",
+          "text": "Non-uniform spans and assignments proving peblor can support irregular composition systems.",
+          "width": {
+            "base": "100%",
+            "md": "72%"
+          }
+        }
+      }
+    },
+    "demo-primary": {
+      "preset": "composition-column-mixed-spans",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "1100px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "2rem 0 4rem",
+        "md": "2rem 0 5rem"
+      },
+      "definitions": {
+        "lead": {
+          "section": {
+            "definitions": {
+              "title": {
+                "text": "Quarterly Product Narrative"
+              },
+              "body": {
+                "text": "A broad lead surface spanning multiple tracks for the core story and visual anchor."
+              }
+            }
+          }
+        },
+        "detail-a": {
+          "section": {
+            "definitions": {
+              "kicker": {
+                "text": "Signal"
+              },
+              "title": {
+                "text": "Adoption Pulse"
+              },
+              "body": {
+                "text": "Weekly activation growth with feature-level attribution."
+              }
+            }
+          }
+        },
+        "detail-b": {
+          "section": {
+            "definitions": {
+              "kicker": {
+                "text": "Risk"
+              },
+              "title": {
+                "text": "Churn Triggers"
+              },
+              "body": {
+                "text": "Early warning patterns from cancellation and downgrade behavior."
+              }
+            }
+          }
+        },
+        "aside": {
+          "section": {
+            "definitions": {
+              "quote": {
+                "text": "Mixed spans let one dominant narrative coexist with compact decision cards."
+              },
+              "attribution": {
+                "section": {
+                  "definitions": {
+                    "name": {
+                      "text": "Platform Team"
+                    },
+                    "role": {
+                      "text": "Review Notes"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "marginBottom": {
+        "base": "2rem",
+        "md": "3rem"
+      }
+    },
+    "demo-stress": {
+      "preset": "composition-column-mixed-spans",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "1100px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 0 8rem",
+        "md": "0 0 12rem"
+      },
+      "definitions": {
+        "lead": {
+          "section": {
+            "definitions": {
+              "body": {
+                "text": "Stress variant: this lead card carries intentionally dense text across several clauses to confirm span behavior remains stable, line lengths stay readable, and compact companions in neighboring tracks do not collapse into awkward gutters at desktop or mobile widths."
+              }
+            }
+          }
+        },
+        "detail-a": {
+          "section": {
+            "definitions": {
+              "body": {
+                "text": "Supporting datum one with constrained width."
+              }
+            }
+          }
+        },
+        "detail-b": {
+          "section": {
+            "definitions": {
+              "body": {
+                "text": "Supporting datum two with asymmetrical rhythm."
+              }
+            }
+          }
+        },
+        "aside": {
+          "section": {
+            "definitions": {
+              "quote": {
+                "text": "If mobile remains single-track here, the irregular desktop structure is still preserved semantically through ordering and emphasis."
+              }
+            }
+          }
+        }
+      },
+      "marginBottom": {
+        "base": "4rem",
+        "md": "8rem"
+      }
+    }
+  },
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "layout", "card", "bg"],
+  "bgKey": "bg-composition"
+}

@@ -1,0 +1,354 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Analytics Dashboard — Composition Demo",
+  "description": "Internal dashboard: page header, KPI row, selector+preview panel (selectedValueVariable), data table, trend marquee, and action cluster.",
+  "presets": [
+    "demo",
+    "type/core",
+    "type/effects",
+    "type/motion",
+    "ui/button",
+    "ui/link",
+    "layout",
+    "card",
+    "bg"
+  ],
+  "bgKey": "bg-page",
+  "scroll": {
+    "smooth": true,
+    "lockBody": true,
+    "scrollX": "hidden"
+  },
+  "sectionOrder": [
+    "nav-header",
+    "hero",
+    "sec-kpi",
+    "sec-selector-label",
+    "sec-selector",
+    "sec-data-label",
+    "sec-data",
+    "sec-marquee",
+    "sec-actions"
+  ],
+  "definitions": {
+    "bg-page": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "oklch(0.04 0.002 250)"
+        },
+        {
+          "fill": "radial-gradient(ellipse 70% 50% at 0% 30%, oklch(0.16 0.04 260 / 0.35) 0%, transparent 65%)"
+        }
+      ]
+    },
+    "nav-header": {
+      "preset": "preset-demo-nav-header"
+    },
+    "hero": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "align": "start",
+      "height": "hug",
+      "padding": {
+        "base": "5rem 0 3rem",
+        "md": "12rem 0 4rem"
+      },
+      "gap": "0.75rem",
+      "elementOrder": ["hero-kicker", "hero-title", "hero-meta"],
+      "definitions": {
+        "hero-kicker": {
+          "preset": "type-kicker-badge",
+          "text": "Analytics Platform · May 2026"
+        },
+        "hero-title": {
+          "preset": "type-h1-display",
+          "text": "Orbit Analytics"
+        },
+        "hero-meta": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "row",
+          "wrap": "wrap",
+          "gap": "1.5rem",
+          "section": {
+            "elementOrder": ["meta-updated", "meta-status"],
+            "definitions": {
+              "meta-updated": {
+                "preset": "type-h5-meta",
+                "text": "Last updated: 29 May 2026, 09:42"
+              },
+              "meta-status": {
+                "type": "elementBody",
+                "level": 5,
+                "text": "● All systems operational",
+                "color": "color-mix(in oklab, oklch(0.7 0.2 140) 80%, transparent)"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-kpi": {
+      "preset": "composition-column-kpi-matrix",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "2rem 0 4rem",
+        "md": "3rem 0 6rem"
+      },
+      "definitions": {
+        "kpi-1": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 2847,
+                "suffix": "",
+                "separator": true,
+                "tween": {
+                  "duration": 1400
+                }
+              },
+              "label": {
+                "text": "Active users"
+              },
+              "body": {
+                "text": "+12% from last month"
+              }
+            }
+          }
+        },
+        "kpi-2": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 98,
+                "suffix": ".4%",
+                "tween": {
+                  "duration": 1000
+                }
+              },
+              "label": {
+                "text": "Uptime"
+              },
+              "body": {
+                "text": "30-day rolling average"
+              }
+            }
+          }
+        },
+        "kpi-3": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 142,
+                "suffix": "ms",
+                "tween": {
+                  "duration": 1200
+                }
+              },
+              "label": {
+                "text": "Avg response"
+              },
+              "body": {
+                "text": "P95 API latency"
+              }
+            }
+          }
+        },
+        "kpi-4": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 4,
+                "suffix": "",
+                "tween": {
+                  "duration": 600
+                }
+              },
+              "label": {
+                "text": "Open incidents"
+              },
+              "body": {
+                "text": "2 high, 2 low priority"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-selector-label": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "2rem 0 1.5rem",
+        "md": "3rem 0 2rem"
+      },
+      "elementOrder": ["sel-heading"],
+      "definitions": {
+        "sel-heading": {
+          "preset": "type-h3-label",
+          "text": "Report explorer"
+        }
+      }
+    },
+    "sec-selector": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 0 4rem",
+        "md": "0 0 6rem"
+      },
+      "elementOrder": ["selector-system"],
+      "definitions": {
+        "selector-system": {
+          "preset": "card-selector-preview-system",
+          "section": {
+            "definitions": {
+              "list-col": {
+                "section": {
+                  "definitions": {
+                    "card-scroll": {
+                      "selectedValues": {
+                        "card-item-one": "card-one",
+                        "card-item-two": "card-two",
+                        "card-item-three": "card-three",
+                        "card-item-four": "card-four"
+                      },
+                      "section": {
+                        "definitions": {
+                          "card-item-one": {
+                            "section": {
+                              "definitions": {
+                                "item-title": {
+                                  "text": "Traffic Overview"
+                                }
+                              }
+                            }
+                          },
+                          "card-item-two": {
+                            "section": {
+                              "definitions": {
+                                "item-title": {
+                                  "text": "Conversion Funnel"
+                                }
+                              }
+                            }
+                          },
+                          "card-item-three": {
+                            "section": {
+                              "definitions": {
+                                "item-title": {
+                                  "text": "Retention Cohorts"
+                                }
+                              }
+                            }
+                          },
+                          "card-item-four": {
+                            "section": {
+                              "definitions": {
+                                "item-title": {
+                                  "text": "Revenue Trends"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-data-label": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "3rem 0 1.5rem",
+        "md": "4rem 0 2rem"
+      },
+      "elementOrder": ["data-heading"],
+      "definitions": {
+        "data-heading": {
+          "preset": "type-h3-label",
+          "text": "Recent activity"
+        }
+      }
+    },
+    "sec-data": {
+      "preset": "composition-column-rail-body",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 0 4rem",
+        "md": "0 0 6rem"
+      }
+    },
+    "sec-marquee": {
+      "type": "contentBlock",
+      "width": "100%",
+      "height": "hug",
+      "padding": {
+        "base": "2rem 0",
+        "md": "3rem 0"
+      },
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+      "elementOrder": ["trend-marquee"],
+      "definitions": {
+        "trend-marquee": {
+          "preset": "type-marquee-label",
+          "text": "DAU +12% · Revenue ↑$48K · API p95 142ms · Churn rate 2.1% · NPS 68 · MRR $124K · Error rate 0.02% · Deploy freq 3.4/day"
+        }
+      }
+    },
+    "sec-actions": {
+      "preset": "composition-flow-dense-controls",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "2.5rem 1.5rem 2.5rem",
+        "md": "4rem 2rem 10rem"
+      }
+    }
+  }
+}

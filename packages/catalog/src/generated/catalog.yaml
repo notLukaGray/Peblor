@@ -1,5 +1,5 @@
 version: "1"
-generated_at: "2026-05-18T14:02:41.383Z"
+generated_at: "2026-06-15T21:50:17.151Z"
 entries:
   - id: background.image
     kind: cluster
@@ -357,14 +357,13 @@ entries:
           - fontSize
           - fontWeight
           - lineHeight
-          - lineSpacing
           - letterSpacing
           - fontFeatureSettings
       - name: color
         fields:
           - color
           - textFill
-      - name: overflow
+      - name: scroll
         fields:
           - textOverflow
           - textStroke
@@ -374,7 +373,7 @@ entries:
     covers:
       - description: Lead-size intro paragraph with accent color and refined letter spacing
         example: content/validator-fragments/body-lead.json
-      - description: Fine-print caption with secondary color and text-overflow ellipsis
+      - description: Fine-print caption with secondary color and text-scroll ellipsis
         example: content/validator-fragments/body-fine.json
     does_not_cover:
       - what: Headline, display, or label copy
@@ -395,7 +394,6 @@ entries:
       motion: external — motionTiming applied by parent wrapper
     known_limitations:
       - variableKey replaces the full text field — static text is ignored when set
-      - lineSpacing is legacy shorthand; prefer lineHeight for new content
     proposal_hints:
       new_variant_value: extend_cluster
       new_field_in_existing_axis: extend_cluster
@@ -483,8 +481,7 @@ entries:
           - loadingLabel
       - name: events
         fields:
-          - pointerDownAction
-          - pointerUpAction
+          - interactions
     covers:
       - description: Primary CTA button linking to a page section
         example: content/validator-fragments/primary-button.json
@@ -736,12 +733,12 @@ entries:
       - name: layout
         fields:
           - display
-          - flexDirection
-          - alignItems
-          - justifyContent
+          - flow
+          - align
+          - distribute
           - gap
           - rowGap
-          - flexWrap
+          - wrap
         responsive: true
       - name: columns
         fields:
@@ -837,13 +834,12 @@ entries:
           - fontWeight
           - letterSpacing
           - lineHeight
-          - lineSpacing
           - fontFeatureSettings
       - name: color
         fields:
           - color
           - textFill
-      - name: overflow
+      - name: scroll
         fields:
           - textOverflow
           - textStroke
@@ -875,7 +871,6 @@ entries:
     known_limitations:
       - No inline formatting — bold/italic sub-runs require element.richText
       - variableKey replaces the entire text field at runtime; static text is ignored when set
-      - lineSpacing is legacy shorthand; prefer lineHeight for new content
     proposal_hints:
       new_variant_value: extend_cluster
       new_field_in_existing_axis: extend_cluster
@@ -1078,8 +1073,8 @@ entries:
         responsive: true
       - name: layout
         fields:
-          - alignItems
-          - justifyContent
+          - align
+          - distribute
           - gap
           - rowGap
           - columnGap
@@ -1540,7 +1535,6 @@ entries:
           - min
           - max
           - step
-          - defaultValue
       - name: action
         fields:
           - action
@@ -1879,7 +1873,7 @@ entries:
       A tabbed interface element — a row of tab headers that switch between content panels
       containing child elements. Each tab has a label, optional icon and badge, and its own set of
       child elements rendered when active. Supports underline, pill, contained, and vertical
-      variants; fade or slide content transitions; lazy loading; scrollable tab overflow; mobile
+      variants; fade or slide content transitions; lazy loading; scrollable tab scroll; mobile
       collapse to dropdown; and keyboard arrow-key navigation. Use for settings panels, product
       detail tabs, filter groups, or any UI where the user switches between related content views.
     not_this_if:
@@ -1952,7 +1946,7 @@ entries:
     not_this_if:
       - you need a full-screen modal dialog (use modal)
       - you need an expandable inline reveal (use section.reveal)
-      - you need hover gesture keyframes on the element itself (use motion.whileHover)
+      - you need hover gesture keyframes on the element itself (use motion.onHover)
     axes:
       - name: content
         fields:
@@ -1973,9 +1967,9 @@ entries:
           - followCursor
           - maxWidth
           - zIndex
-      - name: animation
+      - name: entrance
         fields:
-          - animation
+          - motion
       - name: typography
         fields:
           - color
@@ -1991,7 +1985,7 @@ entries:
       - what: Expandable inline reveal
         use_instead: section.reveal
       - what: Gesture keyframes on hover
-        use_instead: motion.whileHover
+        use_instead: motion.onHover
       - what: Rich HTML content inside tooltip
         use_instead: external — content is text-only in v1
     covers:
@@ -2006,7 +2000,7 @@ entries:
         - element.heading
         - element.button
         - element.image
-      motion: external — motionTiming for entrance; animation field controls tooltip show/hide transition
+      motion: external — motionTiming for entrance; layout motion controls tooltip show/hide transition
     known_limitations:
       - >-
         Trigger element is the immediate previous sibling or wrapping parent — position resolves
@@ -2056,7 +2050,7 @@ entries:
           - ariaLabel
     covers:
       - description: Play-icon glyph with hover fill transition
-        example: content/presets/video-controls.json
+        example: content/presets/video/control/video-controls-play.json
       - description: Shield logo mark with theme-mapped path fills and checkmark accent
         example: content/validator-fragments/logo-vector.json
     does_not_cover:
@@ -2488,7 +2482,7 @@ entries:
           - dragTransition
       - name: gesture
         fields:
-          - whileDrag
+          - onDrag
         note: keyframes applied during drag
     does_not_cover:
       - what: Reorderable list with drag-drop reordering
@@ -2498,7 +2492,7 @@ entries:
       - what: Range slider with action dispatch
         use_instead: element.range
       - what: Tap/press gesture
-        use_instead: motion.whileTap
+        use_instead: motion.onPress
     covers:
       - description: Draggable card with x-axis lock, parent constraints, and elastic snap
         example: content/validator-fragments/motion-drag.json
@@ -2507,9 +2501,9 @@ entries:
         - section.*
         - element.*
       siblings_typical:
-        - motion.whileHover
-        - motion.whileDrag
-      motion: drag and drag sub-properties on motionProps; whileDrag for gesture keyframes
+        - motion.onHover
+        - motion.onDrag
+      motion: drag and drag sub-properties on motionProps; onDrag for gesture keyframes
     known_limitations:
       - "drag: true enables both axes — use 'x' or 'y' to lock"
       - >-
@@ -2682,23 +2676,20 @@ entries:
     not_this_if:
       - you need entrance/exit animations (use motionTiming.entrancePreset / exitPreset)
       - you need scroll-driven animation (use trigger.onViewportProgress)
-      - you need gesture-based animation (use motion.whileHover / motion.whileTap)
+      - you need gesture-based animation (use motion.onHover / motion.onPress)
     axes:
       - name: layout-anim
-        fields:
-          - layout
-          - layoutId
-          - layoutDependency
-          - layoutScroll
-          - layoutRoot
-        note: layoutId enables shared element transitions between two elements
+        fields: []
+        note: >-
+          Layout animation fields (layout, layoutId, layoutDependency, layoutScroll, layoutRoot) are
+          deferred — not yet exposed in motionPropsSchema
     does_not_cover:
       - what: Entrance or exit animation presets
         use_instead: motionTiming.entrancePreset
       - what: Scroll-progress-driven animation
         use_instead: trigger.onViewportProgress
       - what: Gesture-based visual feedback
-        use_instead: motion.whileHover
+        use_instead: motion.onHover
       - what: CSS transitions for layout
         use_instead: external — use CSS transition on the element wrapper
     covers:
@@ -2709,7 +2700,7 @@ entries:
         - section.*
         - element.*
       siblings_typical:
-        - motion.whileHover
+        - motion.onHover
         - motionTiming.entrancePreset
       motion: layout, layoutId, layoutScroll, layoutRoot on motionProps
     known_limitations:
@@ -3131,7 +3122,7 @@ entries:
       new_variant_value: N/A — motion timing, no variant
       new_field_in_existing_axis: extend_cluster
       new_axis: usually new_cluster — justify before adding
-  - id: motion.whileFocus
+  - id: motion.onFocus
     kind: cluster
     package: "@pb/contracts"
     stability: stable
@@ -3143,20 +3134,20 @@ entries:
       focused element. Works on any element or section via motionPropsSchema.
     not_this_if:
       - you need a keyboard shortcut trigger (use trigger.keyboard)
-      - you need hover feedback (use motion.whileHover)
+      - you need hover feedback (use motion.onHover)
       - you need click/tap action (use trigger.onClick)
     axes:
       - name: keyframes
         fields:
-          - whileFocus
+          - onFocus
         note: z.union([motionKeyframesSchema, string]) — any known FM property
     does_not_cover:
       - what: Keyboard shortcut trigger
         use_instead: trigger.keyboard
       - what: Hover visual feedback
-        use_instead: motion.whileHover
+        use_instead: motion.onHover
       - what: Tap/press gesture
-        use_instead: motion.whileTap
+        use_instead: motion.onPress
       - what: Focus-trap or focus management
         use_instead: external — handle via modal or form focus management
     covers:
@@ -3167,20 +3158,18 @@ entries:
         - section.*
         - element.*
       siblings_typical:
-        - motion.whileHover
-        - motion.whileTap
-      motion: whileFocus on motionProps — merged from motion defaults
+        - motion.onHover
+        - motion.onPress
+      motion: onFocus on motionProps — merged from motion defaults
     known_limitations:
       - Focus gesture only applies to focusable elements (inputs, buttons, links, tabindex)
-      - whileFocus keyframes are stripped of layout-owned keys
-      - >-
-        Not commonly used standalone — usually paired with whileHover for complete interaction
-        states
+      - onFocus keyframes are stripped of layout-owned keys
+      - Not commonly used standalone — usually paired with onHover for complete interaction states
     proposal_hints:
       new_variant_value: N/A — motion gesture, no variant
       new_field_in_existing_axis: extend_cluster
       new_axis: usually new_cluster — justify before adding
-  - id: motion.whileHover
+  - id: motion.onHover
     kind: cluster
     package: "@pb/contracts"
     stability: stable
@@ -3197,7 +3186,7 @@ entries:
     axes:
       - name: keyframes
         fields:
-          - whileHover
+          - onHover
         note: z.union([motionKeyframesSchema, string]) — any known FM property
     does_not_cover:
       - what: Cursor-position-driven animation
@@ -3207,7 +3196,7 @@ entries:
       - what: Expand/collapse section reveal
         use_instead: section.reveal
       - what: Pressed/tap-hold gesture
-        use_instead: motion.whileTap
+        use_instead: motion.onPress
     covers:
       - description: Image that scales to 1.05 on hover with a 0.2s transition
         example: content/validator-fragments/motion-while-hover.json
@@ -3216,20 +3205,20 @@ entries:
         - section.*
         - element.*
       siblings_typical:
-        - motion.whileTap
-        - motion.whileFocus
-      motion: whileHover on motionProps — merged from motion defaults
+        - motion.onPress
+        - motion.onFocus
+      motion: onHover on motionProps — merged from motion defaults
     known_limitations:
       - >-
-        whileHover keyframes are stripped of layout-owned keys (position, flex, grid) — use
+        onHover keyframes are stripped of layout-owned keys (position, flex, grid) — use
         scale/opacity/color
-      - Transition duration comes from the transition object, not whileHover itself
-      - If motion defaults provide empty whileHover, no hover gesture applies automatically
+      - Transition duration comes from the transition object, not onHover itself
+      - If motion defaults provide empty onHover, no hover gesture applies automatically
     proposal_hints:
       new_variant_value: N/A — motion gesture, no variant
       new_field_in_existing_axis: extend_cluster
       new_axis: usually new_cluster — justify before adding
-  - id: motion.whileInView
+  - id: motion.onVisible
     kind: cluster
     package: "@pb/contracts"
     stability: stable
@@ -3247,7 +3236,7 @@ entries:
     axes:
       - name: keyframes
         fields:
-          - whileInView
+          - onVisible
         note: z.union([motionKeyframesSchema, string]) — any known FM property
     does_not_cover:
       - what: One-shot entrance animation
@@ -3257,7 +3246,7 @@ entries:
       - what: Scroll-progress-driven animation
         use_instead: trigger.onViewportProgress
       - what: Hover gesture
-        use_instead: motion.whileHover
+        use_instead: motion.onHover
     covers:
       - description: CTA button that glows continuously while visible in viewport
         example: content/validator-fragments/motion-while-in-view.json
@@ -3266,20 +3255,20 @@ entries:
         - section.*
         - element.*
       siblings_typical:
-        - motion.whileHover
+        - motion.onHover
         - trigger.onVisible
       motion: >-
-        whileInView on motionProps — merged from motion defaults; also available via motion
-        component defaults
+        onVisible on motionProps — merged from motion defaults; also available via motion component
+        defaults
     known_limitations:
-      - whileInView persists as long as the element is visible — unlike one-shot entrance animations
-      - whileInView keyframes are stripped of layout-owned keys
-      - Viewport margin is controlled by the viewport config on motionTiming, not whileInView itself
+      - onVisible persists as long as the element is visible — unlike one-shot entrance animations
+      - onVisible keyframes are stripped of layout-owned keys
+      - Viewport margin is controlled by the viewport config on motionTiming, not onVisible itself
     proposal_hints:
       new_variant_value: N/A — motion gesture, no variant
       new_field_in_existing_axis: extend_cluster
       new_axis: usually new_cluster — justify before adding
-  - id: motion.whileTap
+  - id: motion.onPress
     kind: cluster
     package: "@pb/contracts"
     stability: stable
@@ -3294,11 +3283,11 @@ entries:
       - >-
         you need pointer-down event separately from pointer-up (use trigger.pointerDown /
         trigger.pointerUp)
-      - you need hover feedback with no press state (use motion.whileHover)
+      - you need hover feedback with no press state (use motion.onHover)
     axes:
       - name: keyframes
         fields:
-          - whileTap
+          - onPress
         note: z.union([motionKeyframesSchema, string]) — any known FM property
     does_not_cover:
       - what: Click action trigger
@@ -3306,7 +3295,7 @@ entries:
       - what: Separate pointer-down and pointer-up actions
         use_instead: trigger.pointerDown
       - what: Hover-only visual feedback
-        use_instead: motion.whileHover
+        use_instead: motion.onHover
       - what: Drag interaction
         use_instead: motion.drag
     covers:
@@ -3317,12 +3306,12 @@ entries:
         - section.*
         - element.*
       siblings_typical:
-        - motion.whileHover
-        - motion.whileFocus
-      motion: whileTap on motionProps — merged from motion defaults
+        - motion.onHover
+        - motion.onFocus
+      motion: onPress on motionProps — merged from motion defaults
     known_limitations:
-      - whileTap keyframes are stripped of layout-owned keys — use scale/opacity/color
-      - whileTap fires on pointer-down and reverses on pointer-up
+      - onPress keyframes are stripped of layout-owned keys — use scale/opacity/color
+      - onPress fires on pointer-down and reverses on pointer-up
       - Transition for the tap animation comes from the shared transition config
     proposal_hints:
       new_variant_value: N/A — motion gesture, no variant
@@ -3534,10 +3523,10 @@ entries:
     axes:
       - name: layout
         fields:
-          - flexDirection
-          - alignItems
-          - justifyContent
-          - flexWrap
+          - flow
+          - align
+          - distribute
+          - wrap
           - gap
           - rowGap
           - columnGap
@@ -3564,7 +3553,7 @@ entries:
           - layers
           - border
           - borderRadius
-          - overflow
+          - scroll
         responsive: true
       - name: motion
         fields:
@@ -3613,7 +3602,7 @@ entries:
       - >-
         contentWidth/contentHeight control the inner content container, not the outer section
         wrapper
-      - flexWrap is ignored when reorderable is true — reorder only works on single-axis lists
+      - wrap is ignored when reorderable is true — reorder only works on single-axis lists
     proposal_hints:
       new_variant_value: N/A — no variant field on section.contentBlock
       new_field_in_existing_axis: extend_cluster
@@ -3845,6 +3834,70 @@ entries:
       new_variant_value: N/A — no variant field on section.formBlock
       new_field_in_existing_axis: extend_cluster
       new_axis: usually new_cluster — justify before adding
+  - id: section.pageTrigger
+    kind: cluster
+    package: "@pb/contracts"
+    stability: stable
+    schema_version: 1
+    feels_like: >
+      A headless section that fires actions on page lifecycle events and hosts all section-level
+      custom trigger types without any visual output. Use it when you need onMount/onUnmount actions
+      (page-load animations, analytics hits, variable initialisation) or want a dedicated trigger
+      container that keeps trigger logic separate from visual sections. Any section can host custom
+      triggers via baseSectionPropsSchema, but pageTrigger makes them first-class and explicit.
+    not_this_if:
+      - you need a viewport intersection trigger (use section.trigger)
+      - you need the triggers on a visual section — add them directly to that section's props
+      - you just need a timer — use timerTriggers on any existing section
+    axes:
+      - name: lifecycle
+        fields:
+          - onMount
+          - onUnmount
+        note: >-
+          actions fired when the section mounts/unmounts; deps array is intentionally empty — fires
+          once only
+      - name: custom_triggers
+        fields:
+          - customEventTriggers
+          - elementEventTriggers
+          - scrollThresholdTriggers
+          - mediaProgressTriggers
+          - timerTriggers
+          - keyboardTriggers
+          - variableTriggers
+          - tabVisibilityTriggers
+          - mediaEndTriggers
+        note: full baseSectionPropsSchema trigger surface — all trigger arrays are available
+    covers:
+      - description: Initialise a variable on page mount and clean up on unmount
+        example: content/validator-fragments/section-page-trigger.json
+        minimal: true
+    does_not_cover:
+      - what: Intersection-observer trigger
+        use_instead: section.trigger
+      - what: Scroll-driven opacity
+        use_instead: section.scrollOpacity
+      - what: Visual content rendering
+        use_instead: any visual section (contentBlock, sectionColumn, etc.)
+    composes_with:
+      parents:
+        - page
+      siblings_typical:
+        - trigger.timer
+        - trigger.keyboard
+        - trigger.customEvent
+      motion: N/A — headless, renders null
+    known_limitations:
+      - Returns null — produces no DOM output
+      - >-
+        onMount/onUnmount deps array is intentionally empty — fires once on mount/unmount, not on
+        prop changes
+      - Multiple pageTrigger sections on one page are supported — each fires independently
+    proposal_hints:
+      new_variant_value: N/A — section type, no variant
+      new_field_in_existing_axis: extend_cluster
+      new_axis: usually new_cluster — justify before adding
   - id: section.parallax
     kind: cluster
     package: "@pb/contracts"
@@ -3941,7 +3994,7 @@ entries:
     known_limitations:
       - reorderable only applies to section.contentBlock — not available on other section types
       - "reorderDragUnit: 'content' drags the visual element; 'frame' uses a drag handle overlay"
-      - reorderAxis must match the content block's flexDirection — x for row, y for column
+      - reorderAxis must match the content block's flow — x for row, y for column
     proposal_hints:
       new_variant_value: N/A — section capability, no variant
       new_field_in_existing_axis: extend_cluster
@@ -4048,7 +4101,7 @@ entries:
           - effects
           - width
           - height
-          - overflow
+          - scroll
         responsive: true
       - name: motion
         fields:
@@ -4084,8 +4137,8 @@ entries:
       - >-
         scrollProgressTrigger.id names the context consumed by element.scrollProgressBar and other
         progress listeners
-      - "overflow: hidden on the section is required for axis-constrained scroll containment"
-      - "Both axes ('both') is rarely used — usually pair with overflow: auto"
+      - "scroll: hidden on the section is required for axis-constrained scroll containment"
+      - "Both axes ('both') is rarely used — usually pair with scroll: auto"
     proposal_hints:
       new_variant_value: N/A — no variant field on section.scrollContainer
       new_field_in_existing_axis: extend_cluster
@@ -4336,6 +4389,100 @@ entries:
       new_variant_value: N/A — trigger, no variant
       new_field_in_existing_axis: extend_cluster
       new_axis: usually new_cluster — justify before adding
+  - id: trigger.customEvent
+    kind: trigger
+    package: "@pb/contracts"
+    stability: stable
+    schema_version: 1
+    feels_like: >
+      A decoupled event bus for sections. One section fires dispatchCustomEvent with a name and
+      optional detail payload; any other section listening via customEventTriggers receives it and
+      fires its own action. Use for inter-section communication without shared variable state —
+      carousels signalling sidebars, players notifying overlays, form steps advancing sequences.
+    not_this_if:
+      - you need to react to a variable value change (use variableTriggers)
+      - you need to react to user interaction on a specific element (use trigger.elementEvent)
+      - sections are in a parent/child relationship and can share props directly
+    axes:
+      - name: config
+        fields:
+          - customEventTriggers
+        note: array of { name, action } on baseSectionPropsSchema; pairs with dispatchCustomEvent action
+    covers:
+      - description: Section reacts to a named custom event dispatched from another section
+        example: content/validator-fragments/trigger-custom-event.json
+    does_not_cover:
+      - what: Variable-driven conditional trigger
+        use_instead: trigger.idle
+      - what: DOM element interaction trigger
+        use_instead: trigger.elementEvent
+      - what: Timer-based trigger
+        use_instead: trigger.timer
+    composes_with:
+      parents:
+        - section.*
+      siblings_typical:
+        - trigger.timer
+        - trigger.keyboard
+      motion: N/A — fires actions; receiving element handles animation
+    known_limitations:
+      - Events are window-scoped — crossing iframe boundaries requires a custom bridge
+      - detail payload is JsonValue; structured data must be serializable
+      - No delivery guarantee — if no listener is mounted, the event is silently dropped
+    proposal_hints:
+      new_variant_value: N/A — trigger, no variant
+      new_field_in_existing_axis: extend_cluster
+      new_axis: usually new_cluster — justify before adding
+  - id: trigger.elementEvent
+    kind: trigger
+    package: "@pb/contracts"
+    stability: stable
+    schema_version: 1
+    feels_like: >
+      Attach click, hover, focus, blur, or change handlers to any DOM element by id — without
+      needing a button element or dedicated onClick prop. Use when the interactive target is a raw
+      element (image, group, custom component) that doesn't expose its own action prop, or when you
+      need to wire multiple event types on the same element.
+    not_this_if:
+      - the element is an elementButton or elementLink — use its own action/onClick prop
+      - you need to react to a keyboard shortcut (use trigger.keyboard)
+      - you need to trigger on scroll position (use trigger.onVisible)
+    axes:
+      - name: config
+        fields:
+          - elementEventTriggers
+        note: >-
+          array of { id, onClick?, onHoverEnter?, onHoverLeave?, onFocus?, onBlur?, onChange? } on
+          baseSectionPropsSchema
+    covers:
+      - description: Click and hover actions wired to a specific element by DOM id
+        example: content/validator-fragments/trigger-element-event.json
+    does_not_cover:
+      - what: Button element with built-in action
+        use_instead: trigger.onClick
+      - what: Global keyboard shortcut
+        use_instead: trigger.keyboard
+      - what: Scroll-based visibility trigger
+        use_instead: trigger.onVisible
+    composes_with:
+      parents:
+        - section.*
+      siblings_typical:
+        - trigger.onClick
+        - trigger.keyboard
+      motion: N/A — fires actions; receiving element handles animation
+    known_limitations:
+      - Targets element by DOM id — element must be rendered and have a matching id attribute
+      - >-
+        Listeners are added in useEffect; elements rendered after mount are not automatically picked
+        up
+      - >-
+        onChange fires on native change event — works for inputs/selects, not synthetic React
+        onChange
+    proposal_hints:
+      new_variant_value: N/A — trigger, no variant
+      new_field_in_existing_axis: extend_cluster
+      new_axis: usually new_cluster — justify before adding
   - id: trigger.idle
     kind: trigger
     package: "@pb/contracts"
@@ -4422,6 +4569,51 @@ entries:
       - key matches KeyboardEvent.code (e.g. 'Space', 'ArrowLeft') — not KeyboardEvent.key
       - shortcuts are active only while the section is mounted
       - "preventDefault: true stops default browser behavior for the key combo"
+    proposal_hints:
+      new_variant_value: N/A — trigger, no variant
+      new_field_in_existing_axis: extend_cluster
+      new_axis: usually new_cluster — justify before adding
+  - id: trigger.mediaProgress
+    kind: trigger
+    package: "@pb/contracts"
+    stability: stable
+    schema_version: 1
+    feels_like: >
+      Fire an action when a video or audio element passes a specific playback fraction. Set once:
+      true to fire only on the first crossing; leave it false (default) to re-fire each time the
+      threshold is crossed after scrubbing back. Use for chapter markers, mid-roll overlays,
+      analytics milestones, or synced UI state changes keyed to playback position.
+    not_this_if:
+      - you need to fire when playback ends (use mediaEndTriggers)
+      - you need to fire when playback starts or pauses (use module slot triggers)
+      - the target is not an HTML media element with a DOM id
+    axes:
+      - name: config
+        fields:
+          - mediaProgressTriggers
+        note: array of { id, at (0–1 fraction), onReach, once? } on baseSectionPropsSchema
+    covers:
+      - description: Show a mid-roll overlay when video reaches 50% playback, fire only once
+        example: content/validator-fragments/trigger-media-progress.json
+    does_not_cover:
+      - what: Media end event
+        use_instead: trigger.onVideoEnd
+      - what: Scroll position threshold
+        use_instead: trigger.scrollThreshold
+      - what: Intersection-based trigger
+        use_instead: trigger.onVisible
+    composes_with:
+      parents:
+        - section.*
+      siblings_typical:
+        - trigger.onVideoEnd
+        - trigger.timer
+      motion: N/A — fires actions; receiving element handles animation
+    known_limitations:
+      - Targets HTML media element by DOM id — element must be rendered with matching id
+      - at is a fraction 0–1, not seconds — calculate fraction from known duration if needed
+      - "once: false (default) re-fires each time playback crosses the threshold after scrubbing back"
+      - timeupdate fires roughly every 250ms — sub-250ms precision is not guaranteed
     proposal_hints:
       new_variant_value: N/A — trigger, no variant
       new_field_in_existing_axis: extend_cluster
@@ -4932,6 +5124,50 @@ entries:
     known_limitations:
       - threshold is a pixel delta to debounce jitter — set to avoid rapid flip-flop
       - onScrollDown and onScrollUp fire once per direction change, not per pixel
+    proposal_hints:
+      new_variant_value: N/A — trigger, no variant
+      new_field_in_existing_axis: extend_cluster
+      new_axis: usually new_cluster — justify before adding
+  - id: trigger.scrollThreshold
+    kind: trigger
+    package: "@pb/contracts"
+    stability: stable
+    schema_version: 1
+    feels_like: >
+      Fire an action when the page scroll position crosses a fixed px or percentage threshold.
+      Supports both directions — onCrossDown fires when scrolling past the threshold, onCrossUp
+      fires when scrolling back above it. Use for sticky CTAs that appear after a fixed scroll
+      depth, progress-gated content, or scroll-position-aware UI state.
+    not_this_if:
+      - you need element-level intersection (use trigger.onVisible or trigger.onViewportProgress)
+      - you need scroll direction regardless of position (use trigger.scrollDirection)
+      - the threshold is a fraction of media playback (use trigger.mediaProgress)
+    axes:
+      - name: config
+        fields:
+          - scrollThresholdTriggers
+        note: array of { threshold (px or '50%'), onCrossDown?, onCrossUp? } on baseSectionPropsSchema
+    covers:
+      - description: Show a sticky CTA after scrolling past 800px, hide when scrolling back above
+        example: content/validator-fragments/trigger-scroll-threshold.json
+    does_not_cover:
+      - what: Element enters viewport
+        use_instead: trigger.onVisible
+      - what: Scroll direction trigger
+        use_instead: trigger.scrollDirection
+      - what: Scroll-driven progress value
+        use_instead: trigger.onViewportProgress
+    composes_with:
+      parents:
+        - section.*
+      siblings_typical:
+        - trigger.onVisible
+        - trigger.scrollDirection
+      motion: N/A — fires actions; receiving element handles animation
+    known_limitations:
+      - Threshold percentage is resolved against document.body.scrollHeight at scroll time
+      - Tracks window.scrollY — does not work inside scroll:scroll containers
+      - Each threshold fires once per crossing direction; no debounce
     proposal_hints:
       new_variant_value: N/A — trigger, no variant
       new_field_in_existing_axis: extend_cluster

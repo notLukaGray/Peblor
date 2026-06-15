@@ -18,8 +18,7 @@ import {
   REQUIRED_INDICATOR,
   STRUCTURAL_INPUT_BASE,
 } from "./form-field-typography";
-import { resolveThemeStyleObject } from "@/peblor/theme/theme-string";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
+import { lowerThemeStyleObject } from "@/peblor/theme/theme-string";
 
 const INPUT_FIELD_TYPES = [
   "text",
@@ -58,7 +57,6 @@ export function FormFieldInput({
   style,
   resolvedLevel,
 }: Props) {
-  const themeMode = usePeblorThemeMode();
   if (!isInputFieldType(field.fieldType)) return null;
 
   const fieldDisabled = disabled || field.disabled === true;
@@ -99,9 +97,7 @@ export function FormFieldInput({
       aria-required={field.required}
       className={hasAffix ? `${inputClass} min-w-0 flex-1` : inputClass}
       style={{
-        ...(resolveThemeStyleObject(field.inputStyle, themeMode) as
-          | React.CSSProperties
-          | undefined),
+        ...(lowerThemeStyleObject(field.inputStyle) as React.CSSProperties | undefined),
         borderColor: hasError ? formFieldStructuralClasses.inputBorderError : undefined,
       }}
     />

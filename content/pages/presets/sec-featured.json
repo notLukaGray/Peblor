@@ -1,0 +1,123 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "width": {
+    "base": "92%",
+    "md": "86%"
+  },
+  "maxWidth": "1200px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "3rem 0 6rem",
+    "md": "4rem 0 8rem"
+  },
+  "gap": "2.5rem",
+  "height": "hug",
+  "motionTiming": {
+    "staggerChildren": 0.1,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["featured-heading", "featured-grid"],
+  "definitions": {
+    "featured-heading": {
+      "preset": "type-h2-section",
+      "text": "Featured showcases"
+    },
+    "featured-grid": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": {
+        "base": "column",
+        "md": "row"
+      },
+      "wrap": "wrap",
+      "distribute": "center",
+      "gap": "1rem",
+      "section": {
+        "elementOrder": ["feat-cards", "feat-crossmedia", "feat-3d", "feat-type"],
+        "definitions": {
+          "feat-cards": {
+            "preset": "preset-demo-feat-card",
+            "section": {
+              "definitions": {
+                "feat-badge": {
+                  "text": "Cards"
+                },
+                "feat-title": {
+                  "text": "Cards Collections"
+                },
+                "feat-desc": {
+                  "text": "Grid, row, carousel, selector+preview, and bento card layouts with shared variable wiring."
+                },
+                "feat-link": {
+                  "label": "View →",
+                  "href": "/presets/cards-collections"
+                }
+              }
+            }
+          },
+          "feat-crossmedia": {
+            "preset": "preset-demo-feat-card",
+            "section": {
+              "definitions": {
+                "feat-badge": {
+                  "text": "Players"
+                },
+                "feat-title": {
+                  "text": "Crossmedia Control Surface"
+                },
+                "feat-desc": {
+                  "text": "Master-slave orchestration across video, audio, Lottie, Rive, and 3D runtimes from one control bar."
+                },
+                "feat-link": {
+                  "label": "View →",
+                  "href": "/presets/player-crossmedia-control-surface"
+                }
+              }
+            }
+          },
+          "feat-3d": {
+            "preset": "preset-demo-feat-card",
+            "section": {
+              "definitions": {
+                "feat-badge": {
+                  "text": "3D"
+                },
+                "feat-title": {
+                  "text": "3D Scroll Walkthrough"
+                },
+                "feat-desc": {
+                  "text": "Scroll-driven camera animation through a 3D scene with sticky viewport and descriptive text overlays."
+                },
+                "feat-link": {
+                  "label": "View →",
+                  "href": "/presets/player-3d-scroll-walkthrough"
+                }
+              }
+            }
+          },
+          "feat-type": {
+            "preset": "preset-demo-feat-card",
+            "section": {
+              "definitions": {
+                "feat-badge": {
+                  "text": "Typography"
+                },
+                "feat-title": {
+                  "text": "Type Patterns"
+                },
+                "feat-desc": {
+                  "text": "Staggered reveals, accent numbers, pull quotes, scroll-triggered type animations, and numbered lists."
+                },
+                "feat-link": {
+                  "label": "View →",
+                  "href": "/presets/type-patterns"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

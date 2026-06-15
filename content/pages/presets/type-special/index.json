@@ -1,0 +1,13 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Type Special — Preset Demo",
+  "description": "Interactive and compositional text treatments — accent bar, tooltip, three link styles, and tabs.",
+  "presets": ["demo", "type/core", "ui/link", "type/special", "bg"],
+  "sectionOrder": ["nav-header", "hero", "sec-accent", "sec-links", "sec-tooltip-tabs"],
+  "bgKey": "bg-type",
+  "definitions": {
+    "bg-type": {
+      "preset": "bg-type"
+    }
+  }
+}

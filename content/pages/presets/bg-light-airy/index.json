@@ -1,0 +1,19 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "bg-light-airy — Preset Demo",
+  "description": "Near-white (light) / near-black (dark) gradient with a drifting accent orb",
+  "presets": ["demo", "bg"],
+  "sectionOrder": ["nav-header", "hero"],
+  "bgKey": "bg-light-airy",
+  "scroll": {
+    "smooth": false,
+    "lockBody": true,
+    "scrollX": "hidden",
+    "scrollY": "hidden"
+  },
+  "definitions": {
+    "bg-light-airy": {
+      "preset": "bg-light-airy"
+    }
+  }
+}

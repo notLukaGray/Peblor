@@ -40,7 +40,7 @@ export function getPbContentGuidelines(): PbContentGuidelines {
 
 export function applyPbDefaultTextAlign(
   blockStyle: CSSProperties,
-  align: ElementLayout["align"],
+  align: ElementLayout["selfAlign"],
   textAlign: ElementLayout["textAlign"]
 ): void {
   applyPbDefaultTextAlignWithGuidelines(

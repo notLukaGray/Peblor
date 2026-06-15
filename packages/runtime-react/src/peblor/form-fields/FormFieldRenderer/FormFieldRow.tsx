@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import type { FormFieldBlock } from "@pb/contracts/types";
 import type { ElementBodyVariant } from "@pb/contracts/types";
 import { useDeviceType } from "@pb/runtime-react/core/providers/device-type-provider";
-import { resolveResponsiveValue } from "@pb/runtime-react/core/lib/responsive-value";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
 import type { FormFieldValue } from "..";
 import { FormFieldShell } from "./FormFieldShell";
 

@@ -1,0 +1,77 @@
+{
+  "preset": "composition-column-nested-hybrid",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "1060px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "2rem 0 4rem",
+    "md": "2rem 0 5rem"
+  },
+  "definitions": {
+    "left-stack": {
+      "section": {
+        "definitions": {
+          "a": {
+            "section": {
+              "definitions": {
+                "kicker": {
+                  "text": "Input"
+                },
+                "title": {
+                  "text": "Signal Intake"
+                }
+              }
+            }
+          },
+          "b": {
+            "section": {
+              "definitions": {
+                "kicker": {
+                  "text": "Filter"
+                },
+                "title": {
+                  "text": "Priority Shaping"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "right-stack": {
+      "section": {
+        "definitions": {
+          "quote": {
+            "section": {
+              "definitions": {
+                "quote": {
+                  "text": "Nested groups inside assigned tracks preserve depth without sacrificing grid discipline.",
+                  "preset": "type-body-fine"
+                }
+              }
+            },
+            "type": "elementGroup"
+          },
+          "metric": {
+            "section": {
+              "definitions": {
+                "label": {
+                  "text": "Nested Slots",
+                  "preset": "type-body-fine"
+                },
+                "body": {
+                  "text": "Hybrid pattern combines grid placement with internal flow stacks.",
+                  "preset": "type-body-fine"
+                }
+              }
+            },
+            "type": "elementGroup"
+          }
+        }
+      }
+    }
+  }
+}

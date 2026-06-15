@@ -5,12 +5,27 @@ import type { GridLayoutItem } from "@pb/core/layout";
 
 export function buildGridItemStyle(item: GridLayoutItem<ElementBlock>): React.CSSProperties {
   const style: React.CSSProperties = { minWidth: 0 };
-  if (item.columnStart != null)
-    style.gridColumn = `${item.columnStart} / span ${item.columnSpan ?? 1}`;
-  else if (item.columnSpan && item.columnSpan > 1)
-    style.gridColumn = `auto / span ${item.columnSpan}`;
-  if (item.rowStart != null) style.gridRow = `${item.rowStart} / span ${item.rowSpan ?? 1}`;
-  else if (item.rowSpan && item.rowSpan > 1) style.gridRow = `auto / span ${item.rowSpan}`;
+  // Named area takes precedence over numeric column/row placement
+  if (item.gridArea) {
+    style.gridArea = item.gridArea;
+  } else {
+    // gridColumn shorthand overrides the computed columnStart/span
+    if (item.gridColumn) {
+      style.gridColumn = item.gridColumn;
+    } else if (item.columnStart != null) {
+      style.gridColumn = `${item.columnStart} / span ${item.columnSpan ?? 1}`;
+    } else if (item.columnSpan && item.columnSpan > 1) {
+      style.gridColumn = `auto / span ${item.columnSpan}`;
+    }
+    // gridRow shorthand overrides the computed rowStart/span
+    if (item.gridRow) {
+      style.gridRow = item.gridRow;
+    } else if (item.rowStart != null) {
+      style.gridRow = `${item.rowStart} / span ${item.rowSpan ?? 1}`;
+    } else if (item.rowSpan && item.rowSpan > 1) {
+      style.gridRow = `auto / span ${item.rowSpan}`;
+    }
+  }
   if (item.justifySelf) style.justifySelf = item.justifySelf;
   if (item.alignSelf) style.alignSelf = item.alignSelf;
   if (item.zIndex != null) style.zIndex = item.zIndex;

@@ -1,0 +1,59 @@
+{
+  "type": "backgroundVariable",
+  "layers": [
+    {
+      "fill": "linear-gradient(180deg, color-mix(in oklab, var(--pb-primary) 14%, var(--pb-secondary)) 0%, var(--pb-secondary) 62%, color-mix(in oklab, var(--pb-primary) 6%, var(--pb-secondary)) 100%)"
+    },
+    {
+      "fill": "radial-gradient(ellipse 140% 45% at 42% 0%, color-mix(in oklab, var(--pb-accent) 20%, transparent) 0%, transparent 100%)",
+      "backgroundSize": "300% 300%",
+      "motion": [
+        {
+          "type": "loop",
+          "to": {
+            "backgroundPosition": ["0% 50%", "100% 50%", "0% 50%"]
+          },
+          "transition": {
+            "duration": 14,
+            "ease": "easeInOut",
+            "repeatType": "loop"
+          }
+        }
+      ]
+    },
+    {
+      "fill": "radial-gradient(ellipse 100% 35% at 60% 5%, color-mix(in oklab, var(--pb-primary) 22%, transparent) 0%, transparent 100%)",
+      "backgroundSize": "300% 300%",
+      "motion": [
+        {
+          "type": "loop",
+          "to": {
+            "backgroundPosition": ["100% 50%", "0% 50%", "100% 50%"]
+          },
+          "transition": {
+            "duration": 19,
+            "ease": "easeInOut",
+            "repeatType": "loop"
+          }
+        }
+      ]
+    },
+    {
+      "fill": "radial-gradient(ellipse 60% 25% at 20% 8%, color-mix(in oklab, var(--pb-on-secondary) 6%, transparent) 0%, transparent 100%)",
+      "blendMode": "overlay",
+      "motion": [
+        {
+          "type": "loop",
+          "to": {
+            "opacity": [0.25, 0.65, 0.25]
+          },
+          "transition": {
+            "duration": 8,
+            "ease": "easeInOut",
+            "repeatType": "mirror"
+          }
+        }
+      ]
+    }
+  ]
+}

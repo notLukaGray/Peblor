@@ -1,23 +1,33 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
 import type { ElementBlock, ModuleBlock } from "@pb/contracts/types";
+import type { PeblorAction } from "@pb/contracts/types";
 import { ElementLayoutWrapper } from "./Shared/ElementLayoutWrapper";
 import { ElementAudioCore } from "./ElementAudio/ElementAudioCore";
 import { ElementAudioSlotsOverlay } from "./ElementAudio/ElementAudioSlotsOverlay";
 import { AudioControlContext } from "./ElementAudio/AudioControlContext";
+import {
+  registerBroadcastAudioControl,
+  unregisterBroadcastAudioControl,
+} from "./ElementAudio/audio-control-registry";
 import { resolveElementAudioSlots } from "./ElementAudio/element-audio-slots";
 import { useAudioPlayerState } from "./ElementAudio/use-audio-player-state";
 import { useAudioControls } from "./ElementAudio/use-audio-controls";
 import { formatMediaClock } from "./ElementAudio/format-media-clock";
-import { AudioWaveformDecor } from "./ElementAudio/AudioWaveformDecor";
+import { AudioWaveformRuntime, type WaveformMode } from "./ElementAudio/AudioWaveformRuntime";
+import { PEBLOR_TRIGGER_EVENT, type PeblorTriggerDetail } from "@/peblor/triggers";
+import { shouldApplyMediaTarget } from "@/peblor/triggers/target-matching";
+import { subscribeToElementActions } from "@/peblor/triggers/action-bus";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 type Props = Extract<ElementBlock, { type: "elementAudio" }> & {
   moduleConfig?: ModuleBlock;
 };
 
 export function ElementAudio({
+  id,
   src,
   sources,
   poster,
@@ -28,18 +38,20 @@ export function ElementAudio({
   playbackRate,
   preload,
   showWaveform,
+  waveformMode,
   showTimeDisplay,
+  containerAspectRatio: instanceAspectRatio,
   module: _module,
   moduleConfig,
   ariaLabel,
   width,
   height,
-  align,
+  selfAlign,
   marginTop,
   marginBottom,
   marginLeft,
   marginRight,
-  zIndex,
+  layer,
   constraints,
   effects,
   interactions,
@@ -48,7 +60,7 @@ export function ElementAudio({
   blendMode,
   boxShadow,
   filter,
-  backdropFilter,
+  bgBlur,
   hidden,
 }: Props) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -57,7 +69,9 @@ export function ElementAudio({
   const slotsInfo = resolveElementAudioSlots(moduleConfig as ModuleBlock | undefined);
   const withModule = moduleConfig && slotsInfo.useSectionSlots;
 
-  const sleepAfterMs = (moduleConfig?.behavior as { sleepAfterMs?: number })?.sleepAfterMs ?? 3000;
+  const sleepAfterMs =
+    (moduleConfig?.behavior as { sleepAfterMs?: number })?.sleepAfterMs ??
+    globals.uiAudioSleepAfterMs;
 
   const controls = useAudioControls({
     audioRef,
@@ -121,15 +135,81 @@ export function ElementAudio({
     [state, controls]
   );
 
+  useEffect(() => {
+    const elementId = id ?? "audio";
+    registerBroadcastAudioControl(elementId, contextValue);
+    return () => unregisterBroadcastAudioControl(elementId);
+  }, [id, contextValue]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const listener = (event: Event) => {
+      const detail = (event as CustomEvent<PeblorTriggerDetail>).detail;
+      const action = detail?.action;
+      if (!action || typeof action.type !== "string") return;
+      const actionType = String(action.type);
+
+      const payload = action.payload as Record<string, unknown> | undefined;
+      const targetId =
+        typeof payload?.id === "string"
+          ? payload.id
+          : typeof payload?.target === "string"
+            ? payload.target
+            : undefined;
+      if (!shouldApplyMediaTarget(id, targetId ?? null)) return;
+
+      switch (actionType) {
+        case "assetPlay": {
+          const audio = audioRef.current;
+          if (audio)
+            void audio.play().catch((err) => {
+              console.warn("[pb-runtime-react] Audio element play failed", err);
+            });
+          return;
+        }
+        case "assetPause":
+          audioRef.current?.pause();
+          return;
+        case "assetTogglePlay":
+          controls.handleTogglePlay();
+          return;
+        case "assetSeek": {
+          const time = typeof payload?.time === "number" ? payload.time : 0;
+          controls.handleSeek(time);
+          return;
+        }
+        case "assetMute":
+          controls.toggleMute();
+          return;
+        default:
+          return;
+      }
+    };
+
+    const resolvedId = id ?? "audio";
+    const busUnsub = subscribeToElementActions(resolvedId, (rawAction) => {
+      const syntheticEvent = new CustomEvent<PeblorTriggerDetail>(PEBLOR_TRIGGER_EVENT, {
+        detail: { action: rawAction as PeblorAction, source: "system" },
+      });
+      listener(syntheticEvent);
+    });
+    window.addEventListener(PEBLOR_TRIGGER_EVENT, listener as EventListener);
+    return () => {
+      busUnsub();
+      window.removeEventListener(PEBLOR_TRIGGER_EVENT, listener as EventListener);
+    };
+  }, [controls, id]);
+
   const layout = {
     width: width as string | undefined,
     height: height as string | undefined,
-    align: align as "left" | "center" | "right" | undefined,
+    align: selfAlign as "left" | "center" | "right" | undefined,
     marginTop: marginTop as string | undefined,
     marginBottom: marginBottom as string | undefined,
     marginLeft: marginLeft as string | undefined,
     marginRight: marginRight as string | undefined,
-    zIndex,
+    zIndex: layer,
     constraints,
     effects,
     wrapperStyle,
@@ -137,7 +217,7 @@ export function ElementAudio({
     blendMode,
     boxShadow,
     filter,
-    backdropFilter,
+    bgBlur,
     hidden,
   };
 
@@ -147,6 +227,27 @@ export function ElementAudio({
   const showCustomOrModuleChrome = !useHtmlNativeControls;
 
   const moduleChrome = Boolean(showCustomOrModuleChrome && withModule && moduleConfig);
+
+  // Module container sizing.
+  // Priority: elementAudio.containerAspectRatio → module.container.aspectRatio → "16 / 9"
+  // Pass null (either place) to skip the forced ratio and rely on minHeight only.
+  const containerCfg = moduleConfig?.container as
+    | {
+        aspectRatio?: string | null;
+        minHeight?: string;
+        background?: string;
+        posterGradient?: string;
+      }
+    | undefined;
+  const resolvedAspectRatio =
+    instanceAspectRatio !== undefined
+      ? instanceAspectRatio // element-level override wins
+      : containerCfg != null && containerCfg.aspectRatio !== undefined
+        ? containerCfg.aspectRatio // explicit null = "no ratio"; string = use it
+        : globals.uiVideoDefaultAspectRatio;
+  const containerAspectRatio = resolvedAspectRatio ?? undefined; // null → undefined (no style)
+  const containerMinHeight = containerCfg?.minHeight;
+  const containerBg = containerCfg?.background;
 
   return (
     <ElementLayoutWrapper layout={layout} interactions={interactions}>
@@ -166,8 +267,12 @@ export function ElementAudio({
         >
           {moduleChrome ? (
             <div
-              className="relative w-full overflow-hidden bg-black/20"
-              style={{ aspectRatio: "16 / 9" }}
+              className="relative w-full overflow-hidden"
+              style={{
+                aspectRatio: containerAspectRatio ?? undefined,
+                minHeight: containerMinHeight,
+                background: containerBg,
+              }}
             >
               <ElementAudioCore
                 src={src}
@@ -189,24 +294,43 @@ export function ElementAudio({
                 onVolumeChange={controls.handleVolumeChange}
                 onTimeUpdate={controls.onTimeUpdate}
                 onLoadedMetadata={controls.onLoadedMetadata}
+                onDurationChange={controls.onDurationChange}
               />
               {poster ? (
-                <div
-                  className="absolute inset-0 z-[calc(var(--pb-z-base)+1)] overflow-hidden rounded-lg"
-                  aria-hidden
-                >
+                <div className="absolute inset-0 z-[1] overflow-hidden" aria-hidden>
                   <Image
                     src={poster}
                     alt=""
                     fill
-                    sizes="(max-width: 768px) 100vw, 400px"
+                    sizes={`(max-width: ${globals.uiBreakpointDesktopPx}px) 100vw, 920px`}
                     className="object-cover"
                   />
+                  {containerCfg?.posterGradient ? (
+                    <div
+                      className="absolute inset-0"
+                      style={{ background: containerCfg.posterGradient }}
+                    />
+                  ) : null}
                 </div>
               ) : null}
               {showWaveform ? (
-                <div className="pointer-events-none absolute bottom-14 left-3 right-3 z-[calc(var(--pb-z-base)+5)]">
-                  <AudioWaveformDecor currentTime={state.currentTime} duration={state.duration} />
+                <div
+                  className="pointer-events-none absolute z-[5] flex items-end justify-center"
+                  style={{
+                    bottom: 56,
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    width: "88%",
+                    maxWidth: "100%",
+                  }}
+                >
+                  <AudioWaveformRuntime
+                    audioRef={audioRef}
+                    isPlaying={state.isPlaying}
+                    barCount={40}
+                    mode={(waveformMode as WaveformMode) ?? "bars"}
+                    canvasHeight={56}
+                  />
                 </div>
               ) : null}
               <ElementAudioSlotsOverlay
@@ -240,18 +364,19 @@ export function ElementAudio({
                 onVolumeChange={controls.handleVolumeChange}
                 onTimeUpdate={controls.onTimeUpdate}
                 onLoadedMetadata={controls.onLoadedMetadata}
+                onDurationChange={controls.onDurationChange}
               />
 
               {poster && (
                 <div
                   className="relative w-full rounded-lg overflow-hidden"
-                  style={{ aspectRatio: "16 / 9" }}
+                  style={{ aspectRatio: globals.uiVideoDefaultAspectRatio }}
                 >
                   <Image
                     src={poster}
                     alt=""
                     fill
-                    sizes="(max-width: 768px) 100vw, 400px"
+                    sizes={`(max-width: ${globals.uiBreakpointDesktopPx}px) 100vw, 400px`}
                     className="object-cover"
                   />
                 </div>
@@ -260,7 +385,11 @@ export function ElementAudio({
               {showCustomOrModuleChrome && !withModule && (
                 <div className="flex flex-col gap-2 px-3 py-2">
                   {showWaveform ? (
-                    <AudioWaveformDecor currentTime={state.currentTime} duration={state.duration} />
+                    <AudioWaveformRuntime
+                      audioRef={audioRef}
+                      isPlaying={state.isPlaying}
+                      mode={(waveformMode as WaveformMode) ?? "bars"}
+                    />
                   ) : null}
 
                   {showTimeDisplay && (
@@ -281,12 +410,43 @@ export function ElementAudio({
                     </button>
 
                     <div
-                      className="flex-1 h-1 bg-white/20 cursor-pointer relative group"
+                      className="flex-1 h-1 bg-white/20 cursor-pointer relative group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/60"
                       onClick={(e) => {
                         const rect = e.currentTarget.getBoundingClientRect();
                         const pct = (e.clientX - rect.left) / rect.width;
                         controls.handleSeekTo(pct * state.duration);
                       }}
+                      onKeyDown={(e) => {
+                        switch (e.key) {
+                          case "ArrowLeft":
+                            e.preventDefault();
+                            controls.handleSeek(-5);
+                            break;
+                          case "ArrowRight":
+                            e.preventDefault();
+                            controls.handleSeek(5);
+                            break;
+                          case "Home":
+                            e.preventDefault();
+                            controls.handleSeekTo(0);
+                            break;
+                          case "End":
+                            e.preventDefault();
+                            controls.handleSeekTo(state.duration);
+                            break;
+                          case " ":
+                          case "Enter":
+                            e.preventDefault();
+                            controls.handleTogglePlay();
+                            break;
+                        }
+                      }}
+                      tabIndex={0}
+                      role="slider"
+                      aria-valuemin={0}
+                      aria-valuemax={state.duration}
+                      aria-valuenow={state.currentTime}
+                      aria-label="Audio seek"
                     >
                       <div
                         className="h-full bg-white"
@@ -312,12 +472,40 @@ export function ElementAudio({
                       </span>
                     </button>
                     <div
-                      className="w-16 h-1 bg-white/20 cursor-pointer"
+                      className="w-16 h-1 bg-white/20 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/60"
                       onClick={(e) => {
                         const rect = e.currentTarget.getBoundingClientRect();
                         const v = (e.clientX - rect.left) / rect.width;
                         controls.handleVolumeSet(Math.max(0, Math.min(1, v)));
                       }}
+                      onKeyDown={(e) => {
+                        switch (e.key) {
+                          case "ArrowLeft":
+                          case "ArrowDown":
+                            e.preventDefault();
+                            controls.handleVolumeSet(Math.max(0, state.volume - 0.1));
+                            break;
+                          case "ArrowRight":
+                          case "ArrowUp":
+                            e.preventDefault();
+                            controls.handleVolumeSet(Math.min(1, state.volume + 0.1));
+                            break;
+                          case "Home":
+                            e.preventDefault();
+                            controls.handleVolumeSet(0);
+                            break;
+                          case "End":
+                            e.preventDefault();
+                            controls.handleVolumeSet(1);
+                            break;
+                        }
+                      }}
+                      tabIndex={0}
+                      role="slider"
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                      aria-valuenow={Math.round(state.volume * 100)}
+                      aria-label="Volume"
                     >
                       <div
                         className="h-full bg-white/60"

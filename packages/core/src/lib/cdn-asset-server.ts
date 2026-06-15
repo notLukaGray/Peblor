@@ -1,6 +1,7 @@
 import { createHash } from "crypto";
 import { getCoreGlobals } from "./globals";
 import { normalizeImageTransformParams } from "./cdn-image-params";
+import { SAFE_SEGMENT_REGEX } from "./asset-types";
 
 function getSigningMode(): "private" | "public" {
   const mode = process.env.CDN_SIGNING_MODE;
@@ -39,7 +40,8 @@ function getSigningPathPrefixFromCdnBase(cdnBase: string): string {
   try {
     const pathname = new URL(cdnBase).pathname.replace(/\/+$/, "");
     return pathname === "/" ? "" : pathname;
-  } catch {
+  } catch (err) {
+    console.warn("[pb-core] Failed to get signing path prefix from CDN base", cdnBase, err);
     return "";
   }
 }
@@ -53,7 +55,8 @@ function getDirectoryPath(pathForSigning: string): string {
 function getCdnOrigin(cdnBase: string): string {
   try {
     return new URL(cdnBase).origin;
-  } catch {
+  } catch (err) {
+    console.warn("[pb-core] Failed to get CDN origin from base URL", cdnBase, err);
     return cdnBase.replace(/\/+$/, "");
   }
 }
@@ -79,7 +82,8 @@ export function validateAssetKey(key: string): string | null {
   // If your keys may include literal "%" characters, you will need a different strategy.
   try {
     key = decodeURIComponent(key).trim();
-  } catch {
+  } catch (err) {
+    console.warn("[pb-core] Failed to decode asset key", key, err);
     return null;
   }
 
@@ -108,10 +112,7 @@ export function validateAssetKey(key: string): string | null {
   if (!hasValidExtension) return null;
 
   // Allowed characters per segment
-  // Current: letters, numbers, underscore, dash, dot
-  // If you need spaces or parentheses, expand this regex.
-  const safePart = /^[a-zA-Z0-9_.-]+$/;
-  if (!parts.every((p) => safePart.test(p))) return null;
+  if (!parts.every((p) => SAFE_SEGMENT_REGEX.test(p))) return null;
 
   // Return normalized key with single "/" separators
   return parts.join("/");
@@ -128,12 +129,14 @@ export function generateBunnyToken(
     const hashableBase = secret + signaturePath + String(expiresAt) + parameterData;
     const hash = createHash("sha256").update(hashableBase).digest("base64");
     return hash.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
-  } catch {
+  } catch (err) {
+    console.warn("[pb-core] Failed to generate Bunny token", err);
     return "";
   }
 }
 
 export const CDN_ASSET_CONTENT_TYPES: Record<string, string> = {
+  ".avif": "image/avif",
   ".exr": "application/exr",
   ".hdr": "application/hdr",
   ".webp": "image/webp",
@@ -174,13 +177,22 @@ function buildSortedParamString(params: Record<string, string>): string {
  * Signed CDN URL for an asset. For images, pass extraParams (width, height, quality, format, aspect_ratio) so they are
  * included in the token signature—Bunny rejects requests where query params don't match the hash.
  */
-export function getSignedCdnUrl(assetKey: string, extraParams?: Record<string, string>): string {
+export function getSignedCdnUrl(
+  assetKey: string,
+  extraParams?: Record<string, string>,
+  expiresAtOverride?: number
+): string {
   const { cdnTokenExpiryDays, cdnBase } = getCoreGlobals();
-  const tokenExpirySeconds = cdnTokenExpiryDays * 24 * 60 * 60;
-  const nowSeconds = Math.floor(Date.now() / 1000);
-  const targetExpiry = nowSeconds + tokenExpirySeconds;
-  const bucketSeconds = getExpiryBucketSeconds();
-  const expiresAt = Math.ceil(targetExpiry / bucketSeconds) * bucketSeconds;
+  let expiresAt: number;
+  if (expiresAtOverride !== undefined) {
+    expiresAt = expiresAtOverride;
+  } else {
+    const tokenExpirySeconds = cdnTokenExpiryDays * 24 * 60 * 60;
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    const targetExpiry = nowSeconds + tokenExpirySeconds;
+    const bucketSeconds = getExpiryBucketSeconds();
+    expiresAt = Math.ceil(targetExpiry / bucketSeconds) * bucketSeconds;
+  }
 
   const encodedKey = encodePathPreservingSlashes(assetKey);
   const signingPrefix = getSigningPathPrefixFromCdnBase(cdnBase);
@@ -238,13 +250,19 @@ export async function fetchAssetFromCdn(
     try {
       const res = await fetch(url, { cache: "force-cache", signal });
       if (!res.ok) {
-        await res.arrayBuffer().catch(() => undefined);
+        await res.arrayBuffer().catch((silentErr) => {
+          console.warn("[pb-core] Failed to drain response buffer on non-ok status", silentErr);
+        });
         if (attempt === maxAttempts) return null;
       } else {
         const MAX_RAW_BYTES = 32 * 1024 * 1024;
         const contentLength = res.headers.get("content-length");
         if (contentLength && parseInt(contentLength, 10) > MAX_RAW_BYTES) {
-          await res.body?.cancel().catch(() => undefined);
+          if (res.body) {
+            await res.body.cancel().catch((cancelErr) => {
+              console.warn("[pb-core] Failed to cancel oversized response body", cancelErr);
+            });
+          }
           return null;
         }
         const buffer = await res.arrayBuffer();
@@ -252,8 +270,16 @@ export async function fetchAssetFromCdn(
         const contentType = getContentTypeForAssetKey(assetKey);
         return { buffer, contentType };
       }
-    } catch {
-      if (attempt === maxAttempts) return null;
+    } catch (fetchErr) {
+      if (attempt === maxAttempts) {
+        console.warn("[pb-core] Failed to fetch asset from CDN after max attempts", ref, fetchErr);
+      } else {
+        console.warn(
+          `[pb-core] CDN fetch attempt ${attempt}/${maxAttempts} failed, retrying...`,
+          ref,
+          fetchErr
+        );
+      }
     }
     await new Promise((resolve) => setTimeout(resolve, 100 * 2 ** (attempt - 1)));
   }

@@ -2,14 +2,16 @@
 
 import { useMemo, type CSSProperties } from "react";
 import type { BaseSectionProps } from "@pb/contracts/types";
-import { resolveResponsiveValue } from "@pb/runtime-react/core/lib/responsive-value";
-import { sectionEffectsToStyle } from "@pb/core/layout";
-import { getDefaultScrollSpeed, buildTransformString, borderToCss } from "@pb/core/layout";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
+import { getDefaultScrollSpeed } from "@pb/core/layout";
 import { useDeviceType } from "@pb/runtime-react/core/providers/device-type-provider";
 import { useSectionParallax } from "./use-section-parallax";
 import { useSectionPositioning } from "./use-section-positioning";
-import { resolveThemeValueDeep } from "@/peblor/theme/theme-string";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
+import { lowerThemeStyleObject, lowerThemeValueDeep } from "@/peblor/theme/theme-string";
+import {
+  buildSectionBaseStyle,
+  type ResolvedSectionLayout as ResolvedSectionLayoutType,
+} from "@/peblor/utils/section-base-style-utils";
 
 type UseSectionBaseStylesProps = Pick<
   BaseSectionProps,
@@ -24,42 +26,70 @@ type UseSectionBaseStylesProps = Pick<
   | "maxWidth"
   | "minHeight"
   | "maxHeight"
-  | "align"
+  | "selfAlign"
   | "marginLeft"
   | "marginRight"
   | "marginTop"
   | "marginBottom"
+  | "margin"
+  | "padding"
+  | "paddingTop"
+  | "paddingRight"
+  | "paddingBottom"
+  | "paddingLeft"
+  | "sectionGap"
+  | "wrapperStyle"
   | "borderRadius"
   | "border"
   | "boxShadow"
   | "filter"
-  | "backdropFilter"
-  | "clipPath"
+  | "bgBlur"
+  | "clipShape"
   | "cursor"
+  | "opacity"
+  | "position"
+  | "top"
+  | "right"
+  | "bottom"
+  | "left"
+  | "inset"
+  | "scroll"
+  | "scrollX"
+  | "scrollY"
   | "aspectRatio"
   | "scrollSpeed"
   | "initialX"
   | "initialY"
-  | "zIndex"
-  | "overflow"
+  | "layer"
+  | "interaction"
+  | "selectable"
+  | "willChange"
   | "reduceMotion"
 > & {
   sectionRef: React.RefObject<HTMLElement | null>;
-  usePadding?: boolean; // If true, uses padding instead of margin for spacing
 };
 
-export type ResolvedSectionLayout = {
-  width: string | undefined;
-  height: string | undefined;
-  minWidth: string | undefined;
-  maxWidth: string | undefined;
-  minHeight: string | undefined;
-  maxHeight: string | undefined;
-  align: "left" | "center" | "right" | "full" | undefined;
+export type ResolvedSectionLayout = ResolvedSectionLayoutType & {
+  selfAlign: "left" | "center" | "right" | "full" | undefined;
   marginLeft: string | undefined;
   marginRight: string | undefined;
   marginTop: string | undefined;
   marginBottom: string | undefined;
+  margin: string | undefined;
+  padding: string | undefined;
+  paddingTop: string | undefined;
+  paddingRight: string | undefined;
+  paddingBottom: string | undefined;
+  paddingLeft: string | undefined;
+  sectionGap: string | undefined;
+  position: string | undefined;
+  top: string | undefined;
+  right: string | undefined;
+  bottom: string | undefined;
+  left: string | undefined;
+  inset: string | undefined;
+  scrollX: string | undefined;
+  scrollY: string | undefined;
   initialX: string | undefined;
   initialY: string | undefined;
 };
@@ -71,31 +101,49 @@ export function useSectionBaseStyles({
   maxWidth,
   minHeight,
   maxHeight,
-  align,
+  selfAlign,
   marginLeft,
   marginRight,
   marginTop,
   marginBottom,
+  margin,
+  padding,
+  paddingTop,
+  paddingRight,
+  paddingBottom,
+  paddingLeft,
+  sectionGap,
+  wrapperStyle,
   borderRadius,
   border,
   boxShadow,
   filter,
-  backdropFilter,
-  clipPath,
+  bgBlur,
+  clipShape,
   cursor,
+  opacity,
+  position,
+  top,
+  right,
+  bottom,
+  left,
+  inset,
+  scroll,
+  scrollX,
+  scrollY,
   aspectRatio,
   scrollSpeed = getDefaultScrollSpeed(),
   initialX,
   initialY,
-  zIndex,
-  overflow,
+  layer,
   effects,
   sectionRef,
-  usePadding = false,
+  interaction,
+  selectable,
+  willChange,
   reduceMotion,
 }: UseSectionBaseStylesProps) {
   const { isMobile } = useDeviceType();
-  const themeMode = usePeblorThemeMode();
 
   const resolvedLayout = useMemo<ResolvedSectionLayout>(
     () => ({
@@ -105,11 +153,28 @@ export function useSectionBaseStyles({
       maxWidth: resolveResponsiveValue(maxWidth, isMobile),
       minHeight: resolveResponsiveValue(minHeight, isMobile),
       maxHeight: resolveResponsiveValue(maxHeight, isMobile),
-      align: resolveResponsiveValue(align, isMobile) as ResolvedSectionLayout["align"] | undefined,
+      selfAlign: resolveResponsiveValue(selfAlign, isMobile) as
+        | ResolvedSectionLayout["selfAlign"]
+        | undefined,
       marginLeft: resolveResponsiveValue(marginLeft, isMobile),
       marginRight: resolveResponsiveValue(marginRight, isMobile),
       marginTop: resolveResponsiveValue(marginTop, isMobile),
       marginBottom: resolveResponsiveValue(marginBottom, isMobile),
+      margin: resolveResponsiveValue(margin, isMobile),
+      padding: resolveResponsiveValue(padding, isMobile),
+      paddingTop: resolveResponsiveValue(paddingTop, isMobile),
+      paddingRight: resolveResponsiveValue(paddingRight, isMobile),
+      paddingBottom: resolveResponsiveValue(paddingBottom, isMobile),
+      paddingLeft: resolveResponsiveValue(paddingLeft, isMobile),
+      sectionGap: resolveResponsiveValue(sectionGap, isMobile),
+      position: resolveResponsiveValue(position, isMobile),
+      top: resolveResponsiveValue(top, isMobile),
+      right: resolveResponsiveValue(right, isMobile),
+      bottom: resolveResponsiveValue(bottom, isMobile),
+      left: resolveResponsiveValue(left, isMobile),
+      inset: resolveResponsiveValue(inset, isMobile),
+      scrollX: resolveResponsiveValue(scrollX, isMobile) as string | undefined,
+      scrollY: resolveResponsiveValue(scrollY, isMobile) as string | undefined,
       initialX: resolveResponsiveValue(initialX, isMobile),
       initialY: resolveResponsiveValue(initialY, isMobile),
     }),
@@ -120,23 +185,38 @@ export function useSectionBaseStyles({
       maxWidth,
       minHeight,
       maxHeight,
-      align,
+      selfAlign,
       marginLeft,
       marginRight,
       marginTop,
       marginBottom,
+      margin,
+      padding,
+      paddingTop,
+      paddingRight,
+      paddingBottom,
+      paddingLeft,
+      sectionGap,
+      position,
+      top,
+      right,
+      bottom,
+      left,
+      inset,
+      scrollX,
+      scrollY,
       initialX,
       initialY,
       isMobile,
     ]
   );
 
-  const transformY = useSectionParallax(scrollSpeed, resolvedLayout.initialY, sectionRef, {
+  const parallaxY = useSectionParallax(scrollSpeed, resolvedLayout.initialY, sectionRef, {
     respectReducedMotion: reduceMotion !== false,
   });
   const { alignStyle, positioningStyle, shouldApplyAlignStyle, hasInitialPosition } =
     useSectionPositioning({
-      align: resolvedLayout.align,
+      align: resolvedLayout.selfAlign,
       width: resolvedLayout.width,
       initialX: resolvedLayout.initialX,
       initialY: resolvedLayout.initialY,
@@ -144,112 +224,92 @@ export function useSectionBaseStyles({
 
   const resolvedBorderRadius = resolveResponsiveValue(borderRadius, isMobile);
   const resolvedAspectRatio = resolveResponsiveValue(aspectRatio, isMobile);
-  const resolvedOverflow = resolveResponsiveValue(overflow, isMobile);
-  const resolvedBorder = useMemo(
-    () => resolveThemeValueDeep(border, themeMode) as typeof border,
-    [border, themeMode]
-  );
-  const resolvedEffects = useMemo(
-    () => resolveThemeValueDeep(effects, themeMode) as typeof effects,
-    [effects, themeMode]
+  const resolvedOverflow = resolveResponsiveValue(scroll, isMobile);
+  const resolvedBorder = useMemo(() => lowerThemeValueDeep(border) as typeof border, [border]);
+  const resolvedEffects = useMemo(() => lowerThemeValueDeep(effects) as typeof effects, [effects]);
+
+  const resolvedWrapperStyle = useMemo(
+    () =>
+      lowerThemeStyleObject(wrapperStyle as Record<string, unknown> | undefined) as
+        | Record<string, unknown>
+        | undefined,
+    [wrapperStyle]
   );
 
   const baseStyle = useMemo<CSSProperties>(() => {
-    const effectStyle = sectionEffectsToStyle(resolvedEffects);
-    const mergedBoxShadow = [effectStyle.boxShadow, boxShadow]
-      .filter((value): value is string => typeof value === "string" && value.length > 0)
-      .join(", ");
-    const mergedFilter = [effectStyle.filter, filter]
-      .filter((value): value is string => typeof value === "string" && value.length > 0)
-      .join(" ");
-    const mergedBackdropFilter = [effectStyle.backdropFilter, backdropFilter]
-      .filter((value): value is string => typeof value === "string" && value.length > 0)
-      .join(" ");
-
-    const w = resolvedLayout.width;
-    const h = resolvedLayout.height;
-    const overflowPair: Pick<CSSProperties, "overflowX" | "overflowY"> =
-      resolvedOverflow === "visible"
-        ? { overflowX: "visible", overflowY: "visible" }
-        : resolvedOverflow === "auto"
-          ? { overflowX: "auto", overflowY: "auto" }
-          : resolvedOverflow === "scroll"
-            ? { overflowX: "scroll", overflowY: "scroll" }
-            : { overflowX: "hidden", overflowY: "hidden" };
-    const style: CSSProperties = {
-      width: w === "hug" ? "fit-content" : w,
-      height: h === "hug" ? "fit-content" : h,
-      ...(resolvedLayout.minWidth != null ? { minWidth: resolvedLayout.minWidth } : {}),
-      ...(resolvedLayout.maxWidth != null ? { maxWidth: resolvedLayout.maxWidth } : {}),
-      ...(resolvedLayout.minHeight != null ? { minHeight: resolvedLayout.minHeight } : {}),
-      ...(resolvedLayout.maxHeight != null ? { maxHeight: resolvedLayout.maxHeight } : {}),
+    const style = buildSectionBaseStyle({
+      width: resolvedLayout.width,
+      height: resolvedLayout.height,
+      minWidth: resolvedLayout.minWidth,
+      maxWidth: resolvedLayout.maxWidth,
+      minHeight: resolvedLayout.minHeight,
+      maxHeight: resolvedLayout.maxHeight,
+      align: resolvedLayout.selfAlign,
+      initialX: resolvedLayout.initialX,
+      initialY: resolvedLayout.initialY,
       borderRadius: resolvedBorderRadius,
-      border: borderToCss(resolvedBorder as { width?: string; style?: string; color?: string }),
-      ...overflowPair,
-      scrollBehavior: "smooth",
-      ...(zIndex != null ? { zIndex } : {}),
-      ...(shouldApplyAlignStyle ? alignStyle : {}),
-      ...positioningStyle,
-      ...effectStyle,
-      ...(mergedBoxShadow ? { boxShadow: mergedBoxShadow } : {}),
-      ...(mergedFilter ? { filter: mergedFilter } : {}),
-      ...(mergedBackdropFilter
-        ? {
-            backdropFilter: mergedBackdropFilter,
-            WebkitBackdropFilter: mergedBackdropFilter,
-          }
-        : {}),
-      ...(clipPath ? { clipPath } : {}),
-      ...(cursor ? { cursor } : {}),
-      ...(resolvedAspectRatio ? { aspectRatio: resolvedAspectRatio } : {}),
-    };
-
-    if (usePadding) {
-      style.paddingLeft = resolvedLayout.marginLeft;
-      style.paddingRight = resolvedLayout.marginRight;
-      style.paddingTop = resolvedLayout.marginTop;
-      style.paddingBottom = resolvedLayout.marginBottom;
-      // When using padding, don't set margins (padding handles spacing internally)
-    } else {
-      style.marginLeft = resolvedLayout.marginLeft;
-      style.marginRight = resolvedLayout.marginRight;
-      style.marginTop = resolvedLayout.marginTop;
-      style.marginBottom = resolvedLayout.marginBottom;
-      // Explicit marginLeft/marginRight from section JSON override align-derived values (e.g. center → margin auto)
-      if (resolvedLayout.marginLeft != null) style.marginLeft = resolvedLayout.marginLeft;
-      if (resolvedLayout.marginRight != null) style.marginRight = resolvedLayout.marginRight;
-    }
-
-    const existingTransform = positioningStyle.transform as string | undefined;
-    const transform = buildTransformString(existingTransform, transformY);
-    if (transform) {
-      style.transform = transform;
-    }
+      border: resolvedBorder,
+      resolvedOverflow,
+      resolvedOverflowX: resolvedLayout.scrollX,
+      resolvedOverflowY: resolvedLayout.scrollY,
+      zIndex: layer,
+      resolvedEffects,
+      boxShadow,
+      filter,
+      backdropFilter: bgBlur,
+      clipPath: clipShape,
+      cursor,
+      aspectRatio: resolvedAspectRatio,
+      padding: resolvedLayout.padding,
+      paddingTop: resolvedLayout.paddingTop,
+      paddingRight: resolvedLayout.paddingRight,
+      paddingBottom: resolvedLayout.paddingBottom,
+      paddingLeft: resolvedLayout.paddingLeft,
+      margin: resolvedLayout.margin,
+      marginTop: resolvedLayout.marginTop,
+      marginRight: resolvedLayout.marginRight,
+      marginBottom: resolvedLayout.marginBottom,
+      marginLeft: resolvedLayout.marginLeft,
+      sectionGap: resolvedLayout.sectionGap,
+      resolvedPosition: resolvedLayout.position,
+      top: resolvedLayout.top,
+      right: resolvedLayout.right,
+      bottom: resolvedLayout.bottom,
+      left: resolvedLayout.left,
+      inset: resolvedLayout.inset,
+      pointerEvents: interaction,
+      userSelect: selectable,
+      willChange,
+      opacity,
+      wrapperStyle: resolvedWrapperStyle,
+      resolvedFill: undefined,
+      layers: undefined,
+    });
 
     return style;
   }, [
     resolvedLayout,
     resolvedBorderRadius,
     resolvedBorder,
-    zIndex,
-    transformY,
-    alignStyle,
-    positioningStyle,
-    shouldApplyAlignStyle,
+    layer,
     resolvedEffects,
     boxShadow,
     filter,
-    backdropFilter,
-    clipPath,
+    bgBlur,
+    clipShape,
     cursor,
     resolvedAspectRatio,
-    usePadding,
     resolvedOverflow,
+    resolvedWrapperStyle,
+    opacity,
+    interaction,
+    selectable,
+    willChange,
   ]);
 
   return {
     baseStyle,
-    transformY,
+    parallaxY,
     alignStyle,
     positioningStyle,
     shouldApplyAlignStyle,

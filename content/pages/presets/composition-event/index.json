@@ -1,0 +1,717 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Conference Event — Composition Demo",
+  "description": "Conference registration page: aurora hero with countdown counters, speaker grid, schedule tabs, venue split, registration form (formBlock), and FAQ reveals.",
+  "presets": [
+    "demo",
+    "type/core",
+    "type/effects",
+    "type/motion",
+    "ui/button",
+    "ui/link",
+    "layout",
+    "card",
+    "bg"
+  ],
+  "bgKey": "bg-page",
+  "scroll": {
+    "smooth": true,
+    "lockBody": true,
+    "scrollX": "hidden"
+  },
+  "sectionOrder": [
+    "nav-header",
+    "hero",
+    "sec-stats",
+    "sec-speakers",
+    "sec-schedule-label",
+    "sec-schedule",
+    "sec-venue",
+    "sec-register-label",
+    "sec-register",
+    "sec-faq-label",
+    "sec-faq-1",
+    "sec-faq-2",
+    "sec-faq-3"
+  ],
+  "definitions": {
+    "bg-page": {
+      "preset": "bg-aurora"
+    },
+    "nav-header": {
+      "preset": "preset-demo-nav-header"
+    },
+    "hero": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "align": "center",
+      "height": "hug",
+      "padding": {
+        "base": "8rem 1.5rem 4rem",
+        "md": "14rem 2rem 6rem"
+      },
+      "gap": "2rem",
+      "motionTiming": {
+        "staggerChildren": 0.1,
+        "trigger": "onMount"
+      },
+      "elementOrder": ["hero-kicker", "hero-title", "hero-date"],
+      "definitions": {
+        "hero-kicker": {
+          "preset": "type-kicker-badge",
+          "text": "Design Systems Conference 2026",
+          "selfAlign": "center",
+          "width": "auto"
+        },
+        "hero-title": {
+          "preset": "type-shadow-heading",
+          "text": "Build Systems. Ship Products. Shape Teams.",
+          "textAlign": "center",
+          "selfAlign": "center",
+          "width": {
+            "base": "100%",
+            "md": "90%"
+          }
+        },
+        "hero-date": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": {
+            "base": "column",
+            "md": "row"
+          },
+          "gap": "1.5rem",
+          "selfAlign": "center",
+          "section": {
+            "elementOrder": ["date-txt", "loc-txt"],
+            "definitions": {
+              "date-txt": {
+                "preset": "type-h5-meta",
+                "text": "September 18–20, 2026"
+              },
+              "loc-txt": {
+                "preset": "type-h5-meta",
+                "text": "Moscone Center, San Francisco"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-stats": {
+      "preset": "composition-column-kpi-matrix",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "3rem 0 4rem",
+        "md": "4rem 0 6rem"
+      },
+      "definitions": {
+        "kpi-1": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 42,
+                "suffix": "",
+                "tween": {
+                  "duration": 800
+                }
+              },
+              "label": {
+                "text": "Days away"
+              },
+              "body": {
+                "text": "Mark your calendar."
+              }
+            }
+          }
+        },
+        "kpi-2": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 800,
+                "suffix": "+",
+                "tween": {
+                  "duration": 1200
+                }
+              },
+              "label": {
+                "text": "Attendees"
+              },
+              "body": {
+                "text": "Practitioners from 40 countries."
+              }
+            }
+          }
+        },
+        "kpi-3": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 40,
+                "suffix": "+",
+                "tween": {
+                  "duration": 1000
+                }
+              },
+              "label": {
+                "text": "Speakers"
+              },
+              "body": {
+                "text": "Leaders from top product orgs."
+              }
+            }
+          }
+        },
+        "kpi-4": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 3,
+                "suffix": "",
+                "tween": {
+                  "duration": 600
+                }
+              },
+              "label": {
+                "text": "Days"
+              },
+              "body": {
+                "text": "Design, engineering, leadership."
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-speakers": {
+      "type": "sectionColumn",
+      "columns": {
+        "base": 2,
+        "md": 4
+      },
+      "columnWidths": {
+        "base": [1, 1],
+        "md": [1, 1, 1, 1]
+      },
+      "columnGaps": {
+        "base": "1rem",
+        "md": "1.5rem"
+      },
+      "columnAssignments": {
+        "base": {
+          "sp-a": 0,
+          "sp-b": 1,
+          "sp-c": 0,
+          "sp-d": 1
+        },
+        "md": {
+          "sp-a": 0,
+          "sp-b": 1,
+          "sp-c": 2,
+          "sp-d": 3
+        }
+      },
+      "contentWidth": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "contentHeight": "hug",
+      "gridMode": "grid",
+      "gridAutoRows": "auto",
+      "selfAlign": "center",
+      "padding": {
+        "base": "4rem 0 4rem",
+        "md": "6rem 0 6rem"
+      },
+      "elementOrder": ["sp-a", "sp-b", "sp-c", "sp-d"],
+      "definitions": {
+        "sp-a": {
+          "preset": "card-profile-mini",
+          "section": {
+            "definitions": {
+              "avatar": {
+                "src": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80&auto=format&fit=crop&crop=face",
+                "alt": "Sarah Kim"
+              },
+              "name": {
+                "text": "Sarah Kim"
+              },
+              "role": {
+                "text": "Design Lead, Vercel"
+              }
+            }
+          }
+        },
+        "sp-b": {
+          "preset": "card-profile-mini",
+          "section": {
+            "definitions": {
+              "avatar": {
+                "src": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80&auto=format&fit=crop&crop=face",
+                "alt": "Marcus Webb"
+              },
+              "name": {
+                "text": "Marcus Webb"
+              },
+              "role": {
+                "text": "Principal Eng, Linear"
+              }
+            }
+          }
+        },
+        "sp-c": {
+          "preset": "card-profile-mini",
+          "section": {
+            "definitions": {
+              "avatar": {
+                "src": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80&auto=format&fit=crop&crop=face",
+                "alt": "Priya Nair"
+              },
+              "name": {
+                "text": "Priya Nair"
+              },
+              "role": {
+                "text": "Head of Design, Figma"
+              }
+            }
+          }
+        },
+        "sp-d": {
+          "preset": "card-profile-mini",
+          "section": {
+            "definitions": {
+              "avatar": {
+                "src": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80&auto=format&fit=crop&crop=face",
+                "alt": "Jordan Flint"
+              },
+              "name": {
+                "text": "Jordan Flint"
+              },
+              "role": {
+                "text": "CTO, Luma"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-schedule-label": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "4rem 0 1.5rem",
+        "md": "6rem 0 2rem"
+      },
+      "elementOrder": ["sched-heading"],
+      "definitions": {
+        "sched-heading": {
+          "preset": "type-h3-label",
+          "text": "Conference schedule"
+        }
+      }
+    },
+    "sec-schedule": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 0 4rem",
+        "md": "0 0 6rem"
+      },
+      "elementOrder": ["schedule-tabs"],
+      "definitions": {
+        "schedule-tabs": {
+          "type": "elementTabs",
+          "variant": "pill",
+          "tabs": [
+            {
+              "label": "Day 1 — Design",
+              "elements": [
+                {
+                  "type": "elementBody",
+                  "level": 3,
+                  "text": "9:00  Opening keynote: The next decade of design systems\n10:30  Composable design at Figma — Sarah Kim\n12:00  Lunch break\n13:30  Design tokens in production: lessons from 3 years\n15:00  Panel: When design systems fail\n17:00  Opening reception",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 75%, transparent)"
+                }
+              ]
+            },
+            {
+              "label": "Day 2 — Engineering",
+              "elements": [
+                {
+                  "type": "elementBody",
+                  "level": 3,
+                  "text": "9:00  Type-safe component APIs — Marcus Webb\n10:30  Building for accessibility from day one\n12:00  Lunch break\n13:30  Zero-runtime CSS in 2026: the state of the art\n15:00  Workshop: JSON-driven layout\n17:00  Networking dinner",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 75%, transparent)"
+                }
+              ]
+            },
+            {
+              "label": "Day 3 — Leadership",
+              "elements": [
+                {
+                  "type": "elementBody",
+                  "level": 3,
+                  "text": "9:00  Scaling design orgs without losing craft — Priya Nair\n10:30  How to get engineering to care about design systems\n12:00  Lunch break\n13:30  ROI of a design system: measuring what matters\n15:00  Closing keynote + awards\n17:00  Conference wrap",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 75%, transparent)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "sec-venue": {
+      "preset": "composition-column-30-70-media",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "4rem 0 5rem",
+        "md": "6rem 0 8rem"
+      },
+      "definitions": {
+        "media": {
+          "src": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=900&q=80&auto=format&fit=crop",
+          "alt": "Moscone Center",
+          "height": {
+            "base": "14rem",
+            "md": "100%"
+          },
+          "borderRadius": "16px",
+          "objectFit": "cover"
+        },
+        "title": {
+          "text": "Moscone Center West, San Francisco"
+        },
+        "description": {
+          "text": "747 Howard St, San Francisco, CA 94103. Steps from BART, surrounded by the city's best restaurants and hotels. We've negotiated rates at three partner hotels within walking distance."
+        },
+        "detail": {
+          "text": "Free shuttle service from SFO and Oakland airports. Pre-conference hotel block closes August 15."
+        },
+        "cta": {
+          "label": "Book your hotel →",
+          "href": "#"
+        }
+      }
+    },
+    "sec-register-label": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "5rem 0 1.5rem",
+        "md": "7rem 0 2rem"
+      },
+      "elementOrder": ["reg-heading", "reg-desc"],
+      "definitions": {
+        "reg-heading": {
+          "preset": "type-h3-label",
+          "text": "Register for DSC 2026"
+        },
+        "reg-desc": {
+          "preset": "type-body-standard",
+          "text": "Early bird pricing ends July 31. Full conference access, workshop materials, and all meals included.",
+          "selfAlign": "center",
+          "textAlign": "center"
+        }
+      }
+    },
+    "sec-register": {
+      "type": "formBlock",
+      "contentWidth": {
+        "base": "92%",
+        "md": "560px"
+      },
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 1.5rem 4rem",
+        "md": "0 2rem 6rem"
+      },
+      "action": "contact",
+      "method": "post",
+      "fields": [
+        {
+          "type": "formField",
+          "fieldType": "text",
+          "name": "firstName",
+          "label": "First name",
+          "required": true,
+          "width": "100%"
+        },
+        {
+          "type": "formField",
+          "fieldType": "text",
+          "name": "lastName",
+          "label": "Last name",
+          "required": true,
+          "width": "100%"
+        },
+        {
+          "type": "formField",
+          "fieldType": "email",
+          "name": "email",
+          "label": "Work email",
+          "required": true,
+          "width": "100%"
+        },
+        {
+          "type": "formField",
+          "fieldType": "select",
+          "name": "ticket",
+          "label": "Ticket type",
+          "required": true,
+          "width": "100%",
+          "options": [
+            {
+              "value": "early-bird",
+              "label": "Early Bird — $499"
+            },
+            {
+              "value": "standard",
+              "label": "Standard — $699"
+            },
+            {
+              "value": "vip",
+              "label": "VIP + Workshop — $999"
+            }
+          ]
+        },
+        {
+          "type": "formField",
+          "fieldType": "text",
+          "name": "company",
+          "label": "Company",
+          "width": "100%"
+        },
+        {
+          "type": "formField",
+          "fieldType": "button",
+          "label": "Reserve my spot",
+          "width": "auto"
+        }
+      ]
+    },
+    "sec-faq-label": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "5rem 0 2rem",
+        "md": "7rem 0 3rem"
+      },
+      "elementOrder": ["faq-heading"],
+      "definitions": {
+        "faq-heading": {
+          "preset": "type-h3-label",
+          "text": "Frequently asked questions"
+        }
+      }
+    },
+    "sec-faq-1": {
+      "type": "revealSection",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "toggleOnClick": true,
+      "padding": {
+        "base": "0",
+        "md": "0"
+      },
+      "marginBottom": "0.75rem",
+      "collapsedElements": [
+        {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "row",
+          "align": "center",
+          "distribute": "between",
+          "gap": "1rem",
+          "width": "100%",
+          "padding": "1rem 1.25rem",
+          "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+          "borderRadius": "12px",
+          "section": {
+            "elementOrder": ["q-text", "q-chevron"],
+            "definitions": {
+              "q-text": {
+                "preset": "type-h4-card",
+                "text": "Is there a group discount?"
+              },
+              "q-chevron": {
+                "type": "elementBody",
+                "level": 4,
+                "text": "▾",
+                "color": "color-mix(in oklab, var(--pb-on-secondary) 45%, transparent)",
+                "width": "auto"
+              }
+            }
+          }
+        }
+      ],
+      "revealedElements": [
+        {
+          "type": "elementBody",
+          "level": 3,
+          "text": "Yes — groups of 5 or more receive 20% off all ticket types. Use code GROUP20 at checkout or email us for an invoice.",
+          "color": "color-mix(in oklab, var(--pb-on-secondary) 70%, transparent)",
+          "width": "100%",
+          "padding": "0 1.25rem 1rem"
+        }
+      ]
+    },
+    "sec-faq-2": {
+      "type": "revealSection",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "toggleOnClick": true,
+      "padding": {
+        "base": "0",
+        "md": "0"
+      },
+      "marginBottom": "0.75rem",
+      "collapsedElements": [
+        {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "row",
+          "align": "center",
+          "distribute": "between",
+          "gap": "1rem",
+          "width": "100%",
+          "padding": "1rem 1.25rem",
+          "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+          "borderRadius": "12px",
+          "section": {
+            "elementOrder": ["q-text", "q-chevron"],
+            "definitions": {
+              "q-text": {
+                "preset": "type-h4-card",
+                "text": "What is the refund policy?"
+              },
+              "q-chevron": {
+                "type": "elementBody",
+                "level": 4,
+                "text": "▾",
+                "color": "color-mix(in oklab, var(--pb-on-secondary) 45%, transparent)",
+                "width": "auto"
+              }
+            }
+          }
+        }
+      ],
+      "revealedElements": [
+        {
+          "type": "elementBody",
+          "level": 3,
+          "text": "Full refunds are available until August 15. After that, you can transfer your ticket to a colleague at no charge.",
+          "color": "color-mix(in oklab, var(--pb-on-secondary) 70%, transparent)",
+          "width": "100%",
+          "padding": "0 1.25rem 1rem"
+        }
+      ]
+    },
+    "sec-faq-3": {
+      "type": "revealSection",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "toggleOnClick": true,
+      "padding": {
+        "base": "0",
+        "md": "0"
+      },
+      "marginBottom": {
+        "base": "6rem",
+        "md": "10rem"
+      },
+      "collapsedElements": [
+        {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "row",
+          "align": "center",
+          "distribute": "between",
+          "gap": "1rem",
+          "width": "100%",
+          "padding": "1rem 1.25rem",
+          "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+          "borderRadius": "12px",
+          "section": {
+            "elementOrder": ["q-text", "q-chevron"],
+            "definitions": {
+              "q-text": {
+                "preset": "type-h4-card",
+                "text": "Will sessions be recorded?"
+              },
+              "q-chevron": {
+                "type": "elementBody",
+                "level": 4,
+                "text": "▾",
+                "color": "color-mix(in oklab, var(--pb-on-secondary) 45%, transparent)",
+                "width": "auto"
+              }
+            }
+          }
+        }
+      ],
+      "revealedElements": [
+        {
+          "type": "elementBody",
+          "level": 3,
+          "text": "All keynotes and main-stage talks will be available on-demand within two weeks. Workshop recordings require a separate ticket.",
+          "color": "color-mix(in oklab, var(--pb-on-secondary) 70%, transparent)",
+          "width": "100%",
+          "padding": "0 1.25rem 1rem"
+        }
+      ]
+    }
+  }
+}

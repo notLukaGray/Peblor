@@ -15,9 +15,6 @@ describe("peblor-trigger-handlers", () => {
     it("returns undefined when payload has no id", () => {
       expect(getTransitionId({ type: "startTransition", payload: { id: "" } })).toBeUndefined();
     });
-    it("returns undefined when payload is missing", () => {
-      expect(getTransitionId({ type: "stopTransition", payload: { id: "" } })).toBeUndefined();
-    });
     it("returns undefined when id is empty string", () => {
       expect(getTransitionId({ type: "stopTransition", payload: { id: "" } })).toBeUndefined();
     });

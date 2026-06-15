@@ -16,12 +16,12 @@ feels_like: >
 not_this_if:
   - "you need entrance/exit animations (use motionTiming.entrancePreset / exitPreset)"
   - "you need scroll-driven animation (use trigger.onViewportProgress)"
-  - "you need gesture-based animation (use motion.whileHover / motion.whileTap)"
+  - "you need gesture-based animation (use motion.onHover / motion.onPress)"
 
 axes:
   - name: layout-anim
-    fields: [layout, layoutId, layoutDependency, layoutScroll, layoutRoot]
-    note: "layoutId enables shared element transitions between two elements"
+    fields: []
+    note: "Layout animation fields (layout, layoutId, layoutDependency, layoutScroll, layoutRoot) are deferred — not yet exposed in motionPropsSchema"
 
 does_not_cover:
   - what: "Entrance or exit animation presets"
@@ -29,7 +29,7 @@ does_not_cover:
   - what: "Scroll-progress-driven animation"
     use_instead: trigger.onViewportProgress
   - what: "Gesture-based visual feedback"
-    use_instead: motion.whileHover
+    use_instead: motion.onHover
   - what: "CSS transitions for layout"
     use_instead: "external — use CSS transition on the element wrapper"
 
@@ -39,7 +39,7 @@ covers:
 
 composes_with:
   parents: [section.*, element.*]
-  siblings_typical: [motion.whileHover, motionTiming.entrancePreset]
+  siblings_typical: [motion.onHover, motionTiming.entrancePreset]
   motion: "layout, layoutId, layoutScroll, layoutRoot on motionProps"
 
 known_limitations:

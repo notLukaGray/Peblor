@@ -1,8 +1,20 @@
 /**
- * Downloads webfont CSS + font files from fonts.bunny.net at build time
+ * Downloads variable webfont files from Google Fonts at build time
  * and saves them locally so they're served from Vercel's edge.
  *
+ * Google Fonts (fonts.gstatic.com) serves true variable woff2 files
+ * when requested with a browser User-Agent. Bunny CDN only serves
+ * individual weight files, so we fetch CSS from Google Fonts directly.
+ *
  * Run before `next build` / `next dev` — idempotent: skips if already downloaded.
+ *
+ * Generated CSS:
+ *   Each variable font file gets TWO @font-face rules for font-display
+ *   optimization:
+ *     - Body weights (100-699) → font-display: optional (no FOUT)
+ *     - Heading weights (700-900) → font-display: swap (critical for LCP)
+ *   The browser downloads each file only once even with multiple
+ *   @font-face declarations pointing to the same src URL.
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
@@ -16,10 +28,7 @@ import {
   monoFontConfig,
   type FontSlotConfig,
 } from "../apps/web/src/app/fonts/config";
-import {
-  buildBunnyFontUrl,
-  type BuildBunnyFontUrlOptions,
-} from "../apps/web/src/app/fonts/webfont";
+import { getVariableWghtRange } from "../apps/web/src/app/fonts/webfont";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -29,13 +38,20 @@ const FLAG_FILE = path.join(ROOT, "apps/web/src/app/fonts/self-hosted-flag.ts");
 const CSS_FILE = path.join(ROOT, "apps/web/src/app/fonts/webfonts.css");
 const MANIFEST_FILE = path.join(ROOT, "apps/web/src/app/fonts/webfont-manifest.json");
 
+const FONT_STYLESHEET_BASE = "https://fonts.googleapis.com/css2?family=";
+/**
+ * Browser User-Agent — required by Google Fonts API to return variable
+ * woff2 files. Without it, Google returns TTF or individual weights.
+ */
+const BROWSER_UA =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36";
+
 interface FontFaceDescriptor {
   family: string;
   style: string;
   fontWeight: string;
   src: string;
   unicodeRange: string;
-  fontDisplay: string;
 }
 
 /** Download with retries, returns ArrayBuffer. */
@@ -46,9 +62,7 @@ async function download(
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       const res = await fetch(url, {
-        headers: {
-          "User-Agent": "Mozilla/5.0 (compatible; PeblorBot/1.0)",
-        },
+        headers: { "User-Agent": BROWSER_UA },
       });
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}: ${url}`);
@@ -63,27 +77,26 @@ async function download(
       await new Promise((r) => setTimeout(r, 1000));
     }
   }
-  throw new Error(`unreachable`);
+  throw new Error("unreachable");
 }
 
 /** Parse @font-face rules from CSS text. */
 function parseFontFaces(css: string): FontFaceDescriptor[] {
   const results: FontFaceDescriptor[] = [];
-  // Match @font-face blocks
   const blockRe = /@font-face\s*\{([^}]+)\}/g;
   let match: RegExpExecArray | null;
   while ((match = blockRe.exec(css)) !== null) {
-    const body = match[1];
+    const body = match[1]!;
     const desc: Record<string, string> = {};
-    // Match individual properties
     const propRe = /\s*([\w-]+)\s*:\s*([^;]+)\s*;?/g;
     let propMatch: RegExpExecArray | null;
     while ((propMatch = propRe.exec(body)) !== null) {
-      desc[propMatch[1].trim()] = propMatch[2].trim();
+      if (propMatch[1] && propMatch[2]) {
+        desc[propMatch[1].trim()] = propMatch[2].trim();
+      }
     }
-    // Extract URL from src
     const srcMatch = /url\(([^)]+)\)/.exec(desc.src ?? "");
-    if (srcMatch) {
+    if (srcMatch?.[1]) {
       const url = srcMatch[1].replace(/['"]/g, "");
       results.push({
         family: (desc["font-family"] ?? "").replace(/['"]/g, ""),
@@ -91,20 +104,90 @@ function parseFontFaces(css: string): FontFaceDescriptor[] {
         fontWeight: desc["font-weight"] ?? "400",
         src: url,
         unicodeRange: desc["unicode-range"] ?? "",
-        fontDisplay: desc["font-display"] ?? "swap",
       });
     }
   }
   return results;
 }
 
-/** Extract filename from a URL path. */
-function urlFilename(url: string): string {
-  try {
-    return path.basename(new URL(url).pathname);
-  } catch {
-    return path.basename(url);
+/** Build a Google Fonts CSS2 URL for a variable font family and weight range. */
+function buildGoogleFontUrl(family: string, weightMin: number, weightMax: number): string {
+  // Google Fonts CSS2 API uses the original family name with spaces as +,
+  // not a lowercase kebab-case slug. Urbanist ≠ urbanist.
+  const encoded = family.replace(/\s+/g, "+");
+  return `${FONT_STYLESHEET_BASE}${encoded}:wght@${weightMin}..${weightMax}&display=swap`;
+}
+
+/**
+ * Check if a unicode range is wanted for this family.
+ * We keep Latin, Latin Extended, and Intel One Mono symbols2.
+ * Drops Greek, Cyrillic, Cyrillic-Ext, Vietnamese.
+ */
+function isWantedSubset(unicodeRange: string, family: string): boolean {
+  if (unicodeRange.includes("U+0000-00FF") || unicodeRange.startsWith("U+0000")) return true;
+  if (unicodeRange.includes("U+0100-02BA")) return true;
+  if (
+    family.toLowerCase().includes("intel one mono") &&
+    (unicodeRange.includes("U+2500-259F") || unicodeRange.includes("U+23B8"))
+  ) {
+    return true;
   }
+  return false;
+}
+
+/**
+ * Generate the body-weight @font-face rule for a variable font.
+ * Body weights get font-display: optional to avoid FOUT.
+ */
+function generateBodyFontFace(face: FontFaceDescriptor, localPath: string): string {
+  // Split the weight range at 699 for body
+  const raw = face.fontWeight; // e.g. "100 900" or "300 700"
+  const parts = raw.split(" ");
+  const min = parts[0]!;
+  const bodyMax = Math.min(Number(parts[1] ?? min), 699);
+
+  return [
+    `@font-face {`,
+    `  font-family: '${face.family}';`,
+    `  font-style: ${face.style};`,
+    `  font-weight: ${min} ${bodyMax};`,
+    `  font-display: optional;`,
+    `  src: url(${localPath}) format("woff2");`,
+    face.unicodeRange ? `  unicode-range: ${face.unicodeRange};` : "",
+    `}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+/**
+ * Generate the heading-weight @font-face rule for a variable font.
+ * Heading weights (>= 700) get font-display: swap for LCP.
+ */
+function generateHeadingFontFace(face: FontFaceDescriptor, localPath: string): string | null {
+  const raw = face.fontWeight;
+  const parts = raw.split(" ");
+  const max = Number(parts[1] ?? parts[0]!);
+
+  // Skip if the range doesn't include any heading weights
+  if (max < 700) return null;
+
+  const headingMin = 700;
+  const headingMax = max;
+  const display = "swap";
+
+  return [
+    `@font-face {`,
+    `  font-family: '${face.family}';`,
+    `  font-style: ${face.style};`,
+    `  font-weight: ${headingMin} ${headingMax};`,
+    `  font-display: ${display};`,
+    `  src: url(${localPath}) format("woff2");`,
+    face.unicodeRange ? `  unicode-range: ${face.unicodeRange};` : "",
+    `}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
 }
 
 async function main(): Promise<void> {
@@ -115,19 +198,27 @@ async function main(): Promise<void> {
     .digest("hex")
     .slice(0, 16);
 
-  if (fs.existsSync(FLAG_FILE) && fs.existsSync(CSS_FILE)) {
+  if (fs.existsSync(FLAG_FILE) && fs.existsSync(CSS_FILE) && fs.existsSync(MANIFEST_FILE)) {
     const flag = fs.readFileSync(FLAG_FILE, "utf-8");
     if (flag.includes(`SELF_HOSTED = true`) && flag.includes(configHash)) {
-      // Verify font files actually exist on disk (they may be missing on Vercel
-      // since public/font/self-hosted/ is gitignored).
-      let hasFontFiles = false;
+      // Verify the exact font files listed in the manifest exist on disk.
+      // A simple "any .woff2?" check can be fooled by stale files from a
+      // previous download (e.g. per-weight files left over after switching
+      // to variable fonts).  Walk the manifest and confirm every entry.
+      let manifestOk = false;
       try {
-        const entries = fs.readdirSync(FONT_OUT_DIR);
-        hasFontFiles = entries.some((e) => e.endsWith(".woff2"));
+        const manifestRaw = fs.readFileSync(MANIFEST_FILE, "utf-8");
+        const manifest = JSON.parse(manifestRaw) as { path: string }[];
+        manifestOk =
+          manifest.length > 0 &&
+          manifest.every((entry) => {
+            const abs = path.join(ROOT, "apps/web/public", entry.path);
+            return fs.existsSync(abs);
+          });
       } catch {
-        // Directory doesn't exist — need to re-download.
+        // Corrupt or missing manifest — re-download.
       }
-      if (hasFontFiles) {
+      if (manifestOk) {
         console.log(
           "[download-webfonts] Fonts already self-hosted (config hash unchanged) — skipping."
         );
@@ -139,19 +230,26 @@ async function main(): Promise<void> {
     }
   }
 
-  console.log("[download-webfonts] Downloading webfonts from fonts.bunny.net…");
+  console.log("[download-webfonts] Downloading variable webfonts from Google Fonts…");
 
-  // ── Collect all webfont slots ─────────────────────────────────────────
+  // ── Collect webfont slots with variable ranges ─────────────────────────
   const slots: {
     config: FontSlotConfig;
     label: string;
-    opts?: BuildBunnyFontUrlOptions;
+    range: { min: number; max: number };
   }[] = [];
-  if (primaryFontConfig.source === "webfont")
-    slots.push({ config: primaryFontConfig, label: "primary" });
-  if (secondaryFontConfig.source === "webfont")
-    slots.push({ config: secondaryFontConfig, label: "secondary" });
-  if (monoFontConfig.source === "webfont") slots.push({ config: monoFontConfig, label: "mono" });
+  if (primaryFontConfig.source === "webfont") {
+    const range = getVariableWghtRange(primaryFontConfig);
+    if (range) slots.push({ config: primaryFontConfig, label: "primary", range });
+  }
+  if (secondaryFontConfig.source === "webfont") {
+    const range = getVariableWghtRange(secondaryFontConfig);
+    if (range) slots.push({ config: secondaryFontConfig, label: "secondary", range });
+  }
+  if (monoFontConfig.source === "webfont") {
+    const range = getVariableWghtRange(monoFontConfig);
+    if (range) slots.push({ config: monoFontConfig, label: "mono", range });
+  }
 
   if (slots.length === 0) {
     console.log("[download-webfonts] No webfont slots configured — nothing to do.");
@@ -165,57 +263,83 @@ async function main(): Promise<void> {
   // ── Prepare output dirs ───────────────────────────────────────────────
   fs.mkdirSync(FONT_OUT_DIR, { recursive: true });
 
-  // ── Fetch CSS for each slot (all weights + italics) ──────────────────
+  // ── Fetch CSS for each slot ───────────────────────────────────────────
   const allCssParts: string[] = [];
   const manifestEntries: { family: string; path: string; weight: number; style: string }[] = [];
-  // Map source URL → local path so every @font-face rule pointing to the
-  // same file gets the same rewritten URL.
+  // Map Google Fonts CDN URL → local path (deduplicates shared files)
   const urlToLocalPath = new Map<string, string>();
 
   for (const slot of slots) {
     const family = slot.config.webfont.family;
     const familySlug = family.toLowerCase().replace(/\s+/g, "-");
-    const url = buildBunnyFontUrl(family, slot.config.weights, slot.config.italic, slot.opts);
+
+    // Fetch variable font CSS from Google Fonts
+    const gfUrl = buildGoogleFontUrl(family, slot.range.min, slot.range.max);
     console.log(`  Fetching CSS: ${family}`);
-    const { buffer: cssBuf } = await download(url);
-    let css = new TextDecoder().decode(cssBuf);
+    const { buffer: cssBuf } = await download(gfUrl);
+    const css = new TextDecoder().decode(cssBuf);
 
     const faces = parseFontFaces(css);
 
-    // ── Download each font file, rewrite URLs ──────────────────────────
-    for (const face of faces) {
+    // Filter to only wanted subsets (Latin, Latin-Ext, Mono symbols2)
+    const wantedFaces = faces.filter((face) => isWantedSubset(face.unicodeRange, family));
+
+    if (wantedFaces.length === 0) {
+      console.warn(`    No wanted subsets found for ${family}`);
+      continue;
+    }
+
+    // ── Download each unique font file ───────────────────────────────────
+    // For variable fonts, each unicode range has ONE file.
+    const faceCssParts: string[] = [];
+
+    for (const face of wantedFaces) {
       const srcUrl = face.src;
 
-      // Already seen this URL → reuse the same local path.
       if (!urlToLocalPath.has(srcUrl)) {
-        const originalName = urlFilename(srcUrl);
-        const localFile = `${familySlug}-${originalName}`;
-        console.log(`    Downloading: ${originalName}`);
         const { buffer: fontBuf } = await download(srcUrl);
+        // Content hash for cache busting
+        const hash = crypto
+          .createHash("md5")
+          .update(Buffer.from(fontBuf))
+          .digest("hex")
+          .slice(0, 8);
+        // Derive readable filename from the subset name
+        const subset = face.unicodeRange.includes("U+2500-259F") ? "symbols2" : "";
+        const subsetLabel =
+          subset || (face.unicodeRange.includes("U+0100-02BA") ? "latin-ext" : "latin");
+        const localFile = `${familySlug}-${subsetLabel}-variable.${hash}.woff2`;
+        console.log(`    Downloading: ${localFile}`);
         fs.writeFileSync(path.join(FONT_OUT_DIR, localFile), Buffer.from(fontBuf));
         urlToLocalPath.set(srcUrl, `/font/self-hosted/${localFile}`);
       }
 
-      // Rewrite CSS src URL using the consistent local path.
       const localPath = urlToLocalPath.get(srcUrl)!;
-      css = css.replace(srcUrl, localPath);
 
-      // Build manifest entry for critical weights
-      const weight = parseInt(face.fontWeight) || 400;
+      // Generate two @font-face rules: body (optional) + heading (swap)
+      const bodyRule = generateBodyFontFace(face, localPath);
+      const headingRule = generateHeadingFontFace(face, localPath);
+
+      faceCssParts.push(bodyRule);
+      if (headingRule) {
+        faceCssParts.push(headingRule);
+      }
+
+      // Build manifest entry for variable font (weight === 0 signals variable).
+      // Record ALL downloaded files so the idempotency check can verify
+      // every font file exists on disk — not just latin subsets.
       const isNormal = face.style === "normal" || face.style === "Regular";
-      const isLatin =
-        face.unicodeRange.includes("U+0000-00FF") || face.unicodeRange.includes("U+0000");
-      if (isNormal && isLatin) {
+      if (isNormal) {
         manifestEntries.push({
           family: face.family || family,
           path: localPath,
-          weight,
+          weight: 0,
           style: "normal",
         });
       }
     }
 
-    allCssParts.push(`/* ${family} */\n${css}`);
+    allCssParts.push(`/* ${family} */\n${faceCssParts.join("\n\n")}`);
   }
 
   // ── Write combined CSS ────────────────────────────────────────────────
@@ -223,17 +347,15 @@ async function main(): Promise<void> {
   fs.writeFileSync(CSS_FILE, combinedCss);
   console.log(`  Wrote: ${CSS_FILE} (${combinedCss.length} bytes)`);
 
-  // ── Write font manifest (Latin-normal subset for preload links) ──────
-  const criticalWeights = new Set([400, 500, 700, 900]);
-  const criticalManifest = manifestEntries.filter((e) => criticalWeights.has(e.weight));
-  fs.writeFileSync(MANIFEST_FILE, JSON.stringify(criticalManifest, null, 2));
-  console.log(`  Wrote: ${MANIFEST_FILE} (${criticalManifest.length} entries)`);
+  // ── Write font manifest — variable font entries (weight === 0) ────────
+  fs.writeFileSync(MANIFEST_FILE, JSON.stringify(manifestEntries, null, 2));
+  console.log(`  Wrote: ${MANIFEST_FILE} (${manifestEntries.length} entries)`);
 
   // ── Write flag ────────────────────────────────────────────────────────
   writeFlag(true);
 
   console.log(
-    `[download-webfonts] Done — ${urlToLocalPath.size} font files downloaded to ${FONT_OUT_DIR}`
+    `[download-webfonts] Done — ${urlToLocalPath.size} variable font files downloaded to ${FONT_OUT_DIR}`
   );
 }
 

@@ -1,0 +1,17 @@
+{
+  "definitions": {
+    "hero-badge": {
+      "preset": "demo-hero-badge",
+      "text": "backgroundVideo"
+    },
+    "hero-title": {
+      "preset": "demo-hero-title",
+      "text": "bg-video-gradient"
+    },
+    "hero-desc": {
+      "preset": "demo-hero-description",
+      "text": "Brand-coloured gradient wash over full-bleed video — accent at the top, primary at the bottom. Ties ambient footage into the design system without masking it."
+    }
+  },
+  "preset": "demo-hero-100vh"
+}

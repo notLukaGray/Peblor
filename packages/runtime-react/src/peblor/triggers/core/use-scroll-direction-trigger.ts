@@ -3,6 +3,8 @@
 import { useEffect, useRef } from "react";
 import { firePeblorAction } from "@/peblor/triggers";
 import type { PeblorAction } from "@pb/contracts/types";
+import { useSharedScroll } from "@/peblor/section/position/shared-scroll-listener";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 export type ScrollDirectionTriggerDef = {
   /** Action to fire when user scrolls down */
@@ -16,17 +18,20 @@ export type ScrollDirectionTriggerDef = {
 export function useScrollDirectionTrigger(triggers: ScrollDirectionTriggerDef[]): void {
   const lastScrollY = useRef(typeof window !== "undefined" ? window.scrollY : 0);
   const lastDirection = useRef<"up" | "down" | null>(null);
+  const { subscribe } = useSharedScroll();
 
   useEffect(() => {
     if (!triggers || triggers.length === 0) return;
 
-    const onScroll = () => {
-      const current = window.scrollY;
+    const threshold = Math.max(
+      ...triggers.map((t) => t.threshold ?? globals.uiScrollDirectionThresholdPx)
+    );
+
+    return subscribe((_scrollY, direction) => {
+      const current = _scrollY;
       const delta = current - lastScrollY.current;
-      const threshold = Math.max(...triggers.map((t) => t.threshold ?? 5));
       if (Math.abs(delta) < threshold) return;
 
-      const direction: "up" | "down" = delta > 0 ? "down" : "up";
       if (direction === lastDirection.current) {
         lastScrollY.current = current;
         return;
@@ -38,9 +43,6 @@ export function useScrollDirectionTrigger(triggers: ScrollDirectionTriggerDef[])
         if (direction === "down" && def.onScrollDown) firePeblorAction(def.onScrollDown, "trigger");
         if (direction === "up" && def.onScrollUp) firePeblorAction(def.onScrollUp, "trigger");
       });
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [triggers]);
+    });
+  }, [triggers, subscribe]);
 }

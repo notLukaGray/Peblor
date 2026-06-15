@@ -1,0 +1,186 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "width": {
+    "base": "92%",
+    "md": "86%"
+  },
+  "maxWidth": "1100px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "5rem 0",
+    "md": "8rem 0"
+  },
+  "gap": "2.5rem",
+  "height": "hug",
+  "scroll": "visible",
+  "motionTiming": {
+    "entrancePreset": "fade",
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "glass-panels"],
+  "definitions": {
+    "sec-label": {
+      "type": "elementGroup",
+      "display": "flex",
+      "align": "center",
+      "padding": "0.6rem 0",
+      "wrapperStyle": {
+        "position": "sticky",
+        "top": "3rem",
+        "layer": 10,
+        "backgroundColor": "color-mix(in oklab, var(--pb-secondary) 88%, transparent)",
+        "bgBlur": "blur(20px)",
+        "WebkitBackdropFilter": "blur(20px)",
+        "borderBottom": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["label-text"],
+        "definitions": {
+          "label-text": {
+            "preset": "type-h3-label",
+            "text": "Glass Panels"
+          }
+        }
+      }
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Translucent panels using physics-based glass with refraction, specular highlights, and drop shadows. Each variant dials different glass parameters — light is barely-there, heavy is sculptural."
+    },
+    "glass-panels": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": {
+        "base": "column",
+        "md": "row"
+      },
+      "gap": "1.5rem",
+      "width": "100%",
+      "padding": "0",
+      "section": {
+        "elementOrder": ["glass-light", "glass-medium", "glass-heavy"],
+        "definitions": {
+          "glass-light": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "padding": "2rem",
+            "gap": "0.85rem",
+            "flex": "1 1 0px",
+            "borderRadius": "20px",
+            "effects": [
+              {
+                "type": "glass",
+                "blur": "4px",
+                "lightIntensity": 0.12,
+                "refraction": 0.04,
+                "bezelWidth": 1,
+                "glassThickness": 30,
+                "specularOpacity": 0.25,
+                "dropShadow": false
+              }
+            ],
+            "motionTiming": {
+              "entrancePreset": "fade",
+              "trigger": "onFirstVisible"
+            },
+            "section": {
+              "elementOrder": ["label", "desc"],
+              "definitions": {
+                "label": {
+                  "preset": "type-h4-card",
+                  "text": "Light Glass"
+                },
+                "desc": {
+                  "preset": "type-body-fine",
+                  "text": "Barely-there glass. blur(4px), minimal refraction, no shadow. Use over vibrant backgrounds where the surface should feel like a whisper of glass."
+                }
+              }
+            }
+          },
+          "glass-medium": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "padding": "2rem",
+            "gap": "0.85rem",
+            "flex": "1 1 0px",
+            "borderRadius": "20px",
+            "effects": [
+              {
+                "type": "glass",
+                "blur": "12px",
+                "lightIntensity": 0.35,
+                "refraction": 0.12,
+                "bezelWidth": "2px",
+                "glassThickness": 80,
+                "specularOpacity": 0.6,
+                "dropShadow": true
+              }
+            ],
+            "motionTiming": {
+              "entrancePreset": "slideUp",
+              "trigger": "onFirstVisible"
+            },
+            "section": {
+              "elementOrder": ["label", "desc"],
+              "definitions": {
+                "label": {
+                  "preset": "type-h4-card",
+                  "text": "Medium Glass"
+                },
+                "desc": {
+                  "preset": "type-body-fine",
+                  "text": "Balanced glass. blur(12px), moderate refraction, visible bevel, drop shadow. The default for UI panels, cards, and overlays."
+                }
+              }
+            }
+          },
+          "glass-heavy": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "padding": "2rem",
+            "gap": "0.85rem",
+            "flex": "1 1 0px",
+            "borderRadius": "20px",
+            "effects": [
+              {
+                "type": "glass",
+                "blur": "22px",
+                "lightIntensity": 0.55,
+                "refraction": 0.22,
+                "dispersion": 0.12,
+                "bezelWidth": "3px",
+                "bezelType": "convex_squircle",
+                "glassThickness": 140,
+                "specularOpacity": 0.9,
+                "specularSaturation": 8,
+                "dropShadow": true,
+                "magnifyingScale": 0.06
+              }
+            ],
+            "motionTiming": {
+              "entrancePreset": "blurIn",
+              "trigger": "onFirstVisible"
+            },
+            "section": {
+              "elementOrder": ["label", "desc"],
+              "definitions": {
+                "label": {
+                  "preset": "type-h4-card",
+                  "text": "Heavy Glass"
+                },
+                "desc": {
+                  "preset": "type-body-fine",
+                  "text": "Dense, sculptural glass. blur(22px), strong refraction, chromatic dispersion, thick squircle bevel, magnifying displacement. Every parameter dialed up for maximum material presence."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

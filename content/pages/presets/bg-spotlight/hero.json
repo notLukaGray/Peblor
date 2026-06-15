@@ -1,0 +1,17 @@
+{
+  "definitions": {
+    "hero-badge": {
+      "preset": "demo-hero-badge",
+      "text": "backgroundVariable · pointer"
+    },
+    "hero-title": {
+      "preset": "demo-hero-title",
+      "text": "bg-spotlight"
+    },
+    "hero-desc": {
+      "preset": "demo-hero-description",
+      "text": "Two concentric radial gradients track the mouse cursor — a wide accent halo and a tight primary core, each with different lerp ease (0.05 and 0.03) for a trailing depth illusion. Move your cursor around the page."
+    }
+  },
+  "preset": "demo-hero-100vh"
+}

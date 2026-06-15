@@ -1,0 +1,19 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "bg-video-gradient — Preset Demo",
+  "description": "Full-screen looping video with a two-tone brand gradient overlay",
+  "presets": ["demo", "bg"],
+  "sectionOrder": ["nav-header", "hero"],
+  "bgKey": "bg-video-gradient",
+  "scroll": {
+    "smooth": false,
+    "lockBody": true,
+    "scrollX": "hidden",
+    "scrollY": "hidden"
+  },
+  "definitions": {
+    "bg-video-gradient": {
+      "preset": "bg-video-gradient"
+    }
+  }
+}

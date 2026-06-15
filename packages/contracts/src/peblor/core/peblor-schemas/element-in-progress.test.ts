@@ -4,6 +4,10 @@ import { elementLottieSchema } from "./element-lottie-schemas";
 import { elementTabsSchema } from "./element-tabs-schemas";
 import { elementDragSchema } from "./element-drag-schemas";
 import { elementImageCompareSchema } from "./element-image-compare-schemas";
+// B-4: importing element-block-schemas ensures registerElementSchema() is called, which
+// populates the shared lazy element ref used by tabs / drag / image-compare to validate
+// their nested element children against the full discriminated union.
+import "./element-block-schemas";
 
 describe("elementRive schema", () => {
   it("validates a minimal Rive element with CDN asset key src", () => {
@@ -40,11 +44,11 @@ describe("elementRive schema", () => {
     expect(result.success).toBe(true);
   });
 
-  it("validates responsive objectFit tuple", () => {
+  it("validates responsive objectFit tier map", () => {
     const result = elementRiveSchema.safeParse({
       type: "elementRive",
       src: "a.riv",
-      objectFit: ["contain", "cover"],
+      objectFit: { base: "contain", md: "cover" },
     });
     expect(result.success).toBe(true);
   });
@@ -143,7 +147,7 @@ describe("elementTabs schema", () => {
   it("rejects negative activeTab (zero-indexed, only non-negative allowed)", () => {
     const result = elementTabsSchema.safeParse({
       type: "elementTabs",
-      tabs: [{ label: "Tab", elements: [{ type: "elementBody" }] }],
+      tabs: [{ label: "Tab", elements: [{ type: "elementBody", text: "Valid" }] }],
       activeTab: -1,
     });
     expect(result.success).toBe(false);

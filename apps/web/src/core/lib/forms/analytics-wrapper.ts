@@ -17,7 +17,8 @@ export function normalizePagePath(referer: string): string {
   try {
     const url = new URL(referer, "http://localhost");
     return url.pathname || "";
-  } catch {
+  } catch (err) {
+    console.warn("[web-core] Failed to normalize page path from referer", err);
     return "";
   }
 }

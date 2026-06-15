@@ -44,8 +44,8 @@ axes:
   - name: layout
     fields:
       [
-        alignItems,
-        justifyContent,
+        align,
+        distribute,
         gap,
         rowGap,
         columnGap,

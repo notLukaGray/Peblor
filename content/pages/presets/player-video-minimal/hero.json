@@ -1,0 +1,25 @@
+{
+  "preset": "demo-hero",
+  "padding": {
+    "base": "10rem 0 4rem",
+    "md": "12rem 0 6rem"
+  },
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Play · Seek · Time"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Video Minimal"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Minimal control bar layout: play/pause, full-width seek, and time display.",
+      "width": {
+        "base": "100%",
+        "md": "78%"
+      }
+    }
+  }
+}

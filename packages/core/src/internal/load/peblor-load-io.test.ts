@@ -52,13 +52,19 @@ describe("peblor-load-io", () => {
       expect(coercePresetMap(null)).toEqual({});
       expect(coercePresetMap("x")).toEqual({});
     });
-    it("includes object values keyed by string", () => {
-      const data = { k: { type: "elementVector", shapes: [] } };
-      expect(coercePresetMap(data)).toEqual(data);
+    it("includes valid definition blocks", () => {
+      const data = { k: { type: "elementVector", viewBox: "0 0 10 10", shapes: [] } };
+      const out = coercePresetMap(data);
+      expect(out).toHaveProperty("k");
+      expect(out.k).toMatchObject({ type: "elementVector", viewBox: "0 0 10 10" });
     });
-    it("skips primitive values and keeps object-like values", () => {
-      const out = coercePresetMap({ keep: { type: "x" }, skip: 1, skip2: "s" });
-      expect(out).toEqual({ keep: { type: "x" } });
+    it("skips primitive and non-object values", () => {
+      const out = coercePresetMap({ skip: 1, skip2: "s" });
+      expect(out).toEqual({});
+    });
+    it("admits objects with any type string (full validation deferred to page parse)", () => {
+      const out = coercePresetMap({ keep: { type: "notAValidBlock" } });
+      expect(out).toHaveProperty("keep");
     });
   });
 

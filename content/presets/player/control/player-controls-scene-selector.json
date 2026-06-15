@@ -1,0 +1,80 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "row",
+  "wrap": "wrap",
+  "align": "center",
+  "gap": "0.4rem",
+  "padding": "0.5rem 0",
+  "section": {
+    "elementOrder": ["scene-a", "scene-b", "scene-c"],
+    "definitions": {
+      "scene-a": {
+        "type": "elementButton",
+        "label": "Scene A",
+        "action": "setVariable",
+        "actionPayload": {
+          "key": "playerScene",
+          "value": "scene-a"
+        },
+        "level": 5,
+        "wrapperPadding": "0.3rem 0.65rem",
+        "wrapperBorderRadius": "999px",
+        "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+        "linkDefault": "var(--pb-on-secondary)",
+        "motion": {
+          "onHover": {
+            "scale": 1.05
+          },
+          "transition": {
+            "duration": 0.15
+          }
+        }
+      },
+      "scene-b": {
+        "type": "elementButton",
+        "label": "Scene B",
+        "action": "setVariable",
+        "actionPayload": {
+          "key": "playerScene",
+          "value": "scene-b"
+        },
+        "level": 5,
+        "wrapperPadding": "0.3rem 0.65rem",
+        "wrapperBorderRadius": "999px",
+        "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+        "linkDefault": "var(--pb-on-secondary)",
+        "motion": {
+          "onHover": {
+            "scale": 1.05
+          },
+          "transition": {
+            "duration": 0.15
+          }
+        }
+      },
+      "scene-c": {
+        "type": "elementButton",
+        "label": "Scene C",
+        "action": "setVariable",
+        "actionPayload": {
+          "key": "playerScene",
+          "value": "scene-c"
+        },
+        "level": 5,
+        "wrapperPadding": "0.3rem 0.65rem",
+        "wrapperBorderRadius": "999px",
+        "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+        "linkDefault": "var(--pb-on-secondary)",
+        "motion": {
+          "onHover": {
+            "scale": 1.05
+          },
+          "transition": {
+            "duration": 0.15
+          }
+        }
+      }
+    }
+  }
+}

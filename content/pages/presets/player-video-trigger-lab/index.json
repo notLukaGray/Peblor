@@ -1,0 +1,13 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Video Trigger Lab — Preset Demo",
+  "description": "Explicit button grid testing every video trigger action: play, pause, toggle, seek, mute, fullscreen — all baked inside the player card.",
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "bg", "player/section"],
+  "bgKey": "bg-players",
+  "sectionOrder": ["nav-header", "hero", "sec-player"],
+  "definitions": {
+    "bg-players": {
+      "preset": "bg-players"
+    }
+  }
+}

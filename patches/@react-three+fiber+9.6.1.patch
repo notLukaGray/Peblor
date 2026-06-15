@@ -1,0 +1,141 @@
+diff --git a/node_modules/@react-three/fiber/dist/events-583399dd.cjs.prod.js b/node_modules/@react-three/fiber/dist/events-583399dd.cjs.prod.js
+index f3834fa..8dba906 100644
+--- a/node_modules/@react-three/fiber/dist/events-583399dd.cjs.prod.js
++++ b/node_modules/@react-three/fiber/dist/events-583399dd.cjs.prod.js
+@@ -1038,7 +1038,7 @@ const createStore = (invalidate, advance) => {
+       linear: false,
+       flat: false,
+       controls: null,
+-      clock: new THREE__namespace.Clock(),
++      clock: new THREE__namespace.Timer(),
+       pointer,
+       mouse: pointer,
+       frameloop: 'always',
+@@ -1112,13 +1112,8 @@ const createStore = (invalidate, advance) => {
+       setFrameloop: (frameloop = 'always') => {
+         const clock = get().clock;
+ 
+-        // if frameloop === "never" clock.elapsedTime is updated using advance(timestamp)
+-        clock.stop();
+-        clock.elapsedTime = 0;
+-        if (frameloop !== 'never') {
+-          clock.start();
+-          clock.elapsedTime = 0;
+-        }
++        // if frameloop === "never" clock is updated using advance(timestamp)
++        clock.reset();
+         set(() => ({
+           frameloop
+         }));
+@@ -7868,15 +7863,10 @@ let subscribers;
+ let subscription;
+ function update(timestamp, state, frame) {
+   // Run local effects
++  // Update timer with current timestamp before querying delta
++  if (typeof timestamp === 'number') state.clock.update(timestamp);
+   let delta = state.clock.getDelta();
+ 
+-  // In frameloop='never' mode, clock times are updated using the provided timestamp
+-  if (state.frameloop === 'never' && typeof timestamp === 'number') {
+-    delta = timestamp - state.clock.elapsedTime;
+-    state.clock.oldTime = state.clock.elapsedTime;
+-    state.clock.elapsedTime = timestamp;
+-  }
+-
+   // Call subscribers (useFrame)
+   subscribers = state.internal.subscribers;
+   for (let i = 0; i < subscribers.length; i++) {
+diff --git a/node_modules/@react-three/fiber/dist/events-b389eeca.esm.js b/node_modules/@react-three/fiber/dist/events-b389eeca.esm.js
+index 76f308c..bf00ee2 100644
+--- a/node_modules/@react-three/fiber/dist/events-b389eeca.esm.js
++++ b/node_modules/@react-three/fiber/dist/events-b389eeca.esm.js
+@@ -1013,7 +1013,7 @@ const createStore = (invalidate, advance) => {
+       linear: false,
+       flat: false,
+       controls: null,
+-      clock: new THREE.Clock(),
++      clock: new THREE.Timer(),
+       pointer,
+       mouse: pointer,
+       frameloop: 'always',
+@@ -1087,13 +1087,8 @@ const createStore = (invalidate, advance) => {
+       setFrameloop: (frameloop = 'always') => {
+         const clock = get().clock;
+ 
+-        // if frameloop === "never" clock.elapsedTime is updated using advance(timestamp)
+-        clock.stop();
+-        clock.elapsedTime = 0;
+-        if (frameloop !== 'never') {
+-          clock.start();
+-          clock.elapsedTime = 0;
+-        }
++        // if frameloop === "never" clock is updated using advance(timestamp)
++        clock.reset();
+         set(() => ({
+           frameloop
+         }));
+@@ -16040,15 +16035,10 @@ let subscribers;
+ let subscription;
+ function update(timestamp, state, frame) {
+   // Run local effects
++  // Update timer with current timestamp before querying delta
++  if (typeof timestamp === 'number') state.clock.update(timestamp);
+   let delta = state.clock.getDelta();
+ 
+-  // In frameloop='never' mode, clock times are updated using the provided timestamp
+-  if (state.frameloop === 'never' && typeof timestamp === 'number') {
+-    delta = timestamp - state.clock.elapsedTime;
+-    state.clock.oldTime = state.clock.elapsedTime;
+-    state.clock.elapsedTime = timestamp;
+-  }
+-
+   // Call subscribers (useFrame)
+   subscribers = state.internal.subscribers;
+   for (let i = 0; i < subscribers.length; i++) {
+diff --git a/node_modules/@react-three/fiber/dist/events-f19bcc32.cjs.dev.js b/node_modules/@react-three/fiber/dist/events-f19bcc32.cjs.dev.js
+index 07d45d4..0073b99 100644
+--- a/node_modules/@react-three/fiber/dist/events-f19bcc32.cjs.dev.js
++++ b/node_modules/@react-three/fiber/dist/events-f19bcc32.cjs.dev.js
+@@ -1038,7 +1038,7 @@ const createStore = (invalidate, advance) => {
+       linear: false,
+       flat: false,
+       controls: null,
+-      clock: new THREE__namespace.Clock(),
++      clock: new THREE__namespace.Timer(),
+       pointer,
+       mouse: pointer,
+       frameloop: 'always',
+@@ -1112,13 +1112,8 @@ const createStore = (invalidate, advance) => {
+       setFrameloop: (frameloop = 'always') => {
+         const clock = get().clock;
+ 
+-        // if frameloop === "never" clock.elapsedTime is updated using advance(timestamp)
+-        clock.stop();
+-        clock.elapsedTime = 0;
+-        if (frameloop !== 'never') {
+-          clock.start();
+-          clock.elapsedTime = 0;
+-        }
++        // if frameloop === "never" clock is updated using advance(timestamp)
++        clock.reset();
+         set(() => ({
+           frameloop
+         }));
+@@ -16065,15 +16060,10 @@ let subscribers;
+ let subscription;
+ function update(timestamp, state, frame) {
+   // Run local effects
++  // Update timer with current timestamp before querying delta
++  if (typeof timestamp === 'number') state.clock.update(timestamp);
+   let delta = state.clock.getDelta();
+ 
+-  // In frameloop='never' mode, clock times are updated using the provided timestamp
+-  if (state.frameloop === 'never' && typeof timestamp === 'number') {
+-    delta = timestamp - state.clock.elapsedTime;
+-    state.clock.oldTime = state.clock.elapsedTime;
+-    state.clock.elapsedTime = timestamp;
+-  }
+-
+   // Call subscribers (useFrame)
+   subscribers = state.internal.subscribers;
+   for (let i = 0; i < subscribers.length; i++) {

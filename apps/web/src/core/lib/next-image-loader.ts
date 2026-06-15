@@ -6,9 +6,10 @@ type LoaderParams = { src: string; width: number; quality?: number };
  * Next.js custom image loader. All assets are on Bunny CDN: we append
  * width, quality, and format so Bunny Optimizer serves resized images
  * at the edge. Requires Bunny Optimizer with Dynamic Image API enabled.
- * Pre-signed URLs (with width or class) are returned unchanged so the token stays valid.
- * Non-CDN URLs (e.g. proxy) get w/q params so the loader implements width;
- * the server can ignore them.
+ * Immutable pre-sized/class-based URLs are returned unchanged so the loader
+ * does not invalidate tokens or class transforms. Same-origin `/api/media/...`
+ * aliases with a width param are re-written per requested width so Next.js can
+ * emit responsive srcsets against the stable alias path.
  */
 const BUNNY_PARAMS = ["width", "quality", "format", "aspect_ratio", "class", "w", "q"];
 
@@ -24,7 +25,13 @@ export default function bunnyImageLoader({
   if (!src || typeof src !== "string") return src;
   try {
     const relative = new URL(src, "http://local");
-    if (relative.searchParams.has("width") || relative.searchParams.has("class")) {
+    const isProxyMedia =
+      relative.origin === "http://local" && relative.pathname.startsWith("/api/media/");
+    if (
+      (!isProxyMedia &&
+        (relative.searchParams.has("width") || relative.searchParams.has("class"))) ||
+      (isProxyMedia && relative.searchParams.has("class"))
+    ) {
       return `${src.split("#")[0]}#w=${width}`;
     }
 

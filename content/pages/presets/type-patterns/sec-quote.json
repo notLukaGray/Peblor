@@ -1,0 +1,32 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "staggerChildren": 0.15,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["quote", "q-desc"],
+  "definitions": {
+    "quote": {
+      "preset": "type-pull-quote",
+      "text": "The best systems are the ones you forget are there."
+    },
+    "q-desc": {
+      "type": "elementBody",
+      "level": 3,
+      "wordWrap": true,
+      "color": "color-mix(in oklab, var(--pb-on-secondary) 55%, transparent)",
+      "textAlign": "center",
+      "width": {
+        "base": "100%",
+        "md": "82%"
+      },
+      "selfAlign": "center",
+      "text": "Quotation mark, heading-level text, and attribution — three elements, one blurIn entrance.",
+      "motionTiming": {
+        "entrancePreset": "fade",
+        "trigger": "onFirstVisible"
+      }
+    }
+  },
+  "align": "start"
+}

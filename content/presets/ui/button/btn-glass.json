@@ -1,0 +1,21 @@
+{
+  "type": "elementButton",
+  "label": "",
+  "level": 4,
+  "wrapperPadding": "0.7rem 1.5rem",
+  "wrapperBorderRadius": "999px",
+  "wrapperFill": "transparent",
+  "wrapperStroke": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+  "wrapperStrokeWidth": 1,
+  "linkDefault": "color-mix(in oklab, var(--pb-on-secondary) 85%, transparent)",
+  "selfAlign": "center",
+  "effects": [
+    {
+      "type": "glass",
+      "blur": "12px"
+    }
+  ],
+  "wrapperFillHover": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+  "wrapperStrokeHover": "color-mix(in oklab, var(--pb-on-secondary) 16%, transparent)",
+  "wrapperScaleHover": 1.01
+}

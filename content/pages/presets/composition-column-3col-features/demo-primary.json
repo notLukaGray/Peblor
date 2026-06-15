@@ -1,0 +1,72 @@
+{
+  "preset": "composition-column-3col-features",
+  "width": {
+    "base": "92%",
+    "md": "86%"
+  },
+  "maxWidth": "1240px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "2rem 0 3rem",
+    "md": "2rem 0 4rem"
+  },
+  "definitions": {
+    "feature-a": {
+      "section": {
+        "definitions": {
+          "kicker": {
+            "text": "Velocity"
+          },
+          "title": {
+            "text": "Ship faster with composable sections"
+          },
+          "body": {
+            "text": "A shared library of dependable layout primitives accelerates page assembly and review."
+          },
+          "link": {
+            "label": "Learn more ->",
+            "href": "#"
+          }
+        }
+      }
+    },
+    "feature-b": {
+      "section": {
+        "definitions": {
+          "kicker": {
+            "text": "Consistency"
+          },
+          "title": {
+            "text": "Keep hierarchy stable across templates"
+          },
+          "body": {
+            "text": "Common spacing and card anatomy preserve readability even as content changes."
+          },
+          "link": {
+            "label": "View examples ->",
+            "href": "#"
+          }
+        }
+      }
+    },
+    "feature-c": {
+      "section": {
+        "definitions": {
+          "kicker": {
+            "text": "Resilience"
+          },
+          "title": {
+            "text": "Handle edge-case copy with fewer rewrites"
+          },
+          "body": {
+            "text": "Stress-tested composition reduces breakage when teams push longer titles and denser copy."
+          },
+          "link": {
+            "label": "Read docs ->",
+            "href": "#"
+          }
+        }
+      }
+    }
+  }
+}

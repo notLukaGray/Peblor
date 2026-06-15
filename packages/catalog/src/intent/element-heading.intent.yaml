@@ -32,12 +32,11 @@ axes:
         fontWeight,
         letterSpacing,
         lineHeight,
-        lineSpacing,
         fontFeatureSettings,
       ]
   - name: color
     fields: [color, textFill]
-  - name: overflow
+  - name: scroll
     fields: [textOverflow, textStroke, verticalAlign, paragraphSpacing, maxLines]
 
 covers:
@@ -68,7 +67,6 @@ composes_with:
 known_limitations:
   - "No inline formatting — bold/italic sub-runs require element.richText"
   - "variableKey replaces the entire text field at runtime; static text is ignored when set"
-  - "lineSpacing is legacy shorthand; prefer lineHeight for new content"
 
 proposal_hints:
   new_variant_value: extend_cluster

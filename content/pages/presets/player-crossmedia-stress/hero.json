@@ -1,0 +1,21 @@
+{
+  "preset": "demo-hero",
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Collision Testing"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Crossmedia Stress"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Dense page with multiple simultaneous media players — action collision and state stability stress test.",
+      "width": {
+        "base": "100%",
+        "md": "78%"
+      }
+    }
+  }
+}

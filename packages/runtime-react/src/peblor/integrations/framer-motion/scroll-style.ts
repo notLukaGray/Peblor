@@ -12,6 +12,11 @@ export type ScrollOpacityRange = {
   output?: [number, number];
 };
 
+/**
+ * Clamp a value to the [0, 1] unit range with finite guard.
+ * NOTE: If you only need the basic clamp(value, 0, 1) pattern without the
+ * finite guard, consider using `clamp` from Shared/css-declaration-utils instead.
+ */
 function clamp01(value: number): number {
   if (!Number.isFinite(value)) return 0;
   if (value < 0) return 0;

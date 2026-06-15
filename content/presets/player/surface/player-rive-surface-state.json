@@ -1,0 +1,130 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "align": "stretch",
+  "gap": "0",
+  "width": "100%",
+  "height": "hug",
+  "borderRadius": "18px",
+  "scroll": "hidden",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+  },
+  "section": {
+    "elementOrder": ["rive-canvas", "rive-controls", "state-readout"],
+    "definitions": {
+      "rive-canvas": {
+        "type": "elementRive",
+        "id": "rive-player-state",
+        "src": "https://cdn.rive.app/animations/vehicles.riv",
+        "autoplay": true,
+        "loop": true,
+        "hover": true,
+        "width": "100%",
+        "aspectRatio": "16 / 9",
+        "onStateChange": {
+          "type": "setVariable",
+          "payload": {
+            "key": "riveState",
+            "value": "$event.stateName"
+          }
+        },
+        "onPlay": {
+          "type": "setVariable",
+          "payload": {
+            "key": "riveStatus",
+            "value": "playing"
+          }
+        },
+        "onPause": {
+          "type": "setVariable",
+          "payload": {
+            "key": "riveStatus",
+            "value": "paused"
+          }
+        }
+      },
+      "rive-controls": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "row",
+        "align": "center",
+        "gap": "0.5rem",
+        "padding": "0.75rem 1rem",
+        "section": {
+          "elementOrder": ["btn-play", "btn-pause", "btn-reset"],
+          "definitions": {
+            "btn-play": {
+              "type": "elementButton",
+              "label": "Play",
+              "action": "rive.play",
+              "actionPayload": {
+                "id": "rive-player-state"
+              },
+              "level": 5,
+              "wrapperPadding": "0.45rem 0.9rem",
+              "wrapperBorderRadius": "10px",
+              "wrapperFill": "color-mix(in oklab, var(--pb-accent) 18%, transparent)",
+              "linkDefault": "var(--pb-on-secondary)",
+              "motion": {
+                "onHover": {
+                  "scale": 1.04
+                },
+                "transition": {
+                  "duration": 0.15
+                }
+              }
+            },
+            "btn-pause": {
+              "type": "elementButton",
+              "label": "Pause",
+              "action": "rive.pause",
+              "actionPayload": {
+                "id": "rive-player-state"
+              },
+              "level": 5,
+              "wrapperPadding": "0.45rem 0.9rem",
+              "wrapperBorderRadius": "10px",
+              "wrapperFill": "color-mix(in oklab, var(--pb-accent) 18%, transparent)",
+              "linkDefault": "var(--pb-on-secondary)",
+              "motion": {
+                "onHover": {
+                  "scale": 1.04
+                },
+                "transition": {
+                  "duration": 0.15
+                }
+              }
+            },
+            "btn-reset": {
+              "type": "elementButton",
+              "label": "Reset",
+              "action": "rive.reset",
+              "actionPayload": {
+                "id": "rive-player-state"
+              },
+              "level": 5,
+              "wrapperPadding": "0.45rem 0.9rem",
+              "wrapperBorderRadius": "10px",
+              "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+              "linkDefault": "var(--pb-on-secondary)",
+              "motion": {
+                "onHover": {
+                  "scale": 1.04
+                },
+                "transition": {
+                  "duration": 0.15
+                }
+              }
+            }
+          }
+        }
+      },
+      "state-readout": {
+        "preset": "player-variable-panel"
+      }
+    }
+  }
+}

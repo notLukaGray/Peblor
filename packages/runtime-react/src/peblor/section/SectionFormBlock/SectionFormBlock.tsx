@@ -3,8 +3,9 @@
 import { useMemo, useRef } from "react";
 import type { FormFieldBlock, SectionBlock } from "@pb/contracts/peblor/core/peblor-schemas";
 import { getFormActionUrl } from "@pb/runtime-react/core/lib/forms";
+import { useFormAction } from "@pb/runtime-react/core/lib/form-action-context";
 import { handleSectionWheel, getDefaultScrollSpeed } from "@pb/core/layout";
-import { resolveResponsiveValue } from "@pb/runtime-react/core/lib/responsive-value";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
 import { useSectionBaseStyles } from "@/peblor/section/position/use-section-base-styles";
 import { useStickyTrait } from "@/peblor/section/position/use-sticky-trait";
 import { useFixedTrait } from "@/peblor/section/position/use-fixed-trait";
@@ -27,8 +28,8 @@ import {
 } from "./use-form-block-state";
 import { SectionMotionWrapper } from "@/peblor/integrations/framer-motion";
 import { SectionScrollTargetProvider } from "@/peblor/section/position/SectionScrollTargetContext";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
-import { resolveThemeString } from "@/peblor/theme/theme-string";
+import { lowerThemeStringToCss } from "@/peblor/theme/theme-string";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 type FormBlockSection = Extract<SectionBlock, { type: "formBlock" }>;
 type Props = FormBlockSection;
@@ -41,7 +42,7 @@ export function SectionFormBlock({
   effects,
   width,
   height,
-  align,
+  selfAlign,
   marginLeft,
   marginRight,
   marginTop,
@@ -50,14 +51,14 @@ export function SectionFormBlock({
   border,
   boxShadow,
   filter,
-  backdropFilter,
-  clipPath,
+  bgBlur,
+  clipShape,
   cursor,
   aspectRatio,
   scrollSpeed = getDefaultScrollSpeed(),
   initialX,
   initialY,
-  zIndex,
+  layer,
   fields,
   action,
   method = "post",
@@ -90,12 +91,19 @@ export function SectionFormBlock({
   cursorTriggers,
   scrollDirectionTriggers,
   idleTriggers,
+  variableTriggers,
+  tabVisibilityTriggers,
+  mediaEndTriggers,
+  customEventTriggers,
+  elementEventTriggers,
+  scrollThresholdTriggers,
+  mediaProgressTriggers,
 }: Props) {
   const sectionRef = useRef<HTMLElement>(null);
   const placeholderRef = useRef<HTMLDivElement>(null);
   const { isMobile } = useDeviceType();
-  const themeMode = usePeblorThemeMode();
-  const resolvedAriaLabel = resolveResponsiveValue(ariaLabel, isMobile) ?? id ?? "Form";
+  const resolvedAriaLabel =
+    resolveResponsiveValue(ariaLabel, isMobile) ?? id ?? globals.stringsAriaLabelForm;
 
   const {
     values,
@@ -109,7 +117,13 @@ export function SectionFormBlock({
     getFieldKey,
   } = useFormBlockState(fields);
 
-  const resolvedFill = resolveThemeString(resolveResponsiveValue(fill, isMobile), themeMode);
+  const submitAction = useFormAction(action ?? "");
+  const submitUrl = useMemo((): string | undefined => {
+    if (!action) return undefined;
+    return getFormActionUrl(action) ?? undefined;
+  }, [action]);
+
+  const resolvedFill = lowerThemeStringToCss(resolveResponsiveValue(fill, isMobile));
   const resolvedStickyOffset = resolveResponsiveValue(stickyOffset, isMobile) ?? "0px";
   const resolvedFixedOffset = resolveResponsiveValue(fixedOffset, isMobile) ?? "0px";
 
@@ -130,9 +144,16 @@ export function SectionFormBlock({
     cursorTriggers,
     scrollDirectionTriggers,
     idleTriggers,
+    variableTriggers,
+    tabVisibilityTriggers,
+    mediaEndTriggers,
+    customEventTriggers,
+    elementEventTriggers,
+    scrollThresholdTriggers,
+    mediaProgressTriggers,
   });
 
-  const { baseStyle, resolvedLayout, alignStyle, transformY, hasInitialPosition } =
+  const { baseStyle, resolvedLayout, alignStyle, parallaxY, hasInitialPosition } =
     useSectionBaseStyles({
       fill,
       width,
@@ -141,7 +162,7 @@ export function SectionFormBlock({
       maxWidth,
       minHeight,
       maxHeight,
-      align,
+      selfAlign,
       marginLeft,
       marginRight,
       marginTop,
@@ -150,17 +171,16 @@ export function SectionFormBlock({
       border,
       boxShadow,
       filter,
-      backdropFilter,
-      clipPath,
+      bgBlur,
+      clipShape,
       cursor,
       aspectRatio,
       scrollSpeed,
       initialX,
       initialY,
-      zIndex,
+      layer,
       effects,
       sectionRef,
-      usePadding: true,
       reduceMotion,
     });
 
@@ -173,7 +193,6 @@ export function SectionFormBlock({
     hasInitialPosition,
     resolvedLayout,
     alignStyle,
-    transformY,
   });
 
   const fixedStyleOverrides = useFixedTrait({
@@ -181,7 +200,7 @@ export function SectionFormBlock({
     fixedPosition,
     fixedOffset: resolvedFixedOffset,
     resolvedLayout,
-    zIndex,
+    zIndex: layer,
   });
 
   const finalStyle = useMemo(() => {
@@ -212,9 +231,9 @@ export function SectionFormBlock({
     e.preventDefault();
     setSubmitError(null);
     if (!validateAll()) return;
-    // Only submit to allowlisted handler URLs; never use action as a raw URL
-    const submitUrl = action ? getFormActionUrl(action) : null;
-    if (!submitUrl) return;
+
+    // No action handler available at all — nothing to submit to
+    if (!submitAction && !submitUrl) return;
 
     const payload: Record<string, string | string[] | boolean> = {};
     collectFormFields(fields).forEach(({ field, path }) => {
@@ -230,7 +249,26 @@ export function SectionFormBlock({
     }
 
     setIsSubmitting(true);
+    let navigating = false;
     try {
+      // Prefer the registered server action — avoids a client-side network
+      // round-trip and reduces JS bundle size for the form handler.
+      if (submitAction) {
+        const result = await submitAction(payload);
+        if (result.error) {
+          setSubmitError(result.error);
+          return;
+        }
+        if (typeof result.redirect === "string" && result.redirect) {
+          navigating = true;
+          window.location.href = result.redirect;
+        }
+        return;
+      }
+
+      // Fallback: fetch the API route directly (JS-enabled browsers that
+      // don't have a server action in the provider tree).
+      if (!submitUrl) return;
       const res = await fetch(submitUrl, {
         method: method.toUpperCase(),
         headers: { "Content-Type": "application/json" },
@@ -244,10 +282,11 @@ export function SectionFormBlock({
         return;
       }
       if (typeof data.redirect === "string" && data.redirect) {
+        navigating = true;
         window.location.href = data.redirect;
       }
     } finally {
-      setIsSubmitting(false);
+      if (!navigating) setIsSubmitting(false);
     }
   };
 
@@ -282,10 +321,12 @@ export function SectionFormBlock({
         <div ref={placeholderRef} style={placeholderStyle} aria-hidden />
       )}
       <SectionMotionWrapper
+        id={id}
         sectionRef={sectionRef}
         motion={motionFromJson}
         motionTiming={motionTiming}
         reduceMotion={reduceMotion}
+        parallaxY={parallaxY}
         className={`relative z-[var(--pb-z-raised)] flex shrink-0 flex-col min-h-0 ${fixed ? "overflow-visible" : "overflow-hidden"}`}
         style={{
           ...applySectionFillStyle(resolvedFill, layers, finalStyle),
@@ -306,7 +347,13 @@ export function SectionFormBlock({
             className="relative z-[var(--pb-z-raised)] flex min-h-0 flex-col items-start w-full"
             style={contentWrapperStyle}
           >
-            <form onSubmit={handleSubmit} className="w-full space-y-4" noValidate>
+            <form
+              onSubmit={handleSubmit}
+              className="w-full space-y-4"
+              method="POST"
+              action={submitUrl ?? ""}
+              noValidate
+            >
               {submitError && (
                 <p className="text-sm text-destructive" role="alert">
                   {submitError}

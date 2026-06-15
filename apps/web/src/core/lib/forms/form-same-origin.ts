@@ -1,5 +1,21 @@
-import type { NextRequest, NextResponse } from "next/server";
+import type { NextResponse } from "next/server";
 import { formErrorResponse } from "./form-responses";
+
+const LOCALHOST_HOSTNAMES = new Set(["localhost", "127.0.0.1", "[::1]"]);
+
+/**
+ * Returns true when the URL origin is a localhost address (any port).
+ * Allows password-protected forms to work during local development regardless
+ * of NODE_ENV or NEXT_PUBLIC_SITE_URL configuration.
+ */
+export function isLocalhostOrigin(originOrUrl: string): boolean {
+  try {
+    const { hostname } = new URL(originOrUrl);
+    return LOCALHOST_HOSTNAMES.has(hostname);
+  } catch {
+    return false;
+  }
+}
 
 function normalizeTrustedBase(raw: string | undefined): string | null {
   if (raw == null) return null;
@@ -8,7 +24,8 @@ function normalizeTrustedBase(raw: string | undefined): string | null {
   const withoutTrailingSlash = trimmed.replace(/\/+$/, "");
   try {
     return new URL(withoutTrailingSlash).origin;
-  } catch {
+  } catch (err) {
+    console.warn("[web-core] Failed to normalize trusted base URL", raw, err);
     return null;
   }
 }
@@ -40,7 +57,7 @@ function refererMatchesBase(referer: string, base: string): boolean {
  * https://VERCEL_URL when VERCEL_URL is set), reject: misconfigured deploys must
  * not accept cross-site form POSTs.
  */
-export function rejectUntrustedFormPostOrigin(request: NextRequest): NextResponse | null {
+export function rejectUntrustedFormPostOrigin(request: { headers: Headers }): NextResponse | null {
   if (process.env.NODE_ENV !== "production") return null;
 
   const bases = getTrustedFormSiteOrigins();
@@ -59,7 +76,8 @@ export function rejectUntrustedFormPostOrigin(request: NextRequest): NextRespons
     try {
       const origin = new URL(originHeader).origin;
       originMatches = bases.some((base) => origin === base);
-    } catch {
+    } catch (err) {
+      console.warn("[web-core] Failed to parse origin header for form CSRF check", err);
       originMatches = false;
     }
     return originMatches ? null : formErrorResponse("Forbidden.", 403);

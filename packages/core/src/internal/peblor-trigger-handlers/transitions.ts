@@ -26,7 +26,7 @@ export function createTransitionControlHandlers({
   dispatchStart,
 }: TransitionControlDeps) {
   const startTransition = (transitionId: string) => {
-    if (shouldDebounce(lastTriggerTimeRef, transitionId, 500)) return;
+    if (shouldDebounce(lastTriggerTimeRef, `start:${transitionId}`, 500)) return;
 
     setReversingTransitionIds((revPrev) => {
       if (revPrev.has(transitionId)) {
@@ -48,7 +48,7 @@ export function createTransitionControlHandlers({
   };
 
   const stopTransition = (transitionId: string) => {
-    if (shouldDebounce(lastTriggerTimeRef, transitionId, 500)) return;
+    if (shouldDebounce(lastTriggerTimeRef, `stop:${transitionId}`, 500)) return;
     setReversingTransitionIds((revPrev) => {
       if (revPrev.has(transitionId)) return revPrev;
       const revNext = new Set(revPrev);

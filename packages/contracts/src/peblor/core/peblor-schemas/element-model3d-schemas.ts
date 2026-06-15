@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { elementLayoutSchema } from "./element-foundation-schemas";
-import { triggerActionSchema } from "./schema-primitives";
+import { responsiveStringSchema, triggerActionSchemaCore } from "./schema-primitives";
 
 const textureDefImageSchema = z.object({
   type: z.literal("image"),
@@ -22,16 +22,14 @@ export const textureDefSchema = z.discriminatedUnion("type", [
 
 const materialSlotValueSchema = z.union([z.string(), z.number()]);
 
-export const materialDefSchema = z
-  .object({
-    albedo: materialSlotValueSchema.optional(),
-    normal: materialSlotValueSchema.optional(),
-    emissive: materialSlotValueSchema.optional(),
-    roughness: materialSlotValueSchema.optional(),
-    metallic: materialSlotValueSchema.optional(),
-    ao: materialSlotValueSchema.optional(),
-  })
-  .passthrough();
+export const materialDefSchema = z.object({
+  albedo: materialSlotValueSchema.optional(),
+  normal: materialSlotValueSchema.optional(),
+  emissive: materialSlotValueSchema.optional(),
+  roughness: materialSlotValueSchema.optional(),
+  metallic: materialSlotValueSchema.optional(),
+  ao: materialSlotValueSchema.optional(),
+});
 
 export const modelDefSchema = z.object({
   geometry: z.string(),
@@ -50,37 +48,31 @@ const lightAmbientSchema = z.object({
   intensity: z.number().optional(),
   color: z.string().optional(),
 });
-const lightDirectionalSchema = z
-  .object({
-    type: z.literal("directional"),
-    position: z.tuple([z.number(), z.number(), z.number()]).optional(),
-    intensity: z.number().optional(),
-    color: z.string().optional(),
-    castShadow: z.boolean().optional(),
-  })
-  .passthrough();
-const lightPointSchema = z
-  .object({
-    type: z.literal("point"),
-    position: z.tuple([z.number(), z.number(), z.number()]),
-    intensity: z.number().optional(),
-    distance: z.number().optional(),
-    decay: z.number().optional(),
-    color: z.string().optional(),
-  })
-  .passthrough();
-const lightSpotSchema = z
-  .object({
-    type: z.literal("spot"),
-    position: z.tuple([z.number(), z.number(), z.number()]),
-    target: z.tuple([z.number(), z.number(), z.number()]).optional(),
-    angle: z.number().optional(),
-    penumbra: z.number().optional(),
-    intensity: z.number().optional(),
-    color: z.string().optional(),
-    castShadow: z.boolean().optional(),
-  })
-  .passthrough();
+const lightDirectionalSchema = z.object({
+  type: z.literal("directional"),
+  position: z.tuple([z.number(), z.number(), z.number()]).optional(),
+  intensity: z.number().optional(),
+  color: z.string().optional(),
+  castShadow: z.boolean().optional(),
+});
+const lightPointSchema = z.object({
+  type: z.literal("point"),
+  position: z.tuple([z.number(), z.number(), z.number()]),
+  intensity: z.number().optional(),
+  distance: z.number().optional(),
+  decay: z.number().optional(),
+  color: z.string().optional(),
+});
+const lightSpotSchema = z.object({
+  type: z.literal("spot"),
+  position: z.tuple([z.number(), z.number(), z.number()]),
+  target: z.tuple([z.number(), z.number(), z.number()]).optional(),
+  angle: z.number().optional(),
+  penumbra: z.number().optional(),
+  intensity: z.number().optional(),
+  color: z.string().optional(),
+  castShadow: z.boolean().optional(),
+});
 export const lightDefSchema = z.discriminatedUnion("type", [
   lightAmbientSchema,
   lightDirectionalSchema,
@@ -88,23 +80,19 @@ export const lightDefSchema = z.discriminatedUnion("type", [
   lightSpotSchema,
 ]);
 
-const cameraOrthographicSchema = z
-  .object({
-    type: z.literal("orthographic"),
-    size: z.number().optional(),
-    near: z.number().optional(),
-    far: z.number().optional(),
-  })
-  .passthrough();
-const cameraPerspectiveSchema = z
-  .object({
-    type: z.literal("perspective"),
-    fov: z.number().optional(),
-    near: z.number().optional(),
-    far: z.number().optional(),
-    position: z.tuple([z.number(), z.number(), z.number()]).optional(),
-  })
-  .passthrough();
+const cameraOrthographicSchema = z.object({
+  type: z.literal("orthographic"),
+  size: z.number().optional(),
+  near: z.number().optional(),
+  far: z.number().optional(),
+});
+const cameraPerspectiveSchema = z.object({
+  type: z.literal("perspective"),
+  fov: z.number().optional(),
+  near: z.number().optional(),
+  far: z.number().optional(),
+  position: z.tuple([z.number(), z.number(), z.number()]).optional(),
+});
 export const cameraDefSchema = z.discriminatedUnion("type", [
   cameraOrthographicSchema,
   cameraPerspectiveSchema,
@@ -122,16 +110,16 @@ export const modelInstanceDefSchema = z.object({
       playMode: z.enum(["loop", "once", "pingPong"]).optional(),
     })
     .optional(),
-  onPointerEnter: triggerActionSchema.optional(),
-  onPointerLeave: triggerActionSchema.optional(),
-  onClick: triggerActionSchema.optional(),
+  onPointerEnter: triggerActionSchemaCore.optional(),
+  onPointerLeave: triggerActionSchemaCore.optional(),
+  onClick: triggerActionSchemaCore.optional(),
   href: z.string().optional(),
   id: z.string().optional(),
   meshName: z.string().optional(),
-  onPointerDown: triggerActionSchema.optional(),
-  onPointerUp: triggerActionSchema.optional(),
-  onDoubleClick: triggerActionSchema.optional(),
-  onAnimationComplete: triggerActionSchema.optional(),
+  onPointerDown: triggerActionSchemaCore.optional(),
+  onPointerUp: triggerActionSchemaCore.optional(),
+  onDoubleClick: triggerActionSchemaCore.optional(),
+  onAnimationComplete: triggerActionSchemaCore.optional(),
 });
 
 export const cameraEffectsSchema = z
@@ -147,26 +135,83 @@ export const cameraEffectsSchema = z
   })
   .optional();
 
+const sceneBackgroundColorSchema = z.object({
+  type: z.literal("color"),
+  color: z.string(),
+});
+export const sceneBackgroundDefSchema = sceneBackgroundColorSchema;
+
+const cameraPresetValueSchema = z.object({
+  position: z.tuple([z.number(), z.number(), z.number()]).optional(),
+  lookAt: z.tuple([z.number(), z.number(), z.number()]).optional(),
+  fov: z.number().optional(),
+  near: z.number().optional(),
+  far: z.number().optional(),
+});
+
+const scrollCameraKeyframeSchema = z.object({
+  at: z.number().min(0).max(1),
+  position: z.tuple([z.number(), z.number(), z.number()]),
+  lookAt: z.tuple([z.number(), z.number(), z.number()]).optional(),
+  fov: z.number().optional(),
+});
+
+const flyKeysSchema = z.object({
+  forward: z.array(z.string()).optional(),
+  back: z.array(z.string()).optional(),
+  left: z.array(z.string()).optional(),
+  right: z.array(z.string()).optional(),
+  up: z.array(z.string()).optional(),
+  down: z.array(z.string()).optional(),
+});
+
+export const sceneControlsDefSchema = z.object({
+  mode: z.enum(["orbit", "fly", "none"]).optional(),
+  orbit: z
+    .object({
+      autoRotate: z.boolean().optional(),
+      autoRotateSpeed: z.number().optional(),
+    })
+    .optional(),
+  fly: z
+    .object({
+      moveSpeed: z.number().optional(),
+      lookSensitivity: z.number().optional(),
+      pitchLimit: z.number().optional(),
+      pointerLock: z.boolean().optional(),
+      keys: flyKeysSchema.optional(),
+    })
+    .optional(),
+});
+
 export const sceneDefSchema = z.object({
   environment: environmentDefSchema.optional(),
+  background: sceneBackgroundDefSchema.optional(),
   lights: z.array(lightDefSchema).optional(),
   camera: cameraDefSchema,
   cameraEffects: cameraEffectsSchema,
+  cameraPresets: z.record(z.string(), cameraPresetValueSchema).optional(),
+  controls: sceneControlsDefSchema.optional(),
+  scrollCamera: z
+    .object({
+      keyframes: z.array(scrollCameraKeyframeSchema).min(2),
+      startOffset: z.number().min(0).max(1).optional(),
+      endOffset: z.number().min(0).max(1).optional(),
+    })
+    .optional(),
   contents: z.object({ models: z.array(modelInstanceDefSchema).optional() }).optional(),
 });
 
-export const canvasDefSchema = z
-  .object({
-    dpr: z.number().optional(),
-    gl: z
-      .object({
-        antialias: z.boolean().optional(),
-        powerPreference: z.enum(["default", "high-performance", "low-power"]).optional(),
-        alpha: z.boolean().optional(),
-      })
-      .optional(),
-  })
-  .passthrough();
+export const canvasDefSchema = z.object({
+  dpr: z.number().optional(),
+  gl: z
+    .object({
+      antialias: z.boolean().optional(),
+      powerPreference: z.enum(["default", "high-performance", "low-power"]).optional(),
+      alpha: z.boolean().optional(),
+    })
+    .optional(),
+});
 
 const effectBrightnessContrastSchema = z.object({
   type: z.literal("brightnessContrast"),
@@ -218,5 +263,7 @@ export const elementModel3DSchema = z
     canvas: canvasDefSchema.optional(),
     postProcessing: z.array(postProcessingEffectSchema).optional(),
     module: z.string().optional(),
+    /** CSS aspect-ratio for the canvas region (e.g. "16 / 9"). Required when height is not set. */
+    aspectRatio: responsiveStringSchema.optional(),
   })
   .merge(elementLayoutSchema);

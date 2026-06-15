@@ -1,5 +1,4 @@
 import { z } from "zod";
-import type { PeblorAction } from "../trigger-action-types";
 import { ANALYTICS_EVENT_NAMES, type AnalyticsEventKey } from "../../../analytics/events";
 
 // Typed payload schemas for 3D actions.
@@ -225,56 +224,63 @@ const riveSetInputPayload = z
   .catchall(z.unknown())
   .optional();
 
-// rive.play/pause/reset: no required keys; animationName is optional.
+/**
+ * rive.play / rive.pause / rive.reset payload.
+ * Intentionally `z.record(z.string(), z.unknown())` — no required keys; animationName is optional
+ * and the Rive runtime accepts arbitrary extension fields. Typed loosely because the real shape
+ * varies per Rive file and action. If a specific field is needed by a new action, add a new
+ * narrowly-typed payload schema like riveSetInputPayload or riveInputPayload.
+ */
 const riveBasePayload = z.record(z.string(), z.unknown()).optional();
 
-// Loose payload schema for asset/media element actions (assetPlay, assetPause, videoFullscreen, etc.)
-// Intentionally loose: the media dispatcher reads target id, time codes, and other heterogeneous fields.
+/**
+ * Payload for asset/media element actions (assetPlay, assetPause, assetMute, videoFullscreen, etc.).
+ * Intentionally `z.record(z.string(), z.unknown())` — the media dispatcher reads `id` (target
+ * element), `time` (seek), `volume`, and other heterogeneous fields depending on the action.
+ * The `assetSeek` variant uses a narrower typed payload; all other asset actions remain loose
+ * because no additional structure is currently required by the runtime.
+ * Tighten individual actions by adding a typed variant (like assetSeek) if required fields emerge.
+ */
 const assetPayload = z.record(z.string(), z.unknown()).optional();
 
 // Self-referential lazy stub — used in conditionalAction's then/else/branch fields.
 // Typed as ZodTypeAny to break the circular inference cycle; runtime shape is identical
-// to triggerActionSchema (they refer to the same object after initialisation).
-const lazyTriggerAction: z.ZodTypeAny = z.lazy(() => triggerActionSchema);
+// to triggerActionSchemaCore (they refer to the same object after initialisation).
+const lazyTriggerAction: z.ZodTypeAny = z.lazy(() => triggerActionSchemaCore);
 
-// Recursive JSON value schema — mirrors the JsonValue type from core/lib/json-value.ts.
-// Used in place of z.unknown() wherever a value must be JSON-serialisable.
-export const jsonValueSchema: z.ZodType<import("../../../core/lib/json-value").JsonValue> = z.lazy(
-  () =>
-    z.union([
-      z.string(),
-      z.number(),
-      z.boolean(),
-      z.null(),
-      z.array(jsonValueSchema),
-      z.record(z.string(), jsonValueSchema),
-    ])
-);
+import {
+  conditionGroupSchema,
+  conditionOperatorSchema,
+  jsonValueSchema,
+  variableConditionSchema,
+} from "./schema-shared-primitives";
 
-const conditionOperatorEnum = z.enum([
-  "equals",
-  "notEquals",
-  "gt",
-  "gte",
-  "lt",
-  "lte",
-  "contains",
-  "startsWith",
-]);
+const conditionOperatorEnum = conditionOperatorSchema;
 
-const variableConditionSchema = z.object({
-  variable: z.string(),
-  operator: conditionOperatorEnum,
-  value: jsonValueSchema,
-});
+const conditionBlockSchema = z
+  .object({
+    variable: z.string().optional(),
+    operator: conditionOperatorEnum.optional(),
+    value: jsonValueSchema.optional(),
+    conditions: z.array(z.union([variableConditionSchema, conditionGroupSchema])).optional(),
+    logic: z.enum(["and", "or"]).optional(),
+  })
+  .optional();
 
-/** All trigger actions validated from section/content JSON, including 3D element actions. */
-export const triggerActionSchema: z.ZodType<PeblorAction> = z.discriminatedUnion("type", [
+/**
+ * All trigger action variants. Exported as an array so consumers can compose
+ * discriminated unions without re-importing individual schemas.
+ */
+export const TRIGGER_ACTION_CORE_VARIANTS = [
   // Core actions
   z.object({
     type: z.literal("contentOverride"),
     payload: z.object({ key: z.string(), value: jsonValueSchema }),
   }),
+  // backgroundSwitch payload is a string key (most common) or an inline bg-block
+  // record. The record shape is validated separately by bgBlockSchema wherever
+  // bg blocks appear; keeping it loose here breaks the circular dep with
+  // background-block-schemas.ts.
   z.object({
     type: z.literal("backgroundSwitch"),
     payload: z.union([z.string(), z.record(z.string(), z.unknown())]),
@@ -296,7 +302,7 @@ export const triggerActionSchema: z.ZodType<PeblorAction> = z.discriminatedUnion
     }),
   }),
   // Navigation & Back
-  z.object({ type: z.literal("back") }),
+  z.object({ type: z.literal("back"), payload: z.undefined().optional() }),
   z.object({
     type: z.literal("navigate"),
     payload: z.object({ href: z.string(), replace: z.boolean().optional() }),
@@ -333,36 +339,238 @@ export const triggerActionSchema: z.ZodType<PeblorAction> = z.discriminatedUnion
     payload: z.object({ key: z.string(), value: jsonValueSchema }),
   }),
   z.object({
+    type: z.literal("incrementVariable"),
+    payload: z.object({ key: z.string(), by: z.number().optional() }),
+  }),
+  z.object({
+    type: z.literal("toggleVariable"),
+    payload: z.object({
+      key: z.string(),
+      values: z.tuple([jsonValueSchema, jsonValueSchema]),
+    }),
+  }),
+  z.object({
+    type: z.literal("deleteVariable"),
+    payload: z.object({ key: z.string() }),
+  }),
+  z.object({
+    type: z.literal("readLocalStorage"),
+    payload: z.object({ key: z.string(), as: z.string().optional() }),
+  }),
+  z.object({
+    type: z.literal("readSessionStorage"),
+    payload: z.object({ key: z.string(), as: z.string().optional() }),
+  }),
+  z.object({
+    type: z.literal("readUrlParam"),
+    payload: z.object({
+      param: z.string(),
+      as: z.string().optional(),
+      parse: z.enum(["string", "number", "boolean", "json"]).optional(),
+    }),
+  }),
+  z.object({
+    type: z.literal("waitFor"),
+    payload: z.object({
+      variable: z.string().optional(),
+      operator: conditionOperatorEnum.optional(),
+      value: jsonValueSchema.optional(),
+      conditions: z.array(z.union([variableConditionSchema, conditionGroupSchema])).optional(),
+      logic: z.enum(["and", "or"]).optional(),
+      timeout: z.number().optional(),
+      onTimeout: lazyTriggerAction.optional(),
+      then: lazyTriggerAction.optional(),
+    }),
+  }),
+  z.object({
+    type: z.literal("computeVariable"),
+    payload: z.union([
+      // Arithmetic — left/right operands
+      z.object({
+        key: z.string(),
+        operation: z.enum(["add", "subtract", "multiply", "divide", "modulo"]),
+        left: z.union([z.string(), z.number()]),
+        right: z.union([z.string(), z.number()]),
+      }),
+      // Unary — from only, no extra fields (normalised to accept string | number)
+      z.object({
+        key: z.string(),
+        operation: z.enum([
+          "length",
+          "keys",
+          "values",
+          "abs",
+          "floor",
+          "ceil",
+          "round",
+          "not",
+          "toNumber",
+          "toString",
+          "toBoolean",
+          "min",
+          "max",
+          "upper",
+          "lower",
+          "trim",
+        ]),
+        from: z.union([z.string(), z.number()]),
+      }),
+      // Clamp — from + bounds
+      z.object({
+        key: z.string(),
+        operation: z.literal("clamp"),
+        from: z.union([z.string(), z.number()]),
+        min: z.number(),
+        max: z.number(),
+      }),
+      // Concat — parts array
+      z.object({
+        key: z.string(),
+        operation: z.literal("concat"),
+        parts: z.array(z.union([z.string(), z.number()])),
+      }),
+      // From-based ops with op-specific fields — merged with superRefine
+      z
+        .object({
+          key: z.string(),
+          operation: z.enum(["slice", "join", "split", "arrayIndex", "format", "replace"]),
+          from: z.union([z.string(), z.number()]),
+          start: z.number().optional(),
+          end: z.number().optional(),
+          separator: z.string().optional(),
+          by: z.string().optional(),
+          index: z.number().optional(),
+          template: z.string().optional(),
+          search: z.string().optional(),
+          replacement: z.string().optional(),
+          replaceAll: z.boolean().optional(),
+        })
+        .superRefine((data, ctx) => {
+          switch (data.operation) {
+            case "slice":
+              if (data.start === undefined) {
+                ctx.addIssue({
+                  code: z.ZodIssueCode.custom,
+                  path: ["start"],
+                  message: "start is required for slice operation",
+                });
+              }
+              break;
+            case "split":
+              if (data.by === undefined) {
+                ctx.addIssue({
+                  code: z.ZodIssueCode.custom,
+                  path: ["by"],
+                  message: "by is required for split operation",
+                });
+              }
+              break;
+            case "arrayIndex":
+              if (data.index === undefined) {
+                ctx.addIssue({
+                  code: z.ZodIssueCode.custom,
+                  path: ["index"],
+                  message: "index is required for arrayIndex operation",
+                });
+              }
+              break;
+            case "format":
+              if (data.template === undefined) {
+                ctx.addIssue({
+                  code: z.ZodIssueCode.custom,
+                  path: ["template"],
+                  message: "template is required for format operation",
+                });
+              }
+              break;
+            case "replace":
+              if (data.search === undefined) {
+                ctx.addIssue({
+                  code: z.ZodIssueCode.custom,
+                  path: ["search"],
+                  message: "search is required for replace operation",
+                });
+              }
+              if (data.replacement === undefined) {
+                ctx.addIssue({
+                  code: z.ZodIssueCode.custom,
+                  path: ["replacement"],
+                  message: "replacement is required for replace operation",
+                });
+              }
+              break;
+          }
+        }),
+    ]),
+  }),
+  z.object({
+    type: z.literal("fetchApi"),
+    payload: z.object({
+      url: z.string(),
+      method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]).optional(),
+      headers: z.record(z.string(), z.string()).optional(),
+      body: jsonValueSchema.optional(),
+      responseKey: z.string(),
+      responsePath: z.string().optional(),
+      errorKey: z.string().optional(),
+      statusKey: z.string().optional(),
+      debounceMs: z.number().optional(),
+      cancelKey: z.string().optional(),
+      retries: z.number().int().nonnegative().optional(),
+      retryDelay: z.number().nonnegative().optional(),
+      onSuccess: lazyTriggerAction.optional(),
+      onError: lazyTriggerAction.optional(),
+    }),
+  }),
+  z.object({
     type: z.literal("fireMultiple"),
     payload: z.object({
       actions: z.array(lazyTriggerAction),
       mode: z.enum(["parallel", "sequence"]).optional(),
       delayBetween: z.number().optional(),
+      breakIf: conditionBlockSchema,
     }),
   }),
   z.object({
     type: z.literal("conditionalAction"),
-    payload: z.object({
-      // Shorthand single-condition form (backward-compatible)
-      variable: z.string().optional(),
-      operator: conditionOperatorEnum.optional(),
-      value: jsonValueSchema.optional(),
-      // Multi-condition form
-      conditions: z.array(variableConditionSchema).optional(),
-      logic: z.enum(["and", "or"]).optional(),
-      // Branches — lazyTriggerAction breaks the circular inference cycle
-      then: lazyTriggerAction,
-      elseIf: z
-        .array(
-          z.object({
-            conditions: z.array(variableConditionSchema),
-            logic: z.enum(["and", "or"]).optional(),
-            then: lazyTriggerAction,
-          })
-        )
-        .optional(),
-      else: lazyTriggerAction.optional(),
-    }),
+    payload: z
+      .object({
+        // Shorthand single-condition form (backward-compatible, normalised at parse time)
+        variable: z.string().optional(),
+        operator: conditionOperatorEnum.optional(),
+        value: jsonValueSchema.optional(),
+        // Multi-condition form
+        conditions: z.array(z.union([variableConditionSchema, conditionGroupSchema])).optional(),
+        logic: z.enum(["and", "or"]).optional(),
+        // Branches — lazyTriggerAction breaks the circular inference cycle
+        then: lazyTriggerAction,
+        elseIf: z
+          .array(
+            z.object({
+              conditions: z.array(z.union([variableConditionSchema, conditionGroupSchema])),
+              logic: z.enum(["and", "or"]).optional(),
+              then: lazyTriggerAction,
+            })
+          )
+          .optional(),
+        else: lazyTriggerAction.optional(),
+      })
+      .transform((p) => {
+        // Normalise shorthand single-condition into full conditions[] form
+        const { variable, operator, value, ...rest } = p;
+        if (
+          variable !== undefined &&
+          operator !== undefined &&
+          (!rest.conditions || rest.conditions.length === 0)
+        ) {
+          return {
+            ...rest,
+            conditions: [{ variable, operator, value: value ?? null }],
+            logic: rest.logic ?? "and",
+          };
+        }
+        return rest;
+      }),
   }),
   // Element visibility
   z.object({ type: z.literal("elementShow"), payload: z.object({ id: z.string() }) }),
@@ -373,7 +581,7 @@ export const triggerActionSchema: z.ZodType<PeblorAction> = z.discriminatedUnion
     type: z.literal("playSound"),
     payload: z.object({
       src: z.string(),
-      volume: z.number().optional(),
+      volume: z.number().min(0).max(1).optional(),
       loop: z.boolean().optional(),
     }),
   }),
@@ -383,7 +591,7 @@ export const triggerActionSchema: z.ZodType<PeblorAction> = z.discriminatedUnion
   }),
   z.object({
     type: z.literal("setVolume"),
-    payload: z.object({ volume: z.number(), id: z.string().optional() }),
+    payload: z.object({ volume: z.number().min(0).max(1), id: z.string().optional() }),
   }),
   // Browser
   z.object({ type: z.literal("copyToClipboard"), payload: z.object({ text: z.string() }) }),
@@ -488,102 +696,240 @@ export const triggerActionSchema: z.ZodType<PeblorAction> = z.discriminatedUnion
   z.object({ type: z.literal("assetPlay"), payload: assetPayload }),
   z.object({ type: z.literal("assetPause"), payload: assetPayload }),
   z.object({ type: z.literal("assetTogglePlay"), payload: assetPayload }),
+  z.object({ type: z.literal("assetNext"), payload: assetPayload }),
+  z.object({ type: z.literal("assetPrev"), payload: assetPayload }),
   z.object({
     type: z.literal("assetSeek"),
     payload: z.object({ id: z.string().optional(), time: z.number().optional() }).optional(),
   }),
   z.object({ type: z.literal("assetMute"), payload: assetPayload }),
   z.object({ type: z.literal("videoFullscreen"), payload: assetPayload }),
+  // Generic fullscreen (any element, not just video)
+  z.object({ type: z.literal("fullscreenElement"), payload: z.object({ id: z.string() }) }),
+  // Preload an asset into the browser cache
+  z.object({
+    type: z.literal("preloadAsset"),
+    payload: z.object({
+      src: z.string(),
+      type: z.enum(["image", "video", "audio", "font"]).optional(),
+    }),
+  }),
   // Rive element actions — minimal payload contracts per action
   z.object({ type: z.literal("rive.setInput"), payload: riveSetInputPayload }),
   z.object({ type: z.literal("rive.fireTrigger"), payload: riveInputPayload }),
   z.object({ type: z.literal("rive.play"), payload: riveBasePayload }),
   z.object({ type: z.literal("rive.pause"), payload: riveBasePayload }),
   z.object({ type: z.literal("rive.reset"), payload: riveBasePayload }),
-]) as z.ZodType<PeblorAction>;
-
-/** Inferred type from triggerActionSchema. Used for section JSON. */
-export type CoreTriggerAction = z.infer<typeof triggerActionSchema>;
-
-const nonEmptyThemeStringValueSchema = z.string().min(1);
-
-export const themeStringObjectSchema = z
-  .object({
-    value: nonEmptyThemeStringValueSchema.optional(),
-    light: nonEmptyThemeStringValueSchema.optional(),
-    dark: nonEmptyThemeStringValueSchema.optional(),
-  })
-  .refine((value) => value.value != null || value.light != null || value.dark != null, {
-    message: "Theme string object must include at least one of value, light, or dark",
-  });
-
-export const themeStringSchema = z.union([nonEmptyThemeStringValueSchema, themeStringObjectSchema]);
-
-export type ThemeString = z.infer<typeof themeStringSchema>;
-
-export const responsiveThemeStringSchema = z.union([
-  themeStringSchema,
-  z.tuple([themeStringSchema, themeStringSchema]),
-]);
-
-export const cssInlineStyleValueSchema = z.union([themeStringSchema, z.number()]);
-export const cssInlineStyleSchema = z.record(z.string(), cssInlineStyleValueSchema);
-
-export const responsiveStringSchema = z.union([z.string(), z.tuple([z.string(), z.string()])]);
+  // Extended state management
+  z.object({
+    type: z.literal("setVariablePath"),
+    payload: z.object({ path: z.string(), value: jsonValueSchema }),
+  }),
+  z.object({
+    type: z.literal("appendToArray"),
+    payload: z.object({ key: z.string(), value: jsonValueSchema }),
+  }),
+  z.object({
+    type: z.literal("removeFromArray"),
+    payload: z.object({
+      key: z.string(),
+      index: z.number().optional(),
+      where: z
+        .object({ path: z.string(), operator: conditionOperatorEnum, value: jsonValueSchema })
+        .optional(),
+    }),
+  }),
+  z.object({
+    type: z.literal("mergeVariable"),
+    payload: z.object({ key: z.string(), value: z.record(z.string(), jsonValueSchema) }),
+  }),
+  // Event bus
+  z.object({
+    type: z.literal("dispatchCustomEvent"),
+    payload: z.object({ name: z.string(), detail: jsonValueSchema.optional() }),
+  }),
+  // Timer control
+  z.object({
+    type: z.literal("cancelTimer"),
+    payload: z.object({ id: z.string() }),
+  }),
+  // Control flow
+  z.object({
+    type: z.literal("repeatAction"),
+    payload: z.object({
+      count: z.number().int().min(1),
+      action: lazyTriggerAction,
+      delayMs: z.number().optional(),
+    }),
+  }),
+  // Fetch lifecycle
+  z.object({
+    type: z.literal("abortFetch"),
+    payload: z.object({ cancelKey: z.string() }),
+  }),
+  // DOM / style
+  z.object({
+    type: z.literal("setCssVariable"),
+    payload: z.object({ property: z.string(), value: z.string(), selector: z.string().optional() }),
+  }),
+  z.object({ type: z.literal("focusElement"), payload: z.object({ id: z.string() }) }),
+  z.object({ type: z.literal("blurElement"), payload: z.object({ id: z.string() }) }),
+  // Focus trap — constrain keyboard focus within a subtree
+  z.object({ type: z.literal("setFocusTrap"), payload: z.object({ id: z.string() }) }),
+  // Release focus trap — restore focus to the trigger element
+  z.object({
+    type: z.literal("releaseFocusTrap"),
+    payload: z.object({ id: z.string().optional() }).optional(),
+  }),
+  z.object({
+    type: z.literal("setInputValue"),
+    payload: z.object({ id: z.string(), value: z.string() }),
+  }),
+  // Toast notification
+  z.object({
+    type: z.literal("showToast"),
+    payload: z.object({
+      message: z.string(),
+      variant: z.enum(["info", "success", "error", "warning"]).optional(),
+      durationMs: z.number().optional(),
+    }),
+  }),
+  // URL manipulation
+  z.object({
+    type: z.literal("setUrlParam"),
+    payload: z.object({ param: z.string(), value: z.string(), replace: z.boolean().optional() }),
+  }),
+  // HTML media element control
+  z.object({ type: z.literal("elementPlay"), payload: z.object({ id: z.string() }) }),
+  z.object({ type: z.literal("elementPause"), payload: z.object({ id: z.string() }) }),
+  z.object({
+    type: z.literal("elementSeek"),
+    payload: z.object({ id: z.string(), time: z.number() }),
+  }),
+  // Browser share (Web Share API)
+  z.object({
+    type: z.literal("share"),
+    payload: z
+      .object({
+        title: z.string().optional(),
+        text: z.string().optional(),
+        url: z.string().optional(),
+        files: z.array(z.string()).optional(),
+      })
+      .optional(),
+  }),
+  // Programmatic file download
+  z.object({
+    type: z.literal("downloadFile"),
+    payload: z.object({
+      url: z.string(),
+      filename: z.string().optional(),
+    }),
+  }),
+  // Compute: now / timestamp
+  z.object({
+    type: z.literal("computeNow"),
+    payload: z.object({
+      key: z.string(),
+      format: z.enum(["timestamp", "iso", "date", "time", "datetime"]).optional(),
+      locale: z.string().optional(),
+    }),
+  }),
+  // Compute: random
+  z.object({
+    type: z.literal("computeRandom"),
+    payload: z.object({
+      key: z.string(),
+      min: z.number().optional(),
+      max: z.number().optional(),
+      integer: z.boolean().optional(),
+    }),
+  }),
+] as const;
 
 /**
- * JSON.parse leaves explicit `null`; Zod `.optional()` only treats `undefined` as absent (SCHEMA-2).
- * Use for optional fields that may be serialized as `null` from CMS or hand-edited JSON.
+ * Pre-built payload schema lookup for validateActionPayload.
+ * Maps action type strings to their Zod payload schemas (or undefined for no-payload types).
+ * Built from TRIGGER_ACTION_CORE_VARIANTS at module scope so the full 55-variant
+ * discriminated union is never re-parsed during superRefine validation — only the
+ * matching variant's payload schema is used.
  */
-export function jsonNullishOptional<T extends z.ZodTypeAny>(inner: T) {
-  return z.preprocess((v) => (v === null ? undefined : v), inner.optional());
+const ACTION_PAYLOAD_MAP = new Map<string, z.ZodTypeAny | undefined>();
+const VALID_ACTION_TYPES = new Set<string>();
+
+for (const variant of TRIGGER_ACTION_CORE_VARIANTS) {
+  const actionType: string = variant.shape.type.value;
+  VALID_ACTION_TYPES.add(actionType);
+  const shape = variant.shape as Record<string, z.ZodTypeAny | undefined>;
+  ACTION_PAYLOAD_MAP.set(actionType, shape.payload);
 }
 
-const sectionAlignEnum = z.enum(["left", "center", "right", "full"]);
-export const responsiveSectionAlignSchema = z.union([
-  sectionAlignEnum,
-  z.tuple([sectionAlignEnum, sectionAlignEnum]),
+/**
+ * All trigger actions, including backgroundSwitch.
+ *
+ * The inferred type is the canonical PeblorAction union.  Recursive payload fields
+ * (onTimeout, then, onSuccess, onError, action) infer as `any` because the
+ * circular `lazyTriggerAction` reference is typed as z.ZodTypeAny to break the
+ * inference cycle.  Runtime code accessing these fields casts with `as PeblorAction`.
+ *
+ * Previously this was annotated `z.ZodType<PeblorAction>` with PeblorAction
+ * maintained by hand in trigger-action-types.ts.  Now PeblorAction is derived
+ * from this schema — see CoreTriggerAction below.
+ */
+export const triggerActionSchemaCore = z.discriminatedUnion("type", [
+  ...TRIGGER_ACTION_CORE_VARIANTS,
 ]);
 
-const elementAlignEnum = z.enum(["left", "center", "right", "full"]);
-export const responsiveElementAlignSchema = z.union([
-  elementAlignEnum,
-  z.tuple([elementAlignEnum, elementAlignEnum]),
-]);
+/** @deprecated Use triggerActionSchemaCore. Kept for import compatibility. */
+export const triggerActionSchema = triggerActionSchemaCore;
 
-const elementAlignYEnum = z.enum(["top", "center", "bottom"]);
-export const responsiveElementAlignYSchema = z.union([
-  elementAlignYEnum,
-  z.tuple([elementAlignYEnum, elementAlignYEnum]),
-]);
+export type CoreTriggerAction = z.infer<typeof triggerActionSchemaCore>;
 
-export const elementTextAlignSchema = z.enum(["left", "right", "center", "justify"]);
-export const responsiveTextAlignSchema = z.union([
-  elementTextAlignSchema,
-  z.tuple([elementTextAlignSchema, elementTextAlignSchema]),
-]);
+/**
+ * Shared action+payload validator used by both elementLayoutSchemaBase (base layout)
+ * and elementButtonSchema. When an element's `action` field is set, this validates that
+ * the corresponding `actionPayload` satisfies the canonical Zod payload schema for that
+ * action type. Extracts the logic from elementButton's superRefine so the two schemas
+ * share ONE implementation rather than duplicating it.
+ */
+export function validateActionPayload(
+  action: string,
+  actionPayload: unknown,
+  ctx: z.RefinementCtx
+): void {
+  // Unknown action type — should not happen with validated data, but match the
+  // discriminated union behavior of rejecting unknown types.
+  if (!VALID_ACTION_TYPES.has(action)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["actionPayload"],
+      message: `Unknown action type "${action}"`,
+    });
+    return;
+  }
 
-export const responsiveBooleanSchema = z
-  .union([
-    z.boolean(),
-    z
-      .object({
-        mobile: z.boolean().optional(),
-        desktop: z.boolean().optional(),
-      })
-      .refine((obj) => obj.mobile !== undefined || obj.desktop !== undefined, {
-        message: "At least one of mobile or desktop boolean value must be provided",
-      }),
-  ])
-  .optional();
+  const payloadSchema = ACTION_PAYLOAD_MAP.get(action);
 
-export const referrerPolicySchema = z.enum([
-  "no-referrer",
-  "no-referrer-when-downgrade",
-  "origin",
-  "origin-when-cross-origin",
-  "same-origin",
-  "strict-origin",
-  "strict-origin-when-cross-origin",
-  "unsafe-url",
-]);
+  // No payload field in this variant's schema — the current discriminated union
+  // parse strips unknown keys (Zod default), so any payload is silently accepted.
+  // Matching that behavior here: no validation needed.
+  if (payloadSchema === undefined) {
+    return;
+  }
+
+  // Single-variant safeParse: validates the payload directly against its type's
+  // schema, avoiding re-dispatch through the full 55-way discriminated union.
+  const result = payloadSchema.safeParse(actionPayload);
+  if (!result.success) {
+    const details = result.error.issues.map((i) => i.message).join("; ");
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["actionPayload"],
+      message: `actionPayload does not match the expected shape for action "${action}": ${details}`,
+    });
+  }
+}
+
+// Shared primitives moved to schema-shared-primitives.ts — re-exported here to keep
+// existing imports working without changes.
+export * from "./schema-shared-primitives";

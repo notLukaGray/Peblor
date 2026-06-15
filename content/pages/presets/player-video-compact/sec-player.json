@@ -1,0 +1,13 @@
+{
+  "preset": "player-section",
+  "elementOrder": ["player-label", "player-surface"],
+  "definitions": {
+    "player-label": {
+      "preset": "type-h3-label",
+      "text": "Compact Player"
+    },
+    "player-surface": {
+      "preset": "player-video-surface-compact"
+    }
+  }
+}

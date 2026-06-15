@@ -14,7 +14,6 @@ export type UseStickyTraitProps = {
   hasInitialPosition: boolean;
   resolvedLayout: ResolvedSectionLayout;
   alignStyle: CSSProperties;
-  transformY: number;
 };
 
 export function useStickyTrait({
@@ -26,7 +25,6 @@ export function useStickyTrait({
   hasInitialPosition,
   resolvedLayout,
   alignStyle,
-  transformY,
 }: UseStickyTraitProps) {
   const { isSticky, stickyOffsetPixels } = useStickyPositioning({
     sectionRef,
@@ -39,12 +37,12 @@ export function useStickyTrait({
   const styleOverrides = useMemo<CSSProperties>(() => {
     if (!sticky || !isSticky || hasInitialPosition) return {};
 
-    const { align, width } = resolvedLayout;
-    const a = align ?? "left";
+    const { selfAlign, width } = resolvedLayout;
+    const a = selfAlign ?? "left";
     const w = width ?? "100%";
 
     const existingTransform = a === "center" ? "translateX(-50%)" : undefined;
-    const transform = buildTransformString(existingTransform, transformY);
+    const transform = buildTransformString(existingTransform);
 
     const overrides: CSSProperties = {
       position: "fixed",
@@ -59,15 +57,7 @@ export function useStickyTrait({
       overrides.transform = transform;
     }
     return overrides;
-  }, [
-    sticky,
-    isSticky,
-    hasInitialPosition,
-    resolvedLayout,
-    stickyOffsetPixels,
-    stickyPosition,
-    transformY,
-  ]);
+  }, [sticky, isSticky, hasInitialPosition, resolvedLayout, stickyOffsetPixels, stickyPosition]);
 
   const placeholderStyle = useMemo<CSSProperties>(() => {
     if (!sticky) return {};

@@ -1,0 +1,509 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Product Collection — Composition Demo",
+  "description": "Product collection/listing page with setVariable filter chips → visibleWhen reactive panels, product grid, and load-more CTA.",
+  "presets": [
+    "demo",
+    "type/core",
+    "type/effects",
+    "type/motion",
+    "ui/button",
+    "ui/link",
+    "layout",
+    "card",
+    "bg"
+  ],
+  "bgKey": "bg-page",
+  "scroll": {
+    "smooth": true,
+    "lockBody": true,
+    "scrollX": "hidden"
+  },
+  "sectionOrder": [
+    "nav-header",
+    "hero",
+    "sec-filter-bar",
+    "sec-filter-display",
+    "sec-products",
+    "sec-loadmore",
+    "sec-marquee"
+  ],
+  "definitions": {
+    "bg-page": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "oklch(0.05 0.003 262)"
+        },
+        {
+          "fill": "radial-gradient(ellipse 50% 35% at 80% 20%, oklch(0.18 0.04 260 / 0.35) 0%, transparent 60%)"
+        }
+      ]
+    },
+    "nav-header": {
+      "preset": "preset-demo-nav-header"
+    },
+    "hero": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "align": "start",
+      "height": "hug",
+      "padding": {
+        "base": "5rem 0 3rem",
+        "md": "12rem 0 4rem"
+      },
+      "gap": "1rem",
+      "elementOrder": ["hero-kicker", "hero-title", "hero-desc"],
+      "definitions": {
+        "hero-kicker": {
+          "preset": "type-kicker-badge",
+          "text": "New Season Collection"
+        },
+        "hero-title": {
+          "preset": "type-h1-display",
+          "text": "Timepieces"
+        },
+        "hero-desc": {
+          "preset": "type-body-standard",
+          "text": "Precision instruments, built to last.",
+          "width": {
+            "base": "100%",
+            "md": "40%"
+          }
+        }
+      }
+    },
+    "sec-filter-bar": {
+      "type": "contentBlock",
+      "flow": "row",
+      "wrap": "wrap",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "1.5rem 0",
+        "md": "2rem 0"
+      },
+      "gap": "0.75rem",
+      "elementOrder": ["chip-all", "chip-new", "chip-sale", "chip-classic"],
+      "definitions": {
+        "chip-all": {
+          "preset": "btn-primary",
+          "label": "All",
+          "action": "setVariable",
+          "actionPayload": {
+            "key": "activeFilter",
+            "value": "all"
+          },
+          "wrapperPadding": "0.5rem 1.25rem",
+          "wrapperBorderRadius": "999px"
+        },
+        "chip-new": {
+          "preset": "btn-ghost",
+          "label": "New Arrivals",
+          "action": "setVariable",
+          "actionPayload": {
+            "key": "activeFilter",
+            "value": "new"
+          },
+          "wrapperPadding": "0.5rem 1.25rem",
+          "wrapperBorderRadius": "999px"
+        },
+        "chip-sale": {
+          "preset": "btn-ghost",
+          "label": "On Sale",
+          "action": "setVariable",
+          "actionPayload": {
+            "key": "activeFilter",
+            "value": "sale"
+          },
+          "wrapperPadding": "0.5rem 1.25rem",
+          "wrapperBorderRadius": "999px"
+        },
+        "chip-classic": {
+          "preset": "btn-ghost",
+          "label": "Classics",
+          "action": "setVariable",
+          "actionPayload": {
+            "key": "activeFilter",
+            "value": "classic"
+          },
+          "wrapperPadding": "0.5rem 1.25rem",
+          "wrapperBorderRadius": "999px"
+        }
+      }
+    },
+    "sec-filter-display": {
+      "type": "contentBlock",
+      "flow": "row",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 0 1rem",
+        "md": "0 0 1.5rem"
+      },
+      "gap": "0.75rem",
+      "elementOrder": ["panel-all", "panel-new", "panel-sale", "panel-classic"],
+      "definitions": {
+        "panel-all": {
+          "type": "elementGroup",
+          "display": "flex",
+          "padding": "0.5rem 1rem",
+          "borderRadius": "8px",
+          "fill": "color-mix(in oklab, var(--pb-accent) 10%, transparent)",
+          "visibleWhen": {
+            "logic": "and",
+            "conditions": [
+              {
+                "variable": "activeFilter",
+                "operator": "notEquals",
+                "value": "new"
+              },
+              {
+                "variable": "activeFilter",
+                "operator": "notEquals",
+                "value": "sale"
+              },
+              {
+                "variable": "activeFilter",
+                "operator": "notEquals",
+                "value": "classic"
+              }
+            ]
+          },
+          "section": {
+            "elementOrder": ["label"],
+            "definitions": {
+              "label": {
+                "preset": "type-body-fine",
+                "text": "Showing: All products (24)"
+              }
+            }
+          }
+        },
+        "panel-new": {
+          "type": "elementGroup",
+          "display": "flex",
+          "padding": "0.5rem 1rem",
+          "borderRadius": "8px",
+          "fill": "color-mix(in oklab, var(--pb-accent) 10%, transparent)",
+          "visibleWhen": {
+            "variable": "activeFilter",
+            "operator": "equals",
+            "value": "new"
+          },
+          "section": {
+            "elementOrder": ["label"],
+            "definitions": {
+              "label": {
+                "preset": "type-body-fine",
+                "text": "Showing: New Arrivals (6)"
+              }
+            }
+          }
+        },
+        "panel-sale": {
+          "type": "elementGroup",
+          "display": "flex",
+          "padding": "0.5rem 1rem",
+          "borderRadius": "8px",
+          "fill": "color-mix(in oklab, var(--pb-accent) 10%, transparent)",
+          "visibleWhen": {
+            "variable": "activeFilter",
+            "operator": "equals",
+            "value": "sale"
+          },
+          "section": {
+            "elementOrder": ["label"],
+            "definitions": {
+              "label": {
+                "preset": "type-body-fine",
+                "text": "Showing: On Sale (4)"
+              }
+            }
+          }
+        },
+        "panel-classic": {
+          "type": "elementGroup",
+          "display": "flex",
+          "padding": "0.5rem 1rem",
+          "borderRadius": "8px",
+          "fill": "color-mix(in oklab, var(--pb-accent) 10%, transparent)",
+          "visibleWhen": {
+            "variable": "activeFilter",
+            "operator": "equals",
+            "value": "classic"
+          },
+          "section": {
+            "elementOrder": ["label"],
+            "definitions": {
+              "label": {
+                "preset": "type-body-fine",
+                "text": "Showing: Classic Collection (8)"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-products": {
+      "type": "sectionColumn",
+      "columns": {
+        "base": 1,
+        "md": 3
+      },
+      "columnWidths": {
+        "base": [1],
+        "md": [1, 1, 1]
+      },
+      "columnGaps": {
+        "base": "1.5rem",
+        "md": "2rem"
+      },
+      "columnAssignments": {
+        "base": {
+          "p-a": 0,
+          "p-b": 0,
+          "p-c": 0,
+          "p-d": 0,
+          "p-e": 0,
+          "p-f": 0
+        },
+        "md": {
+          "p-a": 0,
+          "p-b": 1,
+          "p-c": 2,
+          "p-d": 0,
+          "p-e": 1,
+          "p-f": 2
+        }
+      },
+      "contentWidth": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "contentHeight": "hug",
+      "gridMode": "grid",
+      "gridAutoRows": "auto",
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 0 3rem",
+        "md": "0 0 5rem"
+      },
+      "elementOrder": ["p-a", "p-b", "p-c", "p-d", "p-e", "p-f"],
+      "definitions": {
+        "p-a": {
+          "preset": "card-image-feature",
+          "section": {
+            "definitions": {
+              "image": {
+                "src": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80&auto=format&fit=crop",
+                "alt": "Watch 1"
+              },
+              "copy": {
+                "section": {
+                  "definitions": {
+                    "kicker": {
+                      "text": "New"
+                    },
+                    "title": {
+                      "text": "Precision Black"
+                    },
+                    "body": {
+                      "text": "$1,290"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "p-b": {
+          "preset": "card-image-feature",
+          "section": {
+            "definitions": {
+              "image": {
+                "src": "https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=600&q=80&auto=format&fit=crop",
+                "alt": "Watch 2"
+              },
+              "copy": {
+                "section": {
+                  "definitions": {
+                    "kicker": {
+                      "text": "Sale"
+                    },
+                    "title": {
+                      "text": "Chrono Sport"
+                    },
+                    "body": {
+                      "text": "$1,450"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "p-c": {
+          "preset": "card-image-feature",
+          "section": {
+            "definitions": {
+              "image": {
+                "src": "https://images.unsplash.com/photo-1594534475808-b18fc33b045e?w=600&q=80&auto=format&fit=crop",
+                "alt": "Watch 3"
+              },
+              "copy": {
+                "section": {
+                  "definitions": {
+                    "kicker": {
+                      "text": "Classic"
+                    },
+                    "title": {
+                      "text": "Moonphase Edition"
+                    },
+                    "body": {
+                      "text": "$1,890"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "p-d": {
+          "preset": "card-image-feature",
+          "section": {
+            "definitions": {
+              "image": {
+                "src": "https://images.unsplash.com/photo-1518715303843-586e350060c0?w=600&q=80&auto=format&fit=crop",
+                "alt": "Watch 4"
+              },
+              "copy": {
+                "section": {
+                  "definitions": {
+                    "kicker": {
+                      "text": "Classic"
+                    },
+                    "title": {
+                      "text": "Field Watch Khaki"
+                    },
+                    "body": {
+                      "text": "$890"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "p-e": {
+          "preset": "card-image-feature",
+          "section": {
+            "definitions": {
+              "image": {
+                "src": "https://images.unsplash.com/photo-1589782182703-2aaa69037b5b?w=600&q=80&auto=format&fit=crop",
+                "alt": "Watch 5"
+              },
+              "copy": {
+                "section": {
+                  "definitions": {
+                    "kicker": {
+                      "text": "New"
+                    },
+                    "title": {
+                      "text": "Slate Dress Watch"
+                    },
+                    "body": {
+                      "text": "$2,100"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "p-f": {
+          "preset": "card-image-feature",
+          "section": {
+            "definitions": {
+              "image": {
+                "src": "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=600&q=80&auto=format&fit=crop",
+                "alt": "Watch 6"
+              },
+              "copy": {
+                "section": {
+                  "definitions": {
+                    "kicker": {
+                      "text": "Sale"
+                    },
+                    "title": {
+                      "text": "Diver Pro"
+                    },
+                    "body": {
+                      "text": "$980"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-loadmore": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "400px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "2rem 0 5rem",
+        "md": "3rem 0 8rem"
+      },
+      "elementOrder": ["load-btn"],
+      "definitions": {
+        "load-btn": {
+          "preset": "btn-ghost",
+          "label": "Load more products",
+          "href": "#",
+          "wrapperPadding": "0.9rem 2.5rem",
+          "wrapperBorderRadius": "12px",
+          "selfAlign": "center"
+        }
+      }
+    },
+    "sec-marquee": {
+      "type": "contentBlock",
+      "width": "100%",
+      "height": "hug",
+      "padding": {
+        "base": "2rem 0 3rem",
+        "md": "3rem 0 4rem"
+      },
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+      "elementOrder": ["coll-marquee"],
+      "definitions": {
+        "coll-marquee": {
+          "preset": "type-marquee-label",
+          "text": "Precision · Swiss Movement · Sapphire Crystal · Limited Edition · Handcrafted · 5 Year Warranty · Free Shipping · 30 Day Returns"
+        }
+      }
+    }
+  }
+}

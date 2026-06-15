@@ -1,0 +1,60 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "align": "stretch",
+  "gap": "0",
+  "width": "100%",
+  "height": "hug",
+  "borderRadius": "22px",
+  "scroll": "hidden",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+  "wrapperStyle": {
+    "position": "relative",
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+  },
+  "section": {
+    "elementOrder": ["audio-el", "meta-strip"],
+    "definitions": {
+      "audio-el": {
+        "type": "elementAudio",
+        "module": "audio-player",
+        "containerAspectRatio": "3 / 2",
+        "src": "https://upload.wikimedia.org/wikipedia/commons/e/e0/Bach-Siloti%2C_Prelude_in_B_minor_%28J._S._Bach%2C_arranged_Siloti%29%2C_arrangement_of_Prelude_in_E_minor_BWV_855a.ogg",
+        "poster": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=900&q=80&auto=format&fit=crop",
+        "width": "100%"
+      },
+      "meta-strip": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "gap": "0.2rem",
+        "padding": "0 1.25rem 1.25rem",
+        "wrapperStyle": {
+          "position": "absolute",
+          "bottom": "62px",
+          "left": "0",
+          "right": "0",
+          "layer": "6"
+        },
+        "section": {
+          "elementOrder": ["track-title", "track-artist"],
+          "definitions": {
+            "track-title": {
+              "type": "elementBody",
+              "level": 2,
+              "text": "Track Title",
+              "color": "#FFFFFF"
+            },
+            "track-artist": {
+              "type": "elementBody",
+              "level": 4,
+              "text": "Artist Name",
+              "color": "rgba(255,255,255,0.72)"
+            }
+          }
+        }
+      }
+    }
+  }
+}

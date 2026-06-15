@@ -1,0 +1,169 @@
+{
+  "type": "sectionColumn",
+  "columns": {
+    "base": 1,
+    "md": 3
+  },
+  "columnWidths": {
+    "base": [1],
+    "md": [2, 1, 1]
+  },
+  "columnGaps": {
+    "base": "1.25rem",
+    "md": "2rem"
+  },
+  "columnAssignments": {
+    "lead": 0,
+    "detail-a": 1,
+    "detail-b": 1,
+    "aside": 2
+  },
+  "contentWidth": "100%",
+  "contentHeight": "hug",
+  "elementOrder": ["lead", "detail-a", "detail-b", "aside"],
+  "gridMode": "grid",
+  "gridAutoRows": "auto",
+  "definitions": {
+    "lead": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "1rem",
+      "height": "hug",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+      "padding": {
+        "base": "1.5rem",
+        "md": "1.75rem"
+      },
+      "borderRadius": "16px",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["title", "body"],
+        "definitions": {
+          "title": {
+            "preset": "type-h4-card",
+            "text": "Lead story"
+          },
+          "body": {
+            "preset": "type-body-standard",
+            "text": "Broad lead surface spanning multiple tracks."
+          }
+        }
+      }
+    },
+    "detail-a": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "0.85rem",
+      "height": "hug",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+      "padding": {
+        "base": "1.25rem",
+        "md": "1.5rem"
+      },
+      "borderRadius": "14px",
+      "marginBottom": "1.25rem",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["kicker", "title", "body"],
+        "definitions": {
+          "kicker": {
+            "preset": "type-body-mono",
+            "text": "Signal"
+          },
+          "title": {
+            "preset": "type-h4-card",
+            "text": "Detail A"
+          },
+          "body": {
+            "preset": "type-body-fine",
+            "text": "Supporting datum."
+          }
+        }
+      }
+    },
+    "detail-b": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "0.85rem",
+      "height": "hug",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+      "padding": {
+        "base": "1.25rem",
+        "md": "1.5rem"
+      },
+      "borderRadius": "14px",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["kicker", "title", "body"],
+        "definitions": {
+          "kicker": {
+            "preset": "type-body-mono",
+            "text": "Risk"
+          },
+          "title": {
+            "preset": "type-h4-card",
+            "text": "Detail B"
+          },
+          "body": {
+            "preset": "type-body-fine",
+            "text": "Supporting datum."
+          }
+        }
+      }
+    },
+    "aside": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "0.85rem",
+      "height": "hug",
+      "fill": "color-mix(in oklab, var(--pb-accent) 6%, transparent)",
+      "padding": {
+        "base": "1.25rem",
+        "md": "1.5rem"
+      },
+      "borderRadius": "14px",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-accent) 12%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["quote", "attribution"],
+        "definitions": {
+          "quote": {
+            "preset": "type-body-fine",
+            "text": "Mixed spans let one dominant narrative coexist with compact decision cards."
+          },
+          "attribution": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.5rem",
+            "padding": "0",
+            "section": {
+              "elementOrder": ["name", "role"],
+              "definitions": {
+                "name": {
+                  "preset": "type-body-fine",
+                  "text": "Team"
+                },
+                "role": {
+                  "preset": "type-body-fine",
+                  "text": "Notes"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

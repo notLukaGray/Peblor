@@ -110,7 +110,8 @@ export async function runBatchEdit(args: string[], io: CommandIo): Promise<numbe
   let patch: unknown;
   try {
     patch = JSON.parse(patchStr);
-  } catch {
+  } catch (err) {
+    console.warn("[pb-cli] Failed to parse --patch JSON", err);
     io.printErrorText("Error: --patch is not valid JSON.");
     return 2;
   }

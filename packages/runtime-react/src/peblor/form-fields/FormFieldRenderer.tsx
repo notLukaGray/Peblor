@@ -3,10 +3,9 @@
 import { useMemo, type ReactNode } from "react";
 import type { FormFieldBlock } from "@pb/contracts/types";
 import { useDeviceType } from "@pb/runtime-react/core/providers/device-type-provider";
-import { resolveResponsiveValue } from "@pb/runtime-react/core/lib/responsive-value";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
 import { formFieldStyleFromConfig } from "./FormFieldRenderer/form-field-style-from-config";
 import { FORM_FIELD_COMPONENTS } from "./FormFieldRenderer/form-field-component-map";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
 
 export type FormFieldValue = string | string[] | boolean;
 
@@ -32,11 +31,7 @@ export function FormFieldRenderer({
   renderNestedField,
 }: FormFieldRendererProps) {
   const { isMobile } = useDeviceType();
-  const themeMode = usePeblorThemeMode();
-  const style = useMemo(
-    () => formFieldStyleFromConfig(field, isMobile, themeMode),
-    [field, isMobile, themeMode]
-  );
+  const style = useMemo(() => formFieldStyleFromConfig(field, isMobile), [field, isMobile]);
   const resolvedLevel = useMemo(
     () => resolveResponsiveValue(field.level, isMobile),
     [field.level, isMobile]

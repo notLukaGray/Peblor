@@ -1,9 +1,18 @@
 import { z } from "zod";
 import { PAGE_DENSITY_LEVELS } from "../page-density";
-import { bgBlockSchema } from "./background-block-schemas";
-import { elementBlockSchema, sectionDefinitionBlockSchema } from "./element-block-schemas";
+import { bgBlockSchema, backgroundTransitionEffectSchema } from "./background-block-schemas";
+import {
+  elementBlockSchema,
+  presetReferenceSchema,
+  sectionDefinitionBlockSchema,
+} from "./element-block-schemas";
 import { moduleBlockSchema } from "./module-block-schemas";
-import { baseSectionPropsSchema, sectionBlockSchema } from "./section-block-schemas";
+import { SUPPORTED_CONTRACT_VERSIONS } from "../../../version";
+import {
+  baseSectionPropsSchema,
+  responsiveSectionContentSizeSchema,
+  sectionBlockSchema,
+} from "./section-block-schemas";
 import {
   columnAssignmentsRequiredSchema,
   columnCountSchema,
@@ -11,23 +20,20 @@ import {
   columnSpanMapSchema,
   columnStylesSchema,
   columnWidthsSchema,
-  cssWidthOrFunctionSchema,
+  elementOrderSchema,
   itemLayoutSchema,
   itemStylesSchema,
   responsiveColumnSpanSchema,
   responsiveGridModeSchema,
 } from "./section-style-and-column-schemas";
 
-const sectionContentSizeSchema = z.union([z.enum(["full", "hug"]), cssWidthOrFunctionSchema]);
-const responsiveSectionContentSizeSchema = z.union([
-  sectionContentSizeSchema,
-  z.tuple([sectionContentSizeSchema, sectionContentSizeSchema]),
-]);
 import {
+  jsonNullishOptional,
   responsiveBooleanSchema,
   responsiveStringSchema,
-  triggerActionSchema,
+  triggerActionSchemaCore,
 } from "./schema-primitives";
+import { scrollSnapTypeEnum } from "./schema-shared-primitives";
 import { analyticsConfigSchema } from "../../../analytics/schemas";
 
 const contentBlockWithElementOrderSchema = baseSectionPropsSchema.extend({
@@ -41,7 +47,7 @@ const contentBlockWithElementOrderSchema = baseSectionPropsSchema.extend({
   justifyContent: responsiveStringSchema.optional(),
   contentWidth: responsiveSectionContentSizeSchema.optional(),
   contentHeight: responsiveSectionContentSizeSchema.optional(),
-  elementOrder: z.array(z.string()),
+  elementOrder: z.array(z.string()).optional(),
   definitions: z.record(z.string(), sectionDefinitionBlockSchema).optional(),
 });
 
@@ -49,25 +55,13 @@ const scrollContainerWithElementOrderSchema = baseSectionPropsSchema.extend({
   type: z.literal("scrollContainer"),
   contentWidth: responsiveSectionContentSizeSchema.optional(),
   contentHeight: responsiveSectionContentSizeSchema.optional(),
-  elementOrder: z.array(z.string()),
+  elementOrder: z.array(z.string()).optional(),
   definitions: z.record(z.string(), sectionDefinitionBlockSchema).optional(),
 });
 
 const sectionColumnDefinitionSchema = baseSectionPropsSchema.extend({
   type: z.literal("sectionColumn"),
-  elementOrder: z
-    .union([
-      z.array(z.string()),
-      z
-        .object({
-          mobile: z.array(z.string()).optional(),
-          desktop: z.array(z.string()).optional(),
-        })
-        .refine((obj) => obj.mobile !== undefined || obj.desktop !== undefined, {
-          message: "At least one of mobile or desktop elementOrder must be provided",
-        }),
-    ])
-    .optional(),
+  elementOrder: elementOrderSchema,
   columns: columnCountSchema,
   columnAssignments: columnAssignmentsRequiredSchema,
   columnWidths: columnWidthsSchema.optional(),
@@ -84,60 +78,33 @@ const sectionColumnDefinitionSchema = baseSectionPropsSchema.extend({
   definitions: z.record(z.string(), sectionDefinitionBlockSchema).optional(),
 });
 
+/** Derived once from sectionBlockSchema — single source of truth (no drift). Exported for reuse. */
+export const SECTION_TYPE_STRINGS: ReadonlySet<string> = new Set(
+  sectionBlockSchema.options.map((s) => s.shape.type.value)
+);
+
 export const peblorDefinitionBlockSchema = z.union([
-  moduleBlockSchema,
-  bgBlockSchema,
+  presetReferenceSchema,
   contentBlockWithElementOrderSchema,
   scrollContainerWithElementOrderSchema,
   sectionColumnDefinitionSchema,
-  sectionBlockSchema,
-  elementBlockSchema,
-]);
-
-export const backgroundTransitionEffectSchema = z.discriminatedUnion("type", [
-  z.object({
-    type: z.literal("TIME"),
-    id: z.string().min(1),
-    from: z.string(),
-    to: z.string(),
-    duration: z.number().positive(),
-    easing: z.string().optional(),
-  }),
-  z.object({
-    type: z.literal("TRIGGER"),
-    id: z.string().min(1),
-    from: z.string(),
-    to: z.string(),
-    duration: z.number().positive(),
-    easing: z.string().optional(),
-  }),
-  z.object({
-    type: z.literal("SCROLL"),
-    id: z.string().min(1),
-    from: z.string(),
-    to: z.string(),
-    source: z.enum(["page", "trigger"]).optional(),
-    progress: z.number().min(0).max(1).optional(),
-    progressRange: z
-      .object({
-        start: z.number().min(0).max(1),
-        end: z.number().min(0).max(1),
-      })
-      .refine((range) => range.start < range.end, {
-        message: "progressRange.start must be less than progressRange.end",
-      })
-      .optional(),
-  }),
+  z.discriminatedUnion("type", [
+    ...bgBlockSchema.options,
+    moduleBlockSchema,
+    ...sectionBlockSchema.options,
+    ...elementBlockSchema.options,
+  ]),
 ]);
 
 export const pageScrollConfigSchema = z.object({
   smooth: z.boolean().optional(),
   lockBody: z.boolean().optional(),
-  overflowX: z.enum(["hidden", "auto", "visible"]).optional(),
-  overflowY: z.enum(["auto", "scroll", "hidden"]).optional(),
-  snapType: z
-    .enum(["none", "x mandatory", "y mandatory", "both mandatory", "x proximity", "y proximity"])
-    .optional(),
+  scrollX: z.enum(["hidden", "auto", "visible"]).optional(),
+  scrollY: z.enum(["auto", "scroll", "hidden"]).optional(),
+  /** @deprecated Use `scrollSnapType` instead. */
+  snapType: scrollSnapTypeEnum.optional(),
+  scrollSnapType: scrollSnapTypeEnum.optional(),
+  scrollPadding: responsiveStringSchema.optional(),
 });
 
 export const pageDensitySchema = z.enum(PAGE_DENSITY_LEVELS);
@@ -310,11 +277,13 @@ export const peblorSchema = z
     sectionOrder: z.array(z.string()),
     preset: z.record(z.string(), peblorDefinitionBlockSchema).optional(),
     presets: z.array(z.string()).optional(),
+    /** Modal IDs to mount in event-driven mode on this page (listens for peblor-modal events). */
+    modals: z.array(z.string()).optional(),
     triggers: z.array(z.string()).optional(),
     bgKey: z.string().optional(),
     passwordProtected: z.boolean().optional(),
     assetBaseUrl: z.string().optional(),
-    onPageProgress: triggerActionSchema.optional(),
+    onPageProgress: triggerActionSchemaCore.optional(),
     transitions: z
       .union([backgroundTransitionEffectSchema, z.array(backgroundTransitionEffectSchema)])
       .optional(),
@@ -323,6 +292,11 @@ export const peblorSchema = z
     figmaExportDiagnostics: figmaExportDiagnosticsPageFieldSchema.optional(),
     density: pageDensitySchema.optional(),
     forcedTheme: forcedThemeSchema.optional(),
+    /** Render strategy for the page. "background-island" isolates the background into its own client island so sections render server-first. */
+    renderMode: z.enum(["standard", "background-island"]).optional(),
+    /** When true, the page provides its own header/footer via peblor JSON sections rather than the app default. */
+    layoutFromJson: z.boolean().optional(),
+    sectionGap: jsonNullishOptional(responsiveStringSchema),
     /** Taxonomy tags for this page. Record of category key → value list (e.g. { brand: ["alpha"], ability: ["design"] }). */
     tags: pageTagsSchema.optional(),
     /** Filter configuration — only meaningful on listing pages (work index, shop index, etc.). */
@@ -331,12 +305,24 @@ export const peblorSchema = z
     projectGroups: projectGroupsSchema.optional(),
     /** Page-level analytics config. */
     analytics: analyticsConfigSchema,
+    /**
+     * Schema version for this page. Stamped by the stamp-contract-version script.
+     * When present, enables the migration pipeline to apply forward-upgrades safely.
+     * Pages without this field take the identity migration path (no-op).
+     */
+    contractVersion: z.enum(SUPPORTED_CONTRACT_VERSIONS).optional(),
+    /**
+     * Extension namespace for forward-compatible, tool-specific data.
+     * Replace top-level passthrough with a structured extension field (C-21).
+     */
+    extensions: jsonNullishOptional(z.record(z.string(), z.unknown())),
   })
   .superRefine((data, ctx) => {
+    const TIER_KEYS = ["base", "sm", "md", "lg", "xl", "2xl"] as const;
     const validateElementOrderRefs = (
       defKey: string,
       block: {
-        elementOrder?: string[] | { mobile?: string[]; desktop?: string[] };
+        elementOrder?: string[] | { [K in (typeof TIER_KEYS)[number]]?: string[] };
         definitions?: Record<string, unknown>;
       },
       pathPrefix: (string | number)[]
@@ -361,38 +347,90 @@ export const peblorSchema = z
       if (Array.isArray(eo)) {
         checkKeys(eo, ["elementOrder"]);
       } else if (eo && typeof eo === "object") {
-        if (Array.isArray(eo.mobile)) checkKeys(eo.mobile, ["elementOrder", "mobile"]);
-        if (Array.isArray(eo.desktop)) checkKeys(eo.desktop, ["elementOrder", "desktop"]);
+        for (const tier of TIER_KEYS) {
+          const arr = (eo as Record<string, unknown>)[tier];
+          if (Array.isArray(arr)) checkKeys(arr, ["elementOrder", tier]);
+        }
       }
     };
 
     const walk = (value: unknown, defKey: string, pathPrefix: (string | number)[]) => {
       if (Array.isArray(value)) {
-        for (let i = 0; i < value.length; i++) walk(value[i], defKey, [...pathPrefix, i]);
+        for (let i = 0; i < value.length; i++) {
+          pathPrefix.push(i);
+          try {
+            walk(value[i], defKey, pathPrefix);
+          } finally {
+            pathPrefix.pop();
+          }
+        }
         return;
       }
       if (value == null || typeof value !== "object") return;
       const node = value as Record<string, unknown>;
+
+      // Check elementOrder at this node when it's a direct property.
       if (
         (node.type === "contentBlock" ||
           node.type === "scrollContainer" ||
           node.type === "sectionColumn" ||
-          node.type === "elementGroup" ||
-          node.type === "elementInfiniteScroll" ||
-          node.type === "elementDrag" ||
           node.type === "elementImageCompare") &&
         "elementOrder" in node
       ) {
         validateElementOrderRefs(
           defKey,
-          node as {
-            elementOrder?: string[] | { mobile?: string[]; desktop?: string[] };
-            definitions?: Record<string, unknown>;
-          },
+          node as Parameters<typeof validateElementOrderRefs>[1],
           pathPrefix
         );
       }
-      for (const [k, v] of Object.entries(node)) walk(v, defKey, [...pathPrefix, k]);
+
+      // elementGroup and elementInfiniteScroll store elementOrder inside a `section`
+      // sub-object (no type field, so the direct check above misses it).
+      if (
+        (node.type === "elementGroup" || node.type === "elementInfiniteScroll") &&
+        node.section != null &&
+        typeof node.section === "object" &&
+        "elementOrder" in (node.section as Record<string, unknown>)
+      ) {
+        pathPrefix.push("section");
+        try {
+          validateElementOrderRefs(
+            defKey,
+            node.section as Parameters<typeof validateElementOrderRefs>[1],
+            pathPrefix
+          );
+        } finally {
+          pathPrefix.pop();
+        }
+      }
+
+      // elementDrag stores elementOrder inside a `children` sub-object.
+      if (
+        node.type === "elementDrag" &&
+        node.children != null &&
+        typeof node.children === "object" &&
+        "elementOrder" in (node.children as Record<string, unknown>)
+      ) {
+        pathPrefix.push("children");
+        try {
+          validateElementOrderRefs(
+            defKey,
+            node.children as Parameters<typeof validateElementOrderRefs>[1],
+            pathPrefix
+          );
+        } finally {
+          pathPrefix.pop();
+        }
+      }
+
+      for (const [k, v] of Object.entries(node)) {
+        pathPrefix.push(k);
+        try {
+          walk(v, defKey, pathPrefix);
+        } finally {
+          pathPrefix.pop();
+        }
+      }
     };
 
     // Cross-reference: all known block types with elementOrder must resolve
@@ -400,8 +438,7 @@ export const peblorSchema = z
     for (const [defKey, def] of Object.entries(data.definitions)) {
       walk(def, defKey, ["definitions", defKey]);
     }
-  })
-  .passthrough();
+  });
 
 /**
  * Post-hydration cross-reference validation. Call after section files, modules, and presets
@@ -416,15 +453,6 @@ export function validatePageReferences(page: {
 }): { valid: true } | { valid: false; errors: string[] } {
   const errors: string[] = [];
   const definitions = page.definitions ?? {};
-  const SECTION_TYPES = new Set([
-    "divider",
-    "contentBlock",
-    "scrollContainer",
-    "sectionColumn",
-    "sectionTrigger",
-    "formBlock",
-    "revealSection",
-  ]);
 
   // bgKey
   if (page.bgKey) {
@@ -443,7 +471,7 @@ export function validatePageReferences(page: {
         continue;
       }
       const type = (def as { type?: string }).type;
-      if (typeof type !== "string" || !SECTION_TYPES.has(type)) {
+      if (typeof type !== "string" || !SECTION_TYPE_STRINGS.has(type)) {
         errors.push(
           `sectionOrder key "${key}" has type "${type ?? "unknown"}" which is not a valid section type`
         );
@@ -481,13 +509,14 @@ export const resolvedPageSchema = z
     sections: z.array(sectionBlockSchema).optional(),
     passwordProtected: z.boolean().optional(),
     assetBaseUrl: z.string().optional(),
-    onPageProgress: triggerActionSchema.optional(),
+    onPageProgress: triggerActionSchemaCore.optional(),
     transitions: z
       .union([backgroundTransitionEffectSchema, z.array(backgroundTransitionEffectSchema)])
       .optional(),
     scroll: pageScrollConfigSchema.optional(),
     density: pageDensitySchema.optional(),
     forcedTheme: forcedThemeSchema.optional(),
+    layoutFromJson: z.boolean().optional(),
     tags: pageTagsSchema.optional(),
     filterConfig: filterConfigSchema.optional(),
     projectGroups: projectGroupsSchema.optional(),

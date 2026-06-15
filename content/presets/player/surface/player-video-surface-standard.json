@@ -1,0 +1,41 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "align": "stretch",
+  "gap": "0",
+  "width": "100%",
+  "height": "hug",
+  "borderRadius": "20px",
+  "scroll": "hidden",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+  },
+  "section": {
+    "elementOrder": ["player-surface"],
+    "definitions": {
+      "player-surface": {
+        "type": "elementGroup",
+        "width": "100%",
+        "aspectRatio": "16 / 9",
+        "scroll": "hidden",
+        "section": {
+          "elementOrder": ["video"],
+          "definitions": {
+            "video": {
+              "type": "elementVideo",
+              "id": "video-player-standard",
+              "module": "video-player",
+              "src": "https://samplelib.com/preview/mp4/sample-15s.mp4",
+              "poster": "",
+              "width": "100%",
+              "height": "100%",
+              "objectFit": "cover"
+            }
+          }
+        }
+      }
+    }
+  }
+}

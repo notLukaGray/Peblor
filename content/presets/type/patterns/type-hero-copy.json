@@ -1,0 +1,39 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "align": "center",
+  "gap": "1.4rem",
+  "width": "100%",
+  "motionTiming": {
+    "staggerChildren": 0.1,
+    "trigger": "onFirstVisible"
+  },
+  "section": {
+    "elementOrder": ["hc-kicker", "hc-h1", "hc-body", "hc-link"],
+    "definitions": {
+      "hc-kicker": {
+        "preset": "type-kicker-badge",
+        "text": "Kicker"
+      },
+      "hc-h1": {
+        "preset": "type-h1-display",
+        "text": "Hero heading copy",
+        "textAlign": "center",
+        "selfAlign": "center",
+        "marginTop": "0.35rem"
+      },
+      "hc-body": {
+        "preset": "type-body-lead",
+        "text": "Supporting lead copy beneath the hero heading.",
+        "textAlign": "center",
+        "selfAlign": "center"
+      },
+      "hc-link": {
+        "preset": "type-link-nav",
+        "label": "Explore the system →",
+        "href": "#"
+      }
+    }
+  }
+}

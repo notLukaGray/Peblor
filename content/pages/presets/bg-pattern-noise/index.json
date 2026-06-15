@@ -1,0 +1,19 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "bg-pattern-noise — Preset Demo",
+  "description": "SVG fractal noise overlay that breathes opacity in a loop",
+  "presets": ["demo", "bg"],
+  "sectionOrder": ["nav-header", "hero"],
+  "bgKey": "bg-pattern-noise",
+  "scroll": {
+    "smooth": false,
+    "lockBody": true,
+    "scrollX": "hidden",
+    "scrollY": "hidden"
+  },
+  "definitions": {
+    "bg-pattern-noise": {
+      "preset": "bg-pattern-noise"
+    }
+  }
+}

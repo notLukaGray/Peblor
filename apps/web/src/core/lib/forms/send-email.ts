@@ -40,7 +40,10 @@ export async function sendEmail(params: {
         ...(params.replyTo && { reply_to: params.replyTo }),
       }),
     });
-    const data = (await res.json().catch(() => ({}))) as { message?: string };
+    const data = (await res.json().catch((err) => {
+      console.warn("[web-core] Failed to parse email response JSON", err);
+      return {};
+    })) as { message?: string };
     if (!res.ok)
       return { ok: false, error: (data as { message?: string }).message ?? "Send failed" };
     return { ok: true };

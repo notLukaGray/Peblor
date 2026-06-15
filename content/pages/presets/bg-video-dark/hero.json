@@ -1,0 +1,17 @@
+{
+  "definitions": {
+    "hero-badge": {
+      "preset": "demo-hero-badge",
+      "text": "backgroundVideo"
+    },
+    "hero-title": {
+      "preset": "demo-hero-title",
+      "text": "bg-video-dark"
+    },
+    "hero-desc": {
+      "preset": "demo-hero-description",
+      "text": "Looping video at full bleed with ~48% secondary overlay — heavy enough to read white text over almost any footage. Poster image shows before video loads."
+    }
+  },
+  "preset": "demo-hero-100vh"
+}

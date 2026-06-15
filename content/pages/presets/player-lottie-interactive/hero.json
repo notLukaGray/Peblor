@@ -1,0 +1,21 @@
+{
+  "preset": "demo-hero",
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Load on Demand · Play · Pause · Seek"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Lottie Interactive"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Lottie loaded on demand. Load trigger, playback controls, and state readout are all baked inside one sealed player card.",
+      "width": {
+        "base": "100%",
+        "md": "78%"
+      }
+    }
+  }
+}

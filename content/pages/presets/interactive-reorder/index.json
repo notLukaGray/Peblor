@@ -1,0 +1,26 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Interactive Reorder — Preset Demo",
+  "description": "Drag physics demos, reorderable vertical lists, grid-snap draggable cards, wrapping reorderable grids, snap-zone grid reorder, and dense draggable task controls — full Peblor drag toolkit.",
+  "presets": ["demo", "type/core", "ui/link"],
+  "sectionOrder": [
+    "nav-header",
+    "hero",
+    "sec-behaviors",
+    "sec-drag",
+    "sec-reorderable",
+    "sec-grid",
+    "sec-stress"
+  ],
+  "bgKey": "bg-reorder",
+  "definitions": {
+    "bg-reorder": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "linear-gradient(160deg, color-mix(in oklab, var(--pb-primary) 10%, var(--pb-secondary)) 0%, var(--pb-secondary) 55%, color-mix(in oklab, var(--pb-accent) 8%, var(--pb-secondary)) 100%)"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,496 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": {
+    "base": "column",
+    "md": "row"
+  },
+  "align": "stretch",
+  "gap": {
+    "base": "1rem",
+    "md": "2.5rem"
+  },
+  "width": "100%",
+  "section": {
+    "elementOrder": ["list-col", "preview-col"],
+    "definitions": {
+      "list-col": {
+        "type": "elementGroup",
+        "width": {
+          "base": "100%",
+          "md": "min(22rem, 40%)"
+        },
+        "flex": "0 0 auto",
+        "display": "flex",
+        "flow": "column",
+        "section": {
+          "elementOrder": ["card-scroll"],
+          "definitions": {
+            "card-scroll": {
+              "type": "elementInfiniteScroll",
+              "width": "100%",
+              "height": {
+                "base": "clamp(12rem, 34dvh, 18rem)",
+                "md": "clamp(14rem, 40dvh, 24rem)"
+              },
+              "scrollDirection": "vertical",
+              "loop": true,
+              "initialIndex": 0,
+              "selectedValueVariable": "selectedCard",
+              "selectedValues": {
+                "card-item-one": "card-one",
+                "card-item-two": "card-two",
+                "card-item-three": "card-three",
+                "card-item-four": "card-four"
+              },
+              "centerOnClick": true,
+              "wheelLockMs": 220,
+              "snapDurationMs": 480,
+              "activeScale": 1,
+              "inactiveScale": 0.93,
+              "activeOpacity": 1,
+              "inactiveOpacity": 0.42,
+              "activeItemStyle": {
+                "--card-list-title-color": "var(--pb-on-secondary)",
+                "--card-list-arrow-color": "var(--pb-on-secondary)"
+              },
+              "inactiveItemStyle": {
+                "--card-list-title-color": "color-mix(in oklab, var(--pb-on-secondary) 50%, transparent)",
+                "--card-list-arrow-color": "color-mix(in oklab, var(--pb-on-secondary) 24%, transparent)"
+              },
+              "display": "flex",
+              "flow": "column",
+              "gap": "0",
+              "scroll": "auto",
+              "section": {
+                "elementOrder": [
+                  "card-item-one",
+                  "card-item-two",
+                  "card-item-three",
+                  "card-item-four"
+                ],
+                "definitions": {
+                  "card-item-one": {
+                    "type": "elementGroup",
+                    "width": "100%",
+                    "height": "hug",
+                    "display": "flex",
+                    "flow": "row",
+                    "align": "center",
+                    "distribute": "between",
+                    "gap": "0.75rem",
+                    "padding": "1rem 0",
+                    "wrapperStyle": {
+                      "borderBottom": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+                    },
+                    "section": {
+                      "elementOrder": ["item-title", "item-arrow"],
+                      "definitions": {
+                        "item-title": {
+                          "type": "elementBody",
+                          "level": 3,
+                          "width": "100%",
+                          "textAlign": "left",
+                          "text": "Feature Cards",
+                          "color": "var(--card-list-title-color, var(--pb-on-secondary))"
+                        },
+                        "item-arrow": {
+                          "type": "elementBody",
+                          "level": 3,
+                          "width": "hug",
+                          "text": "→",
+                          "color": "var(--card-list-arrow-color, color-mix(in oklab, var(--pb-on-secondary) 44%, transparent))"
+                        }
+                      }
+                    }
+                  },
+                  "card-item-two": {
+                    "type": "elementGroup",
+                    "width": "100%",
+                    "height": "hug",
+                    "display": "flex",
+                    "flow": "row",
+                    "align": "center",
+                    "distribute": "between",
+                    "gap": "0.75rem",
+                    "padding": "1rem 0",
+                    "wrapperStyle": {
+                      "borderBottom": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+                    },
+                    "section": {
+                      "elementOrder": ["item-title", "item-arrow"],
+                      "definitions": {
+                        "item-title": {
+                          "type": "elementBody",
+                          "level": 3,
+                          "width": "100%",
+                          "textAlign": "left",
+                          "text": "Stat Cards",
+                          "color": "var(--card-list-title-color, var(--pb-on-secondary))"
+                        },
+                        "item-arrow": {
+                          "type": "elementBody",
+                          "level": 3,
+                          "width": "hug",
+                          "text": "→",
+                          "color": "var(--card-list-arrow-color, color-mix(in oklab, var(--pb-on-secondary) 44%, transparent))"
+                        }
+                      }
+                    }
+                  },
+                  "card-item-three": {
+                    "type": "elementGroup",
+                    "width": "100%",
+                    "height": "hug",
+                    "display": "flex",
+                    "flow": "row",
+                    "align": "center",
+                    "distribute": "between",
+                    "gap": "0.75rem",
+                    "padding": "1rem 0",
+                    "wrapperStyle": {
+                      "borderBottom": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+                    },
+                    "section": {
+                      "elementOrder": ["item-title", "item-arrow"],
+                      "definitions": {
+                        "item-title": {
+                          "type": "elementBody",
+                          "level": 3,
+                          "width": "100%",
+                          "textAlign": "left",
+                          "text": "Media Cards",
+                          "color": "var(--card-list-title-color, var(--pb-on-secondary))"
+                        },
+                        "item-arrow": {
+                          "type": "elementBody",
+                          "level": 3,
+                          "width": "hug",
+                          "text": "→",
+                          "color": "var(--card-list-arrow-color, color-mix(in oklab, var(--pb-on-secondary) 44%, transparent))"
+                        }
+                      }
+                    }
+                  },
+                  "card-item-four": {
+                    "type": "elementGroup",
+                    "width": "100%",
+                    "height": "hug",
+                    "display": "flex",
+                    "flow": "row",
+                    "align": "center",
+                    "distribute": "between",
+                    "gap": "0.75rem",
+                    "padding": "1rem 0",
+                    "section": {
+                      "elementOrder": ["item-title", "item-arrow"],
+                      "definitions": {
+                        "item-title": {
+                          "type": "elementBody",
+                          "level": 3,
+                          "width": "100%",
+                          "textAlign": "left",
+                          "text": "Profile Cards",
+                          "color": "var(--card-list-title-color, var(--pb-on-secondary))"
+                        },
+                        "item-arrow": {
+                          "type": "elementBody",
+                          "level": 3,
+                          "width": "hug",
+                          "text": "→",
+                          "color": "var(--card-list-arrow-color, color-mix(in oklab, var(--pb-on-secondary) 44%, transparent))"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "preview-col": {
+        "type": "elementGroup",
+        "flex": "1 1 0",
+        "display": "flex",
+        "flow": "column",
+        "section": {
+          "elementOrder": ["panel-one", "panel-two", "panel-three", "panel-four"],
+          "definitions": {
+            "panel-one": {
+              "preset": "card-preview-panel",
+              "visibleWhen": {
+                "logic": "and",
+                "conditions": [
+                  {
+                    "variable": "selectedCard",
+                    "operator": "notEquals",
+                    "value": "card-two"
+                  },
+                  {
+                    "variable": "selectedCard",
+                    "operator": "notEquals",
+                    "value": "card-three"
+                  },
+                  {
+                    "variable": "selectedCard",
+                    "operator": "notEquals",
+                    "value": "card-four"
+                  }
+                ]
+              },
+              "section": {
+                "elementOrder": ["panel-image-wrap", "panel-copy"],
+                "definitions": {
+                  "panel-image-wrap": {
+                    "type": "elementGroup",
+                    "width": "100%",
+                    "height": {
+                      "base": "10rem",
+                      "md": "14rem"
+                    },
+                    "scroll": "hidden",
+                    "fill": "color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)",
+                    "section": {
+                      "elementOrder": ["panel-image"],
+                      "definitions": {
+                        "panel-image": {
+                          "type": "elementImage",
+                          "src": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80&auto=format&fit=crop",
+                          "alt": "Feature cards preview",
+                          "width": "100%",
+                          "height": "100%",
+                          "objectFit": "cover"
+                        }
+                      }
+                    }
+                  },
+                  "panel-copy": {
+                    "type": "elementGroup",
+                    "display": "flex",
+                    "flow": "column",
+                    "gap": "0.65rem",
+                    "padding": {
+                      "base": "1rem 1.1rem 1.2rem",
+                      "md": "1.25rem 1.4rem 1.5rem"
+                    },
+                    "section": {
+                      "elementOrder": ["panel-title", "panel-desc", "panel-cta"],
+                      "definitions": {
+                        "panel-title": {
+                          "preset": "type-h4-card",
+                          "text": "Feature Cards"
+                        },
+                        "panel-desc": {
+                          "preset": "type-body-fine",
+                          "text": "Reusable feature and service cards with kicker, title, body, and link slots."
+                        },
+                        "panel-cta": {
+                          "preset": "type-link-nav",
+                          "label": "View preset →",
+                          "href": "/presets/cards-basic"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "panel-two": {
+              "preset": "card-preview-panel",
+              "visibleWhen": {
+                "variable": "selectedCard",
+                "operator": "equals",
+                "value": "card-two"
+              },
+              "section": {
+                "elementOrder": ["panel-image-wrap", "panel-copy"],
+                "definitions": {
+                  "panel-image-wrap": {
+                    "type": "elementGroup",
+                    "width": "100%",
+                    "height": {
+                      "base": "10rem",
+                      "md": "14rem"
+                    },
+                    "scroll": "hidden",
+                    "fill": "color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)",
+                    "section": {
+                      "elementOrder": ["panel-image"],
+                      "definitions": {
+                        "panel-image": {
+                          "type": "elementImage",
+                          "src": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80&auto=format&fit=crop",
+                          "alt": "Stat cards preview",
+                          "width": "100%",
+                          "height": "100%",
+                          "objectFit": "cover"
+                        }
+                      }
+                    }
+                  },
+                  "panel-copy": {
+                    "type": "elementGroup",
+                    "display": "flex",
+                    "flow": "column",
+                    "gap": "0.65rem",
+                    "padding": {
+                      "base": "1rem 1.1rem 1.2rem",
+                      "md": "1.25rem 1.4rem 1.5rem"
+                    },
+                    "section": {
+                      "elementOrder": ["panel-title", "panel-desc", "panel-cta"],
+                      "definitions": {
+                        "panel-title": {
+                          "preset": "type-h4-card",
+                          "text": "Stat Cards"
+                        },
+                        "panel-desc": {
+                          "preset": "type-body-fine",
+                          "text": "Animated counter cards, metric rows, and proof blocks for quantitative content."
+                        },
+                        "panel-cta": {
+                          "preset": "type-link-nav",
+                          "label": "View preset →",
+                          "href": "/presets/cards-stats"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "panel-three": {
+              "preset": "card-preview-panel",
+              "visibleWhen": {
+                "variable": "selectedCard",
+                "operator": "equals",
+                "value": "card-three"
+              },
+              "section": {
+                "elementOrder": ["panel-image-wrap", "panel-copy"],
+                "definitions": {
+                  "panel-image-wrap": {
+                    "type": "elementGroup",
+                    "width": "100%",
+                    "height": {
+                      "base": "10rem",
+                      "md": "14rem"
+                    },
+                    "scroll": "hidden",
+                    "fill": "color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)",
+                    "section": {
+                      "elementOrder": ["panel-image"],
+                      "definitions": {
+                        "panel-image": {
+                          "type": "elementImage",
+                          "src": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80&auto=format&fit=crop",
+                          "alt": "Media cards preview",
+                          "width": "100%",
+                          "height": "100%",
+                          "objectFit": "cover"
+                        }
+                      }
+                    }
+                  },
+                  "panel-copy": {
+                    "type": "elementGroup",
+                    "display": "flex",
+                    "flow": "column",
+                    "gap": "0.65rem",
+                    "padding": {
+                      "base": "1rem 1.1rem 1.2rem",
+                      "md": "1.25rem 1.4rem 1.5rem"
+                    },
+                    "section": {
+                      "elementOrder": ["panel-title", "panel-desc", "panel-cta"],
+                      "definitions": {
+                        "panel-title": {
+                          "preset": "type-h4-card",
+                          "text": "Media Cards"
+                        },
+                        "panel-desc": {
+                          "preset": "type-body-fine",
+                          "text": "Image-forward cards, before/after sliders, and screenshot caption layouts."
+                        },
+                        "panel-cta": {
+                          "preset": "type-link-nav",
+                          "label": "View preset →",
+                          "href": "/presets/cards-media"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "panel-four": {
+              "preset": "card-preview-panel",
+              "visibleWhen": {
+                "variable": "selectedCard",
+                "operator": "equals",
+                "value": "card-four"
+              },
+              "section": {
+                "elementOrder": ["panel-image-wrap", "panel-copy"],
+                "definitions": {
+                  "panel-image-wrap": {
+                    "type": "elementGroup",
+                    "width": "100%",
+                    "height": {
+                      "base": "10rem",
+                      "md": "14rem"
+                    },
+                    "scroll": "hidden",
+                    "fill": "color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)",
+                    "section": {
+                      "elementOrder": ["panel-image"],
+                      "definitions": {
+                        "panel-image": {
+                          "type": "elementImage",
+                          "src": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80&auto=format&fit=crop",
+                          "alt": "Profile cards preview",
+                          "width": "100%",
+                          "height": "100%",
+                          "objectFit": "cover"
+                        }
+                      }
+                    }
+                  },
+                  "panel-copy": {
+                    "type": "elementGroup",
+                    "display": "flex",
+                    "flow": "column",
+                    "gap": "0.65rem",
+                    "padding": {
+                      "base": "1rem 1.1rem 1.2rem",
+                      "md": "1.25rem 1.4rem 1.5rem"
+                    },
+                    "section": {
+                      "elementOrder": ["panel-title", "panel-desc", "panel-cta"],
+                      "definitions": {
+                        "panel-title": {
+                          "preset": "type-h4-card",
+                          "text": "Profile Cards"
+                        },
+                        "panel-desc": {
+                          "preset": "type-body-fine",
+                          "text": "Person cards, mini profiles, and testimonial surfaces with avatar and attribution."
+                        },
+                        "panel-cta": {
+                          "preset": "type-link-nav",
+                          "label": "View preset →",
+                          "href": "/presets/cards-basic"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

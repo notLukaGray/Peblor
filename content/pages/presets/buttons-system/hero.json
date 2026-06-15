@@ -1,0 +1,26 @@
+{
+  "preset": "demo-hero",
+  "maxWidth": "900px",
+  "padding": {
+    "base": "8rem 0 5rem",
+    "md": "10rem 0 7rem"
+  },
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Primary · Secondary · Ghost · Pill · Quiet · Utility"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Buttons System"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Every visual variant in the button system — from solid primary calls-to-action to quiet text-only utilities. All buttons share the same base component (elementButton) with prop-driven styling.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  }
+}

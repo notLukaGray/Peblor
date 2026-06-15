@@ -1,0 +1,48 @@
+id: trigger.elementEvent
+kind: trigger
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  Attach click, hover, focus, blur, or change handlers to any DOM element by id —
+  without needing a button element or dedicated onClick prop. Use when the interactive
+  target is a raw element (image, group, custom component) that doesn't expose its own
+  action prop, or when you need to wire multiple event types on the same element.
+
+not_this_if:
+  - "the element is an elementButton or elementLink — use its own action/onClick prop"
+  - "you need to react to a keyboard shortcut (use trigger.keyboard)"
+  - "you need to trigger on scroll position (use trigger.onVisible)"
+
+axes:
+  - name: config
+    fields: [elementEventTriggers]
+    note: "array of { id, onClick?, onHoverEnter?, onHoverLeave?, onFocus?, onBlur?, onChange? } on baseSectionPropsSchema"
+
+covers:
+  - description: "Click and hover actions wired to a specific element by DOM id"
+    example: content/validator-fragments/trigger-element-event.json
+
+does_not_cover:
+  - what: "Button element with built-in action"
+    use_instead: trigger.onClick
+  - what: "Global keyboard shortcut"
+    use_instead: trigger.keyboard
+  - what: "Scroll-based visibility trigger"
+    use_instead: trigger.onVisible
+
+composes_with:
+  parents: [section.*]
+  siblings_typical: [trigger.onClick, trigger.keyboard]
+  motion: "N/A — fires actions; receiving element handles animation"
+
+known_limitations:
+  - "Targets element by DOM id — element must be rendered and have a matching id attribute"
+  - "Listeners are added in useEffect; elements rendered after mount are not automatically picked up"
+  - "onChange fires on native change event — works for inputs/selects, not synthetic React onChange"
+
+proposal_hints:
+  new_variant_value: "N/A — trigger, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

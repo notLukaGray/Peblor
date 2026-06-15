@@ -1,0 +1,21 @@
+{
+  "preset": "demo-hero",
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Mouse · Drift · Load"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "3D Minimal"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Mouse moves the camera. Loads on demand with a fade. Bobbing, bloom, and contact depth make the model feel physically present — not just rendered.",
+      "width": {
+        "base": "100%",
+        "md": "78%"
+      }
+    }
+  }
+}

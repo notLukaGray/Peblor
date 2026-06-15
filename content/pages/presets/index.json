@@ -1,0 +1,19 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Preset Kit",
+  "description": "Browse and preview all page builder presets",
+  "presets": ["demo", "bg", "card", "type/core", "ui/link", "type/motion", "layout"],
+  "sectionOrder": ["nav-header", "welcome"],
+  "bgKey": "bg",
+  "scroll": {
+    "smooth": false,
+    "lockBody": true,
+    "scrollX": "hidden",
+    "scrollY": "hidden"
+  },
+  "definitions": {
+    "bg": {
+      "preset": "bg-solid"
+    }
+  }
+}

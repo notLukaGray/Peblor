@@ -12,19 +12,20 @@ import {
   DEFAULT_BODY_LEVEL,
 } from "@pb/core/typography";
 import { resolveFontFamily } from "@pb/core/typography";
-import { resolveThemeString } from "@/peblor/theme/theme-string";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
+import { lowerThemeStringToCss } from "@/peblor/theme/theme-string";
 import { InlineFormattedText } from "./Shared/InlineFormattedText";
 import { resolveAuthoredUrl } from "@pb/core/lib/url-policy";
+import { useDeviceType } from "@pb/runtime-react/core/hooks/use-device-type";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
 
 type Props = Extract<ElementBlock, { type: "elementLink" }>;
 
 function getLinkTypographyClass(props: Props): string {
   if (props.copyType === "heading") {
-    const level = (Array.isArray(props.level) ? props.level[0] : props.level) ?? 1;
+    const level = resolveResponsiveValue(props.level, true) ?? 1;
     return getHeadingTypographyClass(level);
   }
-  const level = (Array.isArray(props.level) ? props.level[0] : props.level) ?? DEFAULT_BODY_LEVEL;
+  const level = resolveResponsiveValue(props.level, true) ?? DEFAULT_BODY_LEVEL;
   return getBodyTypographyClass(level as ElementBodyVariant);
 }
 
@@ -49,11 +50,23 @@ export function ElementLink({
   fontFamily,
   fontSize,
   fontWeight,
+  letterSpacing,
+  lineHeight,
+  fontStyle,
+  fontVariationSettings,
+  fontVariant,
+  fontKerning,
+  textWrap,
+  hyphens,
+  wordBreak: wordBreakOverride,
+  overflowWrap: overflowWrapOverride,
+  textIndent,
+  textUnderlineOffset,
   textShadow,
   textDecoration,
   textTransform,
   whiteSpace,
-  align,
+  selfAlign,
   textAlign,
   width,
   height,
@@ -77,8 +90,11 @@ export function ElementLink({
   wrapperStyle,
   ...rest
 }: Props) {
-  const themeMode = usePeblorThemeMode();
   const pathname = usePathname();
+  const { isMobile } = useDeviceType();
+  const resolvedFontSize = resolveResponsiveValue(fontSize, isMobile);
+  const resolvedLineHeight = resolveResponsiveValue(lineHeight, isMobile);
+  const resolvedLetterSpacing = resolveResponsiveValue(letterSpacing, isMobile);
   const policyMode = external ? "external" : "any";
   const resolvedHrefResult = resolveAuthoredUrl(href, policyMode);
   const safeHref = resolvedHrefResult.ok ? resolvedHrefResult.url : null;
@@ -86,10 +102,10 @@ export function ElementLink({
   const isActive = isInternal && (pathname === href || (href !== "/" && pathname.startsWith(href)));
 
   const linkStyle: CSSProperties = {};
-  const resolvedLinkDefault = resolveThemeString(linkDefault, themeMode);
-  const resolvedLinkHover = resolveThemeString(linkHover, themeMode);
-  const resolvedLinkActive = resolveThemeString(linkActive, themeMode);
-  const resolvedLinkDisabled = resolveThemeString(linkDisabled, themeMode);
+  const resolvedLinkDefault = lowerThemeStringToCss(linkDefault);
+  const resolvedLinkHover = lowerThemeStringToCss(linkHover);
+  const resolvedLinkActive = lowerThemeStringToCss(linkActive);
+  const resolvedLinkDisabled = lowerThemeStringToCss(linkDisabled);
   if (resolvedLinkDefault != null)
     (linkStyle as Record<string, string>)["--element-link-color"] = resolvedLinkDefault;
   if (resolvedLinkHover != null)
@@ -115,7 +131,7 @@ export function ElementLink({
     ...getElementLayoutStyle({
       width,
       height,
-      align,
+      selfAlign,
       textAlign,
       marginTop,
       marginBottom,
@@ -125,7 +141,7 @@ export function ElementLink({
     }),
     ...getLayoutRotateFlipStyle({ rotate, flipHorizontal, flipVertical }),
   };
-  applyPbDefaultTextAlign(blockStyle, align, textAlign);
+  applyPbDefaultTextAlign(blockStyle, selfAlign, textAlign);
 
   // word wrap / overflow — must be on the text element, not the wrapper, for text-overflow to work
   const textStyle: CSSProperties = {
@@ -133,8 +149,10 @@ export function ElementLink({
     ...(resolveFontFamily(fontFamily) !== undefined
       ? { fontFamily: resolveFontFamily(fontFamily) }
       : {}),
-    ...(fontSize !== undefined ? { fontSize } : {}),
+    ...(resolvedFontSize !== undefined ? { fontSize: resolvedFontSize } : {}),
     ...(fontWeight !== undefined ? { fontWeight: fontWeight as CSSProperties["fontWeight"] } : {}),
+    ...(resolvedLetterSpacing !== undefined ? { letterSpacing: resolvedLetterSpacing } : {}),
+    ...(resolvedLineHeight !== undefined ? { lineHeight: resolvedLineHeight } : {}),
     ...(textShadow !== undefined ? { textShadow } : {}),
     ...(textDecoration !== undefined ? { textDecoration } : {}),
     ...(textTransform !== undefined ? { textTransform } : {}),
@@ -142,6 +160,17 @@ export function ElementLink({
     overflowWrap: wordWrap ? "break-word" : "normal",
     wordBreak: wordWrap ? "break-word" : "normal",
     ...(!wordWrap && whiteSpace == null ? { overflow: "hidden", textOverflow: "ellipsis" } : {}),
+    // Extended typography — gap 1.2 (applied after wordWrap defaults so explicit values win)
+    ...(fontStyle !== undefined ? { fontStyle } : {}),
+    ...(fontVariationSettings !== undefined ? { fontVariationSettings } : {}),
+    ...(fontVariant !== undefined ? { fontVariant } : {}),
+    ...(fontKerning !== undefined ? { fontKerning } : {}),
+    ...(textWrap !== undefined ? { textWrap } : {}),
+    ...(hyphens !== undefined ? { hyphens } : {}),
+    ...(wordBreakOverride !== undefined ? { wordBreak: wordBreakOverride } : {}),
+    ...(overflowWrapOverride !== undefined ? { overflowWrap: overflowWrapOverride } : {}),
+    ...(textIndent !== undefined ? { textIndent } : {}),
+    ...(textUnderlineOffset !== undefined ? { textUnderlineOffset } : {}),
   };
 
   const linkClassName = [

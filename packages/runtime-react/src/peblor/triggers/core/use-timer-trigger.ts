@@ -5,6 +5,8 @@ import { firePeblorAction } from "@/peblor/triggers";
 import type { PeblorAction } from "@pb/contracts/types";
 
 export type TimerTriggerDef = {
+  /** Optional name — register in the global registry for cancelTimer action */
+  id?: string;
   /** Fire once after this many ms */
   delay?: number;
   /** Fire repeatedly every this many ms */
@@ -15,10 +17,17 @@ export type TimerTriggerDef = {
   maxFires?: number;
 };
 
-/**
- * Fires peblor actions after delays or on intervals.
- * Timers reset when `triggers` reference changes.
- */
+// Module-level registry so cancelTimer action can reach named timers.
+const namedTimerRegistry = new Map<string, () => void>();
+
+export function cancelNamedTimer(id: string): void {
+  const cancel = namedTimerRegistry.get(id);
+  if (cancel) {
+    cancel();
+    namedTimerRegistry.delete(id);
+  }
+}
+
 export function useTimerTrigger(triggers: TimerTriggerDef[]): void {
   const countRef = useRef<Map<number, number>>(new Map());
 
@@ -27,17 +36,21 @@ export function useTimerTrigger(triggers: TimerTriggerDef[]): void {
 
     const timeoutIds: ReturnType<typeof setTimeout>[] = [];
     const intervalIds: ReturnType<typeof setInterval>[] = [];
+    const registeredIds: string[] = [];
     countRef.current.clear();
 
     triggers.forEach((def, i) => {
       if (def.delay != null && def.interval == null) {
-        // One-shot delay
         const id = setTimeout(() => {
           firePeblorAction(def.action, "trigger");
+          if (def.id) namedTimerRegistry.delete(def.id);
         }, def.delay);
         timeoutIds.push(id);
+        if (def.id) {
+          namedTimerRegistry.set(def.id, () => clearTimeout(id));
+          registeredIds.push(def.id);
+        }
       } else if (def.interval != null) {
-        // Repeating interval (optionally after an initial delay)
         const start = () => {
           const id = setInterval(() => {
             const count = (countRef.current.get(i) ?? 0) + 1;
@@ -45,13 +58,23 @@ export function useTimerTrigger(triggers: TimerTriggerDef[]): void {
             firePeblorAction(def.action, "trigger");
             if (def.maxFires != null && count >= def.maxFires) {
               clearInterval(id);
+              if (def.id) namedTimerRegistry.delete(def.id);
             }
           }, def.interval);
           intervalIds.push(id);
+          if (def.id) {
+            namedTimerRegistry.set(def.id, () => clearInterval(id));
+            registeredIds.push(def.id);
+          }
         };
         if (def.delay != null) {
           const delayId = setTimeout(start, def.delay);
           timeoutIds.push(delayId);
+          // Register cancel for the delay window — overwritten by start() once it fires.
+          if (def.id) {
+            namedTimerRegistry.set(def.id, () => clearTimeout(delayId));
+            registeredIds.push(def.id);
+          }
         } else {
           start();
         }
@@ -61,6 +84,7 @@ export function useTimerTrigger(triggers: TimerTriggerDef[]): void {
     return () => {
       timeoutIds.forEach(clearTimeout);
       intervalIds.forEach(clearInterval);
+      for (const id of registeredIds) namedTimerRegistry.delete(id);
     };
   }, [triggers]);
 }

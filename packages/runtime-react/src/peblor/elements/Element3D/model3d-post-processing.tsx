@@ -11,6 +11,7 @@ import {
 } from "@react-three/postprocessing";
 import type { PostProcessingEffectDef } from "@pb/contracts/types";
 import { useDeviceType } from "@pb/runtime-react/core/hooks/use-device-type";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 import type { Model3DPostProcessingCommand } from "./model3d-controls";
 
 type EffectDef = PostProcessingEffectDef & Record<string, unknown>;
@@ -27,19 +28,28 @@ const EFFECT_RENDERERS: Record<
     />
   ),
   noise: (effect, key, overrides) => (
-    <Noise key={key} opacity={overrides.opacity ?? (effect.opacity as number | undefined) ?? 0.5} />
+    <Noise
+      key={key}
+      opacity={
+        overrides.opacity ?? (effect.opacity as number | undefined) ?? globals.threeNoiseOpacity
+      }
+    />
   ),
   bloom: (effect, key, overrides) => (
     <Bloom
       key={key}
       intensity={overrides.intensity ?? (effect.intensity as number | undefined) ?? 1}
       luminanceThreshold={
-        overrides.luminanceThreshold ?? (effect.luminanceThreshold as number | undefined) ?? 0.9
+        overrides.luminanceThreshold ??
+        (effect.luminanceThreshold as number | undefined) ??
+        globals.threeBloomLuminanceThreshold
       }
       luminanceSmoothing={
-        overrides.luminanceSmoothing ?? (effect.luminanceSmoothing as number | undefined) ?? 0.025
+        overrides.luminanceSmoothing ??
+        (effect.luminanceSmoothing as number | undefined) ??
+        globals.threeBloomLuminanceSmoothing
       }
-      radius={overrides.radius ?? (effect.radius as number | undefined) ?? 0.85}
+      radius={overrides.radius ?? (effect.radius as number | undefined) ?? globals.threeBloomRadius}
       levels={(effect.levels as number | undefined) ?? 8}
       mipmapBlur={(effect.mipmapBlur as boolean | undefined) ?? true}
     />
@@ -51,13 +61,17 @@ const EFFECT_RENDERERS: Record<
       rings={(effect.rings as number | undefined) ?? 4}
       radius={overrides.radius ?? (effect.radius as number | undefined) ?? 5}
       intensity={overrides.intensity ?? (effect.intensity as number | undefined) ?? 1}
-      luminanceInfluence={(effect.luminanceInfluence as number | undefined) ?? 0.9}
-      bias={(effect.bias as number | undefined) ?? 0.025}
-      fade={(effect.fade as number | undefined) ?? 0.01}
+      luminanceInfluence={
+        (effect.luminanceInfluence as number | undefined) ?? globals.threeSsaoLuminanceInfluence
+      }
+      bias={(effect.bias as number | undefined) ?? globals.threeSsaoBias}
+      fade={(effect.fade as number | undefined) ?? globals.threeSsaoFade}
       distanceThreshold={(effect.distanceThreshold as number | undefined) ?? 1}
       distanceFalloff={(effect.distanceFalloff as number | undefined) ?? 0}
-      rangeThreshold={(effect.rangeThreshold as number | undefined) ?? 0.5}
-      rangeFalloff={(effect.rangeFalloff as number | undefined) ?? 0.1}
+      rangeThreshold={
+        (effect.rangeThreshold as number | undefined) ?? globals.threeSsaoRangeThreshold
+      }
+      rangeFalloff={(effect.rangeFalloff as number | undefined) ?? globals.threeSsaoRangeFalloff}
     />
   ),
 };
@@ -113,5 +127,6 @@ export function ScenePostProcessing({
     })
     .filter((x): x is ReactElement => x != null);
   if (children.length === 0) return null;
-  return <EffectComposer>{children}</EffectComposer>;
+  const needsNormalPass = effects.some((effect) => effect.type === "ssao");
+  return <EffectComposer enableNormalPass={needsNormalPass}>{children}</EffectComposer>;
 }

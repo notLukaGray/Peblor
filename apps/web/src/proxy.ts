@@ -3,22 +3,7 @@ import { PROTECTED_PAGE_PATHS } from "@/core/lib/protected-slugs.generated";
 import { accessCookieName } from "@/core/lib/auth-constants";
 import { verifyAccessTokenEdge } from "@/core/lib/access-cookie-edge";
 import { validateRequiredRuntimeEnv } from "@/core/lib/required-runtime-env";
-
-function buildCspHeader(nonce: string): string {
-  const isDev = process.env.NODE_ENV === "development";
-  return [
-    "default-src 'self'",
-    "base-uri 'self'",
-    "frame-ancestors 'self'",
-    "img-src 'self' data: blob: https:",
-    "media-src 'self' data: blob: https:",
-    "font-src 'self' data: https:",
-    `script-src ${isDev ? "'unsafe-eval' " : ""}'strict-dynamic' 'nonce-${nonce}'`,
-    "style-src 'self' 'unsafe-inline'",
-    "connect-src 'self' https: wss:",
-    "object-src 'none'",
-  ].join("; ");
-}
+import { buildCsp } from "@/core/lib/csp";
 
 function buildRequestedPathWithQuery(request: NextRequest): string {
   const params = new URLSearchParams(request.nextUrl.searchParams);
@@ -46,26 +31,24 @@ function buildUnlockRedirectUrl(request: NextRequest): URL {
  * a universal catch-all route and resolves breakpoint from request headers.
  * @see https://nextjs.org/docs/app/api-reference/file-conventions/proxy
  */
-function applyCsp(response: NextResponse, nonce: string): NextResponse {
-  response.headers.set("Content-Security-Policy", buildCspHeader(nonce));
+function applyCsp(response: NextResponse): NextResponse {
+  response.headers.set("Content-Security-Policy", buildCsp());
   return response;
 }
 
 export async function proxy(request: NextRequest) {
   validateRequiredRuntimeEnv();
 
-  const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const requestHeaders = new Headers(request.headers);
-  requestHeaders.set("x-nonce", nonce);
 
   if (typeof process.env.SITE_PASSWORD !== "string" || process.env.SITE_PASSWORD.length === 0) {
-    return applyCsp(NextResponse.next({ request: { headers: requestHeaders } }), nonce);
+    return applyCsp(NextResponse.next({ request: { headers: requestHeaders } }));
   }
 
   const pathname = request.nextUrl.pathname;
   const normalizedPath = pathname.replace(/^\/+|\/+$/g, "");
   if (!normalizedPath || !PROTECTED_PAGE_PATHS.has(normalizedPath)) {
-    return applyCsp(NextResponse.next({ request: { headers: requestHeaders } }), nonce);
+    return applyCsp(NextResponse.next({ request: { headers: requestHeaders } }));
   }
 
   const token = request.cookies.get(accessCookieName)?.value;
@@ -73,8 +56,7 @@ export async function proxy(request: NextRequest) {
   const wantsUnlock = request.nextUrl.searchParams.get("unlock") === "1";
 
   if (!valid) {
-    if (wantsUnlock)
-      return applyCsp(NextResponse.next({ request: { headers: requestHeaders } }), nonce);
+    if (wantsUnlock) return applyCsp(NextResponse.next({ request: { headers: requestHeaders } }));
     return NextResponse.redirect(buildUnlockRedirectUrl(request));
   }
 
@@ -84,7 +66,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  return applyCsp(NextResponse.next({ request: { headers: requestHeaders } }), nonce);
+  return applyCsp(NextResponse.next({ request: { headers: requestHeaders } }));
 }
 
 export const config = {

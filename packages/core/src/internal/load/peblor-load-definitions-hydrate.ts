@@ -3,7 +3,7 @@ import path from "path";
 import type { PeblorDefinitionBlock } from "@pb/contracts";
 import { isSafePathSegment, resolvePathUnder } from "../peblor-paths";
 import { parseJsonSafe, PAGE_DATA_DIR } from "./peblor-load-io";
-import { mergeNestedSectionDefinitions } from "./peblor-load-definitions-merge";
+
 import { sortedReaddir } from "./sorted-readdir";
 
 function warnDuplicateFragmentKeys(dupes: Map<string, string[]>): void {
@@ -60,26 +60,42 @@ export async function hydrateSectionFilesBySegmentsAsync(
   try {
     const stat = await fsPromises.stat(slugDir);
     if (!stat.isDirectory()) return definitions;
-  } catch {
+  } catch (err) {
+    console.warn("[pb-core] Failed to stat page directory", slugDir, err);
     return definitions;
   }
 
   const sectionSet = new Set(sectionOrder);
-  const globalKeys = new Set(Object.keys(definitions));
   for (const key of sectionOrder) {
     if (!isSafePathSegment(key) || definitions[key] != null) continue;
     const filePath = sectionPath(slugSegments, key);
     if (!filePath) continue;
-    const sectionData = await readJsonFileAsync(filePath).catch(() => null);
+    let sectionData: Record<string, unknown> | null;
+    try {
+      sectionData = await readJsonFileAsync(filePath);
+    } catch (readErr) {
+      console.warn("[pb-core] Failed to read section fragment", filePath, readErr);
+      sectionData = null;
+    }
     if (!sectionData) continue;
-    mergeNestedSectionDefinitions(
-      definitions,
-      sectionData.definitions as Record<string, unknown>,
-      sectionSet,
-      key,
-      globalKeys
-    );
     definitions[key] = sectionData as PeblorDefinitionBlock;
+    // Extract the section file's `definitions` sub-object into the top-level definitions.
+    // This lets section files colocate their element definitions alongside the section block.
+    // Protected keys (those already in sectionOrder) are never overwritten.
+    const nestedDefs = sectionData.definitions;
+    if (nestedDefs && typeof nestedDefs === "object" && !Array.isArray(nestedDefs)) {
+      for (const [nestedKey, value] of Object.entries(nestedDefs as Record<string, unknown>)) {
+        if (sectionSet.has(nestedKey)) continue;
+        if (value && typeof value === "object" && !Array.isArray(value)) {
+          if (process.env.NODE_ENV === "development" && definitions[nestedKey] !== undefined) {
+            console.warn(
+              `[pb-core] Element key "${nestedKey}" in section file "${key}" overwrites an existing definition`
+            );
+          }
+          definitions[nestedKey] = value as PeblorDefinitionBlock;
+        }
+      }
+    }
   }
 
   const files = (await sortedReaddir(slugDir))
@@ -93,7 +109,13 @@ export async function hydrateSectionFilesBySegmentsAsync(
       continue;
     const filePath = resolvePathUnder(PAGE_DATA_DIR, ...slugSegments, file);
     if (!filePath) continue;
-    const data = await readJsonFileAsync(filePath).catch(() => null);
+    let data: Record<string, unknown> | null;
+    try {
+      data = await readJsonFileAsync(filePath);
+    } catch (readErr) {
+      console.warn("[pb-core] Failed to read fragment file", filePath, readErr);
+      data = null;
+    }
     if (data) fragments.push({ file, data });
   }
   mergeFragments(definitions, fragments, sectionSet);

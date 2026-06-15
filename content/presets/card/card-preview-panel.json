@@ -1,0 +1,82 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "width": "100%",
+  "borderRadius": "24px",
+  "scroll": "hidden",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+  },
+  "motion": {
+    "from": {
+      "opacity": 0,
+      "y": 8
+    },
+    "to": {
+      "opacity": 1,
+      "y": 0
+    },
+    "transition": {
+      "duration": 0.35,
+      "ease": "easeOut"
+    }
+  },
+  "section": {
+    "elementOrder": ["panel-image-wrap", "panel-copy"],
+    "definitions": {
+      "panel-image-wrap": {
+        "type": "elementGroup",
+        "width": "100%",
+        "height": {
+          "base": "10rem",
+          "md": "14rem"
+        },
+        "scroll": "hidden",
+        "fill": "color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)",
+        "section": {
+          "elementOrder": ["panel-image"],
+          "definitions": {
+            "panel-image": {
+              "type": "elementImage",
+              "src": "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80&auto=format&fit=crop",
+              "alt": "Preview image",
+              "width": "100%",
+              "height": "100%",
+              "objectFit": "cover"
+            }
+          }
+        }
+      },
+      "panel-copy": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "gap": "0.65rem",
+        "padding": {
+          "base": "1rem 1.1rem 1.2rem",
+          "md": "1.25rem 1.4rem 1.5rem"
+        },
+        "section": {
+          "elementOrder": ["panel-title", "panel-desc", "panel-cta"],
+          "definitions": {
+            "panel-title": {
+              "preset": "type-h4-card",
+              "text": "Preview Title"
+            },
+            "panel-desc": {
+              "preset": "type-body-fine",
+              "text": "Short description of the selected item."
+            },
+            "panel-cta": {
+              "preset": "type-link-nav",
+              "label": "View →",
+              "href": "#"
+            }
+          }
+        }
+      }
+    }
+  }
+}

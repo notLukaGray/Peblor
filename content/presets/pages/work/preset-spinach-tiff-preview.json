@@ -1,0 +1,111 @@
+{
+  "preset": "work-preview-card",
+  "visibleWhen": {
+    "logic": "and",
+    "conditions": [
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "brand"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "campaign"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "cinematic"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "documentary"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "editorial"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "exhibition"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "immersive"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "motion"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "photography"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "process"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "systems"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "clean-it-up"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "lenero"
+      }
+    ]
+  },
+  "section": {
+    "elementOrder": ["preview-image-wrap", "preview-content"],
+    "definitions": {
+      "preview-image-wrap": {
+        "preset": "work-preview-image-wrap",
+        "section": {
+          "elementOrder": ["preview-image"],
+          "definitions": {
+            "preview-image": {
+              "preset": "work-preview-image",
+              "src": "work/project-spinach-tiff/ogimage.jpg"
+            }
+          }
+        }
+      },
+      "preview-content": {
+        "preset": "work-preview-content",
+        "section": {
+          "elementOrder": ["preview-title", "preview-desc", "preview-cta"],
+          "definitions": {
+            "preview-title": {
+              "preset": "work-preview-title",
+              "text": "Spinach \u00d7 TIFF"
+            },
+            "preview-desc": {
+              "preset": "work-preview-desc",
+              "text": "A playful trailer for Spinach shown in association with TIFF, parodying a familiar fairytale studio opening."
+            },
+            "preview-cta": {
+              "preset": "work-preview-cta",
+              "label": "View project",
+              "href": "/work/project-spinach-tiff"
+            }
+          }
+        }
+      }
+    }
+  }
+}

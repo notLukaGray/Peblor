@@ -1,0 +1,6 @@
+{
+  "type": "elementShow",
+  "payload": {
+    "id": "sticky-cta"
+  }
+}

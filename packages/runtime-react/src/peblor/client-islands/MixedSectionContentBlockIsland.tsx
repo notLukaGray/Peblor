@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useRef, type CSSProperties, type ReactNode } from "react";
-import { useShallow } from "zustand/react/shallow";
 import type { SectionBlock } from "@pb/contracts/types";
 import { handleSectionWheel, getDefaultScrollSpeed } from "@pb/core/layout";
 import { getPbContentGuidelines } from "@pb/core/host";
@@ -15,7 +14,7 @@ import {
   resolveFrameRowGapCss,
   applySectionFillStyle,
 } from "@pb/core/layout";
-import { resolveResponsiveValue } from "@pb/runtime-react/core/lib/responsive-value";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
 import { useDeviceType } from "@pb/runtime-react/core/providers/device-type-provider";
 import { SectionMotionWrapper } from "@/peblor/integrations/framer-motion";
 import { useSectionBaseStyles } from "@/peblor/section/position/use-section-base-styles";
@@ -31,14 +30,13 @@ import {
 import { useSectionScrollOpacityStyle } from "@/peblor/integrations/framer-motion/scroll-style";
 import { SectionScrollTargetProvider } from "@/peblor/section/position/SectionScrollTargetContext";
 import { useSectionCustomTriggers } from "@/peblor/triggers/core/use-section-custom-triggers";
-import { useVariableStore } from "@/peblor/runtime/peblor-variable-store";
 import {
   evaluateConditions,
   type VisibleWhenConfig,
 } from "@pb/contracts/peblor/core/peblor-condition-evaluator";
-import type { JsonValue } from "@pb/contracts/types";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
-import { resolveThemeString } from "@/peblor/theme/theme-string";
+import { useVisibleWhenVariables } from "@/peblor/elements/Shared/use-live-variable-bindings";
+import { lowerThemeStringToCss } from "@/peblor/theme/theme-string";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 type ContentBlockBase = Extract<SectionBlock, { type: "contentBlock" }>;
 
@@ -59,7 +57,7 @@ export function MixedSectionContentBlockIsland({
   effects,
   width,
   height,
-  align,
+  selfAlign,
   marginLeft,
   marginRight,
   marginTop,
@@ -68,19 +66,39 @@ export function MixedSectionContentBlockIsland({
   border,
   boxShadow,
   filter,
-  backdropFilter,
-  clipPath,
+  bgBlur,
+  clipShape,
   cursor,
   aspectRatio,
-  overflow,
+  scroll,
+  scrollX,
+  scrollY,
   scrollSpeed = getDefaultScrollSpeed(),
   initialX,
   initialY,
-  zIndex,
-  flexDirection,
-  alignItems,
-  justifyContent,
-  flexWrap,
+  layer,
+  padding,
+  paddingTop,
+  paddingRight,
+  paddingBottom,
+  paddingLeft,
+  margin,
+  wrapperStyle,
+  sectionGap,
+  position,
+  top,
+  right,
+  bottom,
+  left,
+  inset,
+  interaction,
+  selectable,
+  willChange,
+  opacity,
+  flow,
+  align,
+  distribute,
+  wrap,
   gap,
   rowGap,
   columnGap,
@@ -113,6 +131,13 @@ export function MixedSectionContentBlockIsland({
   cursorTriggers,
   scrollDirectionTriggers,
   idleTriggers,
+  variableTriggers,
+  tabVisibilityTriggers,
+  mediaEndTriggers,
+  customEventTriggers,
+  elementEventTriggers,
+  scrollThresholdTriggers,
+  mediaProgressTriggers,
   visibleWhen,
   children,
   elementCount,
@@ -120,10 +145,10 @@ export function MixedSectionContentBlockIsland({
   const sectionRef = useRef<HTMLElement>(null);
   const placeholderRef = useRef<HTMLDivElement>(null);
   const { isMobile } = useDeviceType();
-  const resolvedAriaLabel = resolveResponsiveValue(ariaLabel, isMobile) ?? id ?? "Content block";
+  const resolvedAriaLabel =
+    resolveResponsiveValue(ariaLabel, isMobile) ?? id ?? globals.stringsAriaLabelContentBlock;
 
-  const themeMode = usePeblorThemeMode();
-  const resolvedFill = resolveThemeString(resolveResponsiveValue(fill, isMobile), themeMode);
+  const resolvedFill = lowerThemeStringToCss(resolveResponsiveValue(fill, isMobile));
   const resolvedStickyOffset = resolveResponsiveValue(stickyOffset, isMobile) ?? "0px";
   const resolvedFixedOffset = resolveResponsiveValue(fixedOffset, isMobile) ?? "0px";
   const pbContentGuidelines = getPbContentGuidelines();
@@ -149,28 +174,20 @@ export function MixedSectionContentBlockIsland({
     cursorTriggers,
     scrollDirectionTriggers,
     idleTriggers,
+    variableTriggers,
+    tabVisibilityTriggers,
+    mediaEndTriggers,
+    customEventTriggers,
+    elementEventTriggers,
+    scrollThresholdTriggers,
+    mediaProgressTriggers,
   });
 
-  const conditionKeys = useMemo((): string[] => {
-    if (!visibleWhen) return [];
-    const keys: string[] = [];
-    if (visibleWhen.variable) keys.push(visibleWhen.variable);
-    for (const c of visibleWhen.conditions ?? []) keys.push(c.variable);
-    return keys;
-  }, [visibleWhen]);
-  const variables = useVariableStore(
-    useShallow(
-      (state) =>
-        Object.fromEntries(conditionKeys.map((k) => [k, state.variables[k]])) as Record<
-          string,
-          JsonValue
-        >
-    )
-  );
+  const variables = useVisibleWhenVariables(visibleWhen);
 
   const resolvedShellOverflow = fixed
     ? ("visible" as const)
-    : (resolveResponsiveValue(overflow, isMobile) ?? ("hidden" as const));
+    : (resolveResponsiveValue(scroll, isMobile) ?? ("hidden" as const));
   const shellOverflowClass =
     resolvedShellOverflow === "visible"
       ? "overflow-visible"
@@ -180,7 +197,7 @@ export function MixedSectionContentBlockIsland({
           ? "overflow-scroll"
           : "overflow-hidden";
 
-  const { baseStyle, resolvedLayout, alignStyle, transformY, hasInitialPosition } =
+  const { baseStyle, resolvedLayout, alignStyle, parallaxY, hasInitialPosition } =
     useSectionBaseStyles({
       fill,
       width,
@@ -189,7 +206,7 @@ export function MixedSectionContentBlockIsland({
       maxWidth,
       minHeight,
       maxHeight,
-      align,
+      selfAlign,
       marginLeft,
       marginRight,
       marginTop,
@@ -198,18 +215,37 @@ export function MixedSectionContentBlockIsland({
       border,
       boxShadow,
       filter,
-      backdropFilter,
-      clipPath,
+      bgBlur,
+      clipShape,
       cursor,
       aspectRatio,
-      overflow: fixed ? "visible" : overflow,
+      scroll: fixed ? "visible" : scroll,
+      scrollX,
+      scrollY,
       scrollSpeed,
       initialX,
       initialY,
-      zIndex,
+      layer,
+      padding,
+      paddingTop,
+      paddingRight,
+      paddingBottom,
+      paddingLeft,
+      margin,
+      wrapperStyle,
+      sectionGap,
+      position,
+      top,
+      right,
+      bottom,
+      left,
+      inset,
+      interaction,
+      selectable,
+      willChange,
+      opacity,
       effects,
       sectionRef,
-      usePadding: true,
       reduceMotion,
     });
 
@@ -222,7 +258,6 @@ export function MixedSectionContentBlockIsland({
     hasInitialPosition,
     resolvedLayout,
     alignStyle,
-    transformY,
   });
 
   const fixedStyleOverrides = useFixedTrait({
@@ -230,7 +265,7 @@ export function MixedSectionContentBlockIsland({
     fixedPosition,
     fixedOffset: resolvedFixedOffset,
     resolvedLayout,
-    zIndex,
+    zIndex: layer,
   });
 
   const finalStyle = useMemo(() => {
@@ -247,15 +282,15 @@ export function MixedSectionContentBlockIsland({
   const resolvedContentWidth = resolveResponsiveValue(contentWidth, isMobile);
   const resolvedContentHeight = resolveResponsiveValue(contentHeight, isMobile);
   const resolvedFlexDirection =
-    (coalesceEmptyString(resolveResponsiveValue(flexDirection, isMobile)) as
+    (coalesceEmptyString(resolveResponsiveValue(flow, isMobile)) as
       | CSSProperties["flexDirection"]
       | undefined) ?? pbContentGuidelines.frameFlexDirectionDefault;
   const resolvedAlignItems = normalizeFlexAlignItemsValue(
-    coalesceEmptyString(resolveResponsiveValue(alignItems, isMobile)) ??
+    coalesceEmptyString(resolveResponsiveValue(align, isMobile)) ??
       pbContentGuidelines.frameAlignItemsDefault
   );
   const resolvedFlexWrap =
-    (coalesceEmptyString(resolveResponsiveValue(flexWrap, isMobile)) as
+    (coalesceEmptyString(resolveResponsiveValue(wrap, isMobile)) as
       | CSSProperties["flexWrap"]
       | undefined) ?? pbContentGuidelines.frameFlexWrapDefault;
   const rawGap = coalesceEmptyString(resolveResponsiveValue(gap, isMobile));
@@ -266,7 +301,7 @@ export function MixedSectionContentBlockIsland({
   const resolvedColumnGap = resolveFrameColumnGapCss(rawColumnGap);
   const resolvedJustifyContent = peblorJustifyContentForGap(
     normalizeFlexJustifyContentValue(
-      coalesceEmptyString(resolveResponsiveValue(justifyContent, isMobile)) ??
+      coalesceEmptyString(resolveResponsiveValue(distribute, isMobile)) ??
         pbContentGuidelines.frameJustifyContentDefault
     ) as CSSProperties["justifyContent"] | undefined,
     rawGap
@@ -321,6 +356,7 @@ export function MixedSectionContentBlockIsland({
   );
 
   const sectionProps = {
+    id,
     className: `relative z-[var(--pb-z-raised)] flex shrink-0 flex-col min-h-0 ${shellOverflowClass}`,
     style: {
       ...applySectionFillStyle(resolvedFill, layers, finalStyle),
@@ -345,6 +381,7 @@ export function MixedSectionContentBlockIsland({
         motion={motionFromJson}
         motionTiming={motionTiming}
         reduceMotion={reduceMotion}
+        parallaxY={parallaxY}
         {...sectionProps}
       >
         <SectionScrollTargetProvider sectionRef={sectionRef}>

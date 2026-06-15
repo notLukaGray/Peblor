@@ -1,0 +1,25 @@
+{
+  "type": "elementVector",
+  "viewBox": "0 0 12 8",
+  "shapes": [
+    {
+      "type": "path",
+      "d": "M1 1L6 7L11 1",
+      "fill": "none",
+      "stroke": "icon",
+      "strokeWidth": 1.75,
+      "strokeLinecap": "round",
+      "strokeLinejoin": "round"
+    }
+  ],
+  "colors": {
+    "icon": "rgba(255,255,255,0.55)",
+    "icon-hover": "rgba(255,255,255,0.85)"
+  },
+  "link": {
+    "hoverFill": "icon-hover",
+    "vectorTransition": "0.15s"
+  },
+  "width": "12px",
+  "height": "8px"
+}

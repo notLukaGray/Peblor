@@ -1,0 +1,15 @@
+{
+  "type": "elementRange",
+  "action": "volume",
+  "width": "44px",
+  "height": "44px",
+  "min": 0,
+  "max": 1,
+  "step": 0.01,
+  "style": {
+    "trackColor": "rgba(255,255,255,0.4)",
+    "fillColor": "#FFFFFF",
+    "trackHeight": "4px",
+    "thumbSize": "12px"
+  }
+}

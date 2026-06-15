@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { headers } from "next/headers";
 import { Fragment } from "react";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -14,33 +13,55 @@ import { getBunnyFontCssCached } from "@/app/fonts/embed-font-faces";
 import { generateFontCssVars, generateFallbackFontFaces } from "@/app/fonts/css-vars";
 import { typeScaleConfig } from "@/app/fonts/type-scale";
 import { SELF_HOSTED } from "@/app/fonts/self-hosted-flag";
-import { getTwitterCardForOgImage, siteUrl, cdnBase, siteMetadata } from "@/core/lib/globals";
+import {
+  getTwitterCardForOgImage,
+  siteUrl,
+  cdnBase,
+  siteMetadata,
+  person,
+} from "@/core/lib/globals";
+import { WebSiteJsonLd } from "@/core/ui/WebSiteJsonLd";
+import { OrganizationJsonLd } from "@/core/ui/OrganizationJsonLd";
+import { SpeculationRules } from "@/app/speculation-rules";
 import { ThemeProvider } from "@/core/providers/theme-provider";
 import { AppLayout } from "@/core/ui/app-layout";
-import { DeviceTypeProvider } from "@/core/providers/device-type-provider";
+import { MotionFeatureProvider } from "@/app/MotionFeatureProvider";
+import { ToastIsland } from "@/app/ToastIsland";
+import { DeviceTypeProvider } from "@pb/runtime-react/core/providers/device-type-provider";
+import { FormActionProvider } from "@pb/runtime-react/core/lib/form-action-context";
 import { BrowserDataClient } from "@/app/BrowserDataClient";
 import { AnalyticsScript } from "@/app/analytics-script";
 import { pbBrandCssInline } from "@/app/theme/config";
-import { pbContentGuidelinesCssInline } from "@/app/theme/pb-content-guidelines-config";
-import { getProductionColorToolPersistedV2 } from "@/app/dev/colors/color-tool-persistence";
-import { getProductionWorkbenchSession } from "@/app/dev/workbench/workbench-defaults";
-import { buildWorkbenchThemeColorVarMap } from "@/app/theme/pb-workbench-color-var-map";
-import { serializePbFoundationsCss } from "@/app/theme/pb-foundation-css";
+import { pbContentGuidelinesCssInline } from "@/app/theme/pb-content-guidelines";
+import { pbBrandLight, pbBrandDark } from "@/app/theme/config";
+import { serializePbProductionFoundationsCss } from "@/app/theme/pb-foundation-config";
+import { rootThemeInlineScript } from "@/app/theme/root-theme-inline-script";
+import {
+  contactAction,
+  newsletterAction,
+  waitlistAction,
+  eventRegistrationAction,
+  feedbackAction,
+  jobInquiryAction,
+  quoteRequestAction,
+  applicationAction,
+  rsvpAction,
+  unsubscribeAction,
+  unlockAction,
+} from "@/app/actions";
 
 function getOrigin(value: string): string | null {
   try {
     return new URL(value).origin;
-  } catch {
+  } catch (err) {
+    console.warn("[web] Failed to parse URL for origin", value, err);
     return null;
   }
 }
 
 const cdnOrigin = getOrigin(cdnBase);
-const productionColorConfig = getProductionColorToolPersistedV2();
-const lightThemeColor =
-  buildWorkbenchThemeColorVarMap(productionColorConfig, "light")["--pb-secondary"] ?? "#ffffff";
-const darkThemeColor =
-  buildWorkbenchThemeColorVarMap(productionColorConfig, "dark")["--pb-secondary"] ?? "#000000";
+const lightThemeColor = pbBrandLight["--pb-secondary"] ?? "#ffffff";
+const darkThemeColor = pbBrandDark["--pb-secondary"] ?? "#000000";
 
 export const metadata: Metadata = {
   metadataBase: siteUrl ? new URL(siteUrl) : undefined,
@@ -50,6 +71,8 @@ export const metadata: Metadata = {
   openGraph: {
     title: siteMetadata.title,
     description: siteMetadata.description,
+    type: "website",
+    locale: "en_US",
   },
   twitter: {
     card: getTwitterCardForOgImage(undefined),
@@ -76,7 +99,10 @@ export const viewport: Viewport = {
   ],
 };
 
-// Build once at module level — these are pure functions of static config.
+// Build once at module level — pure functions of static config; compute once per cold-start.
+const pbBrandCss = pbBrandCssInline();
+const pbContentGuidelinesCss = pbContentGuidelinesCssInline();
+
 // Skip when self-hosted: fonts are served from /font/self-hosted/ via the CSS import above.
 const webfontUrls = SELF_HOSTED
   ? ([] as string[])
@@ -104,7 +130,9 @@ const fallbackFontFaces = generateFallbackFontFaces(
   secondaryFontConfig,
   monoFontConfig
 );
-const pbFoundationsCss = serializePbFoundationsCss(getProductionWorkbenchSession());
+const pbFoundationsCss = serializePbProductionFoundationsCss();
+// Pure function of static config — compute once per cold-start, not per-render.
+const themeScript = rootThemeInlineScript();
 
 // Only apply a slot's next/font variable className when that slot uses local files.
 // Webfont slots get their --font-* var set via the generated <style> block above.
@@ -118,9 +146,9 @@ const htmlFontClasses = [
 
 bootstrapCore();
 
-// Preload critical self-hosted font files (Latin-normal, weights 400/500/700/900)
-// so the browser fetches them at highest priority during HTML parse, eliminating
-// the render delay between FCP and LCP caused by font discovery through CSS.
+// Preload critical self-hosted font files (Latin-normal) for the primary font.
+// With variable fonts: the manifest entry has weight===0 (single file).
+// With discrete weights: preload only the two LCP-critical weights (body 400, headings 700).
 let criticalFontPreloads: { path: string }[] = [];
 if (SELF_HOSTED) {
   try {
@@ -132,13 +160,22 @@ if (SELF_HOSTED) {
       weight: number;
       style: string;
     }[];
-    // Only preload the primary font — it's the one used by LCP text.
-    const primaryFamily = primaryFontConfig.webfont.family;
+    // Preload primary (heading/UI) and secondary (body) fonts — both are LCP-critical.
+    // Mono font is above-fold on some pages but is display:optional and smaller priority.
+    const criticalFamilies = new Set([
+      primaryFontConfig.webfont.family,
+      secondaryFontConfig.webfont.family,
+    ]);
+    // Variable font (weight===0) preloads as a single file covering all weights.
+    // Discrete weights: preload body 400 + heading 700.
     criticalFontPreloads = manifest.filter(
-      (e) => e.family === primaryFamily && e.style === "normal"
+      (e) =>
+        criticalFamilies.has(e.family) &&
+        e.style === "normal" &&
+        (e.weight === 0 || e.weight === 400 || e.weight === 700)
     );
-  } catch {
-    // Manifest doesn't exist (fonts not yet downloaded) — skip preloads.
+  } catch (err) {
+    console.warn("[web] Font manifest not found (fonts not yet downloaded)", err);
   }
 }
 
@@ -153,7 +190,15 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  await headers();
+  // Theme preference is handled entirely client-side via the inline script in <head>
+  // (below). The script reads the "theme" cookie (returning visitors) or falls back
+  // to prefers-color-scheme (first visit), applying .light/.dark to <html>
+  // synchronously before first paint — no flash, no server-side cookie read needed.
+  //
+  // The Content-Security-Policy includes a SHA-256 hash for this exact script
+  // ('sha256-...'), allowing it to execute without a per-request nonce. This means
+  // RootLayout never calls cookies() or headers(), keeping the entire layout shell
+  // (nav, footer, HTML structure) fully static for PPR (Partial Prerendering).
 
   // Fetch critical webfont CSS at render time — cached in memory so each server
   // instance fetches once. Skipped when self-hosted — @font-face rules are in the
@@ -168,8 +213,19 @@ export default async function RootLayout({
       );
 
   return (
-    <html lang="en" suppressHydrationWarning className={htmlFontClasses}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      data-scroll-behavior="smooth"
+      className={htmlFontClasses || undefined}
+    >
       <head>
+        {/* Pre-paint theme script — runs before the browser paints any pixels.
+            Reads the "theme" cookie (returning visitors) or
+            prefers-color-scheme (first visit) and sets .light/.dark on <html>.
+            The CSP 'sha256-...' hash allows this inline script without a nonce,
+            keeping the layout fully static for PPR. */}
+        <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: themeScript }} />
         {/* Weight vars + webfont family overrides. Injected before any stylesheet
             so CSS custom properties are available when globals.css is parsed. */}
         <style dangerouslySetInnerHTML={{ __html: fontCssVars }} />
@@ -215,27 +271,74 @@ export default async function RootLayout({
         {webfontUrls.map((url) => (
           <link key={url} rel="stylesheet" href={url} />
         ))}
+        {/* Global sitewide JSON-LD structured data: WebSite and Organization
+            schemas are injected on every page so search engines always know who
+            the entity is and what the site represents. */}
+        <WebSiteJsonLd
+          name={siteMetadata.title}
+          url={siteUrl}
+          description={siteMetadata.description}
+        />
+        <OrganizationJsonLd
+          name={person?.name ?? siteMetadata.title}
+          url={siteUrl}
+          description={siteMetadata.description}
+        />
+        {/* Speculation Rules API — pre-renders key navigation targets for
+            instant page transitions. Nonce omitted because speculationrules
+            scripts are not executable JavaScript and the browser applies them
+            even under strict CSP.
+            @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/speculationrules#security */}
+        <SpeculationRules />
+        {/* Tell the browser this page supports both color schemes so it can render
+            native UI (scrollbars, form controls, etc.) in the right palette before
+            any CSS loads. */}
+        <meta name="color-scheme" content="light dark" />
+        {/* Site author — derived from person config in content/site/person.json. */}
+        <meta name="author" content={person?.name ?? "Luka Gray"} />
       </head>
       <body className="font-sans antialiased">
         {/* PB brand `--pb-*` tokens: `theme/config.ts`. Layout & copy vars: `theme/pb-content-guidelines-config.ts`. */}
-        <style dangerouslySetInnerHTML={{ __html: pbBrandCssInline() }} suppressHydrationWarning />
+        <style dangerouslySetInnerHTML={{ __html: pbBrandCss }} suppressHydrationWarning />
         <style
           id="pb-foundations-runtime"
           dangerouslySetInnerHTML={{ __html: pbFoundationsCss }}
           suppressHydrationWarning
         />
         <style
-          dangerouslySetInnerHTML={{ __html: pbContentGuidelinesCssInline() }}
+          dangerouslySetInnerHTML={{ __html: pbContentGuidelinesCss }}
           suppressHydrationWarning
         />
-        <DeviceTypeProvider>
-          <ThemeProvider attribute="class" disableTransitionOnChange>
-            <BrowserDataClient />
-            <AnalyticsScript />
-            <DevelopmentClients />
-            <AppLayout>{children}</AppLayout>
-          </ThemeProvider>
-        </DeviceTypeProvider>
+        {/* Preset tab chrome tokens are defined in `globals.css` on `:root` / `.dark`.
+            No inline injection needed — the CSS chunk loads synchronously and the vars
+            are available before any React hydration. */}
+        <MotionFeatureProvider>
+          <DeviceTypeProvider>
+            <ThemeProvider attribute="class">
+              <BrowserDataClient />
+              <AnalyticsScript />
+              <DevelopmentClients />
+              <FormActionProvider
+                actions={{
+                  contact: contactAction,
+                  newsletter: newsletterAction,
+                  waitlist: waitlistAction,
+                  "event-registration": eventRegistrationAction,
+                  feedback: feedbackAction,
+                  "job-inquiry": jobInquiryAction,
+                  "quote-request": quoteRequestAction,
+                  application: applicationAction,
+                  rsvp: rsvpAction,
+                  unsubscribe: unsubscribeAction,
+                  unlock: unlockAction,
+                }}
+              >
+                <AppLayout>{children}</AppLayout>
+                <ToastIsland />
+              </FormActionProvider>
+            </ThemeProvider>
+          </DeviceTypeProvider>
+        </MotionFeatureProvider>
       </body>
     </html>
   );

@@ -2,14 +2,9 @@ import { getCoreGlobals } from "../lib/globals";
 import { buildProxyUrl, isAssetKey } from "../lib/proxy-url";
 import type { ElementBlock, ResolvedPage, SectionBlock, bgBlock } from "@pb/contracts";
 import { walkBgBlock, walkElement, walkSection } from "./resolved-assets/peblor-asset-tree-walk";
+import { BG_BLOCK_TYPE_STRINGS } from "@pb/contracts";
 
-const BG_BLOCK_TYPES = new Set([
-  "backgroundVideo",
-  "backgroundImage",
-  "backgroundVariable",
-  "backgroundPattern",
-  "backgroundTransition",
-]);
+const BG_BLOCK_TYPES = new Set(BG_BLOCK_TYPE_STRINGS);
 
 export function isBgBlockShape(value: unknown): value is bgBlock {
   return (

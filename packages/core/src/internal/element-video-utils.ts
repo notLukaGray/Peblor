@@ -5,6 +5,8 @@
 
 import type { CSSProperties } from "react";
 import { resolveGraphicLinkHref } from "../lib/url-policy";
+import { resolveResponsiveValue } from "../lib/responsive-value";
+import type { ResponsiveValueOf } from "@pb/contracts/peblor/core/peblor-schemas/responsive-value-schemas";
 
 export type VideoShowWhenState = {
   isPlaying: boolean;
@@ -132,7 +134,8 @@ export type VideoSourceSupportProbe = {
 function srcPathname(src: string): string {
   try {
     return new URL(src, "https://local.invalid").pathname.toLowerCase();
-  } catch {
+  } catch (err) {
+    console.warn("[pb-core] Failed to parse video source URL", src, err);
     return src.split(/[?#]/, 1)[0]?.toLowerCase() ?? "";
   }
 }
@@ -218,14 +221,10 @@ export function choosePreferredVideoSource(
 
 /** Resolve objectFit when it may be a responsive tuple; returns single value. */
 function resolveObjectFit(
-  objectFit: ElementVideoObjectFit | [ElementVideoObjectFit, ElementVideoObjectFit],
+  objectFit: ResponsiveValueOf<ElementVideoObjectFit>,
   isMobile = false
 ): ElementVideoObjectFit {
-  return Array.isArray(objectFit)
-    ? isMobile
-      ? objectFit[0]
-      : (objectFit[1] ?? objectFit[0])
-    : objectFit;
+  return resolveResponsiveValue(objectFit, isMobile) ?? "cover";
 }
 
 /**
@@ -234,7 +233,7 @@ function resolveObjectFit(
  */
 export function getElementVideoInnerStyle(
   baseStyle: CSSProperties,
-  objectFit: ElementVideoObjectFit | [ElementVideoObjectFit, ElementVideoObjectFit]
+  objectFit: ResponsiveValueOf<ElementVideoObjectFit>
 ): CSSProperties {
   const fit = resolveObjectFit(objectFit);
   if (fit === "fillWidth") return { ...baseStyle, height: "auto", alignItems: "stretch" };
@@ -242,12 +241,12 @@ export function getElementVideoInnerStyle(
   return baseStyle;
 }
 
-/** Video element CSS by objectFit (and optional objectPosition). Accepts responsive tuple; uses first value. */
+/** Video element CSS by objectFit (and optional objectPosition). Accepts any responsive shape; uses the mobile value. */
 export function getElementVideoVideoStyle(
-  objectFit: ElementVideoObjectFit | [ElementVideoObjectFit, ElementVideoObjectFit],
+  objectFit: ResponsiveValueOf<ElementVideoObjectFit>,
   objectPosition?: string
 ): CSSProperties {
-  const fit = Array.isArray(objectFit) ? objectFit[0] : objectFit;
+  const fit = resolveObjectFit(objectFit, true);
   const base: CSSProperties = { display: "block", maxWidth: "100%", maxHeight: "100%" };
   if (fit === "cover" || fit === "contain") {
     return {

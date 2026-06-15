@@ -1,5 +1,8 @@
 {
   "pages": {
-    "profile": ["profile_intro", "profile_footer"]
+    "presets/*": ["*"],
+    "work/*": ["*"],
+    "unlock/*": ["*"],
+    "profile": ["profile_intro", "profile_footer", "profile_hero", "profile_links"]
   }
 }

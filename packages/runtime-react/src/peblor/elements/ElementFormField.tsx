@@ -1,15 +1,14 @@
 "use client";
 
-import { useMemo, useRef, useState, useCallback, type CSSProperties } from "react";
+import { useRef, useState, useCallback, type CSSProperties } from "react";
 import type { ElementBlock, FormFieldBlock } from "@pb/contracts/types";
 import { getElementLayoutStyle } from "@pb/core/layout";
-import { resolveResponsiveValue } from "@pb/runtime-react/core/lib/responsive-value";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
 import { useDeviceType } from "@pb/runtime-react/core/providers/device-type-provider";
 import { firePeblorAction } from "@/peblor/triggers";
 import { SectionGlassEffect } from "@/peblor/section/stack/SectionGlassEffect";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
-import { resolveThemeStyleObject, resolveThemeValueDeep } from "@/peblor/theme/theme-string";
-import { coerceSectionEffects } from "@/peblor/elements/ElementModule/element-module-style-utils";
+import { lowerThemeStyleObject } from "@/peblor/theme/theme-string";
+import { useElementEffects } from "@/peblor/elements/Shared/use-element-effects";
 import { FormFieldRenderer } from "../form-fields/FormFieldRenderer";
 import type { FormFieldValue } from "../form-fields/FormFieldRenderer";
 
@@ -19,12 +18,12 @@ export function ElementFormField({
   field,
   width,
   height,
-  align,
+  selfAlign,
   marginTop,
   marginBottom,
   marginLeft,
   marginRight,
-  zIndex,
+  layer,
   constraints,
   effects,
   wrapperStyle,
@@ -32,12 +31,11 @@ export function ElementFormField({
   blendMode,
   boxShadow,
   filter,
-  backdropFilter,
+  bgBlur,
   hidden,
   interactions,
 }: Props) {
   const { isMobile } = useDeviceType();
-  const themeMode = usePeblorThemeMode();
   const surfaceRef = useRef<HTMLElement | null>(null);
   const [value, setValue] = useState<FormFieldValue>(field.value ?? "");
 
@@ -45,15 +43,9 @@ export function ElementFormField({
     setValue(next);
   }, []);
 
-  const resolvedEffects = useMemo(
-    () => resolveThemeValueDeep(effects, themeMode) as typeof effects,
-    [effects, themeMode]
-  );
-  const surfaceEffects = useMemo(() => coerceSectionEffects(resolvedEffects), [resolvedEffects]);
-  const hasGlassEffect = (surfaceEffects ?? []).some((effect) => effect.type === "glass");
-  const resolvedWrapperStyle = resolveThemeStyleObject(
-    wrapperStyle as Record<string, unknown> | undefined,
-    themeMode
+  const { resolvedEffects: surfaceEffects, hasGlassEffect } = useElementEffects(effects);
+  const resolvedWrapperStyle = lowerThemeStyleObject(
+    wrapperStyle as Record<string, unknown> | undefined
   );
 
   const layoutStyle = getElementLayoutStyle(
@@ -62,20 +54,20 @@ export function ElementFormField({
         | string
         | undefined,
       height: height as string | undefined,
-      align: align as "left" | "center" | "right" | undefined,
+      zIndex: layer,
+      selfAlign: selfAlign as "left" | "center" | "right" | undefined,
       marginTop: marginTop as string | undefined,
       marginBottom: marginBottom as string | undefined,
       marginLeft: marginLeft as string | undefined,
       marginRight: marginRight as string | undefined,
-      zIndex,
       constraints,
-      effects: resolvedEffects,
+      effects: surfaceEffects,
       wrapperStyle: resolvedWrapperStyle as Record<string, string | number> | undefined,
       opacity,
       blendMode,
       boxShadow,
       filter,
-      backdropFilter,
+      bgBlur,
       hidden,
     } as Parameters<typeof getElementLayoutStyle>[0],
     isMobile

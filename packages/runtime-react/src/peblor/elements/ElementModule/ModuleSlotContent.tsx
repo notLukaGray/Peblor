@@ -9,12 +9,11 @@ import type {
 } from "@pb/contracts/peblor/core/peblor-schemas";
 import { ElementRenderer } from "@/peblor/elements/Shared/ElementRenderer";
 import { generateElementKey } from "@pb/core/keys";
-import { motion } from "@/peblor/integrations/framer-motion";
+import { m } from "@/peblor/integrations/framer-motion";
 import type { Easing } from "@/peblor/integrations/framer-motion";
 import { MOTION_DEFAULTS } from "@pb/contracts/peblor/core/peblor-motion-defaults";
 import { SlotDefaultWrapperStyleContext, SlotDefinitionsContext } from "./ModuleSlotContext";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
-import { resolveThemeStyleObject } from "@/peblor/theme/theme-string";
+import { lowerThemeStyleObject } from "@/peblor/theme/theme-string";
 
 const MOTION_DISPLAY_CONTENTS: CSSProperties = { display: "contents" };
 
@@ -44,7 +43,6 @@ function SlotElement({
   defaultWrapperStyle: CssInlineStyle;
   isModuleGroup: boolean;
 }) {
-  const themeMode = usePeblorThemeMode();
   const action = (block as ElementBlock & { action?: string }).action;
   const actionPayload = (block as ElementBlock & { actionPayload?: number }).actionPayload;
   const handler = getActionHandler(action, actionPayload);
@@ -53,8 +51,8 @@ function SlotElement({
   const groupLayout = isModuleGroup
     ? (block as ElementBlock & { flex?: string; width?: string })
     : null;
-  const resolvedElementWrapperStyle = resolveThemeStyleObject(elWrapperStyle, themeMode);
-  const resolvedDefaultWrapperStyle = resolveThemeStyleObject(defaultWrapperStyle, themeMode);
+  const resolvedElementWrapperStyle = lowerThemeStyleObject(elWrapperStyle);
+  const resolvedDefaultWrapperStyle = lowerThemeStyleObject(defaultWrapperStyle);
   const wrapperStyle: CSSProperties = isModuleGroup
     ? {
         ...(resolvedElementWrapperStyle as CSSProperties),
@@ -72,7 +70,7 @@ function SlotElement({
           e.stopPropagation();
           handler();
         }}
-        className="flex items-center justify-center shrink-0 text-white rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+        className="flex text-white rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--pb-focus-ring-color,currentColor)]"
         style={{ cursor: "pointer", ...wrapperStyle }}
         aria-label={action ?? "Control"}
       >
@@ -83,11 +81,7 @@ function SlotElement({
   return (
     <div
       key={generateElementKey(block, index)}
-      className={
-        isModuleGroup
-          ? "flex items-center justify-center min-w-0"
-          : "shrink-0 flex items-center justify-center"
-      }
+      className={isModuleGroup ? "flex min-w-0" : "flex"}
       style={wrapperStyle}
     >
       {elContent}
@@ -127,11 +121,8 @@ export function ModuleSlotContent({
           : undefined))
       : undefined;
     const mc = MOTION_DEFAULTS.motionComponent;
-    const initial = (preset?.initial ?? mc.initial) as Record<string, string | number | number[]>;
-    const animateBase = (preset?.animate ?? mc.animate) as Record<
-      string,
-      string | number | number[]
-    >;
+    const from = (preset?.initial ?? mc.from) as Record<string, string | number | number[]>;
+    const to = (preset?.animate ?? mc.to) as Record<string, string | number | number[]>;
     return {
       container: {
         initial: {},
@@ -143,9 +134,9 @@ export function ModuleSlotContent({
         },
       },
       item: {
-        initial,
+        initial: from,
         animate: {
-          ...animateBase,
+          ...to,
           transition: {
             duration: elementRevealMs / 1000,
             ease: easing as Easing,
@@ -159,18 +150,18 @@ export function ModuleSlotContent({
     <SlotDefinitionsContext.Provider value={slotDefinitions}>
       <SlotDefaultWrapperStyleContext.Provider value={defaultWrapperStyle}>
         {hasReveal ? (
-          <motion.div
+          <m.div
             variants={staggerVariants.container}
             initial="initial"
             animate="animate"
             style={MOTION_DISPLAY_CONTENTS}
           >
             {items.map((child, i) => (
-              <motion.div key={i} variants={staggerVariants.item} style={MOTION_DISPLAY_CONTENTS}>
+              <m.div key={i} variants={staggerVariants.item} style={MOTION_DISPLAY_CONTENTS}>
                 {child}
-              </motion.div>
+              </m.div>
             ))}
-          </motion.div>
+          </m.div>
         ) : (
           items
         )}

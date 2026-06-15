@@ -1,0 +1,19 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "bg-pattern-diag — Preset Demo",
+  "description": "Diagonal line pattern with entrance fade and breathing opacity loop",
+  "presets": ["demo", "bg"],
+  "sectionOrder": ["nav-header", "hero"],
+  "bgKey": "bg-pattern-diag",
+  "scroll": {
+    "smooth": false,
+    "lockBody": true,
+    "scrollX": "hidden",
+    "scrollY": "hidden"
+  },
+  "definitions": {
+    "bg-pattern-diag": {
+      "preset": "bg-pattern-diag"
+    }
+  }
+}

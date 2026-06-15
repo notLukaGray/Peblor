@@ -115,6 +115,242 @@ describe("node-to-element annotations", () => {
     );
   });
 
+  it("preserves unsupported element type intent in meta when annotated", async () => {
+    const ctx = makeCtx();
+    const result = await convertNode(
+      {
+        type: "STICKY",
+        name: "Narration [pb: type=audio]",
+        width: 220,
+        height: 120,
+        x: 10,
+        y: 20,
+        visible: true,
+      } as unknown as SceneNode,
+      ctx
+    );
+
+    expect(result).not.toBeNull();
+    const meta = result as {
+      meta?: { figma?: { inference?: { kind?: string }; fallbackReason?: string } };
+    };
+    expect(meta.meta?.figma?.inference?.kind).toBe("elementAudio");
+    expect(meta.meta?.figma?.fallbackReason).toBe("annotation-intent:elementAudio");
+    expect(ctx.warnings.some((w) => w.includes("requested elementAudio"))).toBe(true);
+  });
+
+  it("converts annotated audio element with src", async () => {
+    const ctx = makeCtx();
+    const result = await convertNode(
+      {
+        type: "RECTANGLE",
+        name: "Voiceover [pb: type=audio, src=/audio/voice.mp3, controls=true, preload=metadata]",
+        width: 320,
+        height: 48,
+        x: 0,
+        y: 0,
+        visible: true,
+      } as unknown as SceneNode,
+      ctx
+    );
+    const element = result as { type?: string; src?: string; controls?: boolean; preload?: string };
+    expect(element.type).toBe("elementAudio");
+    expect(element.src).toBe("/audio/voice.mp3");
+    expect(element.controls).toBe(true);
+    expect(element.preload).toBe("metadata");
+  });
+
+  it("converts annotated tabs element", async () => {
+    const ctx = makeCtx();
+    const result = await convertNode(
+      {
+        type: "FRAME",
+        name: "Tabs [pb: type=tabs, tabs=Overview|Specs|FAQ, activeTab=1]",
+        width: 640,
+        height: 240,
+        x: 0,
+        y: 0,
+        visible: true,
+      } as unknown as SceneNode,
+      ctx
+    );
+    const element = result as {
+      type?: string;
+      tabs?: Array<{ label: string }>;
+      activeTab?: number;
+    };
+    expect(element.type).toBe("elementTabs");
+    expect(element.tabs?.map((tab) => tab.label)).toEqual(["Overview", "Specs", "FAQ"]);
+    expect(element.activeTab).toBe(1);
+  });
+
+  it("converts annotated tooltip element", async () => {
+    const ctx = makeCtx();
+    const result = await convertNode(
+      {
+        type: "ELLIPSE",
+        name: "Tip Dot [pb: type=tooltip, content=Helpful info, placement=top, arrow=true]",
+        width: 24,
+        height: 24,
+        x: 0,
+        y: 0,
+        visible: true,
+      } as unknown as SceneNode,
+      ctx
+    );
+    const element = result as {
+      type?: string;
+      content?: string;
+      placement?: string;
+      arrow?: boolean;
+    };
+    expect(element.type).toBe("elementTooltip");
+    expect(element.content).toBe("Helpful info");
+    expect(element.placement).toBe("top");
+    expect(element.arrow).toBe(true);
+  });
+
+  it("converts annotated lottie element with src", async () => {
+    const ctx = makeCtx();
+    const result = await convertNode(
+      {
+        type: "FRAME",
+        name: "Loader [pb: type=lottie, src=/anim/loader.json, autoplay=true, loop=true]",
+        width: 180,
+        height: 180,
+        x: 0,
+        y: 0,
+        visible: true,
+      } as unknown as SceneNode,
+      ctx
+    );
+    const element = result as { type?: string; src?: string; autoplay?: boolean; loop?: boolean };
+    expect(element.type).toBe("elementLottie");
+    expect(element.src).toBe("/anim/loader.json");
+    expect(element.autoplay).toBe(true);
+    expect(element.loop).toBe(true);
+  });
+
+  it("converts annotated counter element with defaults", async () => {
+    const ctx = makeCtx();
+    const result = await convertNode(
+      {
+        type: "FRAME",
+        name: "KPI [pb: type=counter, target=2500, prefix=$, suffix= ARR]",
+        width: 240,
+        height: 80,
+        x: 0,
+        y: 0,
+        visible: true,
+      } as unknown as SceneNode,
+      ctx
+    );
+    const element = result as {
+      type?: string;
+      target?: number;
+      tween?: { duration?: number };
+      prefix?: string;
+    };
+    expect(element.type).toBe("elementCounter");
+    expect(element.target).toBe(2500);
+    expect(element.tween?.duration).toBe(1200);
+    expect(element.prefix).toBe("$");
+  });
+
+  it("converts annotated marquee element", async () => {
+    const ctx = makeCtx();
+    const result = await convertNode(
+      {
+        type: "FRAME",
+        name: "Ticker [pb: type=marquee, text=Breaking News, direction=left, speed=40]",
+        width: 500,
+        height: 48,
+        x: 0,
+        y: 0,
+        visible: true,
+      } as unknown as SceneNode,
+      ctx
+    );
+    const element = result as { type?: string; text?: string; direction?: string; speed?: number };
+    expect(element.type).toBe("elementMarquee");
+    expect(element.text).toBe("Breaking News");
+    expect(element.direction).toBe("left");
+    expect(element.speed).toBe(40);
+  });
+
+  it("converts annotated drag element", async () => {
+    const ctx = makeCtx();
+    const result = await convertNode(
+      {
+        type: "FRAME",
+        name: "Card Drag [pb: type=drag, axis=x, snapBack=true]",
+        width: 300,
+        height: 180,
+        x: 0,
+        y: 0,
+        visible: true,
+      } as unknown as SceneNode,
+      ctx
+    );
+    const element = result as { type?: string; axis?: string; snapBack?: boolean };
+    expect(element.type).toBe("elementDrag");
+    expect(element.axis).toBe("x");
+    expect(element.snapBack).toBe(true);
+  });
+
+  it("converts annotated range element", async () => {
+    const ctx = makeCtx();
+    const result = await convertNode(
+      {
+        type: "FRAME",
+        name: "Volume [pb: type=range, min=0, max=100, step=5, value=30]",
+        width: 240,
+        height: 24,
+        x: 0,
+        y: 0,
+        visible: true,
+      } as unknown as SceneNode,
+      ctx
+    );
+    const element = result as {
+      type?: string;
+      min?: number;
+      max?: number;
+      step?: number;
+      defaultValue?: number;
+    };
+    expect(element.type).toBe("elementRange");
+    expect(element.min).toBe(0);
+    expect(element.max).toBe(100);
+    expect(element.step).toBe(5);
+    expect(element.defaultValue).toBe(30);
+  });
+
+  it("converts annotated formfield element", async () => {
+    const ctx = makeCtx();
+    const result = await convertNode(
+      {
+        type: "FRAME",
+        name: "Email Field [pb: type=formfield, fieldType=email, name=email, placeholder=you@site.com, required=true]",
+        width: 320,
+        height: 48,
+        x: 0,
+        y: 0,
+        visible: true,
+      } as unknown as SceneNode,
+      ctx
+    );
+    const element = result as {
+      type?: string;
+      field?: { type?: string; fieldType?: string; name?: string; required?: boolean };
+    };
+    expect(element.type).toBe("elementFormField");
+    expect(element.field?.type).toBe("formField");
+    expect(element.field?.fieldType).toBe("email");
+    expect(element.field?.name).toBe("email");
+    expect(element.field?.required).toBe(true);
+  });
+
   it("infers frame buttons from naming convention without annotation", async () => {
     (globalThis as { figma?: { mixed: symbol } }).figma = { mixed: Symbol("mixed") };
     const ctx = makeCtx();

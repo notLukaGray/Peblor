@@ -1,0 +1,19 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "bg-image-darken — Preset Demo",
+  "description": "Full-bleed photo with darkening overlay and parallax drift",
+  "presets": ["demo", "bg"],
+  "sectionOrder": ["nav-header", "hero", "scroll-body"],
+  "bgKey": "bg-image-darken",
+  "scroll": {
+    "smooth": true,
+    "lockBody": false,
+    "scrollX": "hidden",
+    "scrollY": "auto"
+  },
+  "definitions": {
+    "bg-image-darken": {
+      "preset": "bg-image-darken"
+    }
+  }
+}

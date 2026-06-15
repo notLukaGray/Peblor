@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
-import { resolveResponsiveValue } from "@pb/runtime-react/core/lib/responsive-value";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
+import type { ResponsiveValueOf } from "@pb/contracts/peblor/core/peblor-schemas/responsive-value-schemas";
 import { useDeviceType } from "@pb/runtime-react/core/providers/device-type-provider";
 import {
   type ColumnGapsInput,
@@ -59,8 +60,8 @@ type UseResolvedColumnLayoutInputsParams<T extends ElementWithId> = {
   gridMode?: GridModeInput;
   itemLayout?: ItemLayoutInput;
   elementOrder: ElementOrderInput;
-  contentWidth?: string | [string, string];
-  contentHeight?: string | [string, string];
+  contentWidth?: ResponsiveValueOf<string>;
+  contentHeight?: ResponsiveValueOf<string>;
 };
 
 export function useResolvedColumnLayoutInputs<T extends ElementWithId>({

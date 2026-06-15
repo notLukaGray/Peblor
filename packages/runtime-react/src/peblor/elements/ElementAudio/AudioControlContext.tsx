@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useContext } from "react";
+import { createContext, useContext, useSyncExternalStore } from "react";
+import { getBroadcastAudioControl, subscribeBroadcastAudioControl } from "./audio-control-registry";
 
 export type FeedbackType = "play" | "pause" | "seekBack" | "seekForward";
 
@@ -24,5 +25,11 @@ export type AudioControlContextValue = {
 export const AudioControlContext = createContext<AudioControlContextValue | null>(null);
 
 export function useAudioControlContext(): AudioControlContextValue | null {
-  return useContext(AudioControlContext);
+  const fromTree = useContext(AudioControlContext);
+  const fromBroadcast = useSyncExternalStore(
+    subscribeBroadcastAudioControl,
+    getBroadcastAudioControl,
+    () => null
+  );
+  return fromTree ?? fromBroadcast;
 }

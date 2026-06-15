@@ -1,10 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useId, useMemo, useRef, type CSSProperties } from "react";
+import { useCallback, useEffect, useId, useRef, type CSSProperties } from "react";
 import { useDeviceType } from "@pb/runtime-react/core/providers/device-type-provider";
 import type { ElementBlock } from "@pb/contracts/types";
 import { getPbContentGuidelines } from "@pb/core/host";
-import { resolveResponsiveValue } from "@pb/runtime-react/core/lib/responsive-value";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
 import {
   scaleRadiusForDensity,
   scaleSpaceShorthandForDensity,
@@ -18,18 +18,18 @@ import {
   resolveFrameGapCss,
   resolveFrameRowGapCss,
 } from "@pb/core/layout";
-import { resolveThemeStyleObject, resolveThemeValueDeep } from "@/peblor/theme/theme-string";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
+import { lowerThemeStyleObject, lowerThemeValueDeep } from "@/peblor/theme/theme-string";
 import { SectionGlassEffect } from "@/peblor/section/stack/SectionGlassEffect";
 import {
   buildBorderGradientOverlayStyle,
-  coerceSectionEffects,
   type BorderGradient,
 } from "@/peblor/elements/ElementModule/element-module-style-utils";
+import { useElementEffects } from "@/peblor/elements/Shared/use-element-effects";
 import { useVideoControlContext } from "@/peblor/elements/ElementVideo/VideoControlContext";
 import { SectionDefinitionsContext } from "@/peblor/elements/ElementModule/ModuleSlotContext";
 import { ElementErrorBoundary } from "@/peblor/SectionErrorBoundary";
 import { ElementRenderer } from "@/peblor/elements/Shared/ElementRenderer";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 import {
   DEFAULT_SNAP_DURATION_MS,
   shouldLoopInfiniteScroll,
@@ -44,7 +44,6 @@ import {
 import type { InfiniteScrollProps } from "./ElementInfiniteScroll/infinite-scroll-types";
 import { usePrefersReducedMotion } from "./ElementInfiniteScroll/use-prefers-reduced-motion";
 import { useInfiniteScrollGestures } from "./ElementInfiniteScroll/use-infinite-scroll-gestures";
-import { useInfiniteScrollLoopBounds } from "./ElementInfiniteScroll/use-infinite-scroll-loop-bounds";
 import { useInfiniteScrollSelectionPublish } from "./ElementInfiniteScroll/use-infinite-scroll-selection-publish";
 import { useInfiniteScrollSnap } from "./ElementInfiniteScroll/use-infinite-scroll-snap";
 
@@ -56,7 +55,7 @@ export function ElementInfiniteScroll({
   minHeight,
   maxWidth,
   maxHeight,
-  align,
+  selfAlign,
   marginTop,
   marginBottom,
   marginLeft,
@@ -75,7 +74,6 @@ export function ElementInfiniteScroll({
   selectedValues,
   snapAlign = "center",
   centerOnClick = true,
-  wheelLockMs,
   snapDurationMs = DEFAULT_SNAP_DURATION_MS,
   activeScale = 1,
   inactiveScale = 1,
@@ -83,8 +81,8 @@ export function ElementInfiniteScroll({
   inactiveOpacity = 1,
   activeItemStyle,
   inactiveItemStyle,
-  alignItems,
-  justifyContent,
+  align,
+  distribute,
   gap,
   rowGap,
   columnGap,
@@ -93,35 +91,27 @@ export function ElementInfiniteScroll({
   paddingRight,
   paddingBottom,
   paddingLeft,
+  ...rest
 }: InfiniteScrollProps) {
+  const ariaLabelProp = (rest as { ariaLabel?: string }).ariaLabel;
   const pbContentGuidelines = getPbContentGuidelines();
   const { isMobile } = useDeviceType();
-  const themeMode = usePeblorThemeMode();
   const prefersReducedMotion = usePrefersReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
   const listboxInstanceId = useId();
 
-  const resolvedWrapperStyle = resolveThemeStyleObject(
-    wrapperStyle as Record<string, unknown> | undefined,
-    themeMode
+  const resolvedWrapperStyle = lowerThemeStyleObject(
+    wrapperStyle as Record<string, unknown> | undefined
   ) as CSSProperties | undefined;
-  const resolvedBorderGradient = resolveThemeValueDeep(borderGradient, themeMode) as
-    | BorderGradient
-    | undefined;
-  const resolvedActiveItemStyle = resolveThemeStyleObject(
-    activeItemStyle as Record<string, unknown> | undefined,
-    themeMode
+  const resolvedBorderGradient = lowerThemeValueDeep(borderGradient) as BorderGradient | undefined;
+  const resolvedActiveItemStyle = lowerThemeStyleObject(
+    activeItemStyle as Record<string, unknown> | undefined
   ) as CSSProperties | undefined;
-  const resolvedInactiveItemStyle = resolveThemeStyleObject(
-    inactiveItemStyle as Record<string, unknown> | undefined,
-    themeMode
+  const resolvedInactiveItemStyle = lowerThemeStyleObject(
+    inactiveItemStyle as Record<string, unknown> | undefined
   ) as CSSProperties | undefined;
-  const groupEffects = useMemo(
-    () => coerceSectionEffects(resolveThemeValueDeep(effects, themeMode)),
-    [effects, themeMode]
-  );
-  const hasGlassEffect = (groupEffects ?? []).some((effect) => effect.type === "glass");
+  const { resolvedEffects: groupEffects, hasGlassEffect } = useElementEffects(effects);
   const videoCtx = useVideoControlContext();
   const resolveShowWhen = useCallback(
     (showWhen: string | undefined) => videoCtx?.resolveShowWhen(showWhen) ?? true,
@@ -142,14 +132,6 @@ export function ElementInfiniteScroll({
   } = useInfiniteScrollBlocks(section, resolveShowWhen, selectedValues, initialIndex, loop);
 
   const effectiveLoop = shouldLoopInfiniteScroll(loop, selectableBaseIndices.length);
-
-  const { normalizeLoopScrollPosition, scheduleNormalizeRetry } = useInfiniteScrollLoopBounds({
-    axis: scrollDirection,
-    containerRef,
-    itemCount,
-    itemRefs,
-    loop: effectiveLoop,
-  });
 
   const {
     activeBaseIndex,
@@ -173,14 +155,11 @@ export function ElementInfiniteScroll({
     itemCount,
     itemRefs,
     loop: effectiveLoop,
-    normalizeLoopScrollPosition,
     normalizedInitialIndex,
     prefersReducedMotion,
-    scheduleNormalizeRetry,
     selectableBaseIndices,
     selectableRenderedIndices,
     snapAlign,
-    snapDurationMs,
   });
 
   const { onKeyDown, onPointerCancel, onPointerDown, onPointerUp } = useInfiniteScrollGestures({
@@ -189,12 +168,12 @@ export function ElementInfiniteScroll({
     containerRef,
     goToBaseIndex,
     itemCount,
+    loop: effectiveLoop,
     markMoving: onScroll,
     selectableBaseIndices,
     setPointerActive,
     stepBy,
     stepByPage,
-    wheelLockMs,
   });
 
   useInfiniteScrollSelectionPublish({
@@ -245,8 +224,8 @@ export function ElementInfiniteScroll({
   const resolvedInactiveScale = resolveResponsiveValue(inactiveScale, isMobile) ?? 1;
   const resolvedActiveOpacity = resolveResponsiveValue(activeOpacity, isMobile) ?? 1;
   const resolvedInactiveOpacity = resolveResponsiveValue(inactiveOpacity, isMobile) ?? 1;
-  const resolvedAlignItems = resolveResponsiveValue(alignItems, isMobile);
-  const resolvedJustifyContent = resolveResponsiveValue(justifyContent, isMobile);
+  const resolvedAlignItems = resolveResponsiveValue(align, isMobile);
+  const resolvedDistribute = resolveResponsiveValue(distribute, isMobile);
   const resolvedGapValue = resolveResponsiveValue(gap, isMobile);
   const resolvedPadding = resolveResponsiveValue(padding, isMobile);
   const resolvedPaddingTop = resolveResponsiveValue(paddingTop, isMobile);
@@ -268,7 +247,7 @@ export function ElementInfiniteScroll({
         ...(maxWidth != null ? { maxWidth: String(maxWidth) } : {}),
         ...(maxHeight != null ? { maxHeight: String(maxHeight) } : {}),
       },
-      align,
+      selfAlign,
       marginTop,
       marginBottom,
       marginLeft,
@@ -317,7 +296,7 @@ export function ElementInfiniteScroll({
     framePaddingFallback,
     gap: resolvedGap,
     justifyContent: normalizeFlexJustifyContentValue(
-      coalesceEmptyString(resolvedJustifyContent) ?? pbContentGuidelines.frameJustifyContentDefault
+      coalesceEmptyString(resolvedDistribute) ?? pbContentGuidelines.frameJustifyContentDefault
     ) as CSSProperties["justifyContent"],
     padding: resolvedPadding,
     paddingBottom: resolvedPaddingBottom,
@@ -357,8 +336,7 @@ export function ElementInfiniteScroll({
         onScroll={onScroll}
         tabIndex={0}
         role="listbox"
-        aria-roledescription="carousel"
-        aria-label="Project carousel"
+        aria-label={ariaLabelProp ?? globals.stringsAriaLabelCarousel}
         aria-orientation={scrollDirection}
         aria-activedescendant={
           itemCount > 0 ? `${listboxInstanceId}-opt-${committedRenderedIndex}` : undefined
@@ -373,7 +351,6 @@ export function ElementInfiniteScroll({
               const visualScale = isActive ? resolvedActiveScale : resolvedInactiveScale;
               const visualOpacity = isActive ? resolvedActiveOpacity : resolvedInactiveOpacity;
               const isSelectable = selectableBaseIndexSet.has(baseIndex);
-
               const blockLabel =
                 (block as { label?: string }).label ||
                 (block as { id?: string }).id ||

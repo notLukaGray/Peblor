@@ -35,7 +35,8 @@ function findCapabilityFiles(root: string): Array<{ file: string; id: string }> 
     let entries: fs.Dirent[];
     try {
       entries = fs.readdirSync(dir, { withFileTypes: true });
-    } catch {
+    } catch (err) {
+      console.warn("[pb-cli] Failed to list capability directory", dir, err);
       return;
     }
     for (const entry of entries) {
@@ -70,7 +71,8 @@ export async function runListCapabilities(args: string[], io: CommandIo): Promis
       try {
         const data = JSON.parse(fs.readFileSync(file, "utf8")) as { type?: string };
         return data.type === capType;
-      } catch {
+      } catch (err) {
+        console.warn("[pb-cli] Failed to parse capability file for type filter", file, err);
         return false;
       }
     });

@@ -98,10 +98,14 @@ function routeFromManifestPath(manifestPath: string): string {
 
 function extractManifestObject(manifestContent: string): Record<string, unknown> | null {
   const context: { globalThis: { __RSC_MANIFEST?: Record<string, unknown> } } = { globalThis: {} };
-  vm.runInNewContext(manifestContent, context, {
-    timeout: 2000,
-    filename: "client-reference-manifest.js",
-  });
+  try {
+    vm.runInNewContext(manifestContent, context, {
+      timeout: 2000,
+      filename: "client-reference-manifest.js",
+    });
+  } catch {
+    return null;
+  }
 
   const map = context.globalThis.__RSC_MANIFEST;
   if (!map) return null;
@@ -232,7 +236,7 @@ function selectRoutes(payloads: Record<string, RoutePayload>): RouteMeasurement[
 
   for (const route of Object.keys(payloads).sort()) {
     if (added.has(route) || !route.startsWith("/work/")) continue;
-    measurements.push(routeMeasurement(route, payloads[route]));
+    measurements.push(routeMeasurement(route, payloads[route]!));
     added.add(route);
   }
 

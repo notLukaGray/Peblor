@@ -1,0 +1,17 @@
+{
+  "definitions": {
+    "hero-badge": {
+      "preset": "demo-hero-badge",
+      "text": "backgroundVariable · entrance"
+    },
+    "hero-title": {
+      "preset": "demo-hero-title",
+      "text": "bg-pattern-grid"
+    },
+    "hero-desc": {
+      "preset": "demo-hero-description",
+      "text": "Pure CSS crosshatch grid via two overlapping linear-gradients at 40px tile. Fades in on mount — the base appears first, then the grid materialises."
+    }
+  },
+  "preset": "demo-hero-100vh"
+}

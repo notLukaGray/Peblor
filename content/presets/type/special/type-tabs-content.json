@@ -1,0 +1,51 @@
+{
+  "type": "elementTabs",
+  "width": "100%",
+  "tabGap": "0.4rem",
+  "tabPadding": "0.35rem 0.9rem",
+  "tabColor": "color-mix(in oklab, var(--pb-on-secondary) 55%, transparent)",
+  "tabActiveColor": "var(--pb-on-secondary)",
+  "tabActiveBackground": "color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)",
+  "tabFontSize": "13px",
+  "contentAnimation": "fade",
+  "contentPadding": "1.5rem 0 0",
+  "keyboardNav": true,
+  "tabs": [
+    {
+      "label": "Scale",
+      "elements": [
+        {
+          "type": "elementBody",
+          "level": 3,
+          "text": "Scale maps hierarchy from H1 to H5 and lead to fine body copy.",
+          "wordWrap": true,
+          "color": "color-mix(in oklab, var(--pb-on-secondary) 70%, transparent)"
+        }
+      ]
+    },
+    {
+      "label": "Motion",
+      "elements": [
+        {
+          "type": "elementBody",
+          "level": 3,
+          "text": "Motion sets rhythm through entrance presets, marquee flow, and stagger timing.",
+          "wordWrap": true,
+          "color": "color-mix(in oklab, var(--pb-on-secondary) 70%, transparent)"
+        }
+      ]
+    },
+    {
+      "label": "Special",
+      "elements": [
+        {
+          "type": "elementBody",
+          "level": 3,
+          "text": "Special treatments include tooltip context, link systems, and accent framing.",
+          "wordWrap": true,
+          "color": "color-mix(in oklab, var(--pb-on-secondary) 70%, transparent)"
+        }
+      ]
+    }
+  ]
+}

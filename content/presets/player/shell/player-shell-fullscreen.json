@@ -1,0 +1,48 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "align": "stretch",
+  "gap": "0",
+  "width": "100vw",
+  "height": "100dvh",
+  "scroll": "hidden",
+  "wrapperStyle": {
+    "position": "fixed",
+    "inset": "0",
+    "layer": "900"
+  },
+  "section": {
+    "elementOrder": ["player-surface", "player-hud"],
+    "definitions": {
+      "player-surface": {
+        "type": "elementGroup",
+        "width": "100%",
+        "height": "100%",
+        "section": {
+          "elementOrder": [],
+          "definitions": {}
+        }
+      },
+      "player-hud": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "row",
+        "align": "center",
+        "gap": "0.75rem",
+        "padding": "0.75rem 1.5rem",
+        "width": "100%",
+        "wrapperStyle": {
+          "position": "absolute",
+          "bottom": "0",
+          "left": "0",
+          "right": "0"
+        },
+        "section": {
+          "elementOrder": [],
+          "definitions": {}
+        }
+      }
+    }
+  }
+}

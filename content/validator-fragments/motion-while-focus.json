@@ -1,5 +1,5 @@
 {
-  "whileFocus": {
+  "onFocus": {
     "scale": 1.02,
     "opacity": 1
   },

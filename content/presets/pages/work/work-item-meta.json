@@ -1,0 +1,16 @@
+{
+  "type": "elementGroup",
+  "width": "auto",
+  "flex": "1 1 0",
+  "display": "flex",
+  "flow": "column",
+  "gap": {
+    "base": "0.05rem",
+    "md": "0.15rem"
+  },
+  "padding": "0",
+  "scroll": "visible",
+  "constraints": {
+    "minWidth": "0"
+  }
+}

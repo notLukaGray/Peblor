@@ -1,4 +1,4 @@
-type CookieAttrs = {
+export type CookieAttrs = {
   name: string;
   value: string;
   maxAge?: number;

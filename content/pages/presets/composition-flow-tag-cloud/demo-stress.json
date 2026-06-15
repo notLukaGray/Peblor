@@ -1,0 +1,60 @@
+{
+  "preset": "composition-flow-tag-cloud",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "900px",
+  "selfAlign": "center",
+  "definitions": {
+    "eyebrow": {
+      "text": "Stress"
+    },
+    "title": {
+      "text": "Long-label cloud under density pressure"
+    },
+    "description": {
+      "text": "This scenario pushes long multi-word tags to validate wrapping, spacing, and tap comfort when labels are verbose and content teams add too many filters at once."
+    },
+    "chips": {
+      "section": {
+        "definitions": {
+          "chip-1": {
+            "label": "Cross-functional Stakeholder Alignment"
+          },
+          "chip-2": {
+            "label": "Internationalization and Locale Fallbacks"
+          },
+          "chip-3": {
+            "label": "Operational Guardrails"
+          },
+          "chip-4": {
+            "label": "Design Token Governance"
+          },
+          "chip-5": {
+            "label": "Real-world QA Notes"
+          },
+          "chip-6": {
+            "label": "Evidence-based Prioritization"
+          },
+          "chip-7": {
+            "label": "Long Tail Discoverability"
+          },
+          "chip-8": {
+            "label": "Contributor Onboarding"
+          },
+          "chip-9": {
+            "label": "Exception Handling"
+          },
+          "chip-10": {
+            "label": "Mobile Touch Ergonomics"
+          }
+        }
+      }
+    }
+  },
+  "marginBottom": {
+    "base": "4rem",
+    "md": "8rem"
+  }
+}

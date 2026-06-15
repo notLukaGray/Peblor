@@ -1,0 +1,16 @@
+{
+  "type": "elementBody",
+  "level": 5,
+  "text": "",
+  "textTransform": "uppercase",
+  "letterSpacing": "0.08em",
+  "color": "color-mix(in oklab, var(--pb-on-secondary) 62%, transparent)",
+  "wordWrap": false,
+  "wrapperStyle": {
+    "display": "inline-flex",
+    "background": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)",
+    "padding": "0.25rem 0.75rem",
+    "borderRadius": "999px"
+  }
+}

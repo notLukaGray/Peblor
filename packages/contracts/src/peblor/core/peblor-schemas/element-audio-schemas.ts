@@ -21,7 +21,11 @@ export const elementAudioSchema = z
     playbackRate: z.number().positive().optional(),
     preload: z.enum(["none", "metadata", "auto"]).optional(),
     showWaveform: z.boolean().optional(),
+    /** Visualization style for the waveform canvas. Default "bars". */
+    waveformMode: z.enum(["bars", "wave", "mirror", "spectrum"]).optional(),
     showTimeDisplay: z.boolean().optional(),
+    /** Override the module container's aspect ratio per-instance. Pass null to use only minHeight. */
+    containerAspectRatio: z.string().nullish(),
     module: z.string().optional(),
     ariaLabel: z.string().optional(),
   })

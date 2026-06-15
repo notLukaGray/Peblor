@@ -1,0 +1,63 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "gap": "0.85rem",
+  "width": "100%",
+  "padding": "1.25rem",
+  "borderRadius": "18px",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+  },
+  "section": {
+    "elementOrder": ["quote", "person"],
+    "definitions": {
+      "quote": {
+        "preset": "type-body-standard",
+        "text": "\"Working with this system is the closest I have come to building at design-tool speed.\""
+      },
+      "person": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "row",
+        "wrap": "wrap",
+        "align": "center",
+        "gap": "0.65rem",
+        "section": {
+          "elementOrder": ["avatar", "meta"],
+          "definitions": {
+            "avatar": {
+              "type": "elementImage",
+              "src": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80&auto=format&fit=crop&crop=face",
+              "alt": "Portrait",
+              "width": "40px",
+              "height": "40px",
+              "objectFit": "cover",
+              "borderRadius": "999px"
+            },
+            "meta": {
+              "type": "elementGroup",
+              "display": "flex",
+              "flow": "column",
+              "gap": "0.1rem",
+              "section": {
+                "elementOrder": ["name", "role"],
+                "definitions": {
+                  "name": {
+                    "preset": "type-h5-meta",
+                    "text": "Person Name"
+                  },
+                  "role": {
+                    "preset": "type-body-fine",
+                    "text": "Role, Company"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

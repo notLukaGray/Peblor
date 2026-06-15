@@ -1,0 +1,184 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "staggerChildren": 0.15,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": [
+    "sec-label",
+    "sec-desc",
+    "selector-row",
+    "detail-grid",
+    "detail-column",
+    "detail-flow"
+  ],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Selector + Detail Reveal"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Click each section header to reveal its detail panel. The visible pattern uses a shared variable to show the active detail."
+    },
+    "selector-row": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": {
+        "base": "column",
+        "md": "row"
+      },
+      "gap": "1rem",
+      "width": "100%",
+      "section": {
+        "elementOrder": ["sel-grid", "sel-column", "sel-flow"],
+        "definitions": {
+          "sel-grid": {
+            "type": "elementButton",
+            "label": "Grid Layout",
+            "level": 3,
+            "copyType": "heading",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "activeDetail",
+              "value": "grid"
+            },
+            "wrapperPadding": "0.75rem 1.5rem",
+            "wrapperBorderRadius": "8px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-accent) 12%, transparent)",
+            "width": "100%",
+            "selfAlign": "center"
+          },
+          "sel-column": {
+            "type": "elementButton",
+            "label": "Column Layout",
+            "level": 3,
+            "copyType": "heading",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "activeDetail",
+              "value": "column"
+            },
+            "wrapperPadding": "0.75rem 1.5rem",
+            "wrapperBorderRadius": "8px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+            "width": "100%",
+            "selfAlign": "center"
+          },
+          "sel-flow": {
+            "type": "elementButton",
+            "label": "Flow Layout",
+            "level": 3,
+            "copyType": "heading",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "activeDetail",
+              "value": "flow"
+            },
+            "wrapperPadding": "0.75rem 1.5rem",
+            "wrapperBorderRadius": "8px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+            "width": "100%",
+            "selfAlign": "center"
+          }
+        }
+      }
+    },
+    "detail-grid": {
+      "type": "elementGroup",
+      "visibleWhen": {
+        "variable": "activeDetail",
+        "operator": "equals",
+        "value": "grid"
+      },
+      "display": "flex",
+      "flow": "column",
+      "padding": "2rem",
+      "gap": "1.5rem",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+      "borderRadius": "12px",
+      "section": {
+        "elementOrder": ["detail-heading", "detail-body"],
+        "definitions": {
+          "detail-heading": {
+            "type": "elementHeading",
+            "level": 4,
+            "text": "Grid Layout",
+            "width": "auto",
+            "color": "var(--pb-accent)"
+          },
+          "detail-body": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "CSS Grid layout with explicit column and row tracks. Use gridMode for precise control over item placement. Supports responsive column counts, gap, and named grid areas. Ideal for dashboard layouts and media galleries.",
+            "color": "color-mix(in oklab, var(--pb-on-secondary) 68%, transparent)"
+          }
+        }
+      }
+    },
+    "detail-column": {
+      "type": "elementGroup",
+      "visibleWhen": {
+        "variable": "activeDetail",
+        "operator": "equals",
+        "value": "column"
+      },
+      "display": "flex",
+      "flow": "column",
+      "padding": "2rem",
+      "gap": "1.5rem",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+      "borderRadius": "12px",
+      "section": {
+        "elementOrder": ["detail-heading", "detail-body"],
+        "definitions": {
+          "detail-heading": {
+            "type": "elementHeading",
+            "level": 4,
+            "text": "Column Layout",
+            "width": "auto",
+            "color": "var(--pb-accent)"
+          },
+          "detail-body": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "sectionColumn provides responsive column assignments with CSS grid. Define columns, columnWidths, and columnAssignments per breakpoint. Supports grid spans, per-column styles, and mixed-content layouts.",
+            "color": "color-mix(in oklab, var(--pb-on-secondary) 68%, transparent)"
+          }
+        }
+      }
+    },
+    "detail-flow": {
+      "type": "elementGroup",
+      "visibleWhen": {
+        "variable": "activeDetail",
+        "operator": "equals",
+        "value": "flow"
+      },
+      "display": "flex",
+      "flow": "column",
+      "padding": "2rem",
+      "gap": "1.5rem",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+      "borderRadius": "12px",
+      "section": {
+        "elementOrder": ["detail-heading", "detail-body"],
+        "definitions": {
+          "detail-heading": {
+            "type": "elementHeading",
+            "level": 4,
+            "text": "Flow Layout",
+            "width": "auto",
+            "color": "var(--pb-accent)"
+          },
+          "detail-body": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "Flexbox-based flow layout with configurable direction, wrap, and alignment. Items flow naturally with gap spacing. Supports responsive flexDirection and flexWrap for adaptive multi-device layouts.",
+            "color": "color-mix(in oklab, var(--pb-on-secondary) 68%, transparent)"
+          }
+        }
+      }
+    }
+  }
+}

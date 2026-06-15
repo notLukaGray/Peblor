@@ -4,7 +4,10 @@ import type { SectionBlock } from "@pb/contracts/types";
 import type { ComponentType, ReactNode } from "react";
 import dynamic from "next/dynamic";
 import { SectionErrorBoundary } from "../SectionErrorBoundary";
-import { SectionColumn } from "../section/SectionColumn";
+
+const SectionColumn = dynamic(() =>
+  import("../section/SectionColumn").then((mod) => mod.SectionColumn as ComponentType<SectionBlock>)
+) as ComponentType<SectionBlock>;
 
 const SectionContentBlock = dynamic(() =>
   import("../section/SectionContentBlock").then(
@@ -54,5 +57,9 @@ export function ClientSectionIsland({ section }: { section: SectionBlock }) {
     throw new Error(`unknown client section type: "${unknownType}"`);
   }
 
-  return <SectionErrorBoundary sectionKey={sectionKey}>{content}</SectionErrorBoundary>;
+  return (
+    <div style={{ position: "relative" }}>
+      <SectionErrorBoundary sectionKey={sectionKey}>{content}</SectionErrorBoundary>
+    </div>
+  );
 }

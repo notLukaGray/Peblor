@@ -32,7 +32,8 @@ function readIntentFile(filePath: string): IntentFile | null {
   try {
     const raw = readFileSync(filePath, "utf8");
     return loadYaml(raw) as IntentFile;
-  } catch {
+  } catch (err) {
+    console.warn("[pb-catalog] Failed to read intent file: " + filePath, err);
     return null;
   }
 }
@@ -177,8 +178,7 @@ if (missing > 0 || schemaFail > 0) {
   process.exit(1);
 }
 
-// eslint-disable-next-line no-console
-console.log(
+console.warn(
   `catalog:check-coverage — all ${ALL_ENTRIES.length} entries have intent files and valid examples. ✓`
 );
 if (stubWarn > 0) {
@@ -186,8 +186,7 @@ if (stubWarn > 0) {
     `\ncatalog:check-coverage — ${stubWarn} possible stub(s) detected (warning only, not failing CI yet).`
   );
 } else {
-  // eslint-disable-next-line no-console
-  console.log(`catalog:check-coverage — no stub warnings. ✓`);
+  console.warn(`catalog:check-coverage — no stub warnings. ✓`);
 }
 
 // --sweep: report schema fields with zero catalog entry coverage
@@ -217,13 +216,13 @@ function runSweep(): void {
     "paddingBottom",
     "paddingLeft",
     "flex",
-    "flexDirection",
-    "flexWrap",
+    "flow",
+    "wrap",
     "flexGrow",
     "flexShrink",
-    "alignItems",
+    "align",
     "alignSelf",
-    "justifyContent",
+    "distribute",
     "justifySelf",
     "display",
     "gap",
@@ -246,13 +245,13 @@ function runSweep(): void {
     "boxShadow",
     "textShadow",
     "filter",
-    "backdropFilter",
+    "bgBlur",
     "clipPath",
     "opacity",
-    "overflow",
+    "scroll",
     "aspectRatio",
     "cursor",
-    "zIndex",
+    "layer",
     "position",
     "top",
     "right",
@@ -265,7 +264,6 @@ function runSweep(): void {
     "fontWeight",
     "lineHeight",
     "letterSpacing",
-    "lineSpacing",
     "textAlign",
     "wordWrap",
     "textDecoration",
@@ -361,7 +359,8 @@ function runSweep(): void {
     let shapeFields: Record<string, unknown>;
     try {
       shapeFields = walkZodShape(schema) as Record<string, unknown>;
-    } catch {
+    } catch (err) {
+      console.warn("[pb-catalog] Failed to walk Zod shape for schema: " + schemaName, err);
       continue;
     }
     const uncovered: string[] = [];
@@ -378,10 +377,8 @@ function runSweep(): void {
   }
 
   if (found === 0) {
-    // eslint-disable-next-line no-console
-    console.log("\ncatalog:sweep — all behavioral schema fields have catalog coverage. ✓");
+    console.warn("\ncatalog:sweep — all behavioral schema fields have catalog coverage. ✓");
   } else {
-    // eslint-disable-next-line no-console
-    console.log(`\ncatalog:sweep — ${found} uncovered field(s) across schemas (review above).`);
+    console.warn(`\ncatalog:sweep — ${found} uncovered field(s) across schemas (review above).`);
   }
 }

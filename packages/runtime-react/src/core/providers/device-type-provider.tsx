@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useMemo, useSyncExternalStore } from "react";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 interface DeviceTypeContextValue {
   isDesktop: boolean;
@@ -9,8 +10,6 @@ interface DeviceTypeContextValue {
 
 /** When set (e.g. by PeblorRenderer with server-resolved tree), useDeviceType returns this and no resize listener runs. */
 const ServerBreakpointContext = createContext<DeviceTypeContextValue | undefined>(undefined);
-
-const DEFAULT_MOBILE_BREAKPOINT = 768;
 const WORKBENCH_SESSION_CHANGED_EVENT = "pb-workbench-session-changed";
 const MOBILE_USER_AGENT_REGEX = /iPhone|iPad|iPod|Android/i;
 const EMPTY_DEVICE_TYPE_SUBSCRIBE = () => () => {};
@@ -21,14 +20,14 @@ let deviceTypeWindowListener: (() => void) | null = null;
 
 function readDesktopBreakpointFromCssVars(): number {
   if (typeof window === "undefined" || typeof document === "undefined") {
-    return DEFAULT_MOBILE_BREAKPOINT;
+    return globals.uiBreakpointDesktopPx;
   }
   const raw = getComputedStyle(document.documentElement)
     .getPropertyValue("--pb-breakpoint-desktop")
     .trim();
-  if (!raw) return DEFAULT_MOBILE_BREAKPOINT;
+  if (!raw) return globals.uiBreakpointDesktopPx;
   const numeric = raw.endsWith("px") ? Number(raw.slice(0, -2)) : Number(raw);
-  if (!Number.isFinite(numeric) || numeric <= 0) return DEFAULT_MOBILE_BREAKPOINT;
+  if (!Number.isFinite(numeric) || numeric <= 0) return globals.uiBreakpointDesktopPx;
   return numeric;
 }
 

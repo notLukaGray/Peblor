@@ -28,7 +28,7 @@ function keyFromElements(
   if (typeof first.text === "string")
     return `${type}_${normalizeKeyPart(first.text, 20)}_${first.text.length}`;
   if (typeof first.src === "string")
-    return `${type}_${first.src.slice(-20).replace(/[^a-zA-Z0-9]/g, "_")}`;
+    return `${type}_${first.src.slice(-20).replace(/[^a-zA-Z0-9]/g, "_")}_${index}`;
   return null;
 }
 
@@ -39,6 +39,10 @@ export function generateSectionKey(section: SectionBlock, index: number): string
   if (memoized) return memoized;
   const type = section.type;
   let resolved = `${type}_${index}`;
+
+  // id and elements are handled as early checks because elements has fallthrough semantics:
+  // when elements exist but keyFromElements returns null, the default index key is used,
+  // and no subsequent rule is tried.
   if ("id" in section && typeof section.id === "string" && section.id) {
     resolved = `${type}_${section.id}`;
   } else if (
@@ -72,6 +76,7 @@ export function generateSectionKey(section: SectionBlock, index: number): string
       }
     }
   }
+
   if (byIndex) {
     byIndex.set(index, resolved);
   } else {

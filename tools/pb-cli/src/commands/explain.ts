@@ -13,7 +13,8 @@ function loadExample(coverPath: string): ExamplePayload {
   const raw = fs.readFileSync(absolute, "utf8");
   try {
     return { path: coverPath, content: JSON.parse(raw) as unknown };
-  } catch {
+  } catch (err) {
+    console.warn("[pb-cli] Failed to parse example JSON", coverPath, err);
     return { path: coverPath, content: raw, error: "invalid JSON" };
   }
 }

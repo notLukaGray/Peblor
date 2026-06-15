@@ -1,0 +1,164 @@
+{
+  "type": "sectionColumn",
+  "columns": {
+    "base": 1,
+    "md": 2
+  },
+  "columnWidths": {
+    "base": [1],
+    "md": [1, 1]
+  },
+  "columnGaps": {
+    "base": "1.25rem",
+    "md": "2rem"
+  },
+  "columnAssignments": {
+    "left-stack": 0,
+    "right-stack": 1
+  },
+  "contentWidth": "100%",
+  "contentHeight": "hug",
+  "elementOrder": ["left-stack", "right-stack"],
+  "gridMode": "grid",
+  "gridAutoRows": "auto",
+  "definitions": {
+    "left-stack": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "1.25rem",
+      "height": "hug",
+      "padding": "0",
+      "section": {
+        "elementOrder": ["a", "b"],
+        "definitions": {
+          "a": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.85rem",
+            "height": "hug",
+            "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+            "padding": {
+              "base": "1.25rem",
+              "md": "1.5rem"
+            },
+            "borderRadius": "14px",
+            "wrapperStyle": {
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+            },
+            "section": {
+              "elementOrder": ["kicker", "title"],
+              "definitions": {
+                "kicker": {
+                  "preset": "type-body-mono",
+                  "text": "Input"
+                },
+                "title": {
+                  "preset": "type-h4-card",
+                  "text": "Signal Intake"
+                }
+              }
+            }
+          },
+          "b": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.85rem",
+            "height": "hug",
+            "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+            "padding": {
+              "base": "1.25rem",
+              "md": "1.5rem"
+            },
+            "borderRadius": "14px",
+            "wrapperStyle": {
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+            },
+            "section": {
+              "elementOrder": ["kicker", "title"],
+              "definitions": {
+                "kicker": {
+                  "preset": "type-body-mono",
+                  "text": "Filter"
+                },
+                "title": {
+                  "preset": "type-h4-card",
+                  "text": "Priority Shaping"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "right-stack": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "1.25rem",
+      "height": "hug",
+      "padding": "0",
+      "section": {
+        "elementOrder": ["quote-block", "metric-block"],
+        "definitions": {
+          "quote-block": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.85rem",
+            "height": "hug",
+            "fill": "color-mix(in oklab, var(--pb-accent) 6%, transparent)",
+            "padding": {
+              "base": "1.25rem",
+              "md": "1.5rem"
+            },
+            "borderRadius": "14px",
+            "wrapperStyle": {
+              "border": "1px solid color-mix(in oklab, var(--pb-accent) 12%, transparent)"
+            },
+            "section": {
+              "elementOrder": ["quote"],
+              "definitions": {
+                "quote": {
+                  "preset": "type-body-fine",
+                  "text": "Nested groups inside assigned tracks preserve depth without sacrificing grid discipline."
+                }
+              }
+            }
+          },
+          "metric-block": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.85rem",
+            "height": "hug",
+            "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+            "padding": {
+              "base": "1.25rem",
+              "md": "1.5rem"
+            },
+            "borderRadius": "14px",
+            "wrapperStyle": {
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+            },
+            "section": {
+              "elementOrder": ["label", "body"],
+              "definitions": {
+                "label": {
+                  "preset": "type-body-mono",
+                  "text": "Nested Slots"
+                },
+                "body": {
+                  "preset": "type-body-fine",
+                  "text": "Hybrid pattern combines grid placement with internal flow stacks."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

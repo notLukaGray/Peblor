@@ -19,6 +19,7 @@ type AudioCoreProps = {
   onVolumeChange?: () => void;
   onTimeUpdate?: () => void;
   onLoadedMetadata?: () => void;
+  onDurationChange?: () => void;
   setRef?: (el: HTMLAudioElement | null) => void;
   className?: string;
 };
@@ -39,6 +40,7 @@ export function ElementAudioCore({
   onVolumeChange,
   onTimeUpdate,
   onLoadedMetadata,
+  onDurationChange,
   setRef,
   className,
 }: AudioCoreProps) {
@@ -60,6 +62,7 @@ export function ElementAudioCore({
   return (
     <audio
       ref={handleRef}
+      crossOrigin="anonymous"
       src={src}
       controls={nativeControls ?? false}
       autoPlay={autoplay ?? false}
@@ -73,6 +76,7 @@ export function ElementAudioCore({
       onVolumeChange={onVolumeChange}
       onTimeUpdate={onTimeUpdate}
       onLoadedMetadata={onLoadedMetadata}
+      onDurationChange={onDurationChange}
       className={className}
     >
       {sources?.map((s, i) => (

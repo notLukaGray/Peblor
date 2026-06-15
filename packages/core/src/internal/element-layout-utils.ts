@@ -14,6 +14,11 @@ export {
   resolveFrameRowGapCss,
   resolveFrameColumnGapCss,
   peblorOverlapGapToCss,
+  SR_ONLY_STYLE,
+  RESPONSIVE_LAYOUT_CSS_KEYS,
+  extractElementResponsiveLayoutStyles,
+  getResponsiveLayoutKeySet,
+  stripResponsiveLayoutKeys,
   type ResolvedElementLayout,
 } from "./element-layout-utils/layout-style";
 

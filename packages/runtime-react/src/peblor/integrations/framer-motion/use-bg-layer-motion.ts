@@ -15,6 +15,7 @@ import type {
   BgParallaxMotion,
   BgTriggerMotion,
 } from "@/peblor/background/motion/bg-layer-motion-types";
+import { MOTION_DEFAULTS } from "@pb/contracts/peblor/core/peblor-motion-defaults";
 
 // ── Interpolation helpers ─────────────────────────────────────────────────────
 
@@ -90,7 +91,21 @@ function lerpProp(current: unknown, target: unknown, factor: number): unknown {
   return target;
 }
 
-/** Write a property value to a DOM element's style, supporting CSS custom properties. */
+/**
+ * Write a property value to a DOM element's style, supporting CSS custom properties.
+ *
+ * ⚠️ Direct DOM style mutations bypass React's render cycle intentionally.
+ * Scroll-driven background layers (parallax, pointer-follow, scroll-based opacity)
+ * update on every animation frame (60-120fps) and should NOT trigger React re-renders.
+ * Writing to el.style directly avoids the reconciliation overhead and maintains
+ * smooth scroll performance. React only owns the initial layout styles; runtime
+ * motion values are applied imperatively.
+ *
+ * For pointer motion: RAF-based lerp (line 226-237) writes ~60 style updates/second.
+ * For scroll motion: useMotionValueEvent fires on every scroll position change.
+ * For trigger motion: imperative FM animate() (line 270) is used instead which
+ * also manages its own animation loop outside React's render cycle.
+ */
 function applyStyleProp(el: HTMLElement, prop: string, value: unknown): void {
   if (prop.startsWith("--")) {
     el.style.setProperty(prop, String(value));
@@ -110,6 +125,64 @@ export type BgLayerMotionStyle = {
   motionStyle: Record<string, MotionValue<string>>;
 };
 
+// ── Individual hooks (callable only when the motion type is present) ────────────
+
+/**
+ * Parallax-only hook. Only calls useScroll when parallax motion is configured.
+ * Call this from a parent that has already verified `motions` contains a parallax entry.
+ */
+export function useBgLayerParallax(
+  parallaxMotion: BgParallaxMotion,
+  containerRef: RefObject<HTMLElement | null> | null
+): { parallaxX: MotionValue<string>; parallaxY: MotionValue<string>; axis: string } {
+  const { scrollYProgress: parallaxProgress } = useScroll({
+    container: containerRef ?? undefined,
+    offset: (parallaxMotion.offset ?? ["start start", "end end"]) as UseScrollOptions["offset"],
+  });
+
+  const axis = parallaxMotion.axis ?? "y";
+  const speed = parallaxMotion.speed ?? 0;
+
+  const parallaxX = useTransform(
+    parallaxProgress,
+    [0, 1],
+    axis === "x" ? ["0%", `${speed * 100}%`] : ["0%", "0%"]
+  );
+  const parallaxY = useTransform(
+    parallaxProgress,
+    [0, 1],
+    axis === "y" ? ["0%", `${speed * 100}%`] : ["0%", "0%"]
+  );
+
+  return { parallaxX, parallaxY, axis };
+}
+
+/**
+ * Scroll-motion-only hook. Only calls useScroll when scroll motions are configured.
+ * Call this from a parent that has already verified `motions` contains scroll entries.
+ */
+export function useBgLayerScrollMotions(
+  scrollMotions: BgScrollMotion[],
+  layerRef: RefObject<HTMLElement | null>,
+  containerRef: RefObject<HTMLElement | null> | null
+): void {
+  const { scrollYProgress: scrollMotionProgress } = useScroll({
+    container: containerRef ?? undefined,
+    offset: (scrollMotions[0]?.offset ?? ["start start", "end end"]) as UseScrollOptions["offset"],
+  });
+
+  useMotionValueEvent(scrollMotionProgress, "change", (progress) => {
+    if (!layerRef.current || scrollMotions.length === 0) return;
+    for (const sm of scrollMotions) {
+      const clamp = sm.clamp !== false;
+      for (const [prop, [start, end]] of Object.entries(sm.properties)) {
+        const value = interpolateProp(start, end, progress, clamp);
+        applyStyleProp(layerRef.current, prop, value);
+      }
+    }
+  });
+}
+
 // ── Main hook ─────────────────────────────────────────────────────────────────
 
 /**
@@ -119,6 +192,10 @@ export type BgLayerMotionStyle = {
  * This hook always runs all its internal hooks unconditionally (hooks rules).
  * When a given motion type is absent from the `motions` array, its hooks are
  * no-ops and its effects return early.
+ *
+ * Prefer the individual hooks (useBgLayerParallax, useBgLayerScrollMotions)
+ * when the parent can call them conditionally — that avoids creating
+ * unnecessary Framer Motion scroll subscriptions for unused motion types.
  *
  * @param motions  - Full motion array from the layer (all types, not pre-filtered).
  * @param layerRef - Ref attached to the layer's DOM element (used for direct style writes + imperativeAnimate).
@@ -203,7 +280,11 @@ export function useBgLayerMotion(
   useEffect(() => {
     if (pointerMotions.length === 0) return;
 
-    const lerpFactor = pointerMotions[0]?.ease ?? 0.08;
+    const lerpFactor = pointerMotions[0]?.ease ?? MOTION_DEFAULTS.bgLayerPointerLerpFactor;
+
+    // Countdown: set to N on each mousemove; tick decrements and stops at 0.
+    // 90 frames ≈ 1.5s at 60fps — enough for the lerp to settle after cursor stops.
+    let dirtyFrames = 0;
 
     const onMouseMove = (e: MouseEvent) => {
       const nx = e.clientX / window.innerWidth;
@@ -221,9 +302,17 @@ export function useBgLayerMotion(
           }
         }
       }
+
+      dirtyFrames = 90;
+      if (pointerRafRef.current === null) pointerRafRef.current = requestAnimationFrame(tick);
     };
 
     const tick = () => {
+      if (dirtyFrames <= 0) {
+        pointerRafRef.current = null;
+        return;
+      }
+      dirtyFrames--;
       const el = layerRef.current;
       if (el) {
         for (const [prop, target] of Object.entries(pointerTargetRef.current)) {
@@ -237,7 +326,6 @@ export function useBgLayerMotion(
     };
 
     window.addEventListener("mousemove", onMouseMove, { passive: true });
-    pointerRafRef.current = requestAnimationFrame(tick);
 
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
@@ -268,7 +356,7 @@ export function useBgLayerMotion(
         const timer = window.setTimeout(() => {
           if (!layerRef.current) return;
           void animate(layerRef.current, tm.to as Record<string, string | number>, {
-            duration: tm.transition?.duration ?? 0.8,
+            duration: tm.transition?.duration ?? MOTION_DEFAULTS.bgLayerTriggerDurationSec,
             ease: ((tm.transition?.ease as string | undefined) ?? "easeOut") as Easing,
             delay: tm.transition?.delay ?? 0,
           });

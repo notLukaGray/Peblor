@@ -1,0 +1,41 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "720px",
+  "selfAlign": "center",
+  "align": "center",
+  "height": "hug",
+  "padding": {
+    "base": "10rem 0 8rem",
+    "md": "14rem 0 10rem"
+  },
+  "gap": "1.5rem",
+  "scroll": "visible",
+  "motionTiming": {
+    "staggerChildren": 0.1,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["hero-label", "hero-title", "hero-desc"],
+  "definitions": {
+    "hero-label": {
+      "preset": "type-kicker-badge",
+      "text": "Effects"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Depth & Motion"
+    },
+    "hero-desc": {
+      "preset": "type-body-standard",
+      "text": "Parallax depth planes moving at independent rates. Scroll-driven entrance choreography. Atmospheric glass layering. Sticky layout patterns.",
+      "width": {
+        "base": "100%",
+        "md": "82%"
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "definitions": {
+    "hero-badge": {
+      "preset": "demo-hero-badge",
+      "text": "backgroundVariable · loop motion"
+    },
+    "hero-title": {
+      "preset": "demo-hero-title",
+      "text": "bg-landing-deep"
+    },
+    "hero-desc": {
+      "preset": "demo-hero-description",
+      "text": "Three-layer dimensional gradient with slow-breathing accent orbs. The radial accents pulse independently at different rhythms, giving the background a living quality."
+    }
+  },
+  "preset": "demo-hero-100vh"
+}

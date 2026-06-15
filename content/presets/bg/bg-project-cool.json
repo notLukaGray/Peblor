@@ -1,0 +1,27 @@
+{
+  "type": "backgroundVariable",
+  "layers": [
+    {
+      "fill": "var(--pb-secondary)"
+    },
+    {
+      "fill": "radial-gradient(ellipse 120% 42% at 10% 0%, color-mix(in oklab, var(--pb-primary) 14%, transparent) 0%, transparent 100%)",
+      "motion": [
+        {
+          "type": "loop",
+          "to": {
+            "opacity": [0.55, 1.0, 0.55]
+          },
+          "transition": {
+            "duration": 5.5,
+            "ease": "easeInOut",
+            "repeatType": "mirror"
+          }
+        }
+      ]
+    },
+    {
+      "fill": "radial-gradient(ellipse 80% 32% at 90% 90%, color-mix(in oklab, var(--pb-accent) 9%, transparent) 0%, transparent 100%)"
+    }
+  ]
+}

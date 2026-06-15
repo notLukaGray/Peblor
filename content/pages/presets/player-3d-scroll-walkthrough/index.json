@@ -1,0 +1,21 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "3D Scroll Walkthrough — Preset Demo",
+  "description": "Scroll-driven camera path through a 3D scene — sticky viewport, camera keyframes tied to section scroll progress.",
+  "presets": [
+    "demo",
+    "type/core",
+    "ui/link",
+    "type/motion",
+    "player/surface",
+    "bg",
+    "player/section"
+  ],
+  "bgKey": "bg-players",
+  "sectionOrder": ["nav-header", "hero", "sec-scroll"],
+  "definitions": {
+    "bg-players": {
+      "preset": "bg-players"
+    }
+  }
+}

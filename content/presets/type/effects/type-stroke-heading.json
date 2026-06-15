@@ -1,0 +1,17 @@
+{
+  "type": "elementHeading",
+  "level": 1,
+  "textStroke": "1.5px var(--pb-on-secondary)",
+  "color": "transparent",
+  "opacity": 0.5,
+  "wordWrap": true,
+  "width": {
+    "base": "100%",
+    "md": "80%"
+  },
+  "motionTiming": {
+    "entrancePreset": "fade",
+    "trigger": "onFirstVisible"
+  },
+  "text": ""
+}

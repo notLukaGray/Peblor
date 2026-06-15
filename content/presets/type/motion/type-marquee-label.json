@@ -1,0 +1,10 @@
+{
+  "type": "elementMarquee",
+  "level": 5,
+  "textTransform": "uppercase",
+  "letterSpacing": "0.1em",
+  "speed": 15,
+  "gap": "2rem",
+  "width": "100%",
+  "color": "color-mix(in oklab, var(--pb-on-secondary) 32%, transparent)"
+}

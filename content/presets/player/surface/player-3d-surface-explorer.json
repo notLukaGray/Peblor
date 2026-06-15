@@ -1,0 +1,109 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "align": "stretch",
+  "gap": "0",
+  "width": "100%",
+  "height": "hug",
+  "borderRadius": "20px",
+  "scroll": "hidden",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+  },
+  "section": {
+    "elementOrder": ["model-canvas", "hint-row"],
+    "definitions": {
+      "model-canvas": {
+        "type": "elementModel3D",
+        "id": "model-3d-fly",
+        "width": "100%",
+        "aspectRatio": "16 / 9",
+        "initiallyLoaded": true,
+        "models": {
+          "robot": {
+            "geometry": "https://threejs.org/examples/models/gltf/RobotExpressive/RobotExpressive.glb"
+          }
+        },
+        "canvas": {
+          "dpr": 2,
+          "gl": {
+            "antialias": true,
+            "powerPreference": "high-performance",
+            "alpha": true
+          }
+        },
+        "scene": {
+          "camera": {
+            "type": "perspective",
+            "position": [8, 4, 12],
+            "fov": 50,
+            "near": 0.1,
+            "far": 200
+          },
+          "background": {
+            "type": "color",
+            "color": "#0a0e18"
+          },
+          "controls": {
+            "mode": "fly",
+            "fly": {
+              "moveSpeed": 6,
+              "lookSensitivity": 0.0025,
+              "pointerLock": true
+            }
+          },
+          "lights": [
+            {
+              "type": "ambient",
+              "intensity": 0.55
+            },
+            {
+              "type": "directional",
+              "intensity": 1.4,
+              "position": [6, 10, 4],
+              "castShadow": true
+            }
+          ],
+          "contents": {
+            "models": [
+              {
+                "model": "robot",
+                "position": [0, 0, 0],
+                "animation": {
+                  "clip": "Idle",
+                  "loop": true
+                }
+              }
+            ]
+          }
+        },
+        "postProcessing": [
+          {
+            "type": "bloom",
+            "intensity": 0.4,
+            "luminanceThreshold": 0.7,
+            "radius": 0.35,
+            "mipmapBlur": true
+          }
+        ]
+      },
+      "hint-row": {
+        "type": "elementGroup",
+        "padding": "0.75rem 1rem",
+        "section": {
+          "elementOrder": ["hint"],
+          "definitions": {
+            "hint": {
+              "type": "elementBody",
+              "level": 5,
+              "text": "Click the scene to lock the pointer. WASD / arrows move. Q/E up/down. Esc releases. (RobotExpressive.glb — CDN)",
+              "color": "color-mix(in oklab, var(--pb-on-secondary) 58%, transparent)"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Audio Playlist — Preset Demo",
+  "description": "Spotify-style playlist player. Track info row, expandable track list, prev/play/next transport, glass pill seek bar.",
+  "presets": [
+    "demo",
+    "type/core",
+    "ui/link",
+    "type/motion",
+    "player/surface",
+    "bg",
+    "player/section"
+  ],
+  "bgKey": "bg-players",
+  "sectionOrder": ["nav-header", "hero", "sec-player"],
+  "definitions": {
+    "bg-players": {
+      "preset": "bg-players"
+    }
+  }
+}

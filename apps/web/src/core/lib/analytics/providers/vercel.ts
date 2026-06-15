@@ -12,8 +12,8 @@ export function createVercelProvider(): AnalyticsProvider {
         try {
           const mod = await import("@vercel/analytics");
           vercelTrack = mod.track as (name: string, data?: Record<string, unknown>) => void;
-        } catch {
-          console.warn("[analytics] @vercel/analytics not available, event dropped");
+        } catch (err) {
+          console.warn("[web-core] @vercel/analytics not available, event dropped", err);
           return;
         }
       }

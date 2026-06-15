@@ -1,0 +1,17 @@
+{
+  "definitions": {
+    "hero-badge": {
+      "preset": "demo-hero-badge",
+      "text": "backgroundVariable · entrance zoom"
+    },
+    "hero-title": {
+      "preset": "demo-hero-title",
+      "text": "bg-image-texture"
+    },
+    "hero-desc": {
+      "preset": "demo-hero-description",
+      "text": "Tactile texture photo with a primary-tinted vignette. On mount, the image layer zooms from 108% to 100% — a Ken Burns open that feels cinematic without requiring scroll."
+    }
+  },
+  "preset": "demo-hero-100vh"
+}

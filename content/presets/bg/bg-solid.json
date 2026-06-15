@@ -1,0 +1,8 @@
+{
+  "type": "backgroundVariable",
+  "layers": [
+    {
+      "fill": "var(--pb-secondary)"
+    }
+  ]
+}

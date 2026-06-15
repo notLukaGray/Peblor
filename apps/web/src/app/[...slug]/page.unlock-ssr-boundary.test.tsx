@@ -1,64 +1,64 @@
 import { describe, expect, it, vi } from "vitest";
 
-const getPageAsync = vi.fn(async () => null);
-const getPeblorPropsAsync = vi.fn(async () => null);
+// The slug route is now force-static: no auth checks, no cookies, no searchParams.
+// This test verifies that UniversalSlugPage renders a static shell for a public page
+// without any auth-related calls.
 
-vi.mock("next/headers", () => ({
-  headers: async () => new Headers(),
-  cookies: async () => ({ get: () => undefined }),
+vi.mock("next/navigation", () => ({
+  notFound: () => {
+    throw Object.assign(new Error("NEXT_NOT_FOUND"), { digest: "NEXT_NOT_FOUND" });
+  },
 }));
-vi.mock("next/navigation", () => ({ notFound: () => undefined }));
-vi.mock("@/core/lib/auth-constants", () => ({ accessCookieName: "access" }));
-vi.mock("@/core/lib/browser-data-cookie", () => ({
-  parseBrowserDataCookie: () => null,
-  browserDataCookieName: "browser",
+vi.mock("@/core/lib/page-protection", () => ({ isPageProtected: () => false }));
+vi.mock("@/core/lib/globals", () => ({
+  getTwitterCardForOgImage: () => "summary",
+  cdnBase: "",
+  siteUrl: "https://example.com",
+  siteBaseUrl: "https://example.com",
+  siteMetadata: { title: "Test", description: "Test" },
+  twitterSite: "",
+  twitterCreator: "",
 }));
-vi.mock("@/core/lib/access-cookie", () => ({ verifyAccessToken: () => false }));
-vi.mock("@/core/lib/unlock-linking", () => ({
-  buildUnlockModalProps: () => ({ open: true }),
-  getSafeUnlockPreviewUrl: () => null,
-  getSingleQueryValue: () => null,
-  isUnlockEnabled: () => true,
-  rewriteProtectedInternalLinks: (x: unknown) => x,
-  safeRedirectPath: () => null,
-}));
-vi.mock("@/core/lib/parse-page-filters", () => ({ parseFiltersFromQuery: () => ({}) }));
-vi.mock("@/core/lib/protected-slugs.generated", () => ({
-  PROTECTED_PAGE_PATHS: new Set<string>(),
-}));
-vi.mock("@/core/lib/globals", () => ({ getTwitterCardForOgImage: () => "summary", cdnBase: "" }));
 vi.mock("@pb/core/lib/cdn-asset-server", () => ({ getSignedCdnUrl: (x: string) => x }));
-vi.mock("@/core/ui/UnlockPageShell", () => ({
-  UnlockPageShell: () => <div data-testid="unlock-shell" />,
-}));
-
 vi.mock("@pb/core/load", () => ({
-  discoverAllPages: () => [],
-  loadPageMeta: () => null,
-  loadPageVisibilityOnly: () => ({ visibility: "protected" }),
-  resolvePagePath: () => "/tmp/protected/index.json",
-  getPageAsync,
-  getPeblorPropsAsync,
-  getPageMetadataAsync: () => null,
-}));
-vi.mock("@pb/core/util", () => ({
-  isMobileFromUserAgent: () => false,
+  discoverAllPages: async () => [],
+  loadPageMeta: async () => null,
+  getPageAsync: async () => null,
+  getPageMetadataAsync: async () => ({ title: "Test Page" }),
+  getPeblorPropsFromPage: async () => null,
+  getPeblorPageFilterIndex: async () => null,
+  filterPageByFilterIndex: ({ sections }: { sections: unknown[] }) => ({ sections }),
 }));
 vi.mock("@pb/core/validate", () => ({
   PageContentValidationError: class PageContentValidationError extends Error {},
 }));
+vi.mock("@/core/lib/parse-page-filters", () => ({ parseFiltersFromQuery: () => ({}) }));
+vi.mock("@/core/ui/BreadcrumbListJsonLd", () => ({
+  BreadcrumbListJsonLd: () => null,
+}));
+vi.mock("@/core/ui/Breadcrumbs", () => ({ Breadcrumbs: () => null }));
+vi.mock("@/core/ui/WebPageJsonLd", () => ({ WebPageJsonLd: () => null }));
+vi.mock("@/core/ui/ArticleJsonLd", () => ({ ArticleJsonLd: () => null }));
+vi.mock("@/core/lib/unlock-linking", () => ({
+  rewriteProtectedInternalLinks: (sections: unknown) => sections,
+}));
+vi.mock("@/core/lib/page-resource-hints", () => ({
+  collectInitialPageResourceHints: () => ({}),
+  applyPageResourceHints: () => {},
+}));
+vi.mock("@/core/lib/serialize-json-ld", () => ({ serializeJsonLd: (x: unknown) => String(x) }));
+vi.mock("@pb/runtime-react/server", () => ({ PeblorServerPage: () => null }));
 
-describe("[...slug] unlock SSR boundary", () => {
-  it("returns unlock shell before full page load for locked protected pages", async () => {
-    // Ensure clean module state before dynamic import in parallel test suites.
+describe("[...slug] static route", () => {
+  it("renders a static shell for a public page without auth checks", async () => {
     vi.resetModules();
     const { default: UniversalSlugPage } = await import("./page");
+    // The static route is a pure async function: it loads metadata and returns JSX.
+    // PageContent is a child component referenced in JSX — its async body runs at
+    // React render time, not here. The outer function must return a React element.
     const result = await UniversalSlugPage({
-      params: Promise.resolve({ slug: ["work", "protected-page"] }),
-      searchParams: Promise.resolve({}),
+      params: Promise.resolve({ slug: ["some-public-page"] }),
     });
     expect(result).toBeTruthy();
-    expect(getPageAsync).not.toHaveBeenCalled();
-    expect(getPeblorPropsAsync).not.toHaveBeenCalled();
   });
 });

@@ -1,4 +1,4 @@
-id: motion.whileFocus
+id: motion.onFocus
 kind: cluster
 package: "@pb/contracts"
 stability: stable
@@ -14,21 +14,21 @@ feels_like: >
 
 not_this_if:
   - "you need a keyboard shortcut trigger (use trigger.keyboard)"
-  - "you need hover feedback (use motion.whileHover)"
+  - "you need hover feedback (use motion.onHover)"
   - "you need click/tap action (use trigger.onClick)"
 
 axes:
   - name: keyframes
-    fields: [whileFocus]
+    fields: [onFocus]
     note: "z.union([motionKeyframesSchema, string]) — any known FM property"
 
 does_not_cover:
   - what: "Keyboard shortcut trigger"
     use_instead: trigger.keyboard
   - what: "Hover visual feedback"
-    use_instead: motion.whileHover
+    use_instead: motion.onHover
   - what: "Tap/press gesture"
-    use_instead: motion.whileTap
+    use_instead: motion.onPress
   - what: "Focus-trap or focus management"
     use_instead: "external — handle via modal or form focus management"
 
@@ -38,13 +38,13 @@ covers:
 
 composes_with:
   parents: [section.*, element.*]
-  siblings_typical: [motion.whileHover, motion.whileTap]
-  motion: "whileFocus on motionProps — merged from motion defaults"
+  siblings_typical: [motion.onHover, motion.onPress]
+  motion: "onFocus on motionProps — merged from motion defaults"
 
 known_limitations:
   - "Focus gesture only applies to focusable elements (inputs, buttons, links, tabindex)"
-  - "whileFocus keyframes are stripped of layout-owned keys"
-  - "Not commonly used standalone — usually paired with whileHover for complete interaction states"
+  - "onFocus keyframes are stripped of layout-owned keys"
+  - "Not commonly used standalone — usually paired with onHover for complete interaction states"
 
 proposal_hints:
   new_variant_value: "N/A — motion gesture, no variant"

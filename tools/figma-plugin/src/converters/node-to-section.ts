@@ -112,6 +112,10 @@ export async function convertFrameToSection(
     return convertFrameToRevealSection(frame, ctx) as unknown as ContentBlock;
   }
 
+  if (annotatedType === "sectiontrigger") {
+    return convertFrameToTriggerSection(frame, annotations, ctx) as unknown as ContentBlock;
+  }
+
   if (annotatedType === "scrollcontainer" || (!hasExplicitType && isScrollContainerFrame(frame))) {
     return convertFrameToScrollContainerSection(frame, ctx);
   }
@@ -255,6 +259,26 @@ export async function convertFrameToSection(
   if (motionTiming) sectionBase["motionTiming"] = motionTiming;
 
   return section;
+}
+
+function convertFrameToTriggerSection(
+  frame: FrameNode,
+  annotations: Record<string, string>,
+  ctx: ConversionContext
+): Record<string, unknown> {
+  const layout = extractLayoutProps(frame);
+  const sectionPlacement = extractSectionPlacementFromParent(frame);
+  const triggerProps = parseSectionTriggerProps(annotations) as Record<string, unknown>;
+  return {
+    type: "sectionTrigger",
+    id: ensureUniqueId(slugify(stripAnnotations(frame.name || "section-trigger")), ctx.usedIds),
+    width: toPx(frame.width),
+    height: toPx(frame.height),
+    ...sectionPlacement,
+    ...(layout.opacity !== undefined ? { opacity: layout.opacity } : {}),
+    ...(layout.blendMode ? { blendMode: layout.blendMode } : {}),
+    ...triggerProps,
+  };
 }
 
 function stripPaddingProps(layout: Record<string, unknown>): Record<string, unknown> {

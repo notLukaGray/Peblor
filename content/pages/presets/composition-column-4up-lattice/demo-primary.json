@@ -1,0 +1,91 @@
+{
+  "preset": "composition-column-4up-lattice",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "1100px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "2rem 0 4rem",
+    "md": "2rem 0 5rem"
+  },
+  "definitions": {
+    "card-a": {
+      "section": {
+        "definitions": {
+          "kicker": {
+            "text": "Ops"
+          },
+          "title": {
+            "text": "Deploy Pipelines"
+          },
+          "body": {
+            "text": "Ship safely with repeatable CI checks and confidence gates."
+          },
+          "link": {
+            "label": "Runbook ->",
+            "href": "#"
+          }
+        }
+      }
+    },
+    "card-b": {
+      "section": {
+        "definitions": {
+          "kicker": {
+            "text": "UX"
+          },
+          "title": {
+            "text": "Research Summaries"
+          },
+          "body": {
+            "text": "Condense interview transcripts into directional findings quickly."
+          },
+          "link": {
+            "label": "Read notes ->",
+            "href": "#"
+          }
+        }
+      }
+    },
+    "card-c": {
+      "section": {
+        "definitions": {
+          "kicker": {
+            "text": "Infra"
+          },
+          "title": {
+            "text": "Service Health"
+          },
+          "body": {
+            "text": "Track error budgets and release drift across environments."
+          },
+          "link": {
+            "label": "View status ->",
+            "href": "#"
+          }
+        }
+      }
+    },
+    "card-d": {
+      "section": {
+        "definitions": {
+          "kicker": {
+            "text": "Growth"
+          },
+          "title": {
+            "text": "Activation Tests"
+          },
+          "body": {
+            "text": "Compare onboarding variants with guarded rollout controls."
+          },
+          "link": {
+            "label": "Open dashboard ->",
+            "href": "#"
+          }
+        }
+      }
+    }
+  }
+}

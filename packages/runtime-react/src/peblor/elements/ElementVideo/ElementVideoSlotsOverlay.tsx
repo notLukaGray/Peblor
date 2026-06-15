@@ -10,9 +10,10 @@ import type { CSSProperties } from "react";
 import type { ModuleBlock } from "@pb/contracts/types";
 import type { ModuleSlotConfig } from "@/peblor/elements/ElementModule/types";
 import { VideoSlotSection } from "./VideoSlotSection";
-import { motion, MotionFromJson } from "@/peblor/integrations/framer-motion";
+import { m, MotionFromJson } from "@/peblor/integrations/framer-motion";
 import type { Transition } from "@/peblor/integrations/framer-motion/types";
 import { mergeMotionDefaults } from "@pb/contracts/peblor/core/peblor-motion-defaults";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 export type ElementVideoSlotsOverlayProps = {
   slotsObj: Record<string, unknown>;
@@ -247,7 +248,10 @@ export function ElementVideoSlotsOverlay({
           Uses mount/unmount rather than opacity so backdrop-filter doesn't bleed
           through at opacity:0 — same behaviour as the poster frame. */}
       {persistentSlots.length > 0 && (
-        <div className="absolute inset-0" style={{ zIndex: 0, pointerEvents: "none" }}>
+        <div
+          className="absolute inset-0"
+          style={{ zIndex: globals.zIndexBase, pointerEvents: "none" }}
+        >
           {persistentSlots
             .filter(([, slot]) => persistentSlotIsVisible(slot, isPlaying, isMuted, isFullscreen))
             .map(([key, slot]) => (
@@ -263,10 +267,10 @@ export function ElementVideoSlotsOverlay({
             ))}
         </div>
       )}
-      <motion.div
+      <m.div
         className="absolute inset-0"
         style={{
-          zIndex: 1,
+          zIndex: globals.zIndexRaised,
           pointerEvents: showControls ? "auto" : "none",
           WebkitTapHighlightColor: "transparent",
           WebkitTouchCallout: "none",
@@ -308,7 +312,10 @@ export function ElementVideoSlotsOverlay({
               | string
               | undefined;
             return (
-              <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 5 }}>
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{ zIndex: globals.zIndexOverlay }}
+              >
                 <div
                   style={{
                     position: isFullscreen ? "fixed" : "absolute",
@@ -341,7 +348,7 @@ export function ElementVideoSlotsOverlay({
           <div
             className="absolute inset-0"
             style={{
-              zIndex: 1,
+              zIndex: globals.zIndexRaised,
               pointerEvents: "none",
               WebkitTapHighlightColor: "transparent",
               WebkitTouchCallout: "none",
@@ -359,7 +366,7 @@ export function ElementVideoSlotsOverlay({
             ))}
           </div>
         )}
-      </motion.div>
+      </m.div>
     </div>
   );
 }

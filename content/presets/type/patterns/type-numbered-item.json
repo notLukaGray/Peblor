@@ -1,0 +1,33 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "row",
+  "align": "start",
+  "gap": "1.25rem",
+  "width": "100%",
+  "section": {
+    "elementOrder": ["item-num", "item-body"],
+    "definitions": {
+      "item-num": {
+        "type": "elementCounter",
+        "level": 2,
+        "target": 1,
+        "start": 1,
+        "tween": {
+          "duration": 0.01,
+          "ease": "linear"
+        },
+        "color": "color-mix(in oklab, var(--pb-accent) 80%, transparent)",
+        "width": "hug",
+        "trigger": "onVisible"
+      },
+      "item-body": {
+        "type": "elementBody",
+        "level": 3,
+        "wordWrap": true,
+        "color": "color-mix(in oklab, var(--pb-on-secondary) 72%, transparent)",
+        "text": "List item body copy."
+      }
+    }
+  }
+}

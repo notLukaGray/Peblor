@@ -1,0 +1,47 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "staggerChildren": 0.1,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "h1", "h2", "h3", "h4", "h5", "mono"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Heading Scale"
+    },
+    "sec-desc": {
+      "preset": "type-body-standard",
+      "text": "H1 through H5 — display down to meta. Each level is a preset with its own size, weight, and entrance motion default.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    },
+    "h1": {
+      "preset": "type-h1-display",
+      "text": "Display Heading — H1"
+    },
+    "h2": {
+      "preset": "type-h2-section",
+      "text": "Section Heading — H2"
+    },
+    "h3": {
+      "preset": "type-h3-label",
+      "text": "Section Label — H3"
+    },
+    "h4": {
+      "preset": "type-h4-card",
+      "text": "Card Title — H4"
+    },
+    "h5": {
+      "preset": "type-h5-meta",
+      "text": "Meta Label — H5"
+    },
+    "mono": {
+      "preset": "type-body-mono",
+      "text": "mono · system · code · metadata"
+    }
+  },
+  "align": "start"
+}

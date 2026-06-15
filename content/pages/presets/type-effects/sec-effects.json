@@ -1,0 +1,233 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "staggerChildren": 0.15,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": [
+    "effect-glow",
+    "effect-gradient",
+    "effect-stroke",
+    "effect-animated-gradient",
+    "effect-gleam",
+    "effect-blur",
+    "effect-blend",
+    "effect-knockout",
+    "effect-reflection",
+    "effect-typewriter"
+  ],
+  "definitions": {
+    "effect-glow": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "gap": "0.5rem",
+      "scroll": "visible",
+      "section": {
+        "elementOrder": ["glow-heading", "glow-desc"],
+        "definitions": {
+          "glow-heading": {
+            "preset": "type-shadow-heading",
+            "text": "Let it glow."
+          },
+          "glow-desc": {
+            "preset": "type-body-standard",
+            "text": "textShadow — a soft luminous halo that radiates colour outward from the text."
+          }
+        }
+      }
+    },
+    "effect-gradient": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "gap": "0.5rem",
+      "scroll": "visible",
+      "section": {
+        "elementOrder": ["gradient-heading", "gradient-desc"],
+        "definitions": {
+          "gradient-heading": {
+            "preset": "type-gradient-heading",
+            "text": "Chase the gradient."
+          },
+          "gradient-desc": {
+            "preset": "type-body-standard",
+            "text": "textFill — a CSS gradient clipped to the text shape via background-clip."
+          }
+        }
+      }
+    },
+    "effect-stroke": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "gap": "0.5rem",
+      "scroll": "visible",
+      "section": {
+        "elementOrder": ["stroke-heading", "stroke-desc"],
+        "definitions": {
+          "stroke-heading": {
+            "preset": "type-stroke-heading",
+            "text": "Drawn in outline."
+          },
+          "stroke-desc": {
+            "preset": "type-body-standard",
+            "text": "textStroke — renders the glyph as a crisp outline with a transparent fill."
+          }
+        }
+      }
+    },
+    "effect-animated-gradient": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "gap": "0.5rem",
+      "scroll": "visible",
+      "section": {
+        "elementOrder": ["animated-heading", "animated-desc"],
+        "definitions": {
+          "animated-heading": {
+            "preset": "type-animated-gradient-heading",
+            "text": "Gradient in motion."
+          },
+          "animated-desc": {
+            "preset": "type-body-standard",
+            "text": "CSS custom property --pb-bg-x drives background-position through framer-motion. Keyframe array [0, 100, 0] with easeInOut gives a sweeping back-and-forth gradient shift. Duration, easing, and keyframes are JSON-configurable."
+          }
+        }
+      }
+    },
+    "effect-gleam": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "gap": "0.5rem",
+      "scroll": "visible",
+      "section": {
+        "elementOrder": ["gleam-heading", "gleam-desc"],
+        "definitions": {
+          "gleam-heading": {
+            "preset": "type-gleam-heading",
+            "text": "A flash of light."
+          },
+          "gleam-desc": {
+            "preset": "type-body-standard",
+            "text": "A narrow white highlight band moves across the text on an infinite loop — textFill gradient + --pb-bg-x custom property animation. Same machinery as the animated gradient, tuned for a fast linear gleam."
+          }
+        }
+      }
+    },
+    "effect-blur": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "gap": "0.5rem",
+      "scroll": "visible",
+      "section": {
+        "elementOrder": ["blur-heading", "blur-desc"],
+        "definitions": {
+          "blur-heading": {
+            "preset": "type-blur-heading",
+            "text": "Softened edges."
+          },
+          "blur-desc": {
+            "preset": "type-body-standard",
+            "text": "filter — CSS blur applied to the element. Static blur stays visible; entrance uses fade so the blur is never cleared."
+          }
+        }
+      }
+    },
+    "effect-blend": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "gap": "0.5rem",
+      "scroll": "visible",
+      "section": {
+        "elementOrder": ["blend-heading", "blend-desc"],
+        "definitions": {
+          "blend-heading": {
+            "preset": "type-blend-heading",
+            "text": "Colours collide."
+          },
+          "blend-desc": {
+            "preset": "type-body-standard",
+            "text": "blendMode — mix-blend-mode sets how the text colour blends with content behind it. 'difference' inverts where colours overlap."
+          }
+        }
+      }
+    },
+    "effect-knockout": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "gap": "0.5rem",
+      "scroll": "visible",
+      "section": {
+        "elementOrder": ["knockout-heading", "knockout-desc"],
+        "definitions": {
+          "knockout-heading": {
+            "preset": "type-knockout-heading",
+            "text": "Cut from the page."
+          },
+          "knockout-desc": {
+            "preset": "type-body-standard",
+            "text": "textFill image type — an Unsplash photo clipped to the text shape via background-clip, creating a window through the page. Any image URL works."
+          }
+        }
+      }
+    },
+    "effect-reflection": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "gap": "0.5rem",
+      "scroll": "visible",
+      "section": {
+        "elementOrder": ["reflection-heading", "reflection-desc"],
+        "definitions": {
+          "reflection-heading": {
+            "preset": "type-reflection-heading",
+            "text": "Watch it reflect."
+          },
+          "reflection-desc": {
+            "preset": "type-body-standard",
+            "text": "wrapperStyle — WebkitBoxReflect creates a mirrored copy of the text below, faded with a gradient mask."
+          }
+        }
+      }
+    },
+    "effect-typewriter": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "gap": "0.5rem",
+      "scroll": "visible",
+      "section": {
+        "elementOrder": ["typewriter-heading", "typewriter-desc"],
+        "definitions": {
+          "typewriter-heading": {
+            "preset": "type-typewriter-heading",
+            "text": "Typed, letter by letter."
+          },
+          "typewriter-desc": {
+            "preset": "type-body-standard",
+            "text": "typewriter entrance preset — reveals text from left to right using clipPath inset. Duration (1.5s) set via entranceMotion.transition; easing and trigger are JSON-configurable."
+          }
+        }
+      }
+    }
+  },
+  "align": "start",
+  "scroll": "visible"
+}

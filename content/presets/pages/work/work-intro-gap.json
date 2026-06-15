@@ -1,0 +1,17 @@
+{
+  "type": "divider",
+  "width": {
+    "base": "100%",
+    "md": "88%"
+  },
+  "height": {
+    "base": "92vh",
+    "md": "100vh"
+  },
+  "selfAlign": "full",
+  "layers": [
+    {
+      "fill": "transparent"
+    }
+  ]
+}

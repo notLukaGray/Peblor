@@ -1,0 +1,203 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "entrancePreset": "slideUp",
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "card-shell"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Embedded Shells"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Buttons composed inside card surfaces with glass-morphism backgrounds. Demonstrates button fit within dialog, panel, and tooltip-style containers."
+    },
+    "card-shell": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "align": "center",
+      "distribute": "center",
+      "gap": "2rem",
+      "section": {
+        "elementOrder": ["glass-card-1", "glass-card-2"],
+        "definitions": {
+          "glass-card-1": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "align": "start",
+            "distribute": "center",
+            "gap": "1.2rem",
+            "padding": "2rem 2rem 2.5rem",
+            "wrapperStyle": {
+              "background": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+              "bgBlur": "blur(12px)",
+              "WebkitBackdropFilter": "blur(12px)",
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+              "borderRadius": "20px"
+            },
+            "width": "280px",
+            "section": {
+              "elementOrder": ["card-title", "card-desc", "card-actions"],
+              "definitions": {
+                "card-title": {
+                  "type": "elementHeading",
+                  "level": 4,
+                  "text": "Confirm Action",
+                  "color": "var(--pb-on-secondary)"
+                },
+                "card-desc": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "This action cannot be undone. Are you sure you want to proceed?",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 55%, transparent)"
+                },
+                "card-actions": {
+                  "type": "elementGroup",
+                  "display": "flex",
+                  "flow": "row",
+                  "wrap": "wrap",
+                  "align": "center",
+                  "distribute": "start",
+                  "gap": "0.6rem",
+                  "section": {
+                    "elementOrder": ["card-confirm", "card-cancel"],
+                    "definitions": {
+                      "card-confirm": {
+                        "preset": "btn-primary",
+                        "label": "Confirm",
+                        "action": "setVariable",
+                        "actionPayload": {
+                          "key": "_demo_btn",
+                          "value": "clicked"
+                        },
+                        "wrapperStroke": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+                        "wrapperStrokeWidth": 1,
+                        "wrapperFillHover": {
+                          "light": "color-mix(in oklab, var(--pb-on-secondary) 84%, oklch(0.56 0.12 148))",
+                          "dark": "color-mix(in oklab, var(--pb-on-secondary) 76%, oklch(0.74 0.13 143))"
+                        },
+                        "wrapperFillActive": {
+                          "light": "color-mix(in oklab, var(--pb-on-secondary) 74%, oklch(0.48 0.14 150))",
+                          "dark": "color-mix(in oklab, var(--pb-on-secondary) 64%, oklch(0.64 0.15 145))"
+                        },
+                        "wrapperStrokeHover": {
+                          "light": "color-mix(in oklab, var(--pb-on-secondary) 18%, oklch(0.56 0.12 148))",
+                          "dark": "color-mix(in oklab, var(--pb-on-secondary) 28%, oklch(0.74 0.13 143))"
+                        }
+                      },
+                      "card-cancel": {
+                        "preset": "btn-ghost",
+                        "label": "Cancel",
+                        "linkDefault": "color-mix(in oklab, var(--pb-on-secondary) 55%, transparent)",
+                        "action": "setVariable",
+                        "actionPayload": {
+                          "key": "_demo_btn",
+                          "value": "clicked"
+                        },
+                        "wrapperFillHover": "color-mix(in oklab, var(--pb-accent) 18%, transparent)",
+                        "wrapperFillActive": "color-mix(in oklab, var(--pb-accent) 30%, transparent)",
+                        "wrapperStrokeHover": "color-mix(in oklab, var(--pb-accent) 38%, transparent)",
+                        "wrapperStroke": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+                        "wrapperStrokeWidth": 1,
+                        "linkHover": "var(--pb-accent)",
+                        "linkActive": "color-mix(in oklab, var(--pb-accent) 70%, black)",
+                        "linkTransition": "0.2s"
+                      }
+                    }
+                  },
+                  "scroll": "visible"
+                }
+              }
+            }
+          },
+          "glass-card-2": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "align": "start",
+            "distribute": "center",
+            "gap": "1.2rem",
+            "padding": "2rem 2rem 2.5rem",
+            "wrapperStyle": {
+              "background": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+              "bgBlur": "blur(12px)",
+              "WebkitBackdropFilter": "blur(12px)",
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+              "borderRadius": "20px"
+            },
+            "width": "280px",
+            "section": {
+              "elementOrder": ["card2-title", "card2-desc", "card2-actions"],
+              "definitions": {
+                "card2-title": {
+                  "type": "elementHeading",
+                  "level": 4,
+                  "text": "Upgrade Plan",
+                  "color": "var(--pb-on-secondary)"
+                },
+                "card2-desc": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "Unlock premium features including unlimited projects and priority support.",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 55%, transparent)"
+                },
+                "card2-actions": {
+                  "type": "elementGroup",
+                  "display": "flex",
+                  "flow": "column",
+                  "align": "stretch",
+                  "distribute": "center",
+                  "gap": "0.5rem",
+                  "width": "100%",
+                  "section": {
+                    "elementOrder": ["card2-upgrade", "card2-learn"],
+                    "definitions": {
+                      "card2-upgrade": {
+                        "preset": "btn-primary",
+                        "label": "Upgrade Now — $19/mo",
+                        "width": "100%",
+                        "action": "setVariable",
+                        "actionPayload": {
+                          "key": "_demo_btn",
+                          "value": "clicked"
+                        },
+                        "wrapperFillHover": {
+                          "light": "color-mix(in oklab, var(--pb-on-secondary) 84%, oklch(0.50 0.16 275))",
+                          "dark": "color-mix(in oklab, var(--pb-on-secondary) 74%, oklch(0.72 0.18 270))"
+                        },
+                        "wrapperFillActive": {
+                          "light": "color-mix(in oklab, var(--pb-on-secondary) 72%, oklch(0.42 0.18 278))",
+                          "dark": "color-mix(in oklab, var(--pb-on-secondary) 62%, oklch(0.62 0.20 272))"
+                        },
+                        "wrapperStrokeHover": {
+                          "light": "color-mix(in oklab, var(--pb-on-secondary) 20%, oklch(0.52 0.16 275))",
+                          "dark": "color-mix(in oklab, var(--pb-on-secondary) 30%, oklch(0.74 0.18 270))"
+                        }
+                      },
+                      "card2-learn": {
+                        "preset": "btn-quiet",
+                        "label": "Learn More",
+                        "width": "100%",
+                        "action": "setVariable",
+                        "actionPayload": {
+                          "key": "_demo_btn",
+                          "value": "clicked"
+                        }
+                      }
+                    }
+                  },
+                  "scroll": "visible"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

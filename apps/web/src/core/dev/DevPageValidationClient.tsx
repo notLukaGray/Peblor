@@ -3,6 +3,9 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
+/** Returned for routes with no matching page file — expected for intentional 404s, not a content bug. */
+const PAGE_NOT_FOUND_ERROR = "Page file not found or could not be loaded";
+
 /** Current page slug path from pathname. */
 function getSlugFromPathname(pathname: string): string | null {
   const segments = pathname.split("/").filter(Boolean);
@@ -10,10 +13,10 @@ function getSlugFromPathname(pathname: string): string | null {
   return segments.join("/");
 }
 
-/** Only validate when we're on a peblor detail route (e.g. /teaching/foo, /work/bar). Skip index/section routes like /teaching, /work, and internal dev tools like /dev/*, /playground. */
+/** Only validate when we're on a peblor detail route (e.g. /teaching/foo, /work/bar). Skip index/section routes like /teaching, /work, and internal dev tools like /dev/*. */
 function isPeblorDetailPath(pathname: string): boolean {
   const segments = pathname.split("/").filter(Boolean);
-  if (segments[0] === "dev" || segments[0] === "playground") return false;
+  if (segments[0] === "dev") return false;
   return segments.length >= 2;
 }
 
@@ -44,6 +47,7 @@ export function DevPageValidationClient() {
         const [page] = data.results;
         if (!page) return;
         if (page.valid) return;
+        if (page.errors.length === 1 && page.errors[0] === PAGE_NOT_FOUND_ERROR) return;
 
         console.error("[peblor validation] Page has errors:", page.slug);
         for (const error of page.errors) {

@@ -1,0 +1,50 @@
+id: trigger.mediaProgress
+kind: trigger
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  Fire an action when a video or audio element passes a specific playback fraction.
+  Set once: true to fire only on the first crossing; leave it false (default) to
+  re-fire each time the threshold is crossed after scrubbing back. Use for chapter
+  markers, mid-roll overlays, analytics milestones, or synced UI state changes keyed
+  to playback position.
+
+not_this_if:
+  - "you need to fire when playback ends (use mediaEndTriggers)"
+  - "you need to fire when playback starts or pauses (use module slot triggers)"
+  - "the target is not an HTML media element with a DOM id"
+
+axes:
+  - name: config
+    fields: [mediaProgressTriggers]
+    note: "array of { id, at (0–1 fraction), onReach, once? } on baseSectionPropsSchema"
+
+covers:
+  - description: "Show a mid-roll overlay when video reaches 50% playback, fire only once"
+    example: content/validator-fragments/trigger-media-progress.json
+
+does_not_cover:
+  - what: "Media end event"
+    use_instead: trigger.onVideoEnd
+  - what: "Scroll position threshold"
+    use_instead: trigger.scrollThreshold
+  - what: "Intersection-based trigger"
+    use_instead: trigger.onVisible
+
+composes_with:
+  parents: [section.*]
+  siblings_typical: [trigger.onVideoEnd, trigger.timer]
+  motion: "N/A — fires actions; receiving element handles animation"
+
+known_limitations:
+  - "Targets HTML media element by DOM id — element must be rendered with matching id"
+  - "at is a fraction 0–1, not seconds — calculate fraction from known duration if needed"
+  - "once: false (default) re-fires each time playback crosses the threshold after scrubbing back"
+  - "timeupdate fires roughly every 250ms — sub-250ms precision is not guaranteed"
+
+proposal_hints:
+  new_variant_value: "N/A — trigger, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

@@ -1,0 +1,25 @@
+{
+  "preset": "demo-hero",
+  "padding": {
+    "base": "10rem 0 4rem",
+    "md": "12rem 0 6rem"
+  },
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Play · Seek · Time"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Audio Minimal"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "The bare glass pill. Play/pause, seek bar, time display — nothing more. The foundation every other audio player builds on.",
+      "width": {
+        "base": "100%",
+        "md": "78%"
+      }
+    }
+  }
+}

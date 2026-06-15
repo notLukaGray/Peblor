@@ -116,15 +116,13 @@ function emitCatalog(catalog: Catalog): void {
       process.exit(1);
     }
 
-    // eslint-disable-next-line no-console
-    console.log("catalog:build --ci — generated output matches checked-in copy. ✓");
+    console.warn("catalog:build --ci — generated output matches checked-in copy. ✓");
     return;
   }
 
   writeFileSync(CATALOG_YAML_PATH, yamlContent, "utf-8");
   writeFileSync(CATALOG_JSON_PATH, jsonContent, "utf-8");
-  // eslint-disable-next-line no-console
-  console.log(`catalog:build — wrote ${entries.length} entries to src/generated/`);
+  console.warn(`catalog:build — wrote ${entries.length} entries to src/generated/`);
 }
 
 const entries = readIntentFiles();

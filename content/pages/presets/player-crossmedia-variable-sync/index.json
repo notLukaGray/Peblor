@@ -1,0 +1,13 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Crossmedia Variable Sync — Preset Demo",
+  "description": "Lottie event → peblor variable → 3D camera responds. One animation runtime drives another through peblor's variable system.",
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "bg", "player/section"],
+  "bgKey": "bg-players",
+  "sectionOrder": ["nav-header", "hero", "sec-player"],
+  "definitions": {
+    "bg-players": {
+      "preset": "bg-players"
+    }
+  }
+}

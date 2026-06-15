@@ -1,0 +1,160 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "width": "100%",
+  "maxWidth": "1000px",
+  "selfAlign": "center",
+  "align": "stretch",
+  "height": "hug",
+  "padding": {
+    "base": "1.75rem 1.25rem",
+    "md": "2.5rem 1.5rem"
+  },
+  "gap": "1.5rem",
+  "borderRadius": "20px",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 11%, transparent)"
+  },
+  "elementOrder": ["eyebrow", "title", "description", "chips"],
+  "definitions": {
+    "eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Tag System"
+    },
+    "title": {
+      "preset": "type-h4-card",
+      "text": "Wrapped tags stay readable"
+    },
+    "description": {
+      "preset": "type-body-fine",
+      "text": "A dense cloud that wraps naturally across breakpoints while preserving tap size and scan rhythm."
+    },
+    "chips": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "align": "center",
+      "gap": "0.75rem",
+      "width": "100%",
+      "padding": "0",
+      "section": {
+        "elementOrder": [
+          "chip-1",
+          "chip-2",
+          "chip-3",
+          "chip-4",
+          "chip-5",
+          "chip-6",
+          "chip-7",
+          "chip-8",
+          "chip-9",
+          "chip-10"
+        ],
+        "definitions": {
+          "chip-1": {
+            "type": "elementButton",
+            "label": "Interaction Design",
+            "href": "#",
+            "wrapperPadding": "0.65rem 1.1rem",
+            "wrapperBorderRadius": "999px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+            "linkDefault": "var(--pb-on-secondary)",
+            "linkHover": "var(--pb-on-secondary)"
+          },
+          "chip-2": {
+            "type": "elementButton",
+            "label": "Systems",
+            "href": "#",
+            "wrapperPadding": "0.65rem 1.1rem",
+            "wrapperBorderRadius": "999px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+            "linkDefault": "var(--pb-on-secondary)",
+            "linkHover": "var(--pb-on-secondary)"
+          },
+          "chip-3": {
+            "type": "elementButton",
+            "label": "Editorial Tooling",
+            "href": "#",
+            "wrapperPadding": "0.65rem 1.1rem",
+            "wrapperBorderRadius": "999px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+            "linkDefault": "var(--pb-on-secondary)",
+            "linkHover": "var(--pb-on-secondary)"
+          },
+          "chip-4": {
+            "type": "elementButton",
+            "label": "Token Architecture",
+            "href": "#",
+            "wrapperPadding": "0.65rem 1.1rem",
+            "wrapperBorderRadius": "999px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+            "linkDefault": "var(--pb-on-secondary)",
+            "linkHover": "var(--pb-on-secondary)"
+          },
+          "chip-5": {
+            "type": "elementButton",
+            "label": "Accessibility",
+            "href": "#",
+            "wrapperPadding": "0.65rem 1.1rem",
+            "wrapperBorderRadius": "999px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+            "linkDefault": "var(--pb-on-secondary)",
+            "linkHover": "var(--pb-on-secondary)"
+          },
+          "chip-6": {
+            "type": "elementButton",
+            "label": "Motion Rules",
+            "href": "#",
+            "wrapperPadding": "0.65rem 1.1rem",
+            "wrapperBorderRadius": "999px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+            "linkDefault": "var(--pb-on-secondary)",
+            "linkHover": "var(--pb-on-secondary)"
+          },
+          "chip-7": {
+            "type": "elementButton",
+            "label": "Information Hierarchy",
+            "href": "#",
+            "wrapperPadding": "0.65rem 1.1rem",
+            "wrapperBorderRadius": "999px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+            "linkDefault": "var(--pb-on-secondary)",
+            "linkHover": "var(--pb-on-secondary)"
+          },
+          "chip-8": {
+            "type": "elementButton",
+            "label": "Localization",
+            "href": "#",
+            "wrapperPadding": "0.65rem 1.1rem",
+            "wrapperBorderRadius": "999px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+            "linkDefault": "var(--pb-on-secondary)",
+            "linkHover": "var(--pb-on-secondary)"
+          },
+          "chip-9": {
+            "type": "elementButton",
+            "label": "Ops Constraints",
+            "href": "#",
+            "wrapperPadding": "0.65rem 1.1rem",
+            "wrapperBorderRadius": "999px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+            "linkDefault": "var(--pb-on-secondary)",
+            "linkHover": "var(--pb-on-secondary)"
+          },
+          "chip-10": {
+            "type": "elementButton",
+            "label": "Mobile QA",
+            "href": "#",
+            "wrapperPadding": "0.65rem 1.1rem",
+            "wrapperBorderRadius": "999px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+            "linkDefault": "var(--pb-on-secondary)",
+            "linkHover": "var(--pb-on-secondary)"
+          }
+        }
+      }
+    }
+  }
+}

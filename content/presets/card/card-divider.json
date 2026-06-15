@@ -1,0 +1,6 @@
+{
+  "type": "elementDivider",
+  "width": "100%",
+  "height": "1px",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 14%, transparent)"
+}

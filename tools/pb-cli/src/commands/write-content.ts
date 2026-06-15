@@ -39,7 +39,7 @@ function parseWriteArgs(args: string[]): {
   const consumed = new Set<number>();
 
   for (let i = 0; i < args.length; i++) {
-    if (["--json", "--force", "--help", "-h"].includes(args[i])) consumed.add(i);
+    if (["--json", "--force", "--help", "-h"].includes(args[i]!)) consumed.add(i);
   }
 
   const inlineIdx = args.indexOf("--inline");

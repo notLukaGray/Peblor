@@ -1,0 +1,6 @@
+{
+  "type": "modalOpen",
+  "payload": {
+    "id": "mid-roll-overlay"
+  }
+}

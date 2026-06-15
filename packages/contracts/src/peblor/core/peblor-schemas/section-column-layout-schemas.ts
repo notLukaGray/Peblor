@@ -1,6 +1,7 @@
 import { z } from "zod";
+import { tierMapSchema } from "./responsive-value-schemas";
 import { sectionBorderSchema } from "./section-effect-schemas";
-import { jsonNullishOptional, themeStringSchema } from "./schema-primitives";
+import { jsonNullishOptional, themeStringOrGradientSchema } from "./schema-primitives";
 
 const cssWidthPattern =
   /^(?:\d+(?:\.\d+)?(?:fr|%|px|rem|em|vw|vh)|--[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9_-]*)$/;
@@ -16,21 +17,17 @@ export const cssWidthOrFunctionSchema = z
   .refine(
     (val) => {
       const t = val.trim();
-      return cssWidthPattern.test(t) || /^(min|max|clamp)\([\s\S]+\)$/.test(t);
+      return (
+        cssWidthPattern.test(t) ||
+        /^(min|max|clamp|calc|round|mod|rem|sin|cos|tan|asin|acos|atan|atan2)\([\s\S]+\)$/.test(t)
+      );
     },
     { message: "Width must be a length (e.g. 800px), or min/max/clamp(...)" }
   );
 
 export const columnCountSchema = z.union([
   z.number().int().min(1).max(12),
-  z
-    .object({
-      mobile: jsonNullishOptional(z.number().int().min(1).max(12)),
-      desktop: jsonNullishOptional(z.number().int().min(1).max(12)),
-    })
-    .refine((obj) => obj.mobile !== undefined || obj.desktop !== undefined, {
-      message: "At least one of mobile or desktop must be provided",
-    }),
+  tierMapSchema(z.number().int().min(1).max(12)),
 ]);
 
 const columnWidthsValueSchema = z.union([
@@ -40,74 +37,41 @@ const columnWidthsValueSchema = z.union([
 ]);
 
 export const columnWidthsSchema = jsonNullishOptional(
-  z.union([
-    columnWidthsValueSchema,
-    z
-      .object({
-        mobile: jsonNullishOptional(columnWidthsValueSchema),
-        desktop: jsonNullishOptional(columnWidthsValueSchema),
-      })
-      .refine((obj) => obj.mobile !== undefined || obj.desktop !== undefined, {
-        message: "At least one of mobile or desktop columnWidths must be provided",
-      }),
-  ])
+  z.union([columnWidthsValueSchema, tierMapSchema(columnWidthsValueSchema)])
 );
 
+const columnGapsValueSchema = z.union([z.string(), z.array(z.string())]);
 export const columnGapsSchema = jsonNullishOptional(
-  z.union([
-    z.string(),
-    z.array(z.string()),
-    z.object({
-      mobile: jsonNullishOptional(z.union([z.string(), z.array(z.string())])),
-      desktop: jsonNullishOptional(z.union([z.string(), z.array(z.string())])),
-    }),
-  ])
+  z.union([z.array(z.string()), tierMapSchema(columnGapsValueSchema), z.string()])
 );
 
 export const columnSpanSchema = jsonNullishOptional(
   z.union([z.number().int().min(1).max(12), z.literal("all")])
 );
 export const columnSpanMapSchema = z.record(z.string(), columnSpanSchema);
-export const responsiveColumnSpanSchema = z
-  .object({
-    mobile: jsonNullishOptional(columnSpanMapSchema),
-    desktop: jsonNullishOptional(columnSpanMapSchema),
-  })
-  .superRefine((obj, ctx) => {
-    if (obj.mobile !== undefined || obj.desktop !== undefined) return;
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message:
-        "columnSpan responsive shape must use breakpoint keys first: { mobile: { elementId: span }, desktop: { elementId: span } }",
-      path: [],
-    });
-  });
+
+export const responsiveColumnSpanSchema = tierMapSchema(columnSpanMapSchema);
 
 const gridModeSchema = z.enum(["columns", "grid"]);
 export const responsiveGridModeSchema = jsonNullishOptional(
-  z.union([
-    gridModeSchema,
-    z
-      .object({
-        mobile: jsonNullishOptional(gridModeSchema),
-        desktop: jsonNullishOptional(gridModeSchema),
-      })
-      .refine((obj) => obj.mobile !== undefined || obj.desktop !== undefined, {
-        message: "At least one of mobile or desktop gridMode must be provided",
-      }),
-  ])
+  z.union([gridModeSchema, tierMapSchema(gridModeSchema)])
 );
 
 export const columnStyleSchema = z.object({
   borderRadius: jsonNullishOptional(z.string()),
   border: jsonNullishOptional(sectionBorderSchema),
-  fill: jsonNullishOptional(themeStringSchema),
+  /** Per-side border CSS shorthand (e.g. "1px solid oklch(...)"). Overrides `border` on that side. */
+  borderTop: jsonNullishOptional(z.string()),
+  borderRight: jsonNullishOptional(z.string()),
+  borderBottom: jsonNullishOptional(z.string()),
+  borderLeft: jsonNullishOptional(z.string()),
+  fill: jsonNullishOptional(themeStringOrGradientSchema),
   padding: jsonNullishOptional(z.string()),
   gap: jsonNullishOptional(z.string()),
-  justifyContent: jsonNullishOptional(
-    z.enum(["flex-start", "center", "flex-end", "space-between", "space-around", "space-evenly"])
+  distribute: jsonNullishOptional(
+    z.enum(["start", "center", "end", "between", "around", "evenly"])
   ),
-  alignItems: jsonNullishOptional(z.enum(["flex-start", "center", "flex-end", "stretch"])),
+  align: jsonNullishOptional(z.enum(["start", "center", "end", "stretch"])),
   alignX: jsonNullishOptional(z.enum(["left", "center", "right", "stretch"])),
   alignY: jsonNullishOptional(
     z.enum(["top", "center", "bottom", "space-between", "space-around", "space-evenly"])
@@ -118,38 +82,24 @@ export const columnStyleSchema = z.object({
   maxWidth: jsonNullishOptional(z.string()),
   width: jsonNullishOptional(z.string()),
   height: jsonNullishOptional(z.string()),
-  overflow: jsonNullishOptional(z.enum(["visible", "hidden", "auto", "scroll"])),
-  overflowX: jsonNullishOptional(z.enum(["visible", "hidden", "auto", "scroll"])),
-  overflowY: jsonNullishOptional(z.enum(["visible", "hidden", "auto", "scroll"])),
+  scroll: jsonNullishOptional(z.enum(["visible", "hidden", "auto", "scroll"])),
+  scrollX: jsonNullishOptional(z.enum(["visible", "hidden", "auto", "scroll"])),
+  scrollY: jsonNullishOptional(z.enum(["visible", "hidden", "auto", "scroll"])),
 });
 
 export const columnStylesSchema = jsonNullishOptional(
-  z.union([
-    z.array(columnStyleSchema),
-    z
-      .object({
-        mobile: jsonNullishOptional(z.array(columnStyleSchema)),
-        desktop: jsonNullishOptional(z.array(columnStyleSchema)),
-      })
-      .refine((obj) => obj.mobile !== undefined || obj.desktop !== undefined, {
-        message: "At least one of mobile or desktop columnStyles must be provided",
-      }),
-  ])
+  z.union([z.array(columnStyleSchema), tierMapSchema(z.array(columnStyleSchema))])
 );
 
 export const itemStyleSchema = columnStyleSchema.extend({});
 
 export const itemStylesSchema = jsonNullishOptional(
   z.union([
+    // Responsive tier-map form must be tried BEFORE the flat record branch — otherwise
+    // the record branch matches tier keys as element-id keys, validates their nested maps
+    // against `itemStyleSchema`, and silently strips every override (C-itemStyles-union-order).
+    tierMapSchema(z.record(z.string(), itemStyleSchema)),
     z.record(z.string(), itemStyleSchema),
-    z
-      .object({
-        mobile: jsonNullishOptional(z.record(z.string(), itemStyleSchema)),
-        desktop: jsonNullishOptional(z.record(z.string(), itemStyleSchema)),
-      })
-      .refine((obj) => obj.mobile !== undefined || obj.desktop !== undefined, {
-        message: "At least one of mobile or desktop itemStyles must be provided",
-      }),
   ])
 );
 
@@ -161,56 +111,35 @@ export const itemLayoutEntrySchema = z.object({
   order: jsonNullishOptional(z.number().int()),
   alignX: jsonNullishOptional(z.enum(["left", "center", "right", "stretch"])),
   alignY: jsonNullishOptional(z.enum(["top", "center", "bottom", "stretch"])),
-  zIndex: jsonNullishOptional(z.number()),
+  layer: jsonNullishOptional(z.number()),
+  /** CSS grid-area — assign this item to a named template area or a row/col span shorthand. */
+  gridArea: jsonNullishOptional(z.string()),
+  /** CSS grid-column placement shorthand (e.g. "1 / 3", "span 2"). */
+  gridColumn: jsonNullishOptional(z.string()),
+  /** CSS grid-row placement shorthand (e.g. "1 / 3", "span 2"). */
+  gridRow: jsonNullishOptional(z.string()),
 });
 
 const itemLayoutMapSchema = z.record(z.string(), itemLayoutEntrySchema);
 export const itemLayoutSchema = jsonNullishOptional(
   z.union([
+    // Responsive form must be tried BEFORE the flat record branch — same reason as
+    // itemStylesSchema above (C-itemStyles-union-order applies identically here).
+    tierMapSchema(itemLayoutMapSchema),
     itemLayoutMapSchema,
-    z
-      .object({
-        mobile: jsonNullishOptional(itemLayoutMapSchema),
-        desktop: jsonNullishOptional(itemLayoutMapSchema),
-      })
-      .refine((obj) => obj.mobile !== undefined || obj.desktop !== undefined, {
-        message: "At least one of mobile or desktop itemLayout must be provided",
-      }),
   ])
 );
 
 export const elementOrderSchema = jsonNullishOptional(
-  z.union([
-    z.array(z.string()),
-    z
-      .object({
-        mobile: jsonNullishOptional(z.array(z.string())),
-        desktop: jsonNullishOptional(z.array(z.string())),
-      })
-      .refine((obj) => obj.mobile !== undefined || obj.desktop !== undefined, {
-        message: "At least one of mobile or desktop elementOrder must be provided",
-      }),
-  ])
+  z.union([z.array(z.string()), tierMapSchema(z.array(z.string()))])
 );
 
+const columnAssignmentsRecordSchema = z.record(z.string(), z.number().int().min(0));
 export const columnAssignmentsSchema = jsonNullishOptional(
-  z.union([
-    z.record(z.string(), z.number().int().min(0)),
-    z.object({
-      mobile: jsonNullishOptional(z.record(z.string(), z.number().int().min(0))),
-      desktop: jsonNullishOptional(z.record(z.string(), z.number().int().min(0))),
-    }),
-  ])
+  z.union([tierMapSchema(columnAssignmentsRecordSchema), columnAssignmentsRecordSchema])
 );
 
 export const columnAssignmentsRequiredSchema = z.union([
-  z.record(z.string(), z.number().int().min(0)),
-  z
-    .object({
-      mobile: jsonNullishOptional(z.record(z.string(), z.number().int().min(0))),
-      desktop: jsonNullishOptional(z.record(z.string(), z.number().int().min(0))),
-    })
-    .refine((obj) => obj.mobile !== undefined || obj.desktop !== undefined, {
-      message: "At least one of mobile or desktop columnAssignments must be provided",
-    }),
+  tierMapSchema(columnAssignmentsRecordSchema),
+  columnAssignmentsRecordSchema,
 ]);

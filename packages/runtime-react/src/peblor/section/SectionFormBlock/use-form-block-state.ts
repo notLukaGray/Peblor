@@ -6,7 +6,7 @@ import { validateFormField } from "@/peblor/form-fields/FormFieldRenderer/form-f
 export type FormFieldPath = number[];
 
 export function isFormFieldButton(field: FormFieldBlock): boolean {
-  return field.fieldType === "button" || field.fieldType === "submit";
+  return field.fieldType === "button";
 }
 
 export function isFormFieldLayout(field: FormFieldBlock): boolean {
@@ -78,7 +78,14 @@ export function useFormBlockState(fields: FormFieldBlock[]) {
     });
     setErrors(nextErrors);
     setSubmitError(null);
-    return Object.keys(nextErrors).length === 0;
+    const isValid = Object.keys(nextErrors).length === 0;
+    if (!isValid) {
+      setTimeout(() => {
+        const firstInvalidField = document.querySelector<HTMLElement>('[aria-invalid="true"]');
+        firstInvalidField?.focus();
+      }, 0);
+    }
+    return isValid;
   }, [fields, values]);
 
   return {

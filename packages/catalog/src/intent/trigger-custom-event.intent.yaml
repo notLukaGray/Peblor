@@ -1,0 +1,49 @@
+id: trigger.customEvent
+kind: trigger
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A decoupled event bus for sections. One section fires dispatchCustomEvent with a
+  name and optional detail payload; any other section listening via customEventTriggers
+  receives it and fires its own action. Use for inter-section communication without
+  shared variable state — carousels signalling sidebars, players notifying overlays,
+  form steps advancing sequences.
+
+not_this_if:
+  - "you need to react to a variable value change (use variableTriggers)"
+  - "you need to react to user interaction on a specific element (use trigger.elementEvent)"
+  - "sections are in a parent/child relationship and can share props directly"
+
+axes:
+  - name: config
+    fields: [customEventTriggers]
+    note: "array of { name, action } on baseSectionPropsSchema; pairs with dispatchCustomEvent action"
+
+covers:
+  - description: "Section reacts to a named custom event dispatched from another section"
+    example: content/validator-fragments/trigger-custom-event.json
+
+does_not_cover:
+  - what: "Variable-driven conditional trigger"
+    use_instead: trigger.idle
+  - what: "DOM element interaction trigger"
+    use_instead: trigger.elementEvent
+  - what: "Timer-based trigger"
+    use_instead: trigger.timer
+
+composes_with:
+  parents: [section.*]
+  siblings_typical: [trigger.timer, trigger.keyboard]
+  motion: "N/A — fires actions; receiving element handles animation"
+
+known_limitations:
+  - "Events are window-scoped — crossing iframe boundaries requires a custom bridge"
+  - "detail payload is JsonValue; structured data must be serializable"
+  - "No delivery guarantee — if no listener is mounted, the event is silently dropped"
+
+proposal_hints:
+  new_variant_value: "N/A — trigger, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

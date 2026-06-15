@@ -1,0 +1,10 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "padding": "1rem 1.5rem",
+  "wrapperStyle": {
+    "background": "color-mix(in oklab, var(--pb-accent) 12%, transparent)",
+    "borderRadius": "10px",
+    "border": "1px solid color-mix(in oklab, var(--pb-accent) 25%, transparent)"
+  }
+}

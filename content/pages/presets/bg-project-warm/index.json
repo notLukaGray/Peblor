@@ -1,0 +1,19 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "bg-project-warm — Preset Demo",
+  "description": "Warm organic gradient with parallax accent layer",
+  "presets": ["demo", "bg"],
+  "sectionOrder": ["nav-header", "hero", "scroll-body"],
+  "bgKey": "bg-project-warm",
+  "scroll": {
+    "smooth": true,
+    "lockBody": false,
+    "scrollX": "hidden",
+    "scrollY": "auto"
+  },
+  "definitions": {
+    "bg-project-warm": {
+      "preset": "bg-project-warm"
+    }
+  }
+}

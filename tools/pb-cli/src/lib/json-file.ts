@@ -1,9 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
-
-export function isRecord(value: unknown): value is Record<string, unknown> {
-  return value != null && typeof value === "object" && !Array.isArray(value);
-}
+import { isRecord } from "@pb/core";
+export { isRecord };
 
 export function resolveInputPath(inputPath: string): string {
   return path.isAbsolute(inputPath) ? inputPath : path.join(process.cwd(), inputPath);

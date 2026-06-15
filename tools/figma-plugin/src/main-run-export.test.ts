@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { resolveWrapperFrames } from "./main-run-export";
+import { buildExportQualityDiagnostics, resolveWrapperFrames } from "./main-run-export";
 
 function makeFrame(
   id: string,
@@ -70,5 +70,40 @@ describe("resolveWrapperFrames", () => {
     const wrapper = makeFrame("wrapper", "pb-wrapper", [page as unknown as SceneNode]);
 
     expect(resolveWrapperFrames([wrapper, page])).toEqual([page]);
+  });
+});
+
+describe("buildExportQualityDiagnostics", () => {
+  it("emits an error when parity reports dropped nodes", () => {
+    const diagnostics = buildExportQualityDiagnostics({
+      converted: 10,
+      fallback: 1,
+      dropped: 2,
+      fallbackReasons: {},
+      dropReasons: {},
+    });
+    expect(diagnostics.some((line) => line.startsWith("[error] [quality]"))).toBe(true);
+  });
+
+  it("emits a warning when fallback ratio is high", () => {
+    const diagnostics = buildExportQualityDiagnostics({
+      converted: 6,
+      fallback: 4,
+      dropped: 0,
+      fallbackReasons: {},
+      dropReasons: {},
+    });
+    expect(diagnostics.some((line) => line.startsWith("[warn] [quality]"))).toBe(true);
+  });
+
+  it("emits no diagnostics for healthy parity", () => {
+    const diagnostics = buildExportQualityDiagnostics({
+      converted: 20,
+      fallback: 2,
+      dropped: 0,
+      fallbackReasons: {},
+      dropReasons: {},
+    });
+    expect(diagnostics).toEqual([]);
   });
 });

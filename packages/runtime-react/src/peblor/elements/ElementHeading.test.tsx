@@ -8,8 +8,8 @@ describe("ElementHeading semantic contract", () => {
       <ElementHeading type="elementHeading" level={4} semanticLevel={1} text="Hello" />
     );
 
-    expect(markup).toContain('role="heading"');
-    expect(markup).toContain('aria-level="1"');
+    expect(markup).toContain("<h1");
+    expect(markup).toContain("</h1>");
     expect(markup).toContain("typography-heading-md");
   });
 
@@ -48,7 +48,10 @@ describe("ElementHeading semantic contract", () => {
       />
     );
 
+    // Gradient textFill values cannot be wrapped in light-dark() (browsers drop it).
+    // The dark gradient is used directly since this is a dark-by-default site.
     expect(markup).toContain("background-image:linear-gradient(90deg,#fff,#8fdcff)");
+    expect(markup).not.toContain("light-dark(linear-gradient");
     expect(markup).toContain("color:transparent");
     expect(markup).not.toContain("[object Object]");
   });

@@ -1,4 +1,10 @@
-import type { TriggerAction } from "@pb/contracts/types";
+import type {
+  BackgroundSwitchAction,
+  StartTransitionAction,
+  StopTransitionAction,
+  TriggerAction,
+  UpdateTransitionProgressAction,
+} from "@pb/contracts/types";
 import {
   createBackgroundSwitchHandler,
   createBgTransitionProgressOverrideHandler,
@@ -68,24 +74,21 @@ export function createTriggerHandlers(
       if (action.type === "contentOverride") handleContentOverride(action);
     },
     startTransition: (action) => {
-      if (action.type !== "startTransition") return;
-      const transitionId = getTransitionId(action);
+      const transitionId = getTransitionId(action as StartTransitionAction | StopTransitionAction);
       if (transitionId) startTransition(transitionId);
     },
     stopTransition: (action) => {
-      if (action.type !== "stopTransition") return;
-      const transitionId = getTransitionId(action);
+      const transitionId = getTransitionId(action as StartTransitionAction | StopTransitionAction);
       if (transitionId) stopTransition(transitionId);
     },
     updateTransitionProgress: (action, progress) => {
       // progress from the event detail is only present for scroll/viewport triggers.
       // When fired from a button, progress is null — fall back to 0 so the inner
       // handler can resolve the value from action.payload.progress instead.
-      if (action.type === "updateTransitionProgress")
-        updateTransitionProgressAction(action, progress ?? 0);
+      updateTransitionProgressAction(action as UpdateTransitionProgressAction, progress ?? 0);
     },
     backgroundSwitch: (action) => {
-      if (action.type === "backgroundSwitch") backgroundSwitch(action);
+      backgroundSwitch(action as BackgroundSwitchAction);
     },
   };
 }

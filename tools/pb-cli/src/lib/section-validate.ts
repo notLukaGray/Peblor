@@ -1,30 +1,28 @@
 import { z } from "zod";
-import {
-  sectionContentBlockSchema,
-  sectionScrollContainerSchema,
-  sectionColumnBaseSchema,
-  sectionRevealSchema,
-  sectionDividerSchema,
-  sectionFormBlockSchema,
-  sectionTriggerSchema,
-  sectionDefinitionBlockSchema,
-} from "@pb/contracts";
+import { peblorDefinitionBlockSchema } from "@pb/contracts";
+
+// ---------------------------------------------------------------------------
+// Section-fragment validation
+//
+// A "section fragment" is a JSON file describing a single section definition
+// in its AUTHORED shape: elementOrder (string keys) + definitions (flat map).
+// This is the shape stored on disk in sidecar files (e.g. hero.json).
+//
+// We validate against `peblorDefinitionBlockSchema` — the same schema the
+// runtime uses for authored definitions in peblorSchema.definitions. This is
+// the correct schema for sidecar section files: it accepts the authored shape
+// (elementOrder + definitions) rather than the post-expand shape (elements[]).
+//
+// Do NOT use sectionContentBlockSchema / sectionScrollContainerSchema / etc.
+// from section-block-schemas — those are the POST-EXPAND schemas (they expect
+// an `elements` array, not `elementOrder`) and will reject every valid sidecar.
+// ---------------------------------------------------------------------------
 
 export type SectionDiagnostic = {
   severity: "error" | "warning";
   code: string;
   path: string;
   message: string;
-};
-
-const SECTION_SCHEMA_BY_TYPE: Record<string, z.ZodTypeAny> = {
-  contentBlock: sectionContentBlockSchema,
-  scrollContainer: sectionScrollContainerSchema,
-  sectionColumn: sectionColumnBaseSchema,
-  revealSection: sectionRevealSchema,
-  divider: sectionDividerSchema,
-  formBlock: sectionFormBlockSchema,
-  sectionTrigger: sectionTriggerSchema,
 };
 
 const PAGE_ONLY_FIELD_MESSAGES: Record<string, string> = {
@@ -84,12 +82,10 @@ export function validateSectionValue(value: unknown): {
     }
   }
 
-  const typeValue =
-    record && typeof (record as Record<string, unknown>).type === "string"
-      ? ((record as Record<string, unknown>).type as string)
-      : undefined;
-  const schema = typeValue ? SECTION_SCHEMA_BY_TYPE[typeValue] : undefined;
-  const parsed = schema ? schema.safeParse(value) : sectionDefinitionBlockSchema.safeParse(value);
+  // Validate against peblorDefinitionBlockSchema — the authored-shape schema that accepts
+  // both elementOrder+definitions (sidecar section files) and post-expand elements arrays.
+  // This is the same schema the runtime uses for page definitions on disk.
+  const parsed = peblorDefinitionBlockSchema.safeParse(value);
 
   if (!parsed.success) {
     diagnostics.push(...zodToDiagnostics(parsed.error, "PB_SECTION_INVALID"));
@@ -97,7 +93,7 @@ export function validateSectionValue(value: unknown): {
 
   return {
     valid: diagnostics.length === 0,
-    schema: schema ? `${typeValue}Schema` : "sectionDefinitionBlockSchema",
+    schema: "peblorDefinitionBlockSchema",
     diagnostics,
   };
 }

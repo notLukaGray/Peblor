@@ -1,0 +1,25 @@
+{
+  "type": "backgroundTransition",
+  "from": {
+    "type": "backgroundVariable",
+    "layers": [
+      {
+        "fill": "color-mix(in oklab, var(--pb-primary) 70%, var(--pb-secondary))"
+      }
+    ]
+  },
+  "to": {
+    "type": "backgroundVariable",
+    "layers": [
+      {
+        "fill": "var(--pb-secondary)"
+      }
+    ]
+  },
+  "mode": "progress",
+  "easing": "easeInOut",
+  "progressRange": {
+    "start": 0.1,
+    "end": 0.6
+  }
+}

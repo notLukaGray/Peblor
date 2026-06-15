@@ -2,7 +2,12 @@ import fs from "fs";
 import path from "path";
 import { isSafePathSegment, resolvePathUnder } from "./peblor-paths";
 import type { ModalBuilderFromSchema, PeblorDefinitionBlock } from "@pb/contracts";
-import { modalBuilderSchema, MOTION_DEFAULTS, sectionEffectSchema } from "@pb/contracts";
+import {
+  modalBuilderSchema,
+  modalBehaviorSchema,
+  MOTION_DEFAULTS,
+  sectionEffectSchema,
+} from "@pb/contracts";
 import type { ModalTransitionConfig } from "./modal-types";
 import { motionPropsSchema } from "@pb/contracts";
 import { CONTENT_DIR } from "./load/peblor-load-io";
@@ -17,7 +22,8 @@ async function readModalJson(id: string): Promise<Record<string, unknown> | null
   let raw: string;
   try {
     raw = await fs.promises.readFile(modalPath, "utf-8");
-  } catch {
+  } catch (err) {
+    console.warn("[pb-core] Failed to read modal JSON", id, err);
     return null;
   }
   const result = parseJsonSafe<Record<string, unknown>>(raw);
@@ -43,7 +49,10 @@ async function getDefinitionsForModal(
       let sectionsRaw: string;
       try {
         sectionsRaw = await fs.promises.readFile(sectionsPath, "utf-8");
-      } catch {
+      } catch (err) {
+        if ((err as NodeJS.ErrnoException).code !== "ENOENT") {
+          console.warn("[pb-core] Failed to read modal sections file", id, err);
+        }
         return {};
       }
       const result = parseJsonSafe<Record<string, unknown>>(sectionsRaw);
@@ -70,7 +79,8 @@ async function loadModalSectionFile(
   let raw: string;
   try {
     raw = await fs.promises.readFile(sectionPath, "utf-8");
-  } catch {
+  } catch (err) {
+    console.warn("[pb-core] Failed to read modal section file", id, sectionKey, err);
     return;
   }
   const result = parseJsonSafe<Record<string, unknown>>(raw);
@@ -98,7 +108,8 @@ async function hydrateModalSectionFiles(
   try {
     const stat = await fs.promises.stat(idDir);
     if (!stat.isDirectory()) return;
-  } catch {
+  } catch (err) {
+    console.warn("[pb-core] Failed to stat modal directory", id, err);
     return;
   }
   for (const key of sectionOrder) {
@@ -159,6 +170,9 @@ export async function loadModal(id: string): Promise<ModalBuilder | null> {
     .filter((result) => result.success)
     .map((result) => result.data);
 
+  const behaviorResult = modalBehaviorSchema.safeParse(withId.behavior);
+  const behavior = behaviorResult.success ? behaviorResult.data : undefined;
+
   const modalCandidate: ModalBuilder = {
     id,
     title,
@@ -167,6 +181,7 @@ export async function loadModal(id: string): Promise<ModalBuilder | null> {
     transition,
     ...(motion !== undefined ? { motion } : {}),
     ...(effects && effects.length > 0 ? { effects } : {}),
+    ...(behavior !== undefined ? { behavior } : {}),
   };
   const modalParse = modalBuilderSchema.safeParse(modalCandidate);
   if (!modalParse.success) return null;

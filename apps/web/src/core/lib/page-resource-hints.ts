@@ -1,6 +1,6 @@
 import { preload } from "react-dom";
-import { getSignedCdnUrl } from "@pb/core/lib/cdn-asset-server";
 import { normalizeImageTransformParams } from "@pb/core/lib/cdn-image-params";
+import { buildProxyUrl } from "@pb/core/lib/proxy-url";
 
 type ResourceHintAs = "image";
 
@@ -69,8 +69,9 @@ function toPreloadUrl(url: string, as: ResourceHintAs): string {
       Object.keys(input).length > 0 ? input : undefined
     );
 
-    return getSignedCdnUrl(key, transforms);
-  } catch {
+    return buildProxyUrl(key, transforms);
+  } catch (err) {
+    console.warn("[web-core] Failed to rewrite image URL for resource hints", err);
     return url;
   }
 }

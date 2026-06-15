@@ -1,0 +1,25 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Interactive Selection — Preset Demo",
+  "description": "Selection and preview UI patterns — tabbed content panels, hover tooltips, infinite scroll carousels, and selector-detail reveal layouts.",
+  "presets": ["demo", "type/core", "ui/link", "type/special"],
+  "sectionOrder": [
+    "nav-header",
+    "hero",
+    "sec-tabs",
+    "sec-tooltip",
+    "sec-infinite-scroll",
+    "sec-selector-detail"
+  ],
+  "bgKey": "bg-selection",
+  "definitions": {
+    "bg-selection": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "linear-gradient(160deg, color-mix(in oklab, var(--pb-primary) 10%, var(--pb-secondary)) 0%, var(--pb-secondary) 60%, color-mix(in oklab, var(--pb-accent) 7%, var(--pb-secondary)) 100%)"
+        }
+      ]
+    }
+  }
+}

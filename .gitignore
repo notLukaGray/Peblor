@@ -46,6 +46,7 @@ next-env.d.ts
 
 # IDE
 .vscode/
+!.vscode/settings.json
 .idea/
 *.swp
 *.swo
@@ -68,14 +69,26 @@ lerna-debug.log*
 **/src/content/page-manifest.json
 .vercel
 
+# Generated JSON schemas — built by contracts:generate-schemas
+packages/contracts/dist/schemas/
 # Generated IDE JSON schemas (run `npm run generate-json-schemas` to rebuild)
-**/src/content/schemas/peblor.schema.json
-**/src/content/schemas/definition-block.schema.json
-**/src/content/schemas/definitions-file.schema.json
-**/src/content/schemas/module.schema.json
+content/schemas/
 
 # Lighthouse CI
 .lighthouseci/
+.playwright-mcp/
+.opencode/
+.claude/
+agents/
+CLAUDE.md
 
 # Generated font files — downloaded at build time by download-webfonts.ts
 **/public/font/self-hosted/
+
+# Generated page manifests — built by generate-page-manifests.ts (prebuild)
+apps/web/public/manifests/
+
+# Stolen page assets — dev-only ephemeral, never committed
+apps/web/public/stolen/
+test-results/
+e2e/visual/

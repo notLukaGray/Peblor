@@ -7,14 +7,16 @@ import type { MotionPropsFromJson } from "@pb/contracts/peblor/core/peblor-schem
 import { ElementLayoutWrapper } from "./Shared/ElementLayoutWrapper";
 import { AnimatePresence, MotionFromJson } from "@/peblor/integrations/framer-motion";
 import { resolveFoundationMotionControls } from "@/peblor/integrations/framer-motion/foundation-motion-policy";
+import { globals } from "@pb/runtime-react/core/lib/globals";
+import { MOTION_DEFAULTS } from "@pb/contracts/peblor/core/peblor-motion-defaults";
 
 type Props = Extract<ElementBlock, { type: "elementTooltip" }>;
 
 type Placement = "top" | "bottom" | "left" | "right";
 
-const GAP_DEFAULT = 8;
-const VIEWPORT_PAD = 8;
-const BRIDGE_OVERLAP = 6;
+const GAP_DEFAULT = globals.uiTooltipGapDefaultPx;
+const VIEWPORT_PAD = globals.uiTooltipViewportPadPx;
+const BRIDGE_OVERLAP = globals.uiTooltipBridgeOverlapPx;
 
 function parseGapPx(offsetRaw: string | undefined): number {
   if (offsetRaw == null || String(offsetRaw).trim() === "") return GAP_DEFAULT;
@@ -35,78 +37,53 @@ function measureTooltipSize(el: HTMLElement | null): { w: number; h: number } {
   return { w: r.width, h: r.height };
 }
 
-function legacyAnimationToMotion(
-  animation: "fade" | "scale" | "slide" | "none" | undefined
-): MotionPropsFromJson {
-  const enter = 0.35;
-  const exit = 0.2;
-  switch (animation) {
-    case "none":
-      return {
-        initial: { opacity: 1 },
-        animate: { opacity: 1 },
-        exit: { opacity: 1 },
-      };
-    case "scale":
-      return {
-        initial: { opacity: 0, scale: 0.96 },
-        animate: {
-          opacity: 1,
-          scale: 1,
-          transition: { duration: enter, ease: [0.16, 1, 0.3, 1] },
-        },
-        exit: { opacity: 0, scale: 0.96, transition: { duration: exit, ease: "easeIn" } },
-      };
-    case "slide":
-      return {
-        initial: { opacity: 0, y: 8 },
-        animate: { opacity: 1, y: 0, transition: { duration: enter, ease: "easeOut" } },
-        exit: { opacity: 0, y: 6, transition: { duration: exit, ease: "easeIn" } },
-      };
-    case "fade":
-    default:
-      return {
-        initial: { opacity: 0 },
-        animate: { opacity: 1, transition: { duration: enter, ease: "easeOut" } },
-        exit: { opacity: 0, transition: { duration: exit, ease: "easeIn" } },
-      };
-  }
-}
+const TOOLTIP_FADE_MOTION: MotionPropsFromJson = {
+  from: { opacity: 0 },
+  to: {
+    opacity: 1,
+    transition: { duration: MOTION_DEFAULTS.tooltipEnterDurationSec, ease: "easeOut" },
+  },
+  leave: {
+    opacity: 0,
+    transition: { duration: MOTION_DEFAULTS.tooltipExitDurationSec, ease: "easeIn" },
+  },
+};
 
 function resolveTooltipMotion(
   motion: MotionPropsFromJson | undefined,
-  animation: "fade" | "scale" | "slide" | "none" | undefined,
   replaceWithFade: boolean
 ): MotionPropsFromJson {
-  if (replaceWithFade) {
-    return legacyAnimationToMotion("fade");
-  }
+  if (replaceWithFade) return TOOLTIP_FADE_MOTION;
   if (motion != null && typeof motion === "object" && Object.keys(motion).length > 0) {
     const m = { ...motion } as Record<string, unknown>;
-    if (m.initial == null) m.initial = { opacity: 0 };
-    if (m.animate == null) m.animate = { opacity: 1 };
-    if (m.exit == null) {
-      m.exit = { opacity: 0, transition: { duration: 0.2, ease: "easeIn" } };
+    if (m.from == null) m.from = { opacity: 0 };
+    if (m.to == null) m.to = { opacity: 1 };
+    if (m.leave == null) {
+      m.leave = {
+        opacity: 0,
+        transition: { duration: MOTION_DEFAULTS.tooltipExitDurationSec, ease: "easeIn" },
+      };
     }
     return m as MotionPropsFromJson;
   }
-  return legacyAnimationToMotion(animation);
+  return TOOLTIP_FADE_MOTION;
 }
 
 export function ElementTooltip({
   content,
   triggerLabel,
-  position = "top",
+  placement = "top",
   trigger: triggerMode = "hover",
-  showDelay: showMs = 200,
+  showDelay: showMs = MOTION_DEFAULTS.tooltipShowDelayMs,
   hideDelay: hideMs = 0,
   offset: offsetRaw,
+  autoFlip = true,
+  boundary = "viewport",
   arrow,
   interactive,
   followCursor,
   maxWidth: maxWidthRaw,
   zIndex: tooltipZ,
-  animation = "fade",
   motion,
   reduceMotion,
   color,
@@ -116,7 +93,7 @@ export function ElementTooltip({
   ariaLabel,
   width,
   height,
-  align,
+  selfAlign,
   marginTop,
   marginBottom,
   marginLeft,
@@ -130,14 +107,15 @@ export function ElementTooltip({
   blendMode,
   boxShadow,
   filter,
-  backdropFilter,
+  bgBlur,
   hidden,
 }: Props) {
   const tooltipId = useId().replace(/:/g, "");
   const [visible, setVisible] = useState(false);
-  const [mounted] = useState(true);
   const [dockPortal, setDockPortal] = useState(false);
-  const [placement, setPlacement] = useState<Placement>(position === "auto" ? "top" : position);
+  const [placementState, setPlacement] = useState<Placement>(
+    placement === "auto" ? "top" : placement
+  );
   const [coords, setCoords] = useState<{
     top: number;
     left: number;
@@ -155,12 +133,13 @@ export function ElementTooltip({
   const motionControls = resolveFoundationMotionControls(reduceMotion);
   const resolvedMotion = resolveTooltipMotion(
     motion as MotionPropsFromJson | undefined,
-    animation,
     motionControls.replaceWithFade
   );
   const motionForPanel = motionControls.disableAll
-    ? ({ initial: {}, animate: {}, exit: {} } as MotionPropsFromJson)
+    ? ({ from: {}, to: {}, leave: {} } as MotionPropsFromJson)
     : resolvedMotion;
+
+  const touchTapRef = useRef(false);
 
   const clearShowTimer = useCallback(() => {
     if (showTimer.current) {
@@ -224,8 +203,13 @@ export function ElementTooltip({
     if (!triggerEl || !tipEl) return;
 
     const tr = triggerEl.getBoundingClientRect();
-    const resolved = resolvePlacement(position, tr);
-    setPlacement(resolved);
+    // autoFlip: when false, use the requested placement without flipping.
+    const resolved = autoFlip
+      ? resolvePlacement(placement, tr)
+      : placement === "auto"
+        ? "top"
+        : placement;
+    setPlacement(resolved as Placement);
 
     const { w: tw, h: th } = measureTooltipSize(tipEl);
     if (tw < 1 || th < 1) return;
@@ -252,18 +236,22 @@ export function ElementTooltip({
       left = tr.right + gap - BRIDGE_OVERLAP;
     }
 
-    const maxL = window.innerWidth - VIEWPORT_PAD - tw;
+    // boundary: use window dimensions for "window", otherwise viewport (default).
+    const bW = boundary === "window" ? document.documentElement.clientWidth : window.innerWidth;
+    const bH = boundary === "window" ? document.documentElement.clientHeight : window.innerHeight;
+
+    const maxL = bW - VIEWPORT_PAD - tw;
     const minL = VIEWPORT_PAD;
     left = Math.min(maxL, Math.max(minL, left));
 
-    const maxT = window.innerHeight - VIEWPORT_PAD - th;
+    const maxT = bH - VIEWPORT_PAD - th;
     const minT = VIEWPORT_PAD;
     top = Math.min(maxT, Math.max(minT, top));
 
     const next = { top, left, transform };
     setCoords(next);
     lastCoordsRef.current = next;
-  }, [position, gap, followCursor, cursorPos]);
+  }, [placement, gap, followCursor, cursorPos, autoFlip, boundary]);
 
   useLayoutEffect(() => {
     if (!dockPortal) return;
@@ -308,6 +296,9 @@ export function ElementTooltip({
   const handlePointerLeaveTrigger = useCallback(
     (e: React.PointerEvent<HTMLButtonElement>) => {
       if (triggerMode !== "hover") return;
+      // On touch devices, pointerleave fires between touch and click.
+      // Don't close — let click/tap handle toggling the tooltip.
+      if (e.pointerType === "touch") return;
       const next = e.relatedTarget as Node | null;
       if (tooltipRef.current?.contains(next)) return;
       close();
@@ -335,15 +326,19 @@ export function ElementTooltip({
   );
 
   const defaultTriggerLabel =
-    triggerMode === "click" ? "Click" : triggerMode === "focus" ? "Focus" : "Hover";
+    triggerMode === "click"
+      ? globals.stringsLabelTooltipTriggerClick
+      : triggerMode === "focus"
+        ? globals.stringsLabelTooltipTriggerFocus
+        : globals.stringsLabelTooltipTriggerHover;
   const resolvedTriggerLabel = triggerLabel?.trim() || defaultTriggerLabel;
 
-  const bg = (color as string) ?? "rgb(15 15 18 / 0.94)";
+  const bg = (color as string) ?? globals.colorTooltipBg;
 
   const layout = {
     width: width as string | undefined,
     height: height as string | undefined,
-    align: align as "left" | "center" | "right" | undefined,
+    align: selfAlign as "left" | "center" | "right" | undefined,
     marginTop: marginTop as string | undefined,
     marginBottom: marginBottom as string | undefined,
     marginLeft: marginLeft as string | undefined,
@@ -356,11 +351,13 @@ export function ElementTooltip({
     blendMode,
     boxShadow,
     filter,
-    backdropFilter,
+    bgBlur,
     hidden,
   };
 
-  const maxW = (maxWidthRaw as string) ?? "min(320px, calc(100vw - 16px))";
+  const maxW =
+    (maxWidthRaw as string) ??
+    `min(${globals.uiTooltipMaxWidthPx}px, calc(100vw - ${globals.uiTooltipViewportPadPx * 2}px))`;
   const displayCoords = coords;
 
   const tooltipPanel = (
@@ -391,7 +388,7 @@ export function ElementTooltip({
           className="absolute h-2 w-2 rotate-45 border border-white/15"
           style={{
             backgroundColor: bg,
-            ...(placement === "top"
+            ...(placementState === "top"
               ? {
                   bottom: "-5px",
                   left: "50%",
@@ -399,7 +396,7 @@ export function ElementTooltip({
                   borderTopColor: "transparent",
                   borderLeftColor: "transparent",
                 }
-              : placement === "bottom"
+              : placementState === "bottom"
                 ? {
                     top: "-5px",
                     left: "50%",
@@ -407,7 +404,7 @@ export function ElementTooltip({
                     borderBottomColor: "transparent",
                     borderRightColor: "transparent",
                   }
-                : placement === "left"
+                : placementState === "left"
                   ? {
                       right: "-5px",
                       top: "50%",
@@ -453,12 +450,15 @@ export function ElementTooltip({
         <button
           ref={triggerRef}
           type="button"
-          className="inline-flex min-h-9 min-w-[4.5rem] cursor-default select-none items-center justify-center rounded-lg border border-white/15 bg-white/6 px-3 py-1.5 text-center text-sm font-medium text-foreground shadow-sm outline-none backdrop-blur-sm transition-[background-color,box-shadow,transform] hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white/40 active:scale-[0.98]"
+          className="inline-flex min-h-9 min-w-[4.5rem] cursor-default select-none items-center justify-center rounded-lg border border-white/15 bg-white/6 px-3 py-1.5 text-center text-sm font-medium text-foreground shadow-sm outline-none backdrop-blur-sm transition-[background-color,box-shadow,transform] hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-[var(--pb-focus-ring-color,currentColor)] active:scale-[0.98]"
           aria-describedby={visible ? tooltipId : undefined}
           aria-expanded={triggerMode === "click" ? visible : undefined}
           aria-haspopup={triggerMode === "click" ? "true" : undefined}
           aria-label={ariaLabel}
           tabIndex={0}
+          onPointerDown={(e) => {
+            touchTapRef.current = e.pointerType === "touch";
+          }}
           onPointerEnter={() => {
             if (triggerMode === "hover") open(false);
           }}
@@ -475,14 +475,16 @@ export function ElementTooltip({
           }}
           onClick={(e) => {
             e.stopPropagation();
-            if (triggerMode !== "click") return;
-            if (visible) closeNow();
-            else open(true);
+            if (triggerMode === "click" || (triggerMode === "hover" && touchTapRef.current)) {
+              touchTapRef.current = false;
+              if (visible) closeNow();
+              else open(true);
+            }
           }}
         >
           {resolvedTriggerLabel}
         </button>
-        {mounted && dockPortal && typeof document !== "undefined"
+        {dockPortal && typeof document !== "undefined"
           ? createPortal(portalLayer, document.body)
           : null}
       </div>

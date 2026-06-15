@@ -12,7 +12,6 @@ type Payload = { timestamps: number[]; fp?: string };
 function getSecret(): string | undefined {
   const dedicated = process.env.FORM_RATE_LIMIT_SECRET;
   if (typeof dedicated === "string" && dedicated.length > 0) return dedicated;
-  if (process.env.NODE_ENV === "production") return undefined;
   return process.env.SITE_PASSWORD;
 }
 
@@ -48,7 +47,8 @@ function verify(payload: string, signature: string): boolean {
   if (signature.length !== expected.length) return false;
   try {
     return timingSafeEqual(Buffer.from(signature, "utf8"), Buffer.from(expected, "utf8"));
-  } catch {
+  } catch (err) {
+    console.warn("[web-core] timingSafeEqual failed for form rate-limit signature", err);
     return false;
   }
 }
@@ -65,7 +65,8 @@ function parseCookie(cookieHeader: string | null, handlerKey: string): Payload |
     const json = Buffer.from(payloadB64, "base64url").toString("utf8");
     const data = JSON.parse(json) as Payload;
     return Array.isArray(data.timestamps) ? data : null;
-  } catch {
+  } catch (err) {
+    console.warn("[web-core] Failed to parse form rate-limit cookie payload", err);
     return null;
   }
 }

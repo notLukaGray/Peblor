@@ -1,0 +1,13 @@
+{
+  "type": "elementBody",
+  "level": 4,
+  "text": "",
+  "selfAlign": "center",
+  "textAlign": "center",
+  "width": {
+    "base": "100%",
+    "md": "50%"
+  },
+  "wordWrap": true,
+  "color": "color-mix(in oklab, var(--pb-on-secondary) 50%, transparent)"
+}

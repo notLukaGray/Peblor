@@ -1,0 +1,23 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Column · Editorial · Balanced"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Composition Column 2 Col Editorial"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Classic two-column editorial composition collapsing to single column on mobile.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  },
+  "align": "start"
+}

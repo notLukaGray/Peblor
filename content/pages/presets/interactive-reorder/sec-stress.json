@@ -1,0 +1,534 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "staggerChildren": 0.15,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": [
+    "sec-label",
+    "sec-desc",
+    "stress-intro",
+    "stress-1",
+    "stress-2",
+    "stress-3",
+    "stress-4",
+    "stress-5",
+    "stress-6",
+    "stress-7",
+    "stress-8"
+  ],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Dense Controls Stress Test"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "A reorderable task list with uniformly sized cards. Each item shows a title, status metadata, and category icon. Drag to reorder with elastic snap behavior — tests readability and spacing under content density."
+    },
+    "stress-intro": {
+      "type": "elementBody",
+      "level": 4,
+      "text": "Each card shows a task, status, and metadata — all uniformly sized for consistent layout in a reorderable list. Drag to reorder with elastic snap behavior.",
+      "selfAlign": "center",
+      "textAlign": "center",
+      "color": "color-mix(in oklab, var(--pb-on-secondary) 55%, transparent)",
+      "width": {
+        "base": "100%",
+        "md": "80%"
+      }
+    },
+    "stress-1": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "gap": "1rem",
+      "align": "center",
+      "width": "100%",
+      "height": "auto",
+      "constraints": {
+        "minHeight": "4.5rem"
+      },
+      "padding": "1rem 1.5rem",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+      "borderRadius": "8px",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+      },
+      "motionTiming": {
+        "entrancePreset": "fade"
+      },
+      "section": {
+        "elementOrder": ["icon-el", "text-group"],
+        "definitions": {
+          "icon-el": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "📋",
+            "wordWrap": false,
+            "width": "auto"
+          },
+          "text-group": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.1rem",
+            "width": "100%",
+            "section": {
+              "elementOrder": ["title", "meta-el"],
+              "definitions": {
+                "title": {
+                  "type": "elementBody",
+                  "level": 4,
+                  "text": "Project Alpha — Q1 Planning — Stakeholder Review",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto",
+                  "wordWrap": false
+                },
+                "meta-el": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "Updated 2 hours ago · 12 comments · Priority: High",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 42%, transparent)",
+                  "width": "auto",
+                  "wordWrap": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "stress-2": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "gap": "1rem",
+      "align": "center",
+      "padding": "1rem 1.5rem",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+      "borderRadius": "8px",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+      },
+      "motionTiming": {
+        "entrancePreset": "fade"
+      },
+      "section": {
+        "elementOrder": ["icon-el", "text-group"],
+        "definitions": {
+          "icon-el": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "🛠️",
+            "wordWrap": false,
+            "width": "auto"
+          },
+          "text-group": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.1rem",
+            "width": "100%",
+            "section": {
+              "elementOrder": ["title", "meta-el"],
+              "definitions": {
+                "title": {
+                  "type": "elementBody",
+                  "level": 4,
+                  "text": "Design System Migration — v2 Token Audit — Inventory",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto",
+                  "wordWrap": false
+                },
+                "meta-el": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "In review · 48 components · 3 remaining · Due Friday",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 42%, transparent)",
+                  "width": "auto",
+                  "wordWrap": false
+                }
+              }
+            }
+          }
+        }
+      },
+      "width": "100%",
+      "height": "auto",
+      "constraints": {
+        "minHeight": "4.5rem"
+      }
+    },
+    "stress-3": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "gap": "1rem",
+      "align": "center",
+      "width": "100%",
+      "height": "auto",
+      "constraints": {
+        "minHeight": "4.5rem"
+      },
+      "padding": "1rem 1.5rem",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+      "borderRadius": "8px",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+      },
+      "motionTiming": {
+        "entrancePreset": "fade"
+      },
+      "section": {
+        "elementOrder": ["icon-el", "text-group"],
+        "definitions": {
+          "icon-el": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "📷",
+            "wordWrap": false,
+            "width": "auto"
+          },
+          "text-group": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.1rem",
+            "width": "100%",
+            "section": {
+              "elementOrder": ["title", "meta-el"],
+              "definitions": {
+                "title": {
+                  "type": "elementBody",
+                  "level": 4,
+                  "text": "Photo Gallery Refactor — Lazy Loading — Performance",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto",
+                  "wordWrap": false
+                },
+                "meta-el": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "Completed · 85% faster · Lighthouse score: 96",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 42%, transparent)",
+                  "width": "auto",
+                  "wordWrap": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "stress-4": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "gap": "1rem",
+      "align": "center",
+      "width": "100%",
+      "height": "auto",
+      "constraints": {
+        "minHeight": "4.5rem"
+      },
+      "padding": "1rem 1.5rem",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+      "borderRadius": "8px",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+      },
+      "motionTiming": {
+        "entrancePreset": "fade"
+      },
+      "section": {
+        "elementOrder": ["icon-el", "text-group"],
+        "definitions": {
+          "icon-el": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "📈",
+            "wordWrap": false,
+            "width": "auto"
+          },
+          "text-group": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.1rem",
+            "width": "100%",
+            "section": {
+              "elementOrder": ["title", "meta-el"],
+              "definitions": {
+                "title": {
+                  "type": "elementBody",
+                  "level": 4,
+                  "text": "Analytics Dashboard — Real-Time Metrics — Pipeline",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto",
+                  "wordWrap": false
+                },
+                "meta-el": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "Blocked · Awaiting review · 2 days overdue",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 42%, transparent)",
+                  "width": "auto",
+                  "wordWrap": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "stress-5": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "gap": "1rem",
+      "align": "center",
+      "width": "100%",
+      "height": "auto",
+      "constraints": {
+        "minHeight": "4.5rem"
+      },
+      "padding": "1rem 1.5rem",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+      "borderRadius": "8px",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+      },
+      "motionTiming": {
+        "entrancePreset": "fade"
+      },
+      "section": {
+        "elementOrder": ["icon-el", "text-group"],
+        "definitions": {
+          "icon-el": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "🔌",
+            "wordWrap": false,
+            "width": "auto"
+          },
+          "text-group": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.1rem",
+            "width": "100%",
+            "section": {
+              "elementOrder": ["title", "meta-el"],
+              "definitions": {
+                "title": {
+                  "type": "elementBody",
+                  "level": 4,
+                  "text": "API Rate Limiting — Token Bucket — Multi-Tenant",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto",
+                  "wordWrap": false
+                },
+                "meta-el": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "In progress · 60% · ETA Thursday",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 42%, transparent)",
+                  "width": "auto",
+                  "wordWrap": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "stress-6": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "gap": "1rem",
+      "align": "center",
+      "width": "100%",
+      "height": "auto",
+      "constraints": {
+        "minHeight": "4.5rem"
+      },
+      "padding": "1rem 1.5rem",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+      "borderRadius": "8px",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+      },
+      "motionTiming": {
+        "entrancePreset": "fade"
+      },
+      "section": {
+        "elementOrder": ["icon-el", "text-group"],
+        "definitions": {
+          "icon-el": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "💡",
+            "wordWrap": false,
+            "width": "auto"
+          },
+          "text-group": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.1rem",
+            "width": "100%",
+            "section": {
+              "elementOrder": ["title", "meta-el"],
+              "definitions": {
+                "title": {
+                  "type": "elementBody",
+                  "level": 4,
+                  "text": "AI Feature Exploration — Recommendation Engine POC",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto",
+                  "wordWrap": false
+                },
+                "meta-el": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "Research phase · 3 approaches evaluated",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 42%, transparent)",
+                  "width": "auto",
+                  "wordWrap": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "stress-7": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "gap": "1rem",
+      "align": "center",
+      "width": "100%",
+      "height": "auto",
+      "constraints": {
+        "minHeight": "4.5rem"
+      },
+      "padding": "1rem 1.5rem",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+      "borderRadius": "8px",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+      },
+      "motionTiming": {
+        "entrancePreset": "fade"
+      },
+      "section": {
+        "elementOrder": ["icon-el", "text-group"],
+        "definitions": {
+          "icon-el": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "📝",
+            "wordWrap": false,
+            "width": "auto"
+          },
+          "text-group": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.1rem",
+            "width": "100%",
+            "section": {
+              "elementOrder": ["title", "meta-el"],
+              "definitions": {
+                "title": {
+                  "type": "elementBody",
+                  "level": 4,
+                  "text": "Documentation Overhaul — Storybook Migration Plan",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto",
+                  "wordWrap": false
+                },
+                "meta-el": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "24 components · Target: 120 stories",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 42%, transparent)",
+                  "width": "auto",
+                  "wordWrap": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "stress-8": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "gap": "1rem",
+      "align": "center",
+      "width": "100%",
+      "height": "auto",
+      "constraints": {
+        "minHeight": "4.5rem"
+      },
+      "padding": "1rem 1.5rem",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+      "borderRadius": "8px",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+      },
+      "motionTiming": {
+        "entrancePreset": "fade"
+      },
+      "section": {
+        "elementOrder": ["icon-el", "text-group"],
+        "definitions": {
+          "icon-el": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "🔒",
+            "wordWrap": false,
+            "width": "auto"
+          },
+          "text-group": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.1rem",
+            "width": "100%",
+            "section": {
+              "elementOrder": ["title", "meta-el"],
+              "definitions": {
+                "title": {
+                  "type": "elementBody",
+                  "level": 4,
+                  "text": "Security Audit — Dependency Scan — Remediation",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto",
+                  "wordWrap": false
+                },
+                "meta-el": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "Scheduled · 2 known vulns · Patch in progress",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 42%, transparent)",
+                  "width": "auto",
+                  "wordWrap": false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "reorderable": true,
+  "reorderAxis": "y",
+  "reorderDragBehavior": "elasticSnap",
+  "align": "stretch"
+}

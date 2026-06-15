@@ -2,7 +2,7 @@
  * Seed → proposed peblor style guidelines (dev `/dev/style` + future tooling).
  * Mirrors the color tool: **seeds** drive unlocked rows; **locks** pin values.
  */
-import type { PbContentGuidelines } from "@/app/theme/pb-content-guidelines-config";
+import type { PbContentGuidelines } from "@/app/theme/pb-content-guidelines";
 import { DEFAULT_PB_BUILDER_FOUNDATIONS } from "@/app/theme/pb-builder-defaults";
 import {
   deriveSpacingScale as deriveSpacingScaleFromBase,
@@ -119,6 +119,7 @@ export function proposePbContentGuidelines(seeds: StyleToolSeeds): PbContentGuid
     buttonNakedPaddingY: null,
     buttonNakedPaddingX: null,
     buttonNakedBorderRadius: rem(r),
+    sectionGap: null,
   };
 }
 
@@ -166,6 +167,7 @@ export const PB_GUIDELINE_KEYS: (keyof PbContentGuidelines)[] = [
   "buttonNakedPaddingY",
   "buttonNakedPaddingX",
   "buttonNakedBorderRadius",
+  "sectionGap",
 ];
 
 export function emptyLocks(): Record<keyof PbContentGuidelines, boolean> {

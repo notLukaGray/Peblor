@@ -1,0 +1,13 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Cards Media — Preset Demo",
+  "description": "Media-forward card compositions using images, captions, comparison sliders, and project screenshot treatments.",
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "card", "bg"],
+  "sectionOrder": ["nav-header", "hero", "sec-image-cards", "sec-compare", "sec-caption-cards"],
+  "bgKey": "bg-cards",
+  "definitions": {
+    "bg-cards": {
+      "preset": "bg-cards"
+    }
+  }
+}

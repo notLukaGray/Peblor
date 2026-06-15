@@ -103,8 +103,51 @@ const KNOWN_FM_KEYFRAME_KEYS = new Set([
   "lineHeight",
   "letterSpacing",
   "textDecoration",
-  // per-property transition override (valid inside initial/animate/exit)
+  "textUnderlineOffset",
+  // layout
+  "gap",
+  "flex",
+  "gridTemplateColumns",
+  // SVG / masking
+  "maskImage",
+  // per-property transition override (valid inside from/to/leave)
   "transition",
+]);
+
+/**
+ * Keys managed by peblor's layout system — rejected in entrance/exit keyframes (C-11)
+ * to prevent silent stripping at runtime. Gesture keyframes (onHover, etc.) may still
+ * use a subset of these (width, height) via the base motionKeyframesSchema.
+ */
+const PB_LAYOUT_KEYS = new Set([
+  "width",
+  "height",
+  "maxWidth",
+  "maxHeight",
+  "minWidth",
+  "minHeight",
+  "top",
+  "left",
+  "right",
+  "bottom",
+  "margin",
+  "marginTop",
+  "marginRight",
+  "marginBottom",
+  "marginLeft",
+  "padding",
+  "paddingTop",
+  "paddingRight",
+  "paddingBottom",
+  "paddingLeft",
+  "borderRadius",
+  "borderTopLeftRadius",
+  "borderTopRightRadius",
+  "borderBottomLeftRadius",
+  "borderBottomRightRadius",
+  "borderWidth",
+  "borderStyle",
+  "boxShadow",
 ]);
 
 const motionKeyframesSchema = z
@@ -123,15 +166,49 @@ const motionKeyframesSchema = z
   })
   .optional();
 
+/**
+ * Entrance/exit keyframes — additionally rejects layout-owned keys (C-11).
+ * Use this for from, to, leave, and states. Gesture keyframes
+ * (onHover, etc.) use the more permissive motionKeyframesSchema.
+ */
+const entranceMotionKeyframesSchema = z
+  .record(z.string(), motionKeyframesValueSchema)
+  .superRefine((kf, ctx) => {
+    for (const key of Object.keys(kf)) {
+      if (key.startsWith("--")) continue; // CSS custom property escape hatch
+      if (PB_LAYOUT_KEYS.has(key)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: [key],
+          message: `Layout-owned key "${key}" is managed by peblor's layout system. Use the corresponding layout field instead of motion keyframes.`,
+        });
+        continue;
+      }
+      if (!KNOWN_FM_KEYFRAME_KEYS.has(key)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: [key],
+          message: `Unknown motion keyframe property "${key}". Use a known FM property or a CSS custom property (--*).`,
+        });
+      }
+    }
+  })
+  .optional();
+
 const baseTransitionSchema = z.object({
   duration: z.number().optional(),
   delay: z.number().optional(),
   ease: z.union([z.string(), z.tuple([z.number(), z.number(), z.number(), z.number()])]).optional(),
-  type: z.enum(["spring", "tween", "inertia"]).optional(),
+  type: z.enum(["spring", "ease", "momentum"]).optional(),
   stiffness: z.number().optional(),
   damping: z.number().optional(),
   mass: z.number().optional(),
-  repeat: z.number().min(0).optional(),
+  // "Infinity" string is the JSON-safe way to express repeat: Infinity (JS number).
+  // Zod transform coerces it to the JS Infinity value at parse time.
+  repeat: z
+    .union([z.number().min(0), z.literal("Infinity")])
+    .transform((v) => (v === "Infinity" ? Infinity : v))
+    .optional(),
   repeatType: z.enum(["loop", "reverse", "mirror"]).optional(),
   repeatDelay: z.number().min(0).optional(),
   times: z.array(z.number().min(0).max(1)).optional(),
@@ -165,9 +242,9 @@ export const motionExitTriggerSchema = z.enum(["manual", "leaveViewport"]);
 
 const motionStateSchema = z
   .object({
-    initial: motionKeyframesSchema,
-    animate: motionKeyframesSchema,
-    exit: motionKeyframesSchema,
+    from: entranceMotionKeyframesSchema,
+    to: entranceMotionKeyframesSchema,
+    leave: entranceMotionKeyframesSchema,
     transition: motionTransitionSchema,
   })
   .optional();
@@ -176,16 +253,24 @@ export type MotionState = z.infer<typeof motionStateSchema>;
 
 /** Fully resolved entrance animation config injected by the server pipeline at build time. */
 export const resolvedEntranceMotionSchema = z.object({
-  initial: z.record(z.string(), z.unknown()),
-  animate: z.record(z.string(), z.unknown()),
+  from: z.record(z.string(), z.unknown()),
+  to: z.record(z.string(), z.unknown()),
   transition: z.record(z.string(), z.unknown()),
   viewportAmount: z.number(),
   viewportOnce: z.boolean(),
-  whileHover: z.record(z.string(), z.unknown()).optional(),
-  whileTap: z.record(z.string(), z.unknown()).optional(),
+  onHover: z.record(z.string(), z.unknown()).optional(),
+  onPress: z.record(z.string(), z.unknown()).optional(),
 });
 
 export type ResolvedEntranceMotion = z.infer<typeof resolvedEntranceMotionSchema>;
+
+/** Fully resolved exit animation config injected by the server pipeline at build time. */
+export const resolvedExitMotionSchema = z.object({
+  leave: z.record(z.string(), z.unknown()),
+  transition: z.record(z.string(), z.unknown()).optional(),
+});
+
+export type ResolvedExitMotion = z.infer<typeof resolvedExitMotionSchema>;
 
 export const motionTimingSchema = z
   .object({
@@ -201,6 +286,10 @@ export const motionTimingSchema = z
     exitMotion: motionStateSchema,
     /** Injected by the server pipeline. Never set in content JSON. */
     resolvedEntranceMotion: resolvedEntranceMotionSchema.optional(),
+    /** Injected by the server pipeline. Never set in content JSON. */
+    resolvedExitMotion: resolvedExitMotionSchema.optional(),
+    /** Seconds between each child's entrance when used on an elementGroup parent. */
+    staggerChildren: z.number().min(0).optional(),
   })
   .optional();
 
@@ -220,7 +309,7 @@ const dragConstraintsSchema = z
 
 const dragTransitionSchema = z
   .object({
-    type: z.enum(["inertia", "spring", "tween"]).optional(),
+    type: z.enum(["momentum", "spring", "ease"]).optional(),
     power: z.number().optional(),
     timeConstant: z.number().optional(),
     bounceStiffness: z.number().optional(),
@@ -231,9 +320,9 @@ const dragTransitionSchema = z
   .optional();
 
 const variantEntrySchema = z.object({
-  initial: motionKeyframesSchema,
-  animate: motionKeyframesSchema,
-  exit: motionKeyframesSchema,
+  from: entranceMotionKeyframesSchema,
+  to: entranceMotionKeyframesSchema,
+  leave: entranceMotionKeyframesSchema,
   transition: motionTransitionSchema,
 });
 
@@ -241,30 +330,34 @@ export const inheritModeSchema = z.enum(["auto", "inherit", "isolate"]).optional
 
 export const motionPropsSchema = z
   .object({
-    initial: motionKeyframesSchema,
-    animate: motionKeyframesSchema,
-    exit: motionKeyframesSchema,
+    from: entranceMotionKeyframesSchema,
+    to: entranceMotionKeyframesSchema,
+    leave: entranceMotionKeyframesSchema,
     transition: motionTransitionSchema,
     initialVariant: z.string().optional(),
     animateVariant: z.string().optional(),
     exitVariant: z.string().optional(),
-    variants: z.record(z.string(), variantEntrySchema).optional(),
-    layout: z.boolean().optional(),
-    layoutId: z.string().nullable().optional(),
-    layoutDependency: z.union([z.string(), z.number()]).optional(),
-    layoutScroll: z.boolean().optional(),
-    layoutRoot: z.boolean().optional(),
+    states: z.record(z.string(), variantEntrySchema).optional(),
 
     inheritMode: inheritModeSchema,
     inherit: z.boolean().optional(),
 
     motionTiming: motionTimingSchema.optional(),
-    whileInView: z.union([motionKeyframesSchema, z.string()]).optional(),
+    onVisible: z.union([motionKeyframesSchema, z.string()]).optional(),
     viewport: viewportSchema.optional(),
-    whileHover: z.union([motionKeyframesSchema, z.string()]).optional(),
-    whileTap: z.union([motionKeyframesSchema, z.string()]).optional(),
-    whileFocus: z.union([motionKeyframesSchema, z.string()]).optional(),
-    whileDrag: z.union([motionKeyframesSchema, z.string()]).optional(),
+    onHover: z.union([motionKeyframesSchema, z.string()]).optional(),
+    onPress: z.union([motionKeyframesSchema, z.string()]).optional(),
+    onFocus: z.union([motionKeyframesSchema, z.string()]).optional(),
+    onDrag: z.union([motionKeyframesSchema, z.string()]).optional(),
+    hoverExitDelayMs: z.number().min(0).max(5000).optional(),
+    /** Continuous loop animation — merged into to with repeat: Infinity. Separates entrance from looping. */
+    loop: z
+      .object({
+        to: entranceMotionKeyframesSchema,
+        /** Loop transition overrides. */
+        transition: baseTransitionSchema.optional(),
+      })
+      .optional(),
     drag: z.union([z.boolean(), z.enum(["x", "y"])]).optional(),
     dragConstraints: dragConstraintsSchema.optional(),
     dragElastic: z.number().min(0).max(1).optional(),
@@ -281,3 +374,27 @@ export const motionPropsSchema = z
   .optional();
 
 export type MotionPropsFromJson = NonNullable<z.infer<typeof motionPropsSchema>>;
+
+// ─── Deferred motion features (gap 1.9) ────────────────────────────────────
+// These are known gaps documented in agents/peblor-gaps.md §1.9. They are
+// intentionally NOT implemented yet — tracking here so the schema contract
+// can be extended in a focused PR when each feature is ready.
+//
+// 1. scroll-linked element animation primitive on arbitrary elements
+//    (sections have scrollOpacityRange + bg layers have scroll motion; an element
+//     cannot currently say "scale 0.8→1 over scroll range" declaratively).
+//    Would need: a new `scrollMapping` field on motionTimingSchema (or on the
+//    element base) that maps scroll progress → keyframe values, analogous to
+//    section-scroll-progress-bar but per-element.
+//
+// 2. staggerDirection / delayChildren
+//    motionTimingSchema has `staggerChildren` (seconds) but no directional
+//    variant (forward vs reverse stagger) and no `delayChildren` to offset
+//    the first child independently of the stagger interval.
+//
+// 3. onViewEnter / onViewLeave motion variants dispatch
+//    onVisible exists but fires a variant string on-enter-only with no
+//    leave counterpart. Would need a `viewportCallbacks` or similar field
+//    on motionTimingSchema for "enterVariant" / "leaveVariant" that the
+//    runtime dispatches via useInView.
+// ────────────────────────────────────────────────────────────────────────────

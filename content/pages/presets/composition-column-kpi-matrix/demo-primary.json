@@ -1,0 +1,78 @@
+{
+  "preset": "composition-column-kpi-matrix",
+  "width": {
+    "base": "92%",
+    "md": "86%"
+  },
+  "maxWidth": "1240px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "2rem 0 3rem",
+    "md": "2rem 0 4rem"
+  },
+  "definitions": {
+    "kpi-1": {
+      "section": {
+        "definitions": {
+          "num": {
+            "target": 128
+          },
+          "label": {
+            "text": "Active Clients"
+          },
+          "body": {
+            "text": "Teams currently using the system in production."
+          }
+        }
+      }
+    },
+    "kpi-2": {
+      "section": {
+        "definitions": {
+          "num": {
+            "target": 97,
+            "suffix": "%"
+          },
+          "label": {
+            "text": "Uptime"
+          },
+          "body": {
+            "text": "Average service availability over trailing quarter."
+          }
+        }
+      }
+    },
+    "kpi-3": {
+      "section": {
+        "definitions": {
+          "num": {
+            "target": 42,
+            "suffix": "+"
+          },
+          "label": {
+            "text": "Integrations"
+          },
+          "body": {
+            "text": "Connected tools across analytics, CMS, and automation."
+          }
+        }
+      }
+    },
+    "kpi-4": {
+      "section": {
+        "definitions": {
+          "num": {
+            "target": 18,
+            "suffix": "d"
+          },
+          "label": {
+            "text": "Avg Onboarding"
+          },
+          "body": {
+            "text": "Time from kickoff to first published launch."
+          }
+        }
+      }
+    }
+  }
+}

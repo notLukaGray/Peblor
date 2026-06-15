@@ -1,0 +1,13 @@
+{
+  "preset": "composition-column-30-70-media",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "1080px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "2rem 0 3rem",
+    "md": "2rem 0 4rem"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "900px",
+  "height": "100vh",
+  "selfAlign": "center",
+  "fill": "transparent",
+  "align": "center",
+  "distribute": "center",
+  "gap": "1rem",
+  "scroll": "hidden",
+  "elementOrder": ["hero-badge", "hero-title", "hero-desc"]
+}

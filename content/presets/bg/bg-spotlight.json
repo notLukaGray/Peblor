@@ -1,0 +1,38 @@
+{
+  "type": "backgroundVariable",
+  "layers": [
+    {
+      "fill": "var(--pb-secondary)"
+    },
+    {
+      "fill": "radial-gradient(ellipse 42% 42% at var(--cx, 50%) var(--cy, 50%), color-mix(in oklab, var(--pb-accent) 24%, transparent) 0%, transparent 100%)",
+      "motion": [
+        {
+          "type": "pointer",
+          "x": {
+            "--cx": ["10%", "90%"]
+          },
+          "y": {
+            "--cy": ["10%", "90%"]
+          },
+          "ease": 0.05
+        }
+      ]
+    },
+    {
+      "fill": "radial-gradient(ellipse 22% 22% at var(--cx2, 50%) var(--cy2, 50%), color-mix(in oklab, var(--pb-primary) 20%, transparent) 0%, transparent 100%)",
+      "motion": [
+        {
+          "type": "pointer",
+          "x": {
+            "--cx2": ["10%", "90%"]
+          },
+          "y": {
+            "--cy2": ["10%", "90%"]
+          },
+          "ease": 0.03
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,270 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "entrancePreset": "fade",
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "blur-panel-1", "blur-panel-2"],
+  "definitions": {
+    "sec-label": {
+      "type": "elementGroup",
+      "display": "flex",
+      "align": "center",
+      "padding": "0.6rem 0",
+      "wrapperStyle": {
+        "position": "sticky",
+        "top": "3rem",
+        "layer": 10,
+        "backgroundColor": "color-mix(in oklab, var(--pb-secondary) 88%, transparent)",
+        "bgBlur": "blur(20px)",
+        "WebkitBackdropFilter": "blur(20px)",
+        "borderBottom": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["label-text"],
+        "definitions": {
+          "label-text": {
+            "preset": "type-h3-label",
+            "text": "Blur Effects"
+          }
+        }
+      }
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Backdrop-filter blur applied directly to panels, creating depth by separating content layers visually through controlled focus and diffusion. Each variant shows a different blur density."
+    },
+    "blur-panel-1": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "padding": "2rem",
+      "gap": "1rem",
+      "width": "100%",
+      "borderRadius": "20px",
+      "effects": [
+        {
+          "type": "backdropBlur",
+          "amount": "12px"
+        }
+      ],
+      "wrapperStyle": {
+        "backgroundColor": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+      },
+      "motionTiming": {
+        "entrancePreset": "fade",
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": ["title", "body", "blur-labels"],
+        "definitions": {
+          "title": {
+            "preset": "type-h4-card",
+            "text": "Panel with backdrop blur"
+          },
+          "body": {
+            "preset": "type-body-standard",
+            "text": "This panel uses backdrop-filter: blur(12px) to diffuse the background grid pattern. The translucent surface lets the background show through while blur softens the grid behind the content. A subtler alternative for overlay panels and modal surfaces."
+          },
+          "blur-labels": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "row",
+            "wrap": "wrap",
+            "gap": "0.75rem",
+            "padding": "0",
+            "width": "100%",
+            "section": {
+              "elementOrder": ["tag-blur", "tag-backdrop", "tag-translucent"],
+              "definitions": {
+                "tag-blur": {
+                  "type": "elementGroup",
+                  "display": "flex",
+                  "align": "center",
+                  "padding": "0.35rem 0.75rem",
+                  "borderRadius": "999px",
+                  "wrapperStyle": {
+                    "backgroundColor": "color-mix(in oklab, var(--pb-accent) 14%, transparent)"
+                  },
+                  "section": {
+                    "elementOrder": ["text"],
+                    "definitions": {
+                      "text": {
+                        "preset": "type-body-fine",
+                        "text": "blur(12px)"
+                      }
+                    }
+                  }
+                },
+                "tag-backdrop": {
+                  "type": "elementGroup",
+                  "display": "flex",
+                  "align": "center",
+                  "padding": "0.35rem 0.75rem",
+                  "borderRadius": "999px",
+                  "wrapperStyle": {
+                    "backgroundColor": "color-mix(in oklab, var(--pb-accent) 14%, transparent)"
+                  },
+                  "section": {
+                    "elementOrder": ["text"],
+                    "definitions": {
+                      "text": {
+                        "preset": "type-body-fine",
+                        "text": "backdrop-filter"
+                      }
+                    }
+                  }
+                },
+                "tag-translucent": {
+                  "type": "elementGroup",
+                  "display": "flex",
+                  "align": "center",
+                  "padding": "0.35rem 0.75rem",
+                  "borderRadius": "999px",
+                  "wrapperStyle": {
+                    "backgroundColor": "color-mix(in oklab, var(--pb-accent) 14%, transparent)"
+                  },
+                  "section": {
+                    "elementOrder": ["text"],
+                    "definitions": {
+                      "text": {
+                        "preset": "type-body-fine",
+                        "text": "transparent surface"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "blur-panel-2": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": {
+        "base": "column",
+        "md": "row"
+      },
+      "gap": "1.5rem",
+      "width": "100%",
+      "padding": "0",
+      "section": {
+        "elementOrder": ["blur-subtle", "blur-medium", "blur-strong"],
+        "definitions": {
+          "blur-subtle": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "padding": "1.5rem",
+            "gap": "0.85rem",
+            "flex": "1 1 0px",
+            "borderRadius": "16px",
+            "effects": [
+              {
+                "type": "backdropBlur",
+                "amount": "2px"
+              }
+            ],
+            "wrapperStyle": {
+              "backgroundColor": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)"
+            },
+            "motionTiming": {
+              "entrancePreset": "fade",
+              "trigger": "onFirstVisible"
+            },
+            "section": {
+              "elementOrder": ["title", "desc"],
+              "definitions": {
+                "title": {
+                  "preset": "type-h4-card",
+                  "text": "Subtle"
+                },
+                "desc": {
+                  "preset": "type-body-fine",
+                  "text": "blur(2px) — barely perceptible diffusion. Use where the background should remain clearly visible through the surface."
+                }
+              }
+            }
+          },
+          "blur-medium": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "padding": "1.5rem",
+            "gap": "0.85rem",
+            "flex": "1 1 0px",
+            "borderRadius": "16px",
+            "effects": [
+              {
+                "type": "backdropBlur",
+                "amount": "8px"
+              }
+            ],
+            "wrapperStyle": {
+              "backgroundColor": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)"
+            },
+            "motionTiming": {
+              "entrancePreset": "slideUp",
+              "trigger": "onFirstVisible"
+            },
+            "section": {
+              "elementOrder": ["title", "desc"],
+              "definitions": {
+                "title": {
+                  "preset": "type-h4-card",
+                  "text": "Medium"
+                },
+                "desc": {
+                  "preset": "type-body-fine",
+                  "text": "blur(8px) — distinct background diffusion. Good default for floating panels and card surfaces."
+                }
+              }
+            }
+          },
+          "blur-strong": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "padding": "1.5rem",
+            "gap": "0.85rem",
+            "flex": "1 1 0px",
+            "borderRadius": "16px",
+            "effects": [
+              {
+                "type": "backdropBlur",
+                "amount": "18px"
+              }
+            ],
+            "wrapperStyle": {
+              "backgroundColor": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)"
+            },
+            "motionTiming": {
+              "entrancePreset": "blurIn",
+              "trigger": "onFirstVisible"
+            },
+            "section": {
+              "elementOrder": ["title", "desc"],
+              "definitions": {
+                "title": {
+                  "preset": "type-h4-card",
+                  "text": "Strong"
+                },
+                "desc": {
+                  "preset": "type-body-fine",
+                  "text": "blur(18px) — heavy diffusion. Use for modal overlays and focused states where background distraction should be minimized."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "scroll": "visible"
+}

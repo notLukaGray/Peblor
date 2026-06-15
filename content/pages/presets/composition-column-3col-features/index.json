@@ -1,0 +1,181 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Composition Column 3 Col Features — Preset Demo",
+  "description": "Three-column feature system with mobile-first collapse and equalized visual rhythm.",
+  "sectionOrder": ["nav-header", "hero", "demo-primary", "demo-stress"],
+  "definitions": {
+    "bg-composition": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "radial-gradient(120% 110% at 92% 2%, color-mix(in oklab, var(--pb-accent) 16%, transparent) 0%, transparent 54%), linear-gradient(160deg, color-mix(in oklab, var(--pb-primary) 11%, var(--pb-secondary)) 0%, var(--pb-secondary) 66%, color-mix(in oklab, var(--pb-accent) 6%, var(--pb-secondary)) 100%)"
+        }
+      ],
+      "preset": "bg-composition"
+    },
+    "nav-header": {
+      "preset": "preset-demo-nav-header"
+    },
+    "hero": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "align": "start",
+      "height": "hug",
+      "padding": {
+        "base": "10rem 0 6rem",
+        "md": "12rem 0 8rem"
+      },
+      "gap": "1rem",
+      "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+      "definitions": {
+        "hero-eyebrow": {
+          "preset": "type-kicker-badge",
+          "text": "Column · Feature Grid · Modular"
+        },
+        "hero-title": {
+          "preset": "type-h1-display",
+          "text": "Composition Column 3 Col Features"
+        },
+        "hero-description": {
+          "preset": "type-body-standard",
+          "text": "Three-column feature system with mobile-first collapse and equalized visual rhythm.",
+          "width": {
+            "base": "100%",
+            "md": "72%"
+          }
+        }
+      }
+    },
+    "demo-primary": {
+      "preset": "composition-column-3col-features",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "2rem 0 3rem",
+        "md": "2rem 0 4rem"
+      },
+      "definitions": {
+        "feature-a": {
+          "section": {
+            "definitions": {
+              "kicker": {
+                "text": "Velocity"
+              },
+              "title": {
+                "text": "Ship faster with composable sections"
+              },
+              "body": {
+                "text": "A shared library of dependable layout primitives accelerates page assembly and review."
+              },
+              "link": {
+                "label": "Learn more ->",
+                "href": "#"
+              }
+            }
+          }
+        },
+        "feature-b": {
+          "section": {
+            "definitions": {
+              "kicker": {
+                "text": "Consistency"
+              },
+              "title": {
+                "text": "Keep hierarchy stable across templates"
+              },
+              "body": {
+                "text": "Common spacing and card anatomy preserve readability even as content changes."
+              },
+              "link": {
+                "label": "View examples ->",
+                "href": "#"
+              }
+            }
+          }
+        },
+        "feature-c": {
+          "section": {
+            "definitions": {
+              "kicker": {
+                "text": "Resilience"
+              },
+              "title": {
+                "text": "Handle edge-case copy with fewer rewrites"
+              },
+              "body": {
+                "text": "Stress-tested composition reduces breakage when teams push longer titles and denser copy."
+              },
+              "link": {
+                "label": "Read docs ->",
+                "href": "#"
+              }
+            }
+          }
+        }
+      }
+    },
+    "demo-stress": {
+      "preset": "composition-column-3col-features",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 0 8rem",
+        "md": "0 0 12rem"
+      },
+      "definitions": {
+        "feature-a": {
+          "section": {
+            "definitions": {
+              "title": {
+                "text": "Stress: longer headline in feature one to test wraps"
+              },
+              "body": {
+                "text": "This card intentionally uses a longer sentence to verify that three-column layouts do not collapse into uneven heights or cramped line breaks at medium desktop widths."
+              }
+            }
+          }
+        },
+        "feature-b": {
+          "section": {
+            "definitions": {
+              "title": {
+                "text": "Stress: supporting card with denser explanation"
+              },
+              "body": {
+                "text": "Equal-width tracks should still feel balanced when one card carries more context than the others."
+              }
+            }
+          }
+        },
+        "feature-c": {
+          "section": {
+            "definitions": {
+              "title": {
+                "text": "Stress: concise card for contrast"
+              },
+              "body": {
+                "text": "Short copy remains visually anchored beside long neighbors."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "layout", "card", "bg"],
+  "bgKey": "bg-composition"
+}

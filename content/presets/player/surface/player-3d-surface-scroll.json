@@ -1,0 +1,133 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "align": "stretch",
+  "gap": "0",
+  "width": "100%",
+  "height": "hug",
+  "borderRadius": "20px",
+  "scroll": "visible",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+  },
+  "section": {
+    "elementOrder": ["model-canvas"],
+    "definitions": {
+      "model-canvas": {
+        "type": "elementModel3D",
+        "id": "model-3d-scroll",
+        "width": "100%",
+        "aspectRatio": "16 / 9",
+        "initiallyLoaded": true,
+        "models": {
+          "hero": {
+            "geometry": "https://threejs.org/examples/models/gltf/RobotExpressive/RobotExpressive.glb"
+          }
+        },
+        "canvas": {
+          "dpr": 2,
+          "gl": {
+            "antialias": true,
+            "powerPreference": "high-performance",
+            "alpha": false
+          }
+        },
+        "scene": {
+          "camera": {
+            "type": "perspective",
+            "position": [4, 2, 6],
+            "fov": 42,
+            "near": 0.1,
+            "far": 120
+          },
+          "background": {
+            "type": "color",
+            "color": "#10141c"
+          },
+          "controls": {
+            "mode": "none"
+          },
+          "scrollCamera": {
+            "keyframes": [
+              {
+                "at": 0,
+                "position": [4, 2, 6],
+                "lookAt": [0, 1, 0],
+                "fov": 42
+              },
+              {
+                "at": 0.25,
+                "position": [2.5, 1.6, 4],
+                "lookAt": [0, 1.1, 0],
+                "fov": 40
+              },
+              {
+                "at": 0.5,
+                "position": [0.8, 1.4, 3.2],
+                "lookAt": [0, 1.2, 0],
+                "fov": 38
+              },
+              {
+                "at": 0.75,
+                "position": [-1.2, 1.8, 4.5],
+                "lookAt": [0, 1.3, 0],
+                "fov": 40
+              },
+              {
+                "at": 1,
+                "position": [-3.5, 2.6, 7],
+                "lookAt": [0, 1.5, 0],
+                "fov": 44
+              }
+            ]
+          },
+          "lights": [
+            {
+              "type": "ambient",
+              "intensity": 0.4
+            },
+            {
+              "type": "directional",
+              "intensity": 1.6,
+              "position": [4, 8, 3]
+            },
+            {
+              "type": "spot",
+              "position": [-3, 4, 2],
+              "target": [0, 1, 0],
+              "intensity": 0.9,
+              "angle": 0.45,
+              "penumbra": 0.7
+            }
+          ],
+          "contents": {
+            "models": [
+              {
+                "model": "hero",
+                "animation": {
+                  "clip": "Idle",
+                  "loop": true
+                }
+              }
+            ]
+          }
+        },
+        "postProcessing": [
+          {
+            "type": "ssao",
+            "samples": 12,
+            "radius": 0.06,
+            "intensity": 1.2,
+            "disabledOnMobile": true
+          },
+          {
+            "type": "noise",
+            "opacity": 0.035
+          }
+        ]
+      }
+    }
+  }
+}

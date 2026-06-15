@@ -1,0 +1,26 @@
+{
+  "preset": "demo-hero",
+  "maxWidth": "820px",
+  "padding": {
+    "base": "10rem 0 6rem",
+    "md": "12rem 0 8rem"
+  },
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "H1–H5 · Lead · Standard · Fine · Serif · Mono · Rich Text"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Type Scale"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "The complete heading and body scale — every level, every variant, truncation, editorial layout, and how they compose.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  }
+}

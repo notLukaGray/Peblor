@@ -1,0 +1,93 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["sec-label", "sec-desc", "cards-row"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Stat Cards"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Single-metric cards. Counters animate when scrolled into view."
+    },
+    "cards-row": {
+      "preset": "card-grid-row",
+      "section": {
+        "elementOrder": ["stat-1", "stat-2", "stat-3"],
+        "definitions": {
+          "stat-1": {
+            "preset": "card-stat-single"
+          },
+          "stat-2": {
+            "preset": "card-stat-single",
+            "section": {
+              "elementOrder": ["num", "label", "body"],
+              "definitions": {
+                "num": {
+                  "type": "elementCounter",
+                  "level": 1,
+                  "target": 94,
+                  "suffix": "%",
+                  "trigger": "onVisible",
+                  "tween": {
+                    "duration": 2800,
+                    "easing": "easeOut"
+                  },
+                  "color": "var(--pb-on-secondary)",
+                  "textAlign": "left",
+                  "width": "hug"
+                },
+                "label": {
+                  "preset": "type-counter-label",
+                  "text": "Client Retention",
+                  "textAlign": "left"
+                },
+                "body": {
+                  "preset": "type-body-fine",
+                  "text": "Year-over-year across all accounts."
+                }
+              }
+            }
+          },
+          "stat-3": {
+            "preset": "card-stat-single",
+            "section": {
+              "elementOrder": ["num", "label", "body"],
+              "definitions": {
+                "num": {
+                  "type": "elementCounter",
+                  "level": 1,
+                  "target": 3.2,
+                  "prefix": "$",
+                  "suffix": "M",
+                  "decimals": 1,
+                  "trigger": "onVisible",
+                  "tween": {
+                    "duration": 2600,
+                    "easing": "easeOut"
+                  },
+                  "color": "var(--pb-on-secondary)",
+                  "textAlign": "left",
+                  "width": "hug"
+                },
+                "label": {
+                  "preset": "type-counter-label",
+                  "text": "Revenue Influenced",
+                  "textAlign": "left"
+                },
+                "body": {
+                  "preset": "type-body-fine",
+                  "text": "Attributed to design-system adoption."
+                }
+              }
+            }
+          }
+        }
+      },
+      "motionTiming": {
+        "staggerChildren": 0.12,
+        "trigger": "onFirstVisible"
+      }
+    }
+  }
+}

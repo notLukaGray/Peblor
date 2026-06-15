@@ -1,0 +1,18 @@
+{
+  "type": "elementLink",
+  "copyType": "body",
+  "level": 5,
+  "textTransform": "uppercase",
+  "letterSpacing": "0.07em",
+  "linkDefault": "color-mix(in oklab, var(--pb-on-secondary) 52%, transparent)",
+  "linkHover": "var(--pb-on-secondary)",
+  "linkTransition": ".2s",
+  "href": "#",
+  "label": "Category",
+  "wrapperStyle": {
+    "display": "inline-flex",
+    "background": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+    "padding": "0.2rem 0.6rem",
+    "borderRadius": "999px"
+  }
+}

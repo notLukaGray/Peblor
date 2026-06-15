@@ -3,7 +3,7 @@
 import { useMemo, useRef } from "react";
 import type { SectionBlock } from "@pb/contracts/types";
 import { handleSectionWheel, getDefaultScrollSpeed } from "@pb/core/layout";
-import { resolveResponsiveValue } from "@pb/runtime-react/core/lib/responsive-value";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
 import { useSectionBaseStyles } from "@/peblor/section/position/use-section-base-styles";
 import { useStickyTrait } from "@/peblor/section/position/use-sticky-trait";
 import { useFixedTrait } from "@/peblor/section/position/use-fixed-trait";
@@ -22,8 +22,8 @@ import { SectionColumnContent } from "./SectionColumn/section-column-content";
 import { SectionMotionWrapper } from "@/peblor/integrations/framer-motion";
 import { SectionScrollTargetProvider } from "@/peblor/section/position/SectionScrollTargetContext";
 import { useSectionCustomTriggers } from "@/peblor/triggers/core/use-section-custom-triggers";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
-import { resolveThemeString } from "@/peblor/theme/theme-string";
+import { lowerThemeStringToCss } from "@/peblor/theme/theme-string";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 type Props = Extract<SectionBlock, { type: "sectionColumn" }>;
 
@@ -35,7 +35,7 @@ export function SectionColumn({
   effects,
   width,
   height,
-  align,
+  selfAlign,
   marginLeft,
   marginRight,
   marginTop,
@@ -44,14 +44,35 @@ export function SectionColumn({
   border,
   boxShadow,
   filter,
-  backdropFilter,
-  clipPath,
+  bgBlur,
+  clipShape,
   cursor,
   aspectRatio,
   scrollSpeed = getDefaultScrollSpeed(),
   initialX,
   initialY,
-  zIndex,
+  layer,
+  padding,
+  paddingTop,
+  paddingRight,
+  paddingBottom,
+  paddingLeft,
+  margin,
+  scroll,
+  scrollX,
+  scrollY,
+  wrapperStyle,
+  sectionGap,
+  position,
+  top,
+  right,
+  bottom,
+  left,
+  inset,
+  interaction,
+  selectable,
+  willChange,
+  opacity,
   elements = [],
   columns,
   columnAssignments,
@@ -62,6 +83,9 @@ export function SectionColumn({
   gridMode,
   gridDebug,
   gridAutoRows,
+  gridAutoColumns,
+  gridAutoFlow,
+  gridTemplateAreas,
   itemLayout,
   elementOrder,
   columnSpan: _columnSpan,
@@ -85,6 +109,7 @@ export function SectionColumn({
   triggerOnce,
   rootMargin,
   delay,
+  colorScheme,
   motion: motionFromJson,
   motionTiming,
   reduceMotion,
@@ -93,13 +118,20 @@ export function SectionColumn({
   cursorTriggers,
   scrollDirectionTriggers,
   idleTriggers,
+  variableTriggers,
+  tabVisibilityTriggers,
+  mediaEndTriggers,
+  customEventTriggers,
+  elementEventTriggers,
+  scrollThresholdTriggers,
+  mediaProgressTriggers,
 }: Props) {
   const sectionRef = useRef<HTMLElement>(null);
   const placeholderRef = useRef<HTMLDivElement>(null);
   const { isMobile } = useDeviceType();
-  const themeMode = usePeblorThemeMode();
-  const resolvedAriaLabel = resolveResponsiveValue(ariaLabel, isMobile) ?? id ?? "Column layout";
-  const resolvedFill = resolveThemeString(resolveResponsiveValue(fill, isMobile), themeMode);
+  const resolvedAriaLabel =
+    resolveResponsiveValue(ariaLabel, isMobile) ?? id ?? globals.stringsAriaLabelColumnLayout;
+  const resolvedFill = lowerThemeStringToCss(resolveResponsiveValue(fill, isMobile));
   const resolvedStickyOffset = resolveResponsiveValue(stickyOffset, isMobile) ?? "0px";
   const resolvedFixedOffset = resolveResponsiveValue(fixedOffset, isMobile) ?? "0px";
 
@@ -120,9 +152,16 @@ export function SectionColumn({
     cursorTriggers,
     scrollDirectionTriggers,
     idleTriggers,
+    variableTriggers,
+    tabVisibilityTriggers,
+    mediaEndTriggers,
+    customEventTriggers,
+    elementEventTriggers,
+    scrollThresholdTriggers,
+    mediaProgressTriggers,
   });
 
-  const { baseStyle, resolvedLayout, alignStyle, transformY, hasInitialPosition } =
+  const { baseStyle, resolvedLayout, alignStyle, parallaxY, hasInitialPosition } =
     useSectionBaseStyles({
       fill,
       width,
@@ -131,7 +170,7 @@ export function SectionColumn({
       maxWidth,
       minHeight,
       maxHeight,
-      align,
+      selfAlign,
       marginLeft,
       marginRight,
       marginTop,
@@ -140,17 +179,37 @@ export function SectionColumn({
       border,
       boxShadow,
       filter,
-      backdropFilter,
-      clipPath,
+      bgBlur,
+      clipShape,
       cursor,
       aspectRatio,
+      scroll,
+      scrollX,
+      scrollY,
       scrollSpeed,
       initialX,
       initialY,
-      zIndex,
+      layer,
+      padding,
+      paddingTop,
+      paddingRight,
+      paddingBottom,
+      paddingLeft,
+      margin,
+      wrapperStyle,
+      sectionGap,
+      position,
+      top,
+      right,
+      bottom,
+      left,
+      inset,
+      interaction,
+      selectable,
+      willChange,
+      opacity,
       effects,
       sectionRef,
-      usePadding: true,
       reduceMotion,
     });
 
@@ -163,7 +222,6 @@ export function SectionColumn({
     hasInitialPosition,
     resolvedLayout,
     alignStyle,
-    transformY,
   });
 
   const fixedStyleOverrides = useFixedTrait({
@@ -171,7 +229,7 @@ export function SectionColumn({
     fixedPosition,
     fixedOffset: resolvedFixedOffset,
     resolvedLayout,
-    zIndex,
+    zIndex: layer,
   });
 
   const finalStyle = useMemo(() => {
@@ -188,6 +246,9 @@ export function SectionColumn({
   const normalizedColumnSpan = normalizeColumnSpanInput(_columnSpan);
   const resolvedGridDebug = resolveResponsiveBooleanProp(gridDebug, isMobile);
   const resolvedGridAutoRows = resolveResponsiveStringProp(gridAutoRows, isMobile);
+  const resolvedGridAutoColumns = resolveResponsiveStringProp(gridAutoColumns, isMobile);
+  const resolvedGridAutoFlow = resolveResponsiveStringProp(gridAutoFlow, isMobile);
+  const resolvedGridTemplateAreas = resolveResponsiveStringProp(gridTemplateAreas, isMobile);
 
   const columnLayout = useColumnLayout({
     elements,
@@ -211,12 +272,19 @@ export function SectionColumn({
         <div ref={placeholderRef} style={placeholderStyle} aria-hidden />
       )}
       <SectionMotionWrapper
+        id={id}
         sectionRef={sectionRef}
         motion={motionFromJson}
         motionTiming={motionTiming}
         reduceMotion={reduceMotion}
+        parallaxY={parallaxY}
         className="relative z-[var(--pb-z-raised)] flex shrink-0 flex-col min-h-0"
-        style={applySectionFillStyle(resolvedFill, layers, finalStyle)}
+        style={
+          colorScheme
+            ? { ...applySectionFillStyle(resolvedFill, layers, finalStyle), colorScheme }
+            : applySectionFillStyle(resolvedFill, layers, finalStyle)
+        }
+        data-color-scheme={colorScheme ?? undefined}
         aria-label={resolvedAriaLabel}
         onWheel={fixed ? undefined : wheelHandler}
       >
@@ -228,6 +296,9 @@ export function SectionColumn({
             columnLayout={columnLayout}
             gridDebug={resolvedGridDebug}
             gridAutoRows={resolvedGridAutoRows}
+            gridAutoColumns={resolvedGridAutoColumns}
+            gridAutoFlow={resolvedGridAutoFlow}
+            gridTemplateAreas={resolvedGridTemplateAreas}
           />
         </SectionScrollTargetProvider>
       </SectionMotionWrapper>

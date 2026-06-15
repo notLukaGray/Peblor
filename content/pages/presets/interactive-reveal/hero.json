@@ -1,0 +1,26 @@
+{
+  "preset": "demo-hero",
+  "maxWidth": "820px",
+  "padding": {
+    "base": "8rem 0 5rem",
+    "md": "10rem 0 7rem"
+  },
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Image Compare · Reveal Sections · Progressive Disclosure"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Interactive Reveal"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Compare, reveal, and disclosure UI patterns — before-and-after image comparison sliders, expandable content sections, and staged progressive reveal effects.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  }
+}

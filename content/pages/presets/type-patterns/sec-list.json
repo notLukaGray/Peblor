@@ -1,0 +1,185 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "staggerChildren": 0.1,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "list-items", "list-desc"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Numbered List"
+    },
+    "list-items": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "distribute": "start",
+      "gap": "1.75rem",
+      "width": {
+        "base": "100%",
+        "md": "82%"
+      },
+      "selfAlign": "left",
+      "motionTiming": {
+        "staggerChildren": 0.12,
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": ["n1", "n2", "n3", "n4"],
+        "definitions": {
+          "n1": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "row",
+            "align": "start",
+            "distribute": "start",
+            "gap": "1.25rem",
+            "width": "100%",
+            "selfAlign": "left",
+            "motionTiming": {
+              "entrancePreset": "slideRight"
+            },
+            "section": {
+              "elementOrder": ["num", "body"],
+              "definitions": {
+                "num": {
+                  "type": "elementHeading",
+                  "level": 2,
+                  "text": "1.",
+                  "color": "color-mix(in oklab, var(--pb-accent) 80%, transparent)",
+                  "width": "4ch",
+                  "textAlign": "right",
+                  "wordWrap": false,
+                  "lineHeight": "1.2"
+                },
+                "body": {
+                  "type": "elementBody",
+                  "level": 3,
+                  "text": "Start with scale — H1 through H5, lead through fine.",
+                  "wordWrap": true,
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 72%, transparent)"
+                }
+              }
+            }
+          },
+          "n2": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "row",
+            "align": "start",
+            "distribute": "start",
+            "gap": "1.25rem",
+            "width": "100%",
+            "selfAlign": "left",
+            "motionTiming": {
+              "entrancePreset": "slideRight"
+            },
+            "section": {
+              "elementOrder": ["num", "body"],
+              "definitions": {
+                "num": {
+                  "type": "elementHeading",
+                  "level": 2,
+                  "text": "2.",
+                  "color": "color-mix(in oklab, var(--pb-accent) 80%, transparent)",
+                  "width": "4ch",
+                  "textAlign": "right",
+                  "wordWrap": false,
+                  "lineHeight": "1.2"
+                },
+                "body": {
+                  "type": "elementBody",
+                  "level": 3,
+                  "text": "Add motion — entrance presets, stagger, marquee.",
+                  "wordWrap": true,
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 72%, transparent)"
+                }
+              }
+            }
+          },
+          "n3": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "row",
+            "align": "start",
+            "distribute": "start",
+            "gap": "1.25rem",
+            "width": "100%",
+            "selfAlign": "left",
+            "motionTiming": {
+              "entrancePreset": "slideRight"
+            },
+            "section": {
+              "elementOrder": ["num", "body"],
+              "definitions": {
+                "num": {
+                  "type": "elementHeading",
+                  "level": 2,
+                  "text": "3.",
+                  "color": "color-mix(in oklab, var(--pb-accent) 80%, transparent)",
+                  "width": "4ch",
+                  "textAlign": "right",
+                  "wordWrap": false,
+                  "lineHeight": "1.2"
+                },
+                "body": {
+                  "type": "elementBody",
+                  "level": 3,
+                  "text": "Apply special treatments — gradient, outline, glow.",
+                  "wordWrap": true,
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 72%, transparent)"
+                }
+              }
+            }
+          },
+          "n4": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "row",
+            "align": "start",
+            "distribute": "start",
+            "gap": "1.25rem",
+            "width": "100%",
+            "selfAlign": "left",
+            "motionTiming": {
+              "entrancePreset": "slideRight"
+            },
+            "section": {
+              "elementOrder": ["num", "body"],
+              "definitions": {
+                "num": {
+                  "type": "elementHeading",
+                  "level": 2,
+                  "text": "4.",
+                  "color": "color-mix(in oklab, var(--pb-accent) 80%, transparent)",
+                  "width": "4ch",
+                  "textAlign": "right",
+                  "wordWrap": false,
+                  "lineHeight": "1.2"
+                },
+                "body": {
+                  "type": "elementBody",
+                  "level": 3,
+                  "text": "Compose into patterns — the copy block, hero copy, pull quote.",
+                  "wordWrap": true,
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 72%, transparent)"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "list-desc": {
+      "preset": "type-body-standard",
+      "text": "Accent number + body copy row — the numbered list unit. Uses slideRight entrance per item so each step arrives from the left.",
+      "width": {
+        "base": "100%",
+        "md": "82%"
+      }
+    }
+  },
+  "align": "start"
+}

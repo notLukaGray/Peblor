@@ -1,18 +1,14 @@
 import type { ReactNode } from "react";
 import { convertRotateToMatrix } from "@pb/runtime-react/core/lib/svg-transform-utils";
 import type { VectorGradient, VectorGradientStop } from "@pb/contracts/peblor/core/peblor-schemas";
-import { type PeblorThemeMode, resolveThemeString } from "@/peblor/theme/theme-string";
+import { lowerThemeStringToCss } from "@/peblor/theme/theme-string";
 
-export function renderGradientStop(
-  stop: VectorGradientStop,
-  index: number,
-  themeMode: PeblorThemeMode
-): ReactNode {
+export function renderGradientStop(stop: VectorGradientStop, index: number): ReactNode {
   return (
     <stop
       key={index}
       offset={stop.offset}
-      stopColor={resolveThemeString(stop.color, themeMode)}
+      stopColor={lowerThemeStringToCss(stop.color)}
       stopOpacity={stop.opacity}
     />
   );
@@ -66,9 +62,9 @@ const GRADIENT_RENDERERS: Record<string, (g: VectorGradient, stops: ReactNode[])
     renderRadialGradient(g as VectorGradient & { type: "radialGradient" }, stops),
 };
 
-export function renderGradient(gradient: VectorGradient, themeMode: PeblorThemeMode): ReactNode {
+export function renderGradient(gradient: VectorGradient): ReactNode {
   const rawStops = gradient.stops?.filter((s): s is NonNullable<typeof s> => s != null) ?? [];
-  const stops = rawStops.map((s, i) => renderGradientStop(s, i, themeMode));
+  const stops = rawStops.map((s, i) => renderGradientStop(s, i));
   if (!stops.length) return null;
   const renderer = GRADIENT_RENDERERS[gradient.type];
   return renderer ? renderer(gradient, stops) : null;

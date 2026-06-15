@@ -1,0 +1,195 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "entrancePreset": "slideUp",
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "stress-states", "stress-long-label", "stress-icons"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Stress States"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Buttons in edge-case states: disabled, loading, long labels, and icon-prefixed text. These demonstrate the resilience of the elementButton component."
+    },
+    "stress-states": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "align": "center",
+      "distribute": "center",
+      "gap": "1rem",
+      "section": {
+        "elementOrder": ["btn-default", "btn-disabled", "btn-loading"],
+        "definitions": {
+          "btn-default": {
+            "preset": "btn-primary",
+            "label": "Default",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            }
+          },
+          "btn-disabled": {
+            "preset": "btn-ghost",
+            "label": "Disabled",
+            "disabled": true,
+            "linkDefault": "color-mix(in oklab, var(--pb-on-secondary) 30%, transparent)",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+            "wrapperStroke": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+            "wrapperStrokeWidth": 1,
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            }
+          },
+          "btn-loading": {
+            "preset": "btn-primary",
+            "label": "Loading",
+            "loading": true,
+            "loadingLabel": "Processing...",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            }
+          }
+        }
+      },
+      "scroll": "visible"
+    },
+    "stress-long-label": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "align": "center",
+      "distribute": "center",
+      "gap": "1rem",
+      "constraints": {
+        "maxWidth": "600px"
+      },
+      "section": {
+        "elementOrder": ["btn-short", "btn-long", "btn-truncated"],
+        "definitions": {
+          "btn-short": {
+            "preset": "btn-secondary",
+            "label": "OK",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            }
+          },
+          "btn-long": {
+            "preset": "btn-secondary",
+            "label": "Download a very large file export package now",
+            "wordWrap": true,
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            }
+          },
+          "btn-truncated": {
+            "preset": "btn-secondary",
+            "label": "This label is intentionally very long to test wrapping and overflow behavior in compact button containers",
+            "wordWrap": true,
+            "maxWidth": "220px",
+            "linkDefault": "color-mix(in oklab, var(--pb-on-secondary) 52%, transparent)",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+            "wrapperStroke": "color-mix(in oklab, var(--pb-on-secondary) 14%, transparent)",
+            "wrapperStrokeWidth": 1,
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            }
+          }
+        }
+      },
+      "scroll": "visible"
+    },
+    "stress-icons": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "align": "center",
+      "distribute": "center",
+      "gap": "1rem",
+      "section": {
+        "elementOrder": [
+          "btn-icon-play",
+          "btn-icon-download",
+          "btn-icon-external",
+          "btn-icon-settings"
+        ],
+        "definitions": {
+          "btn-icon-play": {
+            "preset": "btn-primary",
+            "label": "Play",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            },
+            "wrapperFillHover": {
+              "light": "color-mix(in oklab, var(--pb-on-secondary) 84%, oklch(0.52 0.14 160))",
+              "dark": "color-mix(in oklab, var(--pb-on-secondary) 76%, oklch(0.74 0.15 155))"
+            },
+            "wrapperFillActive": {
+              "light": "color-mix(in oklab, var(--pb-on-secondary) 72%, oklch(0.44 0.16 162))",
+              "dark": "color-mix(in oklab, var(--pb-on-secondary) 64%, oklch(0.64 0.17 158))"
+            }
+          },
+          "btn-icon-download": {
+            "preset": "btn-secondary",
+            "label": "Download",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            },
+            "wrapperFillHover": {
+              "light": "color-mix(in oklab, var(--pb-on-secondary) 14%, oklch(0.58 0.10 245))",
+              "dark": "color-mix(in oklab, var(--pb-on-secondary) 22%, oklch(0.74 0.12 240))"
+            },
+            "wrapperFillActive": {
+              "light": "color-mix(in oklab, var(--pb-on-secondary) 22%, oklch(0.50 0.12 248))",
+              "dark": "color-mix(in oklab, var(--pb-on-secondary) 30%, oklch(0.66 0.14 242))"
+            },
+            "wrapperStrokeHover": {
+              "light": "color-mix(in oklab, var(--pb-on-secondary) 30%, oklch(0.58 0.10 245))",
+              "dark": "color-mix(in oklab, var(--pb-on-secondary) 40%, oklch(0.74 0.12 240))"
+            }
+          },
+          "btn-icon-external": {
+            "preset": "btn-ghost",
+            "label": "Open",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            }
+          },
+          "btn-icon-settings": {
+            "preset": "btn-quiet",
+            "label": "Settings",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            }
+          }
+        }
+      },
+      "scroll": "visible"
+    }
+  }
+}

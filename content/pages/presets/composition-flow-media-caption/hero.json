@@ -1,0 +1,23 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Flow · Media · Caption"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Composition Flow Media Caption"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Media-first single-flow composition with controlled caption hierarchy and resilient long-copy behavior.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  },
+  "align": "start"
+}

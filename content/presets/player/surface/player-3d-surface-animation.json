@@ -1,0 +1,304 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "align": "stretch",
+  "gap": "0",
+  "width": "100%",
+  "height": "hug",
+  "borderRadius": "20px",
+  "scroll": "hidden",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+  },
+  "section": {
+    "elementOrder": ["model-canvas", "animation-controls", "crossfade-controls"],
+    "definitions": {
+      "model-canvas": {
+        "type": "elementModel3D",
+        "id": "model-3d-anim",
+        "width": "100%",
+        "aspectRatio": "16 / 9",
+        "initiallyLoaded": true,
+        "models": {
+          "robot": {
+            "geometry": "https://threejs.org/examples/models/gltf/RobotExpressive/RobotExpressive.glb"
+          }
+        },
+        "canvas": {
+          "dpr": 2,
+          "gl": {
+            "antialias": true,
+            "powerPreference": "high-performance",
+            "alpha": false
+          }
+        },
+        "scene": {
+          "camera": {
+            "type": "perspective",
+            "position": [0, 1.6, 4.8],
+            "fov": 44,
+            "near": 0.1,
+            "far": 120
+          },
+          "background": {
+            "type": "color",
+            "color": "#10141c"
+          },
+          "controls": {
+            "mode": "orbit"
+          },
+          "cameraEffects": {
+            "bobbing": {
+              "amount": 0.12,
+              "speed": 0.5
+            },
+            "mouseFollow": {
+              "sensitivity": -0.06,
+              "smoothness": 0.09,
+              "desktopOnly": true
+            }
+          },
+          "lights": [
+            {
+              "type": "ambient",
+              "intensity": 0.55
+            },
+            {
+              "type": "directional",
+              "intensity": 2.2,
+              "position": [3, 6, 4],
+              "castShadow": true
+            },
+            {
+              "type": "point",
+              "position": [-2, 2, 3],
+              "intensity": 0.8,
+              "color": "#88aaff"
+            }
+          ],
+          "contents": {
+            "models": [
+              {
+                "model": "robot",
+                "animation": {
+                  "clip": "Idle",
+                  "loop": true
+                }
+              }
+            ]
+          }
+        },
+        "postProcessing": [
+          {
+            "type": "bloom",
+            "intensity": 0.35,
+            "luminanceThreshold": 0.72,
+            "radius": 0.38,
+            "mipmapBlur": true
+          },
+          {
+            "type": "noise",
+            "opacity": 0.04
+          }
+        ]
+      },
+      "animation-controls": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "row",
+        "align": "center",
+        "gap": "0.5rem",
+        "padding": "0.65rem 1rem",
+        "wrapperStyle": {
+          "borderBottom": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+        },
+        "section": {
+          "elementOrder": ["btn-play", "btn-pause", "btn-walk", "btn-run", "btn-idle"],
+          "definitions": {
+            "btn-play": {
+              "type": "elementButton",
+              "label": "Play",
+              "action": "three.playAnimation",
+              "actionPayload": {
+                "id": "model-3d-anim"
+              },
+              "level": 5,
+              "wrapperPadding": "0.45rem 0.9rem",
+              "wrapperBorderRadius": "10px",
+              "wrapperFill": "color-mix(in oklab, var(--pb-accent) 18%, transparent)",
+              "linkDefault": "var(--pb-on-secondary)",
+              "motion": {
+                "onHover": {
+                  "scale": 1.04
+                },
+                "transition": {
+                  "duration": 0.15
+                }
+              }
+            },
+            "btn-pause": {
+              "type": "elementButton",
+              "label": "Pause",
+              "action": "three.pauseAnimation",
+              "actionPayload": {
+                "id": "model-3d-anim"
+              },
+              "level": 5,
+              "wrapperPadding": "0.45rem 0.9rem",
+              "wrapperBorderRadius": "10px",
+              "wrapperFill": "color-mix(in oklab, var(--pb-accent) 18%, transparent)",
+              "linkDefault": "var(--pb-on-secondary)",
+              "motion": {
+                "onHover": {
+                  "scale": 1.04
+                },
+                "transition": {
+                  "duration": 0.15
+                }
+              }
+            },
+            "btn-idle": {
+              "type": "elementButton",
+              "label": "Idle",
+              "action": "three.setAnimation",
+              "actionPayload": {
+                "id": "model-3d-anim",
+                "name": "Idle"
+              },
+              "level": 5,
+              "wrapperPadding": "0.3rem 0.65rem",
+              "wrapperBorderRadius": "999px",
+              "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+              "linkDefault": "var(--pb-on-secondary)",
+              "motion": {
+                "onHover": {
+                  "scale": 1.05
+                },
+                "transition": {
+                  "duration": 0.15
+                }
+              }
+            },
+            "btn-walk": {
+              "type": "elementButton",
+              "label": "Walk",
+              "action": "three.setAnimation",
+              "actionPayload": {
+                "id": "model-3d-anim",
+                "name": "Walking"
+              },
+              "level": 5,
+              "wrapperPadding": "0.3rem 0.65rem",
+              "wrapperBorderRadius": "999px",
+              "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+              "linkDefault": "var(--pb-on-secondary)",
+              "motion": {
+                "onHover": {
+                  "scale": 1.05
+                },
+                "transition": {
+                  "duration": 0.15
+                }
+              }
+            },
+            "btn-run": {
+              "type": "elementButton",
+              "label": "Run",
+              "action": "three.setAnimation",
+              "actionPayload": {
+                "id": "model-3d-anim",
+                "name": "Running"
+              },
+              "level": 5,
+              "wrapperPadding": "0.3rem 0.65rem",
+              "wrapperBorderRadius": "999px",
+              "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+              "linkDefault": "var(--pb-on-secondary)",
+              "motion": {
+                "onHover": {
+                  "scale": 1.05
+                },
+                "transition": {
+                  "duration": 0.15
+                }
+              }
+            }
+          }
+        }
+      },
+      "crossfade-controls": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "row",
+        "align": "center",
+        "gap": "0.5rem",
+        "padding": "0.65rem 1rem",
+        "section": {
+          "elementOrder": ["label", "btn-cf-walk", "btn-cf-run", "state-readout"],
+          "definitions": {
+            "label": {
+              "type": "elementBody",
+              "level": 5,
+              "text": "Crossfade →",
+              "color": "color-mix(in oklab, var(--pb-on-secondary) 55%, transparent)",
+              "width": "hug"
+            },
+            "btn-cf-walk": {
+              "type": "elementButton",
+              "label": "→ Walk 0.3s",
+              "action": "three.crossFadeAnimation",
+              "actionPayload": {
+                "id": "model-3d-anim",
+                "name": "Walking",
+                "durationMs": 300,
+                "warp": true
+              },
+              "level": 5,
+              "wrapperPadding": "0.3rem 0.65rem",
+              "wrapperBorderRadius": "999px",
+              "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+              "linkDefault": "var(--pb-on-secondary)",
+              "motion": {
+                "onHover": {
+                  "scale": 1.05
+                },
+                "transition": {
+                  "duration": 0.15
+                }
+              }
+            },
+            "btn-cf-run": {
+              "type": "elementButton",
+              "label": "→ Run 0.5s",
+              "action": "three.crossFadeAnimation",
+              "actionPayload": {
+                "id": "model-3d-anim",
+                "name": "Running",
+                "durationMs": 500,
+                "warp": true
+              },
+              "level": 5,
+              "wrapperPadding": "0.3rem 0.65rem",
+              "wrapperBorderRadius": "999px",
+              "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+              "linkDefault": "var(--pb-on-secondary)",
+              "motion": {
+                "onHover": {
+                  "scale": 1.05
+                },
+                "transition": {
+                  "duration": 0.15
+                }
+              }
+            },
+            "state-readout": {
+              "preset": "player-controls-state-chip"
+            }
+          }
+        }
+      }
+    }
+  }
+}

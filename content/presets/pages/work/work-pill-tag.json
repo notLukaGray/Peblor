@@ -1,0 +1,13 @@
+{
+  "type": "elementLink",
+  "external": false,
+  "copyType": "body",
+  "level": 5,
+  "href": "#",
+  "label": "Tag",
+  "wrapperStyle": {
+    "padding": "0.38rem 0.72rem",
+    "borderRadius": "999px",
+    "background": "oklch(from var(--pb-on-secondary) l c h / 0.06)"
+  }
+}

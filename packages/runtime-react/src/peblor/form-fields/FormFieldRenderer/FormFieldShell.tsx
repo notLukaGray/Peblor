@@ -3,9 +3,9 @@
 import { useMemo, useRef, type CSSProperties, type ReactNode } from "react";
 import type { FormFieldBlock } from "@pb/contracts/peblor/core/peblor-schemas";
 import { SectionGlassEffect } from "@/peblor/section/stack/SectionGlassEffect";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
-import { resolveThemeValueDeep } from "@/peblor/theme/theme-string";
+import { lowerThemeValueDeep } from "@/peblor/theme/theme-string";
 import { coerceSectionEffects } from "@/peblor/elements/ElementModule/element-module-style-utils";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 type Props = {
   field: FormFieldBlock;
@@ -14,11 +14,10 @@ type Props = {
 };
 
 export function FormFieldShell({ field, style, children }: Props) {
-  const themeMode = usePeblorThemeMode();
   const surfaceRef = useRef<HTMLDivElement | null>(null);
   const effects = useMemo(
-    () => coerceSectionEffects(resolveThemeValueDeep(field.effects, themeMode)),
-    [field.effects, themeMode]
+    () => coerceSectionEffects(lowerThemeValueDeep(field.effects)),
+    [field.effects]
   );
   const hasGlassEffect = (effects ?? []).some((effect) => effect.type === "glass");
   const wrapperStyle: CSSProperties = {
@@ -26,7 +25,7 @@ export function FormFieldShell({ field, style, children }: Props) {
     ...(hasGlassEffect ? { position: "relative", overflow: "hidden" } : {}),
   };
   const contentStyle: CSSProperties | undefined = hasGlassEffect
-    ? { position: "relative", zIndex: 1 }
+    ? { position: "relative", zIndex: globals.zIndexRaised }
     : undefined;
   const syncBorderRadius =
     typeof wrapperStyle.borderRadius === "string" ? wrapperStyle.borderRadius : undefined;

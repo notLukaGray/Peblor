@@ -2,7 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import { PEBLOR_TRIGGER_EVENT, type PeblorTriggerDetail } from "@/peblor/triggers";
-import type { Model3DAction } from "@pb/contracts/types";
+import type { Model3DAction, PeblorAction } from "@pb/contracts/types";
+import { subscribeToElementActions } from "@/peblor/triggers/action-bus";
 import type {
   Model3DAnimationCommand,
   Model3DCameraCommand,
@@ -39,6 +40,8 @@ type TriggerControlsArgs = {
     React.SetStateAction<Model3DPostProcessingCommand | null>
   >;
   onBeforeLoad?: (payload: unknown, payloadObj: Record<string, unknown> | null) => void;
+  onClearGeometryCache?: () => void;
+  sceneCameraPresets?: Record<string, Model3DCameraPreset>;
 };
 
 export function useModel3DTriggerControls(args: TriggerControlsArgs) {
@@ -99,7 +102,18 @@ export function useModel3DTriggerControls(args: TriggerControlsArgs) {
       );
     };
 
+    const busUnsub = args.id
+      ? subscribeToElementActions(args.id, (rawAction) => {
+          const syntheticEvent = new CustomEvent<PeblorTriggerDetail>(PEBLOR_TRIGGER_EVENT, {
+            detail: { action: rawAction as PeblorAction, source: "system" },
+          });
+          listener(syntheticEvent);
+        })
+      : null;
     window.addEventListener(PEBLOR_TRIGGER_EVENT, listener as EventListener);
-    return () => window.removeEventListener(PEBLOR_TRIGGER_EVENT, listener as EventListener);
+    return () => {
+      busUnsub?.();
+      window.removeEventListener(PEBLOR_TRIGGER_EVENT, listener as EventListener);
+    };
   }, [args]);
 }

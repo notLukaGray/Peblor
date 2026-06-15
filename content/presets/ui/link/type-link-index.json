@@ -1,0 +1,13 @@
+{
+  "type": "elementLink",
+  "copyType": "body",
+  "level": 2,
+  "width": "hug",
+  "selfAlign": "center",
+  "linkDefault": "var(--pb-on-secondary)",
+  "linkHover": "var(--pb-link-hover)",
+  "linkActive": "var(--pb-link-active)",
+  "linkTransition": ".3s",
+  "href": "#",
+  "label": "Index item"
+}

@@ -5,6 +5,7 @@ import type { PeblorDefinitionBlock } from "@pb/contracts";
 import { peblorSchema, buttonActionSchema, validatePageReferences } from "@pb/contracts";
 import type { ZodIssue } from "zod";
 import { readPageJsonByPath, PAGE_DATA_DIR, parseJsonSafe } from "./load/peblor-load-io";
+import { getCoreConfig } from "../types";
 import { validateSlugSegments } from "./load/peblor-validate-slug";
 import { discoverAllPages, resolvePagePath } from "./load/peblor-discover-pages";
 import { buildPresetsAsync } from "./load/peblor-load-presets";
@@ -71,22 +72,53 @@ function enforceValidation(slug: string, result: ValidationResult): void {
   throw new PageContentValidationError(slug, issues);
 }
 
-function finalizeLoadedPeblor(
-  withSlug: Record<string, unknown>,
+/**
+ * Promote presets into definitions for sectionOrder keys that have no explicit definition.
+ * Fails with a diagnostic if any sectionOrder key is missing from BOTH definitions and presets.
+ *
+ * ⚠️ MUTATES `definitions` in-place. Callers must pass a clone if they need to preserve
+ * the original definitions map. Both current callers (buildPageForExpansion in shared.ts
+ * and loadPeblorInternal) intentionally pass modifiable clones.
+ */
+function promotePresetsIntoDefinitions(
   definitions: Record<string, PeblorDefinitionBlock>,
   presets: Record<string, PeblorDefinitionBlock>,
   sectionOrder: string[],
   slug: string
-): Peblor | null {
+): void {
+  const missing: string[] = [];
   for (const key of sectionOrder) {
-    if (definitions[key] == null && presets[key] != null) {
+    if (definitions[key] != null) continue;
+    if (presets[key] != null) {
       definitions[key] = presets[key];
+    } else {
+      missing.push(key);
     }
   }
-  const resolvedDefinitions = resolveDefinitionPresets(definitions, presets);
+  if (missing.length > 0) {
+    throw new PageContentValidationError(
+      slug,
+      missing.map(
+        (key): ZodIssue => ({
+          code: "custom",
+          message: `sectionOrder key "${key}" has no matching definition or preset`,
+          path: ["sectionOrder", key],
+        })
+      )
+    );
+  }
+}
+
+export { promotePresetsIntoDefinitions };
+
+function finalizeLoadedPeblor(
+  withSlug: Record<string, unknown>,
+  definitions: Record<string, PeblorDefinitionBlock>,
+  slug: string
+): Peblor | null {
   const peblor = {
     ...withSlug,
-    definitions: resolvedDefinitions,
+    definitions,
   } as Peblor;
   const validation = validatePeblor(peblor, slug);
   enforceValidation(slug, validation);
@@ -97,7 +129,7 @@ function finalizeLoadedPeblor(
     const errors = "errors" in refCheck ? refCheck.errors : [];
     throw new PageContentValidationError(
       slug,
-      errors.map((msg): ZodIssue => ({ code: "custom", message: msg, path: [] }))
+      errors.map((msg, i): ZodIssue => ({ code: "custom", message: msg, path: ["$refs", i] }))
     );
   }
 
@@ -115,16 +147,25 @@ async function loadPeblorInternal(slugSegments: string[]): Promise<Peblor | null
 
   const sectionOrder = withSlug.sectionOrder as string[];
   const definitions = await getDefinitionsForPageAsync(withSlug, slug);
-  const [mergedDefinitions, presets] = await Promise.all([
-    mergeGlobalModulesIntoDefinitionsAsync(definitions),
+
+  // Parallelize section hydration and preset loading — they are independent I/O operations.
+  const [hydratedDefinitions, presets] = await Promise.all([
+    hydrateSectionFilesBySegmentsAsync(definitions, slugSegments, sectionOrder),
     buildPresetsAsync(withSlug),
   ]);
-  const resolvedSectionDefinitions = await hydrateSectionFilesBySegmentsAsync(
-    mergedDefinitions,
-    slugSegments,
-    sectionOrder
-  );
-  return finalizeLoadedPeblor(withSlug, resolvedSectionDefinitions, presets, sectionOrder, slug);
+
+  // Resolve presets first so module refs inside preset definitions are visible.
+  const resolvedForModules = resolveDefinitionPresets(hydratedDefinitions, presets);
+  const mergedWithModules = await mergeGlobalModulesIntoDefinitionsAsync(resolvedForModules);
+
+  // Promote sectionOrder preset entries into definitions before the final resolution pass,
+  // so they are resolved in the same pass as module definitions.
+  promotePresetsIntoDefinitions(mergedWithModules, presets, sectionOrder, slug);
+
+  // Single final resolution covering module defs and promoted preset entries.
+  const mergedDefinitions = resolveDefinitionPresets(mergedWithModules, presets);
+
+  return finalizeLoadedPeblor(withSlug, mergedDefinitions, slug);
 }
 
 /** Async load with parallel I/O — modules and presets load in parallel: page json, definitions, modules, section files, presets. */
@@ -154,7 +195,8 @@ export async function loadPageMeta(
       visibility: raw.visibility,
       ...(raw.passwordProtected === true ? { passwordProtected: true } : {}),
     };
-  } catch {
+  } catch (err) {
+    console.warn("[pb-core] Failed to load page meta", slugSegments, err);
     return null;
   }
 }
@@ -206,12 +248,24 @@ export async function getPageMetadataAsync(slug: string): Promise<PageMetadata |
   };
 }
 
-const DEFAULT_BASE_PATH = "/work";
+/**
+ * Fallback grouping key used when a page has no `assetBaseUrl`.
+ *
+ * NOTE: this reuses the `assetBaseUrl` field (a CDN/storage URL) as a route-grouping
+ * concept (`basePath`). These are semantically different — asset URL tells the CDN where
+ * to find files, while basePath groups pages by route prefix. They happen to overlap for
+ * this site's convention (pages under "/work" have assetBaseUrl "/work"), but this
+ * conflation should be split when the content model adds an explicit `routeGroup` or
+ * similar field.
+ */
+const config = getCoreConfig();
+const fallbackSlugBase = config.fallbackSlugBase ?? "/work";
 
 async function getPageSlugBasesUncached(): Promise<{ slug: string; basePath: string }[]> {
   try {
     await fs.promises.access(PAGE_DATA_DIR);
-  } catch {
+  } catch (err) {
+    console.warn("[pb-core] PAGE_DATA_DIR not accessible", PAGE_DATA_DIR, err);
     return [];
   }
   const result: { slug: string; basePath: string }[] = [];
@@ -244,7 +298,9 @@ async function getPageSlugBasesUncached(): Promise<{ slug: string; basePath: str
     const parsed = parseJsonSafe<Record<string, unknown>>(raw);
     if (!parsed.ok || parsed.data == null || typeof parsed.data !== "object") continue;
     const assetBaseUrl = (parsed.data as { assetBaseUrl?: unknown }).assetBaseUrl;
-    const basePath = typeof assetBaseUrl === "string" ? assetBaseUrl : DEFAULT_BASE_PATH;
+    // NOTE: assetBaseUrl is reused here as a grouping key (route prefix). This is a known
+    // conflation — see fallbackSlugBase docs for details.
+    const basePath = typeof assetBaseUrl === "string" ? assetBaseUrl : fallbackSlugBase;
     validateSlugSegments(page.slugSegments);
     result.push({ slug, basePath });
   }
@@ -254,12 +310,20 @@ async function getPageSlugBasesUncached(): Promise<{ slug: string; basePath: str
 
 const isDev = process.env.NODE_ENV !== "production";
 let cachedPageSlugBases: { slug: string; basePath: string }[] | null = null;
+let pendingSlugBasesPromise: Promise<{ slug: string; basePath: string }[]> | null = null;
 
 export async function getPageSlugBases(): Promise<{ slug: string; basePath: string }[]> {
   if (!isDev && cachedPageSlugBases !== null) return cachedPageSlugBases;
-  const result = await getPageSlugBasesUncached();
-  if (!isDev) cachedPageSlugBases = result;
-  return result;
+  if (pendingSlugBasesPromise) return pendingSlugBasesPromise;
+  pendingSlugBasesPromise = getPageSlugBasesUncached()
+    .then((result) => {
+      if (!isDev) cachedPageSlugBases = result;
+      return result;
+    })
+    .finally(() => {
+      pendingSlugBasesPromise = null;
+    });
+  return pendingSlugBasesPromise;
 }
 
 export async function getPageSlugsByBase(basePath: string): Promise<string[]> {
@@ -267,5 +331,5 @@ export async function getPageSlugsByBase(basePath: string): Promise<string[]> {
 }
 
 export async function getPageSlugs(): Promise<string[]> {
-  return getPageSlugsByBase(DEFAULT_BASE_PATH);
+  return getPageSlugsByBase(fallbackSlugBase);
 }

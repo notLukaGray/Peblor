@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import type { PageTags, ProjectGroupsMap, SectionBlock } from "@pb/contracts";
-import { filterPageByActiveTags, slugifyTagValue } from "./peblor-filter-pass";
+import {
+  filterPageByActiveTags,
+  filterPageByFilterIndex,
+  slugifyTagValue,
+} from "./peblor-filter-pass";
 
 const projectGroups: ProjectGroupsMap = {
   alpha: {
@@ -25,6 +29,14 @@ const tagsBySlug: Record<string, PageTags> = {
 };
 
 const getProjectTags = (slug: string): PageTags | undefined => tagsBySlug[slug];
+const filterIndex = {
+  filterCategories: ["brand", "ability"],
+  elementKeysByProject: {
+    "work/project-alpha-test": ["bg-alpha", "alpha-item", "alpha-preview"],
+    "work/project-brand": ["bg-brand", "brand-item", "brand-preview"],
+  },
+  projectTagsBySlug: tagsBySlug,
+};
 
 function makeSections(): SectionBlock[] {
   return [
@@ -234,5 +246,29 @@ describe("filterPageByActiveTags", () => {
       getProjectTags,
     });
     expect(result.removedKeys.size).toBe(0);
+  });
+});
+
+describe("filterPageByFilterIndex", () => {
+  it("removes non-matching project elements using the shipped index", () => {
+    const result = filterPageByFilterIndex({
+      sections: makeSections(),
+      filterIndex,
+      activeFilters: { brand: ["examplea"] },
+    });
+
+    expect(result.removedKeys).toEqual(new Set(["bg-brand", "brand-item", "brand-preview"]));
+  });
+
+  it("ignores query categories that are outside the shipped filter index", () => {
+    const sections = makeSections();
+    const result = filterPageByFilterIndex({
+      sections,
+      filterIndex,
+      activeFilters: { topic: ["ignored"] },
+    });
+
+    expect(result.removedKeys.size).toBe(0);
+    expect(result.sections).toBe(sections);
   });
 });

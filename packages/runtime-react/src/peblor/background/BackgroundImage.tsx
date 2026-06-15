@@ -3,6 +3,8 @@
 import { useRef, useEffect, useState, useCallback, useMemo } from "react";
 import type { MutableRefObject } from "react";
 import type { bgBlock } from "@pb/contracts/types";
+import { globals } from "@pb/runtime-react/core/lib/globals";
+import { lowerThemeStringToCss } from "@/peblor/theme/theme-string";
 
 type Props = Extract<bgBlock, { type: "backgroundImage" }> & { priority?: boolean };
 
@@ -64,10 +66,39 @@ function drawImageCover(
   }
 }
 
-import { globals } from "@pb/runtime-react/core/lib/globals";
+/**
+ * CSS background-image path: used when `backgroundSize`, `backgroundPosition`,
+ * `backgroundRepeat`, `backgroundAttachment`, or `overlay` are explicitly set.
+ * Renders a fixed-position div with CSS background properties.
+ */
+function BackgroundImageCss({
+  image,
+  backgroundSize,
+  backgroundPosition,
+  backgroundRepeat,
+  backgroundAttachment,
+  overlay,
+}: Props) {
+  const overlayColor = lowerThemeStringToCss(overlay);
+  return (
+    <section className="pointer-events-none fixed inset-0 z-[var(--pb-z-base)]" aria-hidden>
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage: `url(${JSON.stringify(image)})`,
+          backgroundSize: backgroundSize ?? "cover",
+          backgroundPosition: backgroundPosition ?? "center",
+          backgroundRepeat: backgroundRepeat ?? "no-repeat",
+          backgroundAttachment: backgroundAttachment ?? "scroll",
+        }}
+      />
+      {overlayColor && <div className="absolute inset-0" style={{ background: overlayColor }} />}
+    </section>
+  );
+}
 
-/** Page builder background: full-bleed image via canvas (DPR-aware). */
-export function BackgroundImage({ image, priority }: Props) {
+/** Canvas path: DPR-aware full-bleed image via 2D canvas. Used when no CSS control props are set. */
+function BackgroundImageCanvas({ image, priority }: Props) {
   const imgRef = useRef<HTMLImageElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
@@ -183,4 +214,30 @@ export function BackgroundImage({ image, priority }: Props) {
       )}
     </section>
   );
+}
+
+/**
+ * Page builder background: full-bleed image.
+ *
+ * Renders via canvas (DPR-aware) by default for highest visual fidelity.
+ * Falls back to CSS `background-image` when any explicit CSS control property
+ * (`backgroundSize`, `backgroundPosition`, `backgroundRepeat`, `backgroundAttachment`,
+ * or `overlay`) is set — those properties can't be expressed on a canvas element.
+ */
+export function BackgroundImage(props: Props) {
+  const { backgroundSize, backgroundPosition, backgroundRepeat, backgroundAttachment, overlay } =
+    props;
+
+  const useCssPath =
+    backgroundSize != null ||
+    backgroundPosition != null ||
+    backgroundRepeat != null ||
+    backgroundAttachment != null ||
+    overlay != null;
+
+  if (useCssPath) {
+    return <BackgroundImageCss {...props} />;
+  }
+
+  return <BackgroundImageCanvas {...props} />;
 }

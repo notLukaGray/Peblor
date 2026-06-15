@@ -52,12 +52,12 @@ describe("elementCounter", () => {
     expect(r.success).toBe(true);
   });
 
-  it("accepts responsive fontSize arrays", () => {
+  it("accepts responsive fontSize tier maps", () => {
     const r = parse({
       type: "elementCounter",
       target: 1500,
       tween: { duration: 2500 },
-      fontSize: ["2rem", "3rem"],
+      fontSize: { base: "2rem", md: "3rem" },
     });
     expect(r.success).toBe(true);
   });
@@ -67,7 +67,7 @@ describe("elementCounter", () => {
       type: "elementCounter",
       target: 500,
       trigger: "onScroll",
-      scroll: { scrollStart: 0.2, scrollEnd: 0.8 },
+      counterScroll: { scrollStart: 0.2, scrollEnd: 0.8 },
     });
     expect(r.success).toBe(true);
   });
@@ -98,7 +98,7 @@ describe("elementCounter", () => {
       target: 100,
       variableKey: "progress",
       trigger: "onScroll",
-      scroll: { scrollStart: 0, scrollEnd: 1 },
+      counterScroll: { scrollStart: 0, scrollEnd: 1 },
     });
     expect(r.success).toBe(true);
   });
@@ -109,7 +109,7 @@ describe("elementButton", () => {
     const r = parse({
       type: "elementButton",
       label: "Tap",
-      wrapperStrokeWidth: "1.5",
+      wrapperStrokeWidth: 1.5,
     });
     expect(r.success).toBe(true);
   });
@@ -232,7 +232,7 @@ describe("elementTooltip", () => {
     const r = parse({
       type: "elementTooltip",
       content: "Click to learn more",
-      position: "bottom",
+      placement: "bottom",
       trigger: "click",
       showDelay: 500,
       hideDelay: 100,

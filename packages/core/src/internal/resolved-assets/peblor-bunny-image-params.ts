@@ -30,7 +30,21 @@ export type BunnyImageParams = {
   aspect_ratio?: string;
   height?: number;
   class?: string;
+  widths?: number[];
 };
+
+function normalizeResponsiveWidth(width: number): number {
+  return Math.max(1, Math.round(width));
+}
+
+function buildResponsiveWidthLadder(targetWidth: number, maxWidth: number): number[] {
+  if (!Number.isFinite(targetWidth) || targetWidth <= 0) return [];
+  const boundedMax = normalizeResponsiveWidth(Math.max(targetWidth, maxWidth));
+  const candidates = [targetWidth / 2, targetWidth, targetWidth * 1.5, targetWidth * 2]
+    .map(normalizeResponsiveWidth)
+    .map((width) => Math.min(width, boundedMax));
+  return Array.from(new Set(candidates)).sort((a, b) => a - b);
+}
 
 function collectWidthsHeightsFromBlock(obj: Record<string, unknown>): {
   widths: number[];
@@ -182,6 +196,10 @@ export function getBunnyImageParams(
     width = Math.min(width, imageMobileMaxWidth2x);
   }
   const height = heights.length > 0 ? Math.round(Math.max(...heights)) : undefined;
+  const responsiveWidths =
+    isElementImage && width > 0
+      ? buildResponsiveWidthLadder(width, imageMobileMaxWidth2x)
+      : undefined;
 
   return {
     width: Math.round(width),
@@ -189,5 +207,6 @@ export function getBunnyImageParams(
     format,
     ...(aspect_ratio ? { aspect_ratio } : {}),
     ...(height != null ? { height } : {}),
+    ...(responsiveWidths && responsiveWidths.length > 1 ? { widths: responsiveWidths } : {}),
   };
 }

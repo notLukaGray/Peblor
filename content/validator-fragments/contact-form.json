@@ -1,12 +1,25 @@
 {
   "type": "formBlock",
-  "contentWidth": ["100%", "480px"],
+  "contentWidth": {
+    "base": "100%",
+    "md": "480px"
+  },
   "action": "contact",
   "method": "post",
-  "actionPayload": { "source": "website", "page": "contact" },
+  "actionPayload": {
+    "source": "website",
+    "page": "contact"
+  },
   "fill": "surface",
-  "borderRadius": ["8px", "12px"],
-  "border": { "width": "1px", "color": "borderSubtle", "style": "solid" },
+  "borderRadius": {
+    "base": "8px",
+    "md": "12px"
+  },
+  "border": {
+    "width": "1px",
+    "color": "borderSubtle",
+    "style": "solid"
+  },
   "fields": [
     {
       "type": "formField",
@@ -30,8 +43,14 @@
       "name": "topic",
       "label": "Topic",
       "options": [
-        { "value": "general", "label": "General" },
-        { "value": "support", "label": "Support" }
+        {
+          "value": "general",
+          "label": "General"
+        },
+        {
+          "value": "support",
+          "label": "Support"
+        }
       ],
       "width": "100%"
     },
@@ -42,6 +61,11 @@
       "label": "Message",
       "width": "100%"
     },
-    { "type": "formField", "fieldType": "submit", "label": "Send", "width": "auto" }
+    {
+      "type": "formField",
+      "fieldType": "button",
+      "label": "Send",
+      "width": "auto"
+    }
   ]
 }

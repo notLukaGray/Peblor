@@ -1,0 +1,21 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Audio Waveform — Preset Demo",
+  "description": "Real-time frequency visualizer via Web Audio API AnalyserNode. Four rendering modes — bars, wave, mirror, spectrum.",
+  "presets": [
+    "demo",
+    "type/core",
+    "ui/link",
+    "type/motion",
+    "player/surface",
+    "bg",
+    "player/section"
+  ],
+  "bgKey": "bg-players",
+  "sectionOrder": ["nav-header", "hero", "sec-player"],
+  "definitions": {
+    "bg-players": {
+      "preset": "bg-players"
+    }
+  }
+}

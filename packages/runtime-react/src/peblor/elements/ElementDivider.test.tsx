@@ -50,7 +50,7 @@ describe("ElementDivider", () => {
         />
       </ServerBreakpointProvider>
     );
-    expect(markup).toContain("background-color:#eeeeee");
+    expect(markup).toContain("background-color:light-dark(#111111, #eeeeee)");
     expect(markup).not.toContain("[object Object]");
   });
 });

@@ -3,8 +3,7 @@
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { BackgroundVideoProps } from "./BackgroundVideo/background-video-types";
-import { resolveThemeString } from "@/peblor/theme/theme-string";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
+import { lowerThemeStringToCss } from "@/peblor/theme/theme-string";
 
 type Props = BackgroundVideoProps & { priority?: boolean };
 
@@ -12,14 +11,13 @@ const SECTION_CLASS =
   "pointer-events-none fixed inset-0 z-[var(--pb-z-base)] min-h-[100dvh] h-[100dvh] bg-black";
 
 export function BackgroundVideo({ video, poster, overlay, priority }: Props) {
-  const themeMode = usePeblorThemeMode();
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [failedVideo, setFailedVideo] = useState<string | null>(null);
   const [hasPlayed, setHasPlayed] = useState(false);
   const handlePlaying = useCallback(() => setHasPlayed(true), []);
   const videoFailed = failedVideo === video;
 
-  const resolvedOverlay = resolveThemeString(overlay, themeMode);
+  const resolvedOverlay = lowerThemeStringToCss(overlay);
   const overlayEl = resolvedOverlay ? (
     <div
       className="absolute inset-0 h-full w-full pointer-events-none"
@@ -40,7 +38,9 @@ export function BackgroundVideo({ video, poster, overlay, priority }: Props) {
 
     const onGesture = () => {
       if (cancelled) return;
-      void el.play().catch(() => {});
+      void el.play().catch((err) => {
+        console.warn("[pb-runtime-react] Background video gesture play failed", err);
+      });
     };
 
     const armGestureRetry = () => {
@@ -57,14 +57,18 @@ export function BackgroundVideo({ video, poster, overlay, priority }: Props) {
 
     const playPromise = el.play();
     if (playPromise && typeof playPromise.then === "function") {
-      playPromise.catch(() => {
-        if (!cancelled) armGestureRetry();
+      playPromise.catch((err) => {
+        if (!cancelled) {
+          console.warn("[pb-runtime-react] Background video initial play failed", err);
+          armGestureRetry();
+        }
       });
     }
 
     return () => {
       cancelled = true;
       removeGestureListeners?.();
+      el.pause();
     };
   }, [video, videoFailed]);
 
@@ -77,7 +81,9 @@ export function BackgroundVideo({ video, poster, overlay, priority }: Props) {
       if (document.hidden) {
         if (!el.paused) el.pause();
       } else if (el.paused) {
-        void el.play().catch(() => {});
+        void el.play().catch((err) => {
+          console.warn("[pb-runtime-react] Background video visibility resume failed", err);
+        });
       }
     };
 

@@ -1,0 +1,37 @@
+{
+  "type": "elementButton",
+  "copyType": "body",
+  "level": 4,
+  "width": "hug",
+  "selfAlign": {
+    "base": "center",
+    "md": "left"
+  },
+  "linkDefault": "var(--pb-on-secondary)",
+  "linkHover": "var(--pb-on-secondary)",
+  "wrapperStrokeWidth": 1,
+  "wrapperPadding": {
+    "base": "0.56rem 0.85rem",
+    "md": "0.7rem 0.95rem"
+  },
+  "wrapperBorderRadius": {
+    "base": "0.82rem",
+    "md": "0.9rem"
+  },
+  "wrapperTransition": "500ms ease-in-out",
+  "effects": [
+    {
+      "type": "glass",
+      "bezelType": "convex_squircle",
+      "bezelWidth": 24,
+      "glassThickness": 20,
+      "refractiveIndex": 1.8,
+      "blur": 1,
+      "scaleRatio": 1,
+      "specularOpacity": 0.5,
+      "specularSaturation": 5,
+      "magnifyingScale": 0.5,
+      "dropShadow": false
+    }
+  ]
+}

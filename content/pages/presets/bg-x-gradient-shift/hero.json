@@ -1,0 +1,22 @@
+{
+  "elementOrder": ["hero-badge", "hero-title", "hero-desc", "hero-hint"],
+  "definitions": {
+    "hero-badge": {
+      "preset": "demo-hero-badge",
+      "text": "backgroundTransition · scroll"
+    },
+    "hero-title": {
+      "preset": "demo-hero-title",
+      "text": "bg-x-gradient-shift"
+    },
+    "hero-desc": {
+      "preset": "demo-hero-description",
+      "text": "Two-layer gradient morphs from primary-dominant to accent-dominant as you scroll through 30–70% of the page. Both layers interpolate simultaneously."
+    },
+    "hero-hint": {
+      "preset": "demo-scroll-hint",
+      "text": "↓ Scroll to shift the gradient palette ↓"
+    }
+  },
+  "preset": "demo-hero-100vh"
+}

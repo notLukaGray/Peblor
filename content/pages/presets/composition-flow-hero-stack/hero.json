@@ -1,0 +1,23 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Flow · Narrative · Vertical Rhythm"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Composition Flow Hero Stack"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Single-lane flow composition for strong hero storytelling with clean spacing ramps across breakpoints.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  },
+  "align": "start"
+}

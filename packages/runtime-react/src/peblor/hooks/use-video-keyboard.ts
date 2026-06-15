@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { getVideoActionHandler, type VideoActionHandlers } from "@pb/core/media";
 
 export type VideoKeyBinding = {
@@ -22,16 +22,25 @@ export function useVideoKeyboard({
   handlers: VideoActionHandlers;
 }) {
   const handlersRef = useRef(handlers);
+  const [el, setEl] = useState<HTMLElement | null>(null);
+
+  const callbackRef = useCallback(
+    (node: HTMLElement | null) => {
+      containerRef.current = node;
+      setEl(node);
+    },
+    [containerRef]
+  );
 
   useEffect(() => {
     handlersRef.current = handlers;
   }, [handlers]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!keyBindings?.length) return;
 
-    const el = containerRef.current;
-    if (!el) return;
+    const currentEl = el;
+    if (!currentEl) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       const binding = keyBindings.find((b) => b.key === e.code || b.key === e.key);
@@ -44,7 +53,9 @@ export function useVideoKeyboard({
       handler();
     };
 
-    el.addEventListener("keydown", handleKeyDown);
-    return () => el.removeEventListener("keydown", handleKeyDown);
-  }, [keyBindings, containerRef]);
+    currentEl.addEventListener("keydown", handleKeyDown);
+    return () => currentEl.removeEventListener("keydown", handleKeyDown);
+  }, [keyBindings, el]);
+
+  return callbackRef;
 }

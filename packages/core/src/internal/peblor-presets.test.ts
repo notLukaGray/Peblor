@@ -63,6 +63,36 @@ describe("peblor-presets", () => {
   });
 
   describe("mergePresetIntoBlock", () => {
+    it("deep-merges elementGroup section definitions from preset and local", () => {
+      const preset = {
+        type: "elementGroup",
+        section: {
+          elementOrder: ["model-canvas", "animation-controls"],
+          definitions: {
+            "model-canvas": { type: "elementModel3D", id: "model-3d-anim" },
+            "animation-controls": { type: "elementGroup", id: "controls" },
+          },
+        },
+      } as unknown as PeblorDefinitionBlock;
+      const base = {
+        preset: "player-3d-surface-animation",
+        section: {
+          definitions: {
+            "crossfade-controls": { type: "elementGroup", id: "crossfade" },
+          },
+        },
+      };
+      const merged = mergePresetIntoBlock(base, preset) as Record<string, unknown>;
+      const section = merged.section as {
+        elementOrder: string[];
+        definitions: Record<string, unknown>;
+      };
+      expect(section.elementOrder).toEqual(["model-canvas", "animation-controls"]);
+      expect(section.definitions["model-canvas"]).toBeDefined();
+      expect(section.definitions["animation-controls"]).toBeDefined();
+      expect(section.definitions["crossfade-controls"]).toBeDefined();
+    });
+
     it("merges preset with local props, local overrides preset", () => {
       const preset = elementVectorPreset({ width: "10px" });
       const base = { preset: "foo", width: "20px", height: "15px" };
@@ -140,7 +170,7 @@ describe("peblor-presets", () => {
       });
     });
 
-    it("detects cycle and returns block without preset (no infinite loop)", () => {
+    it("throws on preset cycle", () => {
       const presets: Record<string, PeblorDefinitionBlock> = {
         cycleA: {
           ...elementVectorPreset({ viewBox: "0 0 10 10" }),
@@ -152,21 +182,16 @@ describe("peblor-presets", () => {
         } as PeblorDefinitionBlock,
       };
       const block = { preset: "cycleA", extra: "keep" };
-      const resolved = resolvePresets(block, presets);
-      expect(resolved).toBeDefined();
-      expect(resolved).not.toHaveProperty("preset");
-      expect(resolved).toHaveProperty("extra", "keep");
+      expect(() => resolvePresets(block, presets)).toThrow(/circular preset/i);
     });
 
-    it("returns block without preset when preset not found", () => {
+    it("throws when preset not found", () => {
       const presets: Record<string, PeblorDefinitionBlock> = {};
       const block = { preset: "missing", fallback: "value" };
-      const resolved = resolvePresets(block, presets);
-      expect(resolved).toMatchObject({ fallback: "value" });
-      expect(resolved).not.toHaveProperty("preset");
+      expect(() => resolvePresets(block, presets)).toThrow(/not found/i);
     });
 
-    it("returns block without preset on type mismatch", () => {
+    it("throws on type mismatch", () => {
       const presets: Record<string, PeblorDefinitionBlock> = {
         section: {
           type: "section",
@@ -174,9 +199,7 @@ describe("peblor-presets", () => {
         } as unknown as PeblorDefinitionBlock,
       };
       const block = { preset: "section", type: "elementVector" };
-      const resolved = resolvePresets(block, presets);
-      expect(resolved).toMatchObject({ type: "elementVector" });
-      expect(resolved).not.toHaveProperty("preset");
+      expect(() => resolvePresets(block, presets)).toThrow(/type mismatch/i);
     });
 
     it("recursively resolves preset refs in nested arrays", () => {

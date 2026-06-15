@@ -4,8 +4,7 @@ export function createConsoleProvider(): AnalyticsProvider {
   return {
     name: "console",
     send: (event) => {
-      // eslint-disable-next-line no-console
-      console.log("[analytics]", event.event, event);
+      console.warn("[analytics]", event.event, event);
     },
     ready: () => true,
   };

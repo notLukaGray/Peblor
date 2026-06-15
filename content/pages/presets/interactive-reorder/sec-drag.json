@@ -1,0 +1,223 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "staggerChildren": 0.15,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "drag-group"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Free-Form Drag"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Free-form draggable elements using elementDrag. Each draggable item can be moved freely within its container with configurable axis constraints, snap points, and inertial physics."
+    },
+    "drag-group": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": {
+        "base": "column",
+        "md": "row"
+      },
+      "gap": "1.5rem",
+      "align": "stretch",
+      "width": "100%",
+      "height": "auto",
+      "scroll": "visible",
+      "motionTiming": {
+        "staggerChildren": 0.1,
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": ["drag-x", "drag-y", "drag-free"],
+        "definitions": {
+          "drag-hint": {
+            "type": "elementBody",
+            "level": 4,
+            "text": "Drag the blocks below. Each has different axis constraints and behavior.",
+            "selfAlign": "center",
+            "textAlign": "center",
+            "color": "color-mix(in oklab, var(--pb-on-secondary) 55%, transparent)",
+            "width": "100%"
+          },
+          "drag-x": {
+            "type": "elementDrag",
+            "axis": "x",
+            "snap": {
+              "x": 20
+            },
+            "bounds": {
+              "left": 0,
+              "right": 300
+            },
+            "snapBack": true,
+            "snapBackDuration": 300,
+            "width": {
+              "base": "100%",
+              "md": "200px"
+            },
+            "height": "130px",
+            "padding": "1.25rem",
+            "fill": "color-mix(in oklab, var(--pb-accent) 10%, transparent)",
+            "borderRadius": "16px",
+            "border": "1px solid color-mix(in oklab, var(--pb-accent) 25%, transparent)",
+            "children": {
+              "elementOrder": ["title", "desc"],
+              "definitions": {
+                "label": {
+                  "type": "elementHeading",
+                  "level": 4,
+                  "text": "X-Axis",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto"
+                },
+                "title": {
+                  "type": "elementHeading",
+                  "level": 4,
+                  "text": "↔  X-Axis",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto"
+                },
+                "desc": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "Horizontal only · 20px snap · snapBack",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 50%, transparent)",
+                  "width": "auto"
+                }
+              }
+            },
+            "effects": [
+              {
+                "type": "dropShadow",
+                "y": "4px",
+                "blur": "12px",
+                "color": "color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+              }
+            ]
+          },
+          "drag-y": {
+            "type": "elementDrag",
+            "axis": "y",
+            "snap": {
+              "y": 20
+            },
+            "bounds": {
+              "top": 0,
+              "bottom": 200
+            },
+            "snapBack": true,
+            "snapBackDuration": 300,
+            "width": {
+              "base": "100%",
+              "md": "200px"
+            },
+            "height": "130px",
+            "padding": "1.25rem",
+            "fill": "color-mix(in oklab, var(--pb-primary) 10%, transparent)",
+            "borderRadius": "16px",
+            "border": "1px solid color-mix(in oklab, var(--pb-primary) 25%, transparent)",
+            "children": {
+              "elementOrder": ["title", "desc"],
+              "definitions": {
+                "label": {
+                  "type": "elementHeading",
+                  "level": 4,
+                  "text": "Y-Axis",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto"
+                },
+                "title": {
+                  "type": "elementHeading",
+                  "level": 4,
+                  "text": "↕  Y-Axis",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto"
+                },
+                "desc": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "Vertical only · 20px snap · snapBack",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 50%, transparent)",
+                  "width": "auto"
+                }
+              }
+            },
+            "effects": [
+              {
+                "type": "dropShadow",
+                "y": "4px",
+                "blur": "12px",
+                "color": "color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+              }
+            ]
+          },
+          "drag-free": {
+            "type": "elementDrag",
+            "axis": "both",
+            "snap": {
+              "x": 25,
+              "y": 25
+            },
+            "bounds": {
+              "left": 0,
+              "top": 0,
+              "right": 300,
+              "bottom": 200
+            },
+            "snapBack": true,
+            "snapBackDuration": 400,
+            "dragOpacity": 0.85,
+            "width": {
+              "base": "100%",
+              "md": "200px"
+            },
+            "height": "130px",
+            "padding": "1.25rem",
+            "fill": "color-mix(in oklab, var(--pb-accent) 8%, transparent)",
+            "borderRadius": "16px",
+            "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 20%, transparent)",
+            "children": {
+              "elementOrder": ["title", "desc"],
+              "definitions": {
+                "label": {
+                  "type": "elementHeading",
+                  "level": 4,
+                  "text": "Free",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto"
+                },
+                "title": {
+                  "type": "elementHeading",
+                  "level": 4,
+                  "text": "⤢  Free",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto"
+                },
+                "desc": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "Both axes · 25px grid snap · bounded",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 50%, transparent)",
+                  "width": "auto"
+                }
+              }
+            },
+            "effects": [
+              {
+                "type": "dropShadow",
+                "y": "4px",
+                "blur": "12px",
+                "color": "color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+              }
+            ]
+          }
+        }
+      },
+      "wrap": "wrap",
+      "distribute": "center"
+    }
+  }
+}

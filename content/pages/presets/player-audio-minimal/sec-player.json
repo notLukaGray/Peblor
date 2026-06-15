@@ -1,0 +1,17 @@
+{
+  "preset": "player-section",
+  "elementOrder": ["player-label", "player-surface"],
+  "definitions": {
+    "player-label": {
+      "preset": "type-h3-label",
+      "text": "Minimal Audio Player"
+    },
+    "player-surface": {
+      "preset": "player-audio-surface-minimal"
+    }
+  },
+  "padding": {
+    "base": "3rem 0",
+    "md": "3rem 0 10rem"
+  }
+}

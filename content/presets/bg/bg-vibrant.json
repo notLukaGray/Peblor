@@ -1,0 +1,25 @@
+{
+  "type": "backgroundVariable",
+  "layers": [
+    {
+      "fill": "linear-gradient(135deg, color-mix(in oklab, var(--pb-accent) 28%, var(--pb-secondary)) 0%, color-mix(in oklab, var(--pb-primary) 22%, var(--pb-secondary)) 35%, var(--pb-secondary) 65%, color-mix(in oklab, var(--pb-accent) 12%, var(--pb-secondary)) 100%)",
+      "backgroundSize": "300% 300%",
+      "motion": [
+        {
+          "type": "loop",
+          "to": {
+            "backgroundPosition": ["0% 50%", "100% 50%", "0% 50%"]
+          },
+          "transition": {
+            "duration": 11,
+            "ease": "linear",
+            "repeatType": "loop"
+          }
+        }
+      ]
+    },
+    {
+      "fill": "radial-gradient(ellipse 55% 55% at 50% 50%, color-mix(in oklab, var(--pb-on-secondary) 9%, transparent) 0%, transparent 100%)"
+    }
+  ]
+}

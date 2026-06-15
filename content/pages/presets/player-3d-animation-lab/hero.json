@@ -1,0 +1,21 @@
+{
+  "preset": "demo-hero",
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Crossfade · Transport · Mouse"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "3D Animation Lab"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "RobotExpressive has real named clips — Idle, Walking, Running, Dance, Death. Loads immediately. Crossfade buttons blend between clips at runtime.",
+      "width": {
+        "base": "100%",
+        "md": "78%"
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "type": "backgroundVideo",
+  "video": "https://www.w3schools.com/html/mov_bbb.mp4",
+  "poster": "https://images.unsplash.com/photo-1536240478700-b869070f9279?w=1200&q=80",
+  "overlay": "linear-gradient(180deg, color-mix(in oklab, var(--pb-accent) 72%, transparent) 0%, color-mix(in oklab, var(--pb-primary) 64%, transparent) 100%)"
+}

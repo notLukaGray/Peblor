@@ -11,3 +11,5 @@ next-env.d.ts
 .claude
 .lighthouseci
 packages/catalog/src/generated/
+apps/web/public/manifests/
+content/schemas/

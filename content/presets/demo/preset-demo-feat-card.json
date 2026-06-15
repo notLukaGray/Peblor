@@ -1,0 +1,67 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "flex": "1 1 260px",
+  "padding": "1.5rem",
+  "borderRadius": "18px",
+  "gap": "1rem",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+  },
+  "motion": {
+    "onHover": {
+      "y": -4
+    },
+    "transition": {
+      "duration": 0.18
+    }
+  },
+  "section": {
+    "elementOrder": ["feat-badge", "feat-title", "feat-desc", "feat-link"],
+    "definitions": {
+      "feat-badge": {
+        "type": "elementBody",
+        "level": 5,
+        "text": "",
+        "textTransform": "uppercase",
+        "letterSpacing": "0.08em",
+        "color": "color-mix(in oklab, var(--pb-on-secondary) 62%, transparent)",
+        "wordWrap": false,
+        "wrapperStyle": {
+          "display": "inline-flex",
+          "background": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+          "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)",
+          "padding": "0.25rem 0.75rem",
+          "borderRadius": "999px"
+        }
+      },
+      "feat-title": {
+        "type": "elementHeading",
+        "level": 4,
+        "color": "var(--pb-on-secondary)",
+        "text": ""
+      },
+      "feat-desc": {
+        "type": "elementBody",
+        "level": 5,
+        "color": "color-mix(in oklab, var(--pb-on-secondary) 44%, transparent)",
+        "text": ""
+      },
+      "feat-link": {
+        "type": "elementLink",
+        "label": "",
+        "href": "#",
+        "copyType": "body",
+        "level": 5,
+        "linkDefault": "var(--pb-accent)",
+        "linkHover": "var(--pb-on-secondary)",
+        "padding": "0"
+      }
+    }
+  },
+  "constraints": {
+    "minWidth": "240px"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "elementHeading",
+  "level": 1,
+  "text": "Work",
+  "width": "100%",
+  "textAlign": "center",
+  "layer": 1,
+  "paddingTop": "0",
+  "paddingBottom": {
+    "base": "1rem",
+    "md": "1.35rem"
+  }
+}

@@ -5,7 +5,13 @@ import Image from "next/image";
 import type { ElementBlock } from "@pb/contracts/types";
 import type { PeblorAction } from "@pb/contracts/types";
 import { ElementLayoutWrapper } from "./Shared/ElementLayoutWrapper";
-import { firePeblorAction } from "@/peblor/triggers";
+import {
+  firePeblorAction,
+  PEBLOR_TRIGGER_EVENT,
+  type PeblorTriggerDetail,
+} from "@/peblor/triggers";
+import { subscribeToElementActions } from "@/peblor/triggers/action-bus";
+import { shouldApplyMediaTarget } from "@/peblor/triggers/target-matching";
 
 type Props = Extract<ElementBlock, { type: "elementLottie" }>;
 
@@ -32,15 +38,16 @@ export function ElementLottie({
   onComplete,
   onLoop,
   onEnterFrame,
+  onEvent,
   ariaLabel,
   width,
   height,
-  align,
+  selfAlign,
   marginTop,
   marginBottom,
   marginLeft,
   marginRight,
-  zIndex,
+  layer,
   constraints,
   effects,
   interactions,
@@ -49,7 +56,7 @@ export function ElementLottie({
   blendMode,
   boxShadow,
   filter,
-  backdropFilter,
+  bgBlur,
   hidden,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -76,78 +83,101 @@ export function ElementLottie({
     };
   }, [onPlay, onPause, onStop, onComplete, onLoop, onEnterFrame]);
 
-  const handleFire = useCallback((action: unknown) => {
-    if (action) firePeblorAction(action as PeblorAction, "system");
+  const handleFire = useCallback((action: unknown, event?: Record<string, unknown>) => {
+    if (action) firePeblorAction(action as PeblorAction, "system", event);
   }, []);
 
-  /*
-   * Load / destroy is intentionally keyed only on `src` and `renderer`.
-   *
-   * Adding typical React hook deps here (loop, autoplay, preserveAspectRatio,
-   * interactivity, or inline `on*` handler identities) would re-run this effect,
-   * destroying the lottie instance and calling `loadAnimation` again: visible
-   * flicker, lost playback state, and redundant network/decoding work. Those
-   * concerns are split: imperative updates use the follow-up effects; initial
-   * load-time options intentionally stay tied to the last full reload.
-   *
-   * Event handlers registered on the animation must not close over stale `on*`
-   * props from the first mount when the parent re-renders with new action
-   * objects but the same asset — `lottieActionCallbacksRef` holds the latest
-   * callbacks without widening deps or changing reload semantics.
-   *
-   * Interactivity bindings are still registered at load time; changing the
-   * interactivity list without changing `src`/`renderer` may require a future
-   * dedicated pass (listener diff or explicit reload contract).
-   */
+  // Capture load-time options in a ref so the load effect doesn't need them as
+  // deps — re-running on loop/autoplay/interactivity/onEvent changes would destroy
+  // the Lottie instance causing flicker, lost playback state, and redundant work.
+  const loadOptionsRef = useRef({
+    loop,
+    autoplay,
+    preserveAspectRatio,
+    interactivity,
+    onEvent,
+    handleFire,
+  });
+  useEffect(() => {
+    loadOptionsRef.current = {
+      loop,
+      autoplay,
+      preserveAspectRatio,
+      interactivity,
+      onEvent,
+      handleFire,
+    };
+  });
+
   useEffect(() => {
     let cancelled = false;
     const container = containerRef.current;
     if (!container) return;
 
-    const lottieListeners: Array<{ event: string; handler: () => void }> = [];
+    const opts = loadOptionsRef.current;
+    const lottieListeners: Array<{ event: string; handler: (evt?: unknown) => void }> = [];
 
     import("lottie-web").then((lottie) => {
       if (cancelled || !container) return;
       const anim = lottie.default.loadAnimation({
         container,
         renderer: renderer as "svg" | "canvas" | "html" | undefined,
-        loop: typeof loop === "number" ? loop : (loop ?? false),
-        autoplay: autoplay ?? false,
+        loop: typeof opts.loop === "number" ? opts.loop : (opts.loop ?? false),
+        autoplay: opts.autoplay ?? false,
         path: src,
         rendererSettings: {
-          preserveAspectRatio: preserveAspectRatio ?? "xMidYMid meet",
+          preserveAspectRatio: opts.preserveAspectRatio ?? "xMidYMid meet",
         },
       });
       instanceRef.current = anim;
 
       const onComplete = () => {
-        const { onComplete: oc, onStop: os } = lottieActionCallbacksRef.current;
-        handleFire(oc);
-        handleFire(os);
+        opts.handleFire(lottieActionCallbacksRef.current.onComplete, { event: "complete" });
       };
       anim.addEventListener("complete", onComplete);
       lottieListeners.push({ event: "complete", handler: onComplete });
 
       const onLoopComplete = () => {
-        handleFire(lottieActionCallbacksRef.current.onLoop);
+        opts.handleFire(lottieActionCallbacksRef.current.onLoop, { event: "loopComplete" });
       };
       anim.addEventListener("loopComplete", onLoopComplete);
       lottieListeners.push({ event: "loopComplete", handler: onLoopComplete });
 
       const onEnterFrame = () => {
-        handleFire(lottieActionCallbacksRef.current.onEnterFrame);
+        opts.handleFire(lottieActionCallbacksRef.current.onEnterFrame, { event: "enterFrame" });
       };
       anim.addEventListener("enterFrame", onEnterFrame);
       lottieListeners.push({ event: "enterFrame", handler: onEnterFrame });
 
-      if (interactivity && interactivity.length > 0) {
+      if (opts.interactivity && opts.interactivity.length > 0) {
         const animObj = anim as {
           addEventListener?: (e: string, cb: () => void) => void;
           removeEventListener?: (e: string, cb: () => void) => void;
         };
-        for (const binding of interactivity) {
-          const handler = () => {
-            handleFire(binding.action);
+        for (const binding of opts.interactivity) {
+          const handler = (evt?: unknown) => {
+            opts.handleFire(binding.action, {
+              event: binding.event,
+              data: evt as Record<string, unknown>,
+            });
+          };
+          animObj.addEventListener?.(binding.event, handler);
+          lottieListeners.push({ event: binding.event, handler });
+        }
+      }
+
+      if (opts.onEvent && opts.onEvent.length > 0) {
+        const animObj = anim as {
+          addEventListener?: (e: string, cb: (evt?: unknown) => void) => void;
+        };
+        for (const binding of opts.onEvent) {
+          const handler = (evt?: unknown) => {
+            for (const action of binding.actions) {
+              opts.handleFire(action, {
+                event: binding.event,
+                data: evt as Record<string, unknown>,
+              });
+            }
           };
           animObj.addEventListener?.(binding.event, handler);
           lottieListeners.push({ event: binding.event, handler });
@@ -155,7 +185,8 @@ export function ElementLottie({
       }
 
       if (!cancelled) {
-        if (autoplay) handleFire(lottieActionCallbacksRef.current.onPlay);
+        if (opts.autoplay)
+          opts.handleFire(lottieActionCallbacksRef.current.onPlay, { event: "play" });
         setLoaded(true);
       }
     });
@@ -174,7 +205,6 @@ export function ElementLottie({
         instanceRef.current = null;
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [src, renderer]);
 
   // Imperative property updates without full destroy / load.
@@ -220,17 +250,85 @@ export function ElementLottie({
     }
   }, [loop]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const listener = (event: Event) => {
+      const detail = (event as CustomEvent<PeblorTriggerDetail>).detail;
+      const action = detail?.action;
+      if (!action || typeof action.type !== "string") return;
+      const actionType = String(action.type);
+
+      const payload = action.payload as Record<string, unknown> | undefined;
+      const targetId =
+        typeof payload?.id === "string"
+          ? payload.id
+          : typeof payload?.target === "string"
+            ? payload.target
+            : undefined;
+      if (!shouldApplyMediaTarget(id, targetId ?? null)) return;
+
+      const anim = instanceRef.current as {
+        play?: () => void;
+        pause?: () => void;
+        stop?: () => void;
+        goToAndStop?: (value: number, isFrame?: boolean) => void;
+        isPaused?: boolean;
+      } | null;
+      if (!anim) return;
+
+      switch (actionType) {
+        case "assetPlay":
+          anim.play?.();
+          handleFire(lottieActionCallbacksRef.current.onPlay, { event: "play" });
+          return;
+        case "assetPause":
+          anim.pause?.();
+          handleFire(lottieActionCallbacksRef.current.onPause, { event: "pause" });
+          return;
+        case "assetTogglePlay":
+          if (anim.isPaused === false) {
+            anim.pause?.();
+            handleFire(lottieActionCallbacksRef.current.onPause, { event: "pause" });
+          } else {
+            anim.play?.();
+            handleFire(lottieActionCallbacksRef.current.onPlay, { event: "play" });
+          }
+          return;
+        case "assetSeek": {
+          const frame = typeof payload?.time === "number" ? payload.time : 0;
+          anim.goToAndStop?.(frame, true);
+          return;
+        }
+        default:
+          return;
+      }
+    };
+
+    const busUnsub = subscribeToElementActions(id ?? "lottie", (rawAction) => {
+      const syntheticEvent = new CustomEvent<PeblorTriggerDetail>(PEBLOR_TRIGGER_EVENT, {
+        detail: { action: rawAction as PeblorAction, source: "system" },
+      });
+      listener(syntheticEvent);
+    });
+    window.addEventListener(PEBLOR_TRIGGER_EVENT, listener as EventListener);
+    return () => {
+      busUnsub();
+      window.removeEventListener(PEBLOR_TRIGGER_EVENT, listener as EventListener);
+    };
+  }, [handleFire, id]);
+
   const handleMouseEnter = useCallback(() => {
     if (hover && instanceRef.current) {
       (instanceRef.current as { play?: () => void }).play?.();
-      handleFire(lottieActionCallbacksRef.current.onPlay);
+      handleFire(lottieActionCallbacksRef.current.onPlay, { event: "play" });
     }
   }, [hover, handleFire]);
 
   const handleMouseLeave = useCallback(() => {
     if (hover && instanceRef.current) {
       (instanceRef.current as { pause?: () => void }).pause?.();
-      handleFire(lottieActionCallbacksRef.current.onPause);
+      handleFire(lottieActionCallbacksRef.current.onPause, { event: "pause" });
     }
   }, [hover, handleFire]);
 
@@ -246,12 +344,12 @@ export function ElementLottie({
   const layout = {
     width: width as string | undefined,
     height: height as string | undefined,
-    align: align as "left" | "center" | "right" | undefined,
+    align: selfAlign as "left" | "center" | "right" | undefined,
     marginTop: marginTop as string | undefined,
     marginBottom: marginBottom as string | undefined,
     marginLeft: marginLeft as string | undefined,
     marginRight: marginRight as string | undefined,
-    zIndex,
+    zIndex: layer,
     constraints,
     effects,
     wrapperStyle,
@@ -259,7 +357,7 @@ export function ElementLottie({
     blendMode,
     boxShadow,
     filter,
-    backdropFilter,
+    bgBlur,
     hidden,
   };
 

@@ -1,0 +1,13 @@
+{
+  "type": "elementHeading",
+  "level": 2,
+  "blendMode": "difference",
+  "color": "color-mix(in oklab, var(--pb-on-secondary) 80%, var(--pb-primary))",
+  "wordWrap": true,
+  "width": "100%",
+  "motionTiming": {
+    "entrancePreset": "fade",
+    "trigger": "onFirstVisible"
+  },
+  "text": ""
+}

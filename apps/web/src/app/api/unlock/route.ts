@@ -1,5 +1,9 @@
+import { getTrustedFormSiteOrigins, isLocalhostOrigin } from "@/core/lib/forms/form-same-origin";
+import { loadRootEnv } from "@pb/core/lib/load-root-env";
 import { timingSafeEqual } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
+
+loadRootEnv();
 import { withFormAnalytics } from "@/core/lib/forms/analytics-wrapper";
 import {
   getAccessCookieHeader,
@@ -9,6 +13,7 @@ import {
 import { accessCookieName } from "@/core/lib/auth-constants";
 import { rateLimitMaxAttempts } from "@/core/lib/globals";
 import { buildFingerprint } from "@/core/lib/rate-limit/fingerprint";
+import { buildCookieHeader } from "@/core/lib/cookies/build-cookie-header";
 import {
   getUnlockRateLimitState,
   getRateLimitCookieHeader,
@@ -40,7 +45,8 @@ function buildSuccessResponse(redirect: string, headers: Headers): NextResponse 
   const safeRedirect = redirect.startsWith("/") && !redirect.startsWith("//") ? redirect : "/";
   const response = NextResponse.json({ ok: true, redirect: safeRedirect });
   response.headers.set("Set-Cookie", accessCookieHeader);
-  response.headers.append("Set-Cookie", getClearRateLimitCookieHeader(headers));
+  const clearCookie = getClearRateLimitCookieHeader(headers);
+  if (clearCookie) response.headers.append("Set-Cookie", buildCookieHeader(clearCookie));
   return response;
 }
 
@@ -58,7 +64,8 @@ async function parseRequest(request: NextRequest): Promise<ParsedRequest | NextR
       return buildErrorResponse("Payload too large.", 413);
     }
     body = JSON.parse(text);
-  } catch {
+  } catch (err) {
+    console.warn("[web] Failed to parse unlock request body", err);
     return buildErrorResponse("Invalid body.", 400);
   }
   const password = typeof body.password === "string" ? body.password.trim() : "";
@@ -74,19 +81,28 @@ function validatePassword(password: string): boolean {
   if (a.length !== b.length) return false;
   try {
     return timingSafeEqual(a, b);
-  } catch {
+  } catch (err) {
+    console.warn("[web] timingSafeEqual failed for password validation", err);
     return false;
   }
 }
 
 function hasAllowedOriginHeader(originOrReferer: string | null): boolean {
   if (!originOrReferer) return false;
-  const allowedRaw = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  // Allow localhost (any port) so password-protected pages work during local
+  // development even when NEXT_PUBLIC_SITE_URL points to a production domain.
+  if (isLocalhostOrigin(originOrReferer)) return true;
+  const bases = getTrustedFormSiteOrigins();
+  if (bases.length === 0) {
+    // Fall back to localhost in dev; reject in production (misconfigured deploy)
+    if (process.env.NODE_ENV === "development") return true;
+    return false;
+  }
   try {
-    const allowedOrigin = new URL(allowedRaw).origin;
     const requestOrigin = new URL(originOrReferer).origin;
-    return requestOrigin === allowedOrigin;
-  } catch {
+    return bases.some((base) => requestOrigin === base);
+  } catch (err) {
+    console.warn("[web] Failed to validate allowed origin header", err);
     return false;
   }
 }
@@ -121,7 +137,7 @@ async function unlockPostHandler(request: NextRequest) {
   }
 
   if (!validatePassword(password)) {
-    const rateLimitHeader = getRateLimitCookieHeader(rateState.count, fp, request.headers);
+    const rateLimitCookie = getRateLimitCookieHeader(rateState.count, fp, request.headers);
     const locked = rateState.count + 1 >= rateLimitMaxAttempts;
     const retryAfterSec = locked ? Math.max(1, Math.ceil(LOCKOUT_MS / 1000)) : undefined;
     const response = NextResponse.json(
@@ -133,7 +149,7 @@ async function unlockPostHandler(request: NextRequest) {
       },
       { status: 401 }
     );
-    if (rateLimitHeader) response.headers.append("Set-Cookie", rateLimitHeader);
+    if (rateLimitCookie) response.headers.append("Set-Cookie", buildCookieHeader(rateLimitCookie));
     if (retryAfterSec != null) response.headers.set("Retry-After", String(retryAfterSec));
     return response;
   }

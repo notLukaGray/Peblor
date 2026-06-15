@@ -92,7 +92,7 @@ describe("section-keys", () => {
         elements: [{ type: "elementImage", src: "/assets/hero.webp" }],
       } as unknown as Parameters<typeof generateSectionKey>[0];
       const key = generateSectionKey(section, 0);
-      expect(key).toBe("sectionColumn__assets_hero_webp");
+      expect(key).toBe("sectionColumn__assets_hero_webp_0");
     });
 
     it("no randomness or Date usage", () => {

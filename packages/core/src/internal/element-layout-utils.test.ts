@@ -163,8 +163,8 @@ describe("element-layout-utils", () => {
 
     it("representative: responsive resolved via isMobile (desktop)", () => {
       const layout: Parameters<typeof getElementLayoutStyle>[0] = {
-        width: ["80%", "100%"],
-        align: ["left", "center"],
+        width: { base: "80%", md: "100%" },
+        selfAlign: { base: "left", md: "center" },
       };
       const style = getElementLayoutStyle(layout, false);
       expect(style.width).toBe("100%");
@@ -173,8 +173,8 @@ describe("element-layout-utils", () => {
 
     it("representative: responsive resolved via isMobile (mobile)", () => {
       const layout: Parameters<typeof getElementLayoutStyle>[0] = {
-        width: ["80%", "100%"],
-        align: ["left", "center"],
+        width: { base: "80%", md: "100%" },
+        selfAlign: { base: "left", md: "center" },
       };
       const style = getElementLayoutStyle(layout, true);
       expect(style.width).toBe("80%");
@@ -184,7 +184,7 @@ describe("element-layout-utils", () => {
     it("applies responsive borderRadius", () => {
       const layout: Parameters<typeof getElementLayoutStyle>[0] = {
         width: "100%",
-        borderRadius: ["12px", "24px"],
+        borderRadius: { base: "12px", md: "24px" },
       };
       expect(getElementLayoutStyle(layout, true).borderRadius).toBe("12px");
       expect(getElementLayoutStyle(layout, false).borderRadius).toBe("24px");
@@ -192,7 +192,7 @@ describe("element-layout-utils", () => {
 
     it("applies responsive alignY", () => {
       const layout: Parameters<typeof getElementLayoutStyle>[0] = {
-        alignY: ["top", "center"],
+        alignY: { base: "top", md: "center" },
       };
       expect(getElementLayoutStyle(layout, true)).not.toHaveProperty("marginTop", "auto");
       expect(getElementLayoutStyle(layout, false)).toMatchObject({

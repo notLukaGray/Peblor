@@ -43,6 +43,7 @@ export const CLUSTER_ENTRIES = [
   "section.trigger",
   "section.formBlock",
   "section.reveal",
+  "section.pageTrigger",
   // Section capabilities
   "section.sticky",
   "section.fixed",
@@ -78,6 +79,10 @@ export const TRIGGER_ENTRIES = [
   "trigger.onVideoEnd",
   "trigger.pointerDown",
   "trigger.pointerUp",
+  "trigger.customEvent",
+  "trigger.elementEvent",
+  "trigger.scrollThreshold",
+  "trigger.mediaProgress",
 ] as const;
 
 export const MOTION_PRESET_ENTRIES = [

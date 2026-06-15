@@ -1,0 +1,56 @@
+{
+  "preset": "composition-column-kpi-matrix",
+  "width": {
+    "base": "92%",
+    "md": "86%"
+  },
+  "maxWidth": "1240px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "0 0 8rem",
+    "md": "0 0 12rem"
+  },
+  "definitions": {
+    "kpi-1": {
+      "section": {
+        "definitions": {
+          "label": {
+            "text": "Stress: exceptionally long metric label for wrap testing"
+          }
+        }
+      }
+    },
+    "kpi-2": {
+      "section": {
+        "definitions": {
+          "body": {
+            "text": "This explanatory line is intentionally verbose to ensure cards remain aligned when one metric needs caveats and context."
+          }
+        }
+      }
+    },
+    "kpi-3": {
+      "section": {
+        "definitions": {
+          "num": {
+            "target": 3200,
+            "suffix": "",
+            "separator": true
+          },
+          "label": {
+            "text": "Weekly Events Processed"
+          }
+        }
+      }
+    },
+    "kpi-4": {
+      "section": {
+        "definitions": {
+          "body": {
+            "text": "Maintains legibility and tap-safe spacing even when compact screens keep a two-track matrix."
+          }
+        }
+      }
+    }
+  }
+}

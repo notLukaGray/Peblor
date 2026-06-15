@@ -24,6 +24,47 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      // Content-hashed static assets — immutable, cache forever
+      {
+        source: "/_next/static/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      // Self-hosted fonts — cache long-term
+      {
+        source: "/font/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      // CDN-signed media — cache for 1 day (URLs include expiring tokens)
+      {
+        source: "/api/media/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=86400",
+          },
+        ],
+      },
+      // Public static files (favicon, robots, etc.)
+      {
+        source: "/:file(favicon.ico|robots.txt|sitemap.xml)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=86400",
+          },
+        ],
+      },
+      // All routes — security headers
       {
         source: "/(.*)",
         headers: [

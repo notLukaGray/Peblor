@@ -1,0 +1,21 @@
+{
+  "contractVersion": "1.0.0",
+  "presets": [
+    "demo",
+    "type/core",
+    "ui/link",
+    "type/motion",
+    "player/surface",
+    "bg",
+    "player/section"
+  ],
+  "bgKey": "bg-players",
+  "sectionOrder": ["nav-header", "hero", "sec-player"],
+  "definitions": {
+    "bg-players": {
+      "preset": "bg-players"
+    }
+  },
+  "title": "3D Minimal — Preset Demo",
+  "description": "Mouse drifts the camera. Loads on demand. Bobbing, bloom, and depth make the model feel physically present."
+}

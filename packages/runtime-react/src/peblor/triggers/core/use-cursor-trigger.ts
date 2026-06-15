@@ -5,7 +5,7 @@ import { firePeblorProgressTrigger } from "@/peblor/triggers";
 import type { PeblorAction } from "@pb/contracts/types";
 
 export type CursorTriggerDef = {
-  /** Which axis drives progress: "x", "y", or "both" (fires separate events) */
+  /** Which axis drives progress: "x" (left→right 0–1) or "y" (top→bottom 0–1) */
   axis: "x" | "y";
   /** Action to fire with progress (0=left/top, 1=right/bottom) */
   action: PeblorAction;

@@ -1,0 +1,464 @@
+{
+  "preset": "player-section",
+  "elementOrder": [
+    "player-label",
+    "stress-note",
+    "row-video-audio",
+    "row-rive-lottie",
+    "row-3d",
+    "global-control-bar",
+    "state-panel"
+  ],
+  "definitions": {
+    "player-label": {
+      "preset": "type-h3-label",
+      "text": "Crossmedia Stress — 5 Players, 1 Variable Store"
+    },
+    "stress-note": {
+      "preset": "type-body-fine",
+      "text": "Five media runtimes on one page. 3D lazy-loads until Load/Play All. Master transport uses fireMultiple + target all so video, audio, Rive, Lottie, and 3D animation respond together."
+    },
+    "row-video-audio": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": {
+        "base": "column",
+        "md": "row"
+      },
+      "align": "stretch",
+      "gap": "1rem",
+      "width": "100%",
+      "section": {
+        "elementOrder": ["stress-video", "stress-audio"],
+        "definitions": {
+          "stress-video": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "flex": "1",
+            "borderRadius": "12px",
+            "scroll": "hidden",
+            "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+            "wrapperStyle": {
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+            },
+            "section": {
+              "elementOrder": ["sv-label", "sv-el"],
+              "definitions": {
+                "sv-label": {
+                  "type": "elementGroup",
+                  "padding": "0.5rem 0.75rem 0.25rem",
+                  "section": {
+                    "elementOrder": ["svl"],
+                    "definitions": {
+                      "svl": {
+                        "preset": "type-h5-meta",
+                        "text": "Video #1"
+                      }
+                    }
+                  }
+                },
+                "sv-el": {
+                  "type": "elementVideo",
+                  "id": "stress-video",
+                  "src": "https://samplelib.com/preview/mp4/sample-10s.mp4",
+                  "poster": "https://picsum.photos/id/1025/1280/720",
+                  "module": "video-player-minimal-noplay",
+                  "width": "100%",
+                  "aspectRatio": "16 / 9",
+                  "autoplay": false,
+                  "loop": true,
+                  "muted": true,
+                  "onVideoPlay": {
+                    "type": "setVariable",
+                    "payload": {
+                      "key": "playerTarget",
+                      "value": "video-a"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "stress-audio": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "flex": "1",
+            "borderRadius": "12px",
+            "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+            "wrapperStyle": {
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+            },
+            "section": {
+              "elementOrder": ["sa-label", "sa-track-info", "sa-el"],
+              "definitions": {
+                "sa-label": {
+                  "type": "elementGroup",
+                  "padding": "0.5rem 0.75rem 0.25rem",
+                  "section": {
+                    "elementOrder": ["sal"],
+                    "definitions": {
+                      "sal": {
+                        "preset": "type-h5-meta",
+                        "text": "Audio #1"
+                      }
+                    }
+                  }
+                },
+                "sa-track-info": {
+                  "type": "elementGroup",
+                  "display": "flex",
+                  "flow": "column",
+                  "gap": "0.15rem",
+                  "padding": "0.25rem 0.75rem 0.5rem",
+                  "section": {
+                    "elementOrder": ["sa-title", "sa-artist"],
+                    "definitions": {
+                      "sa-title": {
+                        "preset": "type-h4-card",
+                        "text": "Stress Track A"
+                      },
+                      "sa-artist": {
+                        "preset": "type-body-fine",
+                        "text": "Collision Lab"
+                      }
+                    }
+                  }
+                },
+                "sa-el": {
+                  "type": "elementAudio",
+                  "id": "stress-audio",
+                  "src": "https://upload.wikimedia.org/wikipedia/commons/e/e0/Bach-Siloti%2C_Prelude_in_B_minor_%28J._S._Bach%2C_arranged_Siloti%29%2C_arrangement_of_Prelude_in_E_minor_BWV_855a.ogg",
+                  "module": "audio-player",
+                  "autoplay": false,
+                  "loop": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "row-rive-lottie": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": {
+        "base": "column",
+        "md": "row"
+      },
+      "align": "stretch",
+      "gap": "1rem",
+      "width": "100%",
+      "section": {
+        "elementOrder": ["stress-rive", "stress-lottie"],
+        "definitions": {
+          "stress-rive": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "flex": "1",
+            "borderRadius": "12px",
+            "scroll": "hidden",
+            "fill": "color-mix(in oklab, var(--pb-primary) 6%, transparent)",
+            "wrapperStyle": {
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+            },
+            "section": {
+              "elementOrder": ["sr-label", "sr-el"],
+              "definitions": {
+                "sr-label": {
+                  "type": "elementGroup",
+                  "padding": "0.5rem 0.75rem 0.25rem",
+                  "section": {
+                    "elementOrder": ["srl"],
+                    "definitions": {
+                      "srl": {
+                        "preset": "type-h5-meta",
+                        "text": "Rive #1"
+                      }
+                    }
+                  }
+                },
+                "sr-el": {
+                  "type": "elementRive",
+                  "id": "stress-rive",
+                  "src": "https://cdn.rive.app/animations/vehicles.riv",
+                  "autoplay": false,
+                  "loop": true,
+                  "hover": false,
+                  "width": "100%",
+                  "aspectRatio": "1 / 1",
+                  "onStateChange": {
+                    "type": "setVariable",
+                    "payload": {
+                      "key": "riveState",
+                      "value": "$event.stateName"
+                    }
+                  },
+                  "onPlay": {
+                    "type": "setVariable",
+                    "payload": {
+                      "key": "riveStatus",
+                      "value": "playing"
+                    }
+                  },
+                  "onPause": {
+                    "type": "setVariable",
+                    "payload": {
+                      "key": "riveStatus",
+                      "value": "paused"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "stress-lottie": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "flex": "1",
+            "borderRadius": "12px",
+            "scroll": "hidden",
+            "fill": "color-mix(in oklab, var(--pb-accent) 6%, transparent)",
+            "wrapperStyle": {
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+            },
+            "section": {
+              "elementOrder": ["sl-label", "sl-el"],
+              "definitions": {
+                "sl-label": {
+                  "type": "elementGroup",
+                  "padding": "0.5rem 0.75rem 0.25rem",
+                  "section": {
+                    "elementOrder": ["sll"],
+                    "definitions": {
+                      "sll": {
+                        "preset": "type-h5-meta",
+                        "text": "Lottie #1"
+                      }
+                    }
+                  }
+                },
+                "sl-el": {
+                  "type": "elementLottie",
+                  "id": "stress-lottie",
+                  "src": "https://assets6.lottiefiles.com/packages/lf20_iwmd6pyr.json",
+                  "autoplay": false,
+                  "loop": true,
+                  "width": "100%",
+                  "aspectRatio": "1 / 1",
+                  "onComplete": {
+                    "type": "setVariable",
+                    "payload": {
+                      "key": "lottieStatus",
+                      "value": "done"
+                    }
+                  },
+                  "onLoop": {
+                    "type": "setVariable",
+                    "payload": {
+                      "key": "lottieStatus",
+                      "value": "looping"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "row-3d": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "borderRadius": "12px",
+      "scroll": "hidden",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["3d-label", "3d-el", "3d-controls"],
+        "definitions": {
+          "3d-label": {
+            "type": "elementGroup",
+            "padding": "0.5rem 0.75rem 0.25rem",
+            "section": {
+              "elementOrder": ["tdl"],
+              "definitions": {
+                "tdl": {
+                  "preset": "type-h5-meta",
+                  "text": "3D Model #1"
+                }
+              }
+            }
+          },
+          "3d-el": {
+            "type": "elementModel3D",
+            "id": "stress-3d",
+            "width": "100%",
+            "aspectRatio": "16 / 9",
+            "initiallyLoaded": false,
+            "models": {
+              "bird": {
+                "geometry": "https://threejs.org/examples/models/gltf/Flamingo.glb"
+              }
+            },
+            "scene": {
+              "camera": {
+                "type": "perspective",
+                "position": [0, 1, 3.5],
+                "fov": 45
+              },
+              "cameraPresets": {
+                "front": {
+                  "position": [0, 1, 3.5],
+                  "lookAt": [0, 0.2, 0]
+                },
+                "top": {
+                  "position": [0, 3.5, 0.5],
+                  "lookAt": [0, 0.3, 0]
+                }
+              },
+              "controls": {
+                "mode": "orbit"
+              },
+              "lights": [
+                {
+                  "type": "ambient",
+                  "intensity": 0.5
+                },
+                {
+                  "type": "directional",
+                  "position": [2, 3, 3],
+                  "intensity": 1
+                }
+              ],
+              "background": {
+                "type": "color",
+                "color": "#1a1a2e"
+              },
+              "contents": {
+                "models": [
+                  {
+                    "model": "bird"
+                  }
+                ]
+              }
+            }
+          },
+          "3d-controls": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "row",
+            "wrap": "wrap",
+            "gap": "0.4rem",
+            "padding": "0.5rem 0.75rem",
+            "section": {
+              "elementOrder": ["btn-3d-front", "btn-3d-top", "btn-3d-orbit", "btn-3d-reset"],
+              "definitions": {
+                "btn-3d-front": {
+                  "type": "elementButton",
+                  "label": "Front",
+                  "action": "three.setCameraPreset",
+                  "actionPayload": {
+                    "id": "stress-3d",
+                    "preset": "front"
+                  },
+                  "level": 5,
+                  "wrapperPadding": "0.3rem 0.65rem",
+                  "wrapperBorderRadius": "8px",
+                  "wrapperFill": "color-mix(in oklab, var(--pb-accent) 15%, transparent)",
+                  "linkDefault": "var(--pb-on-secondary)",
+                  "motion": {
+                    "onHover": {
+                      "scale": 1.05
+                    },
+                    "transition": {
+                      "duration": 0.12
+                    }
+                  }
+                },
+                "btn-3d-top": {
+                  "type": "elementButton",
+                  "label": "Top",
+                  "action": "three.setCameraPreset",
+                  "actionPayload": {
+                    "id": "stress-3d",
+                    "preset": "top"
+                  },
+                  "level": 5,
+                  "wrapperPadding": "0.3rem 0.65rem",
+                  "wrapperBorderRadius": "8px",
+                  "wrapperFill": "color-mix(in oklab, var(--pb-accent) 15%, transparent)",
+                  "linkDefault": "var(--pb-on-secondary)",
+                  "motion": {
+                    "onHover": {
+                      "scale": 1.05
+                    },
+                    "transition": {
+                      "duration": 0.12
+                    }
+                  }
+                },
+                "btn-3d-orbit": {
+                  "type": "elementButton",
+                  "label": "Auto-Rotate",
+                  "action": "three.orbitEnable",
+                  "actionPayload": {
+                    "id": "stress-3d",
+                    "autoRotate": true,
+                    "autoRotateSpeed": 1.5
+                  },
+                  "level": 5,
+                  "wrapperPadding": "0.3rem 0.65rem",
+                  "wrapperBorderRadius": "8px",
+                  "wrapperFill": "color-mix(in oklab, var(--pb-accent) 15%, transparent)",
+                  "linkDefault": "var(--pb-on-secondary)",
+                  "motion": {
+                    "onHover": {
+                      "scale": 1.05
+                    },
+                    "transition": {
+                      "duration": 0.12
+                    }
+                  }
+                },
+                "btn-3d-reset": {
+                  "type": "elementButton",
+                  "label": "Reset",
+                  "action": "three.resetCamera",
+                  "actionPayload": {
+                    "id": "stress-3d"
+                  },
+                  "level": 5,
+                  "wrapperPadding": "0.3rem 0.65rem",
+                  "wrapperBorderRadius": "8px",
+                  "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+                  "linkDefault": "var(--pb-on-secondary)",
+                  "motion": {
+                    "onHover": {
+                      "scale": 1.05
+                    },
+                    "transition": {
+                      "duration": 0.12
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "global-control-bar": {
+      "preset": "player-crossmedia-master-bar"
+    },
+    "state-panel": {
+      "preset": "player-variable-panel"
+    }
+  }
+}

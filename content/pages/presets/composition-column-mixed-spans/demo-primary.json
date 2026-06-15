@@ -1,0 +1,82 @@
+{
+  "preset": "composition-column-mixed-spans",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "1100px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "2rem 0 4rem",
+    "md": "2rem 0 5rem"
+  },
+  "definitions": {
+    "lead": {
+      "section": {
+        "definitions": {
+          "title": {
+            "text": "Quarterly Product Narrative"
+          },
+          "body": {
+            "text": "A broad lead surface spanning multiple tracks for the core story and visual anchor."
+          }
+        }
+      }
+    },
+    "detail-a": {
+      "section": {
+        "definitions": {
+          "kicker": {
+            "text": "Signal"
+          },
+          "title": {
+            "text": "Adoption Pulse"
+          },
+          "body": {
+            "text": "Weekly activation growth with feature-level attribution."
+          }
+        }
+      }
+    },
+    "detail-b": {
+      "section": {
+        "definitions": {
+          "kicker": {
+            "text": "Risk"
+          },
+          "title": {
+            "text": "Churn Triggers"
+          },
+          "body": {
+            "text": "Early warning patterns from cancellation and downgrade behavior."
+          }
+        }
+      }
+    },
+    "aside": {
+      "section": {
+        "definitions": {
+          "quote": {
+            "text": "Mixed spans let one dominant narrative coexist with compact decision cards."
+          },
+          "attribution": {
+            "section": {
+              "definitions": {
+                "name": {
+                  "text": "Platform Team"
+                },
+                "role": {
+                  "text": "Review Notes"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "marginBottom": {
+    "base": "2rem",
+    "md": "3rem"
+  }
+}

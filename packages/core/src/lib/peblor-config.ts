@@ -26,7 +26,8 @@ function findConfigFile(startDir: string): string | null {
 function loadConfig(configPath: string): PeblorConfig | null {
   try {
     return JSON.parse(fs.readFileSync(configPath, "utf-8")) as PeblorConfig;
-  } catch {
+  } catch (err) {
+    console.warn("[pb-core] Failed to parse config file", configPath, err);
     return null;
   }
 }

@@ -1,0 +1,21 @@
+# Keep nlg-site's own versions of these — never sync to peblor
+content/config/**          merge=ours
+content/site/**            merge=ours
+content/data/**            merge=ours
+content/pages/**           merge=ours
+content/modals/**          merge=ours
+content/presets/**         merge=ours
+apps/web/package.json      merge=ours
+.env                              merge=ours
+package.json                      merge=ours
+package-lock.json                 merge=ours
+.gitattributes                    merge=ours
+scripts/diff-peblor.sh            merge=ours
+
+# Site-specific font and security config — never sync to peblor
+apps/web/src/app/fonts/config.ts                    merge=ours
+apps/web/src/app/fonts/embed-font-faces.ts          merge=ours
+apps/web/src/app/fonts/self-hosted-flag.ts           merge=ours
+apps/web/src/app/fonts/webfont-manifest.json         merge=ours
+apps/web/src/app/fonts/webfonts.css                  merge=ours
+apps/web/src/core/lib/protected-slugs.generated.ts  merge=ours

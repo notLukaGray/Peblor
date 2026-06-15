@@ -1,0 +1,123 @@
+{
+  "preset": "player-section",
+  "elementOrder": ["player-label", "player-surface"],
+  "definitions": {
+    "player-label": {
+      "preset": "type-h3-label",
+      "text": "Maximal Player"
+    },
+    "player-surface": {
+      "preset": "player-video-surface-maximal",
+      "section": {
+        "elementOrder": ["player-surface", "player-chapters"],
+        "definitions": {
+          "player-surface": {
+            "type": "elementGroup",
+            "width": "100%",
+            "aspectRatio": "16 / 9",
+            "scroll": "hidden",
+            "section": {
+              "elementOrder": ["video"],
+              "definitions": {
+                "video": {
+                  "type": "elementVideo",
+                  "module": "video-player-full",
+                  "src": "https://samplelib.com/preview/mp4/sample-20s.mp4",
+                  "poster": "",
+                  "width": "100%",
+                  "height": "100%",
+                  "objectFit": "cover"
+                }
+              }
+            }
+          },
+          "player-chapters": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "row",
+            "align": "center",
+            "gap": "0.5rem",
+            "padding": "0.5rem 1rem",
+            "width": "100%",
+            "scroll": "hidden",
+            "section": {
+              "elementOrder": ["chapter-label", "ch-intro", "ch-act1", "ch-climax"],
+              "definitions": {
+                "chapter-label": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "Chapters",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 55%, transparent)",
+                  "width": "hug"
+                },
+                "ch-intro": {
+                  "type": "elementButton",
+                  "label": "Intro",
+                  "action": "assetSeek",
+                  "actionPayload": {
+                    "time": 0
+                  },
+                  "level": 5,
+                  "wrapperPadding": "0.3rem 0.65rem",
+                  "wrapperBorderRadius": "999px",
+                  "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+                  "linkDefault": "var(--pb-on-secondary)",
+                  "motion": {
+                    "onHover": {
+                      "scale": 1.05
+                    },
+                    "transition": {
+                      "duration": 0.15
+                    }
+                  }
+                },
+                "ch-act1": {
+                  "type": "elementButton",
+                  "label": "5s",
+                  "action": "assetSeek",
+                  "actionPayload": {
+                    "time": 5
+                  },
+                  "level": 5,
+                  "wrapperPadding": "0.3rem 0.65rem",
+                  "wrapperBorderRadius": "999px",
+                  "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+                  "linkDefault": "var(--pb-on-secondary)",
+                  "motion": {
+                    "onHover": {
+                      "scale": 1.05
+                    },
+                    "transition": {
+                      "duration": 0.15
+                    }
+                  }
+                },
+                "ch-climax": {
+                  "type": "elementButton",
+                  "label": "14s",
+                  "action": "assetSeek",
+                  "actionPayload": {
+                    "time": 14
+                  },
+                  "level": 5,
+                  "wrapperPadding": "0.3rem 0.65rem",
+                  "wrapperBorderRadius": "999px",
+                  "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+                  "linkDefault": "var(--pb-on-secondary)",
+                  "motion": {
+                    "onHover": {
+                      "scale": 1.05
+                    },
+                    "transition": {
+                      "duration": 0.15
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

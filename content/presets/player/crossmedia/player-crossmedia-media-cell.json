@@ -1,0 +1,12 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "flex": "1",
+  "borderRadius": "14px",
+  "scroll": "hidden",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+  }
+}

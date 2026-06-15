@@ -1,12 +1,12 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { motion } from "@/peblor/integrations/framer-motion";
+import { m } from "@/peblor/integrations/framer-motion";
 import { useShouldReduceMotion } from "./reduced-motion";
 import type { MotionPropsFromJson, MotionTiming } from "@pb/contracts/types";
 import { resolveFoundationMotionControls } from "./foundation-motion-policy";
 
-type MotionDivProps = React.ComponentProps<typeof motion.div>;
+type MotionDivProps = React.ComponentProps<typeof m.div>;
 
 /** Collapse per-property keyframe arrays to the final rest state (reduced-motion / in-view skip). */
 function finalTargetFromAnimate(animate: unknown): Record<string, unknown> | undefined {
@@ -85,6 +85,7 @@ function toFadeOnlyResolvedMotion<T extends EntranceResolvedMotion>(resolved: T)
     animate: { opacity: toOpacity(animateTarget.opacity, 1) },
     whileHover: undefined,
     whileTap: undefined,
+    whileFocus: undefined,
   } as T;
 }
 
@@ -124,7 +125,7 @@ export type ElementEntranceWrapperProps = {
  * Motion config is pre-resolved server-side into motionTiming.resolvedEntranceMotion.
  *
  * SSR renders a plain <div> (no opacity:0 inline style) so the element is visible
- * in the static HTML. After hydration, useLayoutEffect swaps to motion.div before
+ * in the static HTML. After hydration, useLayoutEffect swaps to m.div before
  * the first browser paint — in-viewport elements skip the animation entirely,
  * below-fold elements get their entrance state applied before the user can see them.
  *
@@ -174,8 +175,16 @@ export function ElementEntranceWrapper({
     elementMotion
   );
 
-  const { initial, animate, transition, viewportAmount, viewportOnce, whileHover, whileTap } =
-    effectiveResolved;
+  const {
+    initial,
+    animate,
+    transition,
+    viewportAmount,
+    viewportOnce,
+    whileHover,
+    whileTap,
+    whileFocus,
+  } = effectiveResolved;
   const trigger = motionTiming?.trigger ?? "onFirstVisible";
   const bypassInViewShortcut = trigger === "onMount";
 
@@ -192,7 +201,10 @@ export function ElementEntranceWrapper({
   // and should not cause overflow:hidden (which clips descenders and outlines).
   const hasRealScale = (g: Record<string, unknown> | undefined) =>
     g != null && typeof g.scale === "number" && g.scale !== 1;
-  const hasScaleGesture = hasRealScale(asRecord(whileHover)) || hasRealScale(asRecord(whileTap));
+  const hasScaleGesture =
+    hasRealScale(asRecord(whileHover)) ||
+    hasRealScale(asRecord(whileTap)) ||
+    hasRealScale(asRecord(whileFocus));
 
   const containerStyle: React.CSSProperties = layoutFixed
     ? {
@@ -221,13 +233,16 @@ export function ElementEntranceWrapper({
   const inner =
     layoutFixed && innerFlexStyle ? <div style={innerFlexStyle}>{children}</div> : children;
 
-  // SSR + pre-hydration: plain div so the element is visible in the static HTML.
+  // SSR + pre-hydration: plain <div> so the element is visible in the static HTML.
   // LCP is recorded immediately; no opacity:0 in the server-rendered output.
+  // After hydration, useLayoutEffect (via setMountRef) determines viewport visibility
+  // before the first paint — in-viewport elements skip animation to avoid layout shift.
+  // This prevents a flash-of-hidden-content without blocking LCP.
   if (viewOnMount === null) {
     return (
-      <div ref={setMountRef} style={containerStyle} {...(aria as Record<string, string>)}>
+      <m.div ref={setMountRef} style={containerStyle} {...(aria as Record<string, string>)}>
         {inner}
-      </div>
+      </m.div>
     );
   }
 
@@ -239,16 +254,17 @@ export function ElementEntranceWrapper({
 
   if (trigger === "onMount") {
     return (
-      <motion.div
+      <m.div
         {...sharedProps}
         initial={effectiveInitial as MotionDivProps["initial"]}
         animate={animate as MotionDivProps["animate"]}
         transition={effectiveTransition as MotionDivProps["transition"]}
         whileHover={whileHover as MotionDivProps["whileHover"]}
         whileTap={whileTap as MotionDivProps["whileTap"]}
+        whileFocus={whileFocus as MotionDivProps["whileFocus"]}
       >
         {inner}
-      </motion.div>
+      </m.div>
     );
   }
 
@@ -258,20 +274,20 @@ export function ElementEntranceWrapper({
         ? animateOverrideFromTrigger
         : effectiveInitial;
     return (
-      <motion.div
+      <m.div
         {...sharedProps}
         initial={effectiveInitial as MotionDivProps["initial"]}
         animate={animateState as MotionDivProps["animate"]}
         transition={effectiveTransition as MotionDivProps["transition"]}
       >
         {inner}
-      </motion.div>
+      </m.div>
     );
   }
 
   // Default: onFirstVisible / onEveryVisible — FM native whileInView
   return (
-    <motion.div
+    <m.div
       {...sharedProps}
       initial={effectiveInitial as MotionDivProps["initial"]}
       whileInView={animate as MotionDivProps["whileInView"]}
@@ -287,8 +303,9 @@ export function ElementEntranceWrapper({
       transition={effectiveTransition as MotionDivProps["transition"]}
       whileHover={whileHover as MotionDivProps["whileHover"]}
       whileTap={whileTap as MotionDivProps["whileTap"]}
+      whileFocus={whileFocus as MotionDivProps["whileFocus"]}
     >
       {inner}
-    </motion.div>
+    </m.div>
   );
 }

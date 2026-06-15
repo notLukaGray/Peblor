@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import type { ElementBlock, SectionBlock } from "@pb/contracts/types";
+import { generateElementKey } from "@pb/core/keys";
 import {
   coalesceEmptyString,
   normalizeFlexAlignItemsValue,
@@ -10,7 +11,7 @@ import {
   resolveFrameRowGapCss,
 } from "@pb/core/layout";
 import { getPbContentGuidelines } from "@pb/core/host";
-import { resolveResponsiveValue } from "@pb/runtime-react/core/lib/responsive-value";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
 import {
   buildSectionContentWrapperStyle,
   sectionHeightCanStretchContent,
@@ -18,6 +19,7 @@ import {
 import { resolveSectionContentBlockElements } from "../../section/SectionContentBlock/section-content-block-element-resolution";
 import { ServerElementRenderer } from "../ServerElementRenderer";
 import { buildServerSectionBaseStyle } from "./server-section-style";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 type Props = Extract<SectionBlock, { type: "contentBlock" }> & { serverIsMobile?: boolean };
 
@@ -27,19 +29,21 @@ export function ServerSectionContentBlock({
   elements: elementsProp = [],
   elementOrder,
   definitions: sectionDefinitions,
-  flexDirection,
-  alignItems,
-  justifyContent,
-  flexWrap,
+  flow,
+  align,
+  distribute,
+  wrap,
   gap,
   rowGap,
   columnGap,
   contentWidth,
   contentHeight,
+  scroll,
+  colorScheme,
   serverIsMobile,
   ...section
 }: Props & {
-  elementOrder?: string[] | { mobile?: string[]; desktop?: string[] };
+  elementOrder?: string[] | { base?: string[]; md?: string[] };
   definitions?: never;
 }) {
   const isMobile = serverIsMobile ?? false;
@@ -47,30 +51,38 @@ export function ServerSectionContentBlock({
     elementsProp,
     elementOrder: Array.isArray(elementOrder)
       ? elementOrder
-      : isMobile
-        ? elementOrder?.mobile
-        : elementOrder?.desktop,
+      : (resolveResponsiveValue(elementOrder, isMobile) ?? []),
     sectionDefinitions,
   });
   const {
     style: sectionStyle,
     resolvedFill,
     resolvedHeight,
-  } = buildServerSectionBaseStyle(section, serverIsMobile, true);
-  const resolvedAriaLabel = resolveResponsiveValue(ariaLabel, isMobile) ?? id ?? "Content block";
+  } = buildServerSectionBaseStyle({ ...section, scroll, colorScheme }, serverIsMobile);
+  const resolvedShellOverflow = resolveResponsiveValue(scroll, isMobile) ?? "hidden";
+  const shellOverflowClass =
+    resolvedShellOverflow === "visible"
+      ? "overflow-visible"
+      : resolvedShellOverflow === "auto"
+        ? "overflow-auto"
+        : resolvedShellOverflow === "scroll"
+          ? "overflow-scroll"
+          : "overflow-hidden";
+  const resolvedAriaLabel =
+    resolveResponsiveValue(ariaLabel, isMobile) ?? id ?? globals.stringsAriaLabelContentBlock;
   const pbContentGuidelines = getPbContentGuidelines();
   const resolvedContentWidth = resolveResponsiveValue(contentWidth, isMobile);
   const resolvedContentHeight = resolveResponsiveValue(contentHeight, isMobile);
   const resolvedFlexDirection =
-    (coalesceEmptyString(resolveResponsiveValue(flexDirection, isMobile)) as
+    (coalesceEmptyString(resolveResponsiveValue(flow, isMobile)) as
       | CSSProperties["flexDirection"]
       | undefined) ?? pbContentGuidelines.frameFlexDirectionDefault;
   const resolvedAlignItems = normalizeFlexAlignItemsValue(
-    coalesceEmptyString(resolveResponsiveValue(alignItems, isMobile)) ??
+    coalesceEmptyString(resolveResponsiveValue(align, isMobile)) ??
       pbContentGuidelines.frameAlignItemsDefault
   );
   const resolvedFlexWrap =
-    (coalesceEmptyString(resolveResponsiveValue(flexWrap, isMobile)) as
+    (coalesceEmptyString(resolveResponsiveValue(wrap, isMobile)) as
       | CSSProperties["flexWrap"]
       | undefined) ?? pbContentGuidelines.frameFlexWrapDefault;
   const rawGap = coalesceEmptyString(resolveResponsiveValue(gap, isMobile));
@@ -78,7 +90,7 @@ export function ServerSectionContentBlock({
   const rawColumnGap = coalesceEmptyString(resolveResponsiveValue(columnGap, isMobile));
   const resolvedJustifyContent = peblorJustifyContentForGap(
     normalizeFlexJustifyContentValue(
-      coalesceEmptyString(resolveResponsiveValue(justifyContent, isMobile)) ??
+      coalesceEmptyString(resolveResponsiveValue(distribute, isMobile)) ??
         pbContentGuidelines.frameJustifyContentDefault
     ) as CSSProperties["justifyContent"] | undefined,
     rawGap
@@ -107,16 +119,18 @@ export function ServerSectionContentBlock({
 
   return (
     <section
-      className="relative z-[var(--pb-z-raised)] flex shrink-0 flex-col min-h-0 overflow-hidden"
+      id={id}
+      className={`relative z-[var(--pb-z-raised)] flex shrink-0 flex-col min-h-0 ${shellOverflowClass}`}
       style={sectionStyle}
       aria-label={resolvedAriaLabel}
       data-section-type="contentBlock"
+      data-color-scheme={colorScheme ?? undefined}
       data-elements-count={elements.length}
     >
       <div className="relative z-[var(--pb-z-raised)] min-h-0" style={contentWrapperStyle}>
         {elements.map((element: ElementBlock, index) => (
           <ServerElementRenderer
-            key={(element as ElementBlock & { id?: string }).id ?? index}
+            key={generateElementKey(element, index)}
             block={element}
             serverIsMobile={serverIsMobile}
           />

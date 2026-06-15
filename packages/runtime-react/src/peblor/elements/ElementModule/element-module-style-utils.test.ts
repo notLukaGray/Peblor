@@ -7,17 +7,19 @@ import {
 
 describe("element-module-style-utils", () => {
   it("maps responsive align to wrapper alignSelf", () => {
-    expect(getChildWrapperLayoutStyle({ align: ["left", "right"] }, true)).toEqual({
+    expect(getChildWrapperLayoutStyle({ selfAlign: { base: "left", md: "right" } }, true)).toEqual({
       alignSelf: "flex-start",
     });
-    expect(getChildWrapperLayoutStyle({ align: ["left", "right"] }, false)).toEqual({
-      alignSelf: "flex-end",
-    });
+    expect(getChildWrapperLayoutStyle({ selfAlign: { base: "left", md: "right" } }, false)).toEqual(
+      {
+        alignSelf: "flex-end",
+      }
+    );
   });
   it("returns empty style when align is not left/center/right", () => {
-    expect(getChildWrapperLayoutStyle({ align: ["stretch", "stretch"] as never }, true)).toEqual(
-      {}
-    );
+    expect(
+      getChildWrapperLayoutStyle({ selfAlign: { base: "stretch", md: "stretch" } as never }, true)
+    ).toEqual({});
   });
 
   it("does not render a static wrapper when there is no style override", () => {

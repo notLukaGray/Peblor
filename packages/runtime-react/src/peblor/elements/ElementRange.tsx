@@ -22,8 +22,8 @@ import {
   detectClientPlatformSnapshot,
   getSupportsBackdropFilterUrlClientSnapshot,
 } from "@pb/runtime-react/core/lib/platform-runtime";
-import { resolveThemeString, resolveThemeStyleObject } from "@/peblor/theme/theme-string";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
+import { lowerThemeStringToCss, lowerThemeStyleObject } from "@/peblor/theme/theme-string";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 type Props = Extract<ElementBlock, { type: "elementRange" }>;
 
@@ -91,16 +91,15 @@ export function ElementRange({
   min = 0,
   max = 1,
   step = 0.01,
-  defaultValue,
   ariaLabel,
   width,
   height,
-  align,
+  selfAlign,
   marginTop,
   marginBottom,
   marginLeft,
   marginRight,
-  zIndex,
+  layer,
   constraints,
   effects,
   wrapperStyle,
@@ -108,7 +107,7 @@ export function ElementRange({
   blendMode,
   boxShadow,
   filter,
-  backdropFilter,
+  bgBlur,
   hidden,
   action,
   actionPayload,
@@ -116,7 +115,6 @@ export function ElementRange({
   style,
   interactions,
 }: Props) {
-  const themeMode = usePeblorThemeMode();
   const videoCtx = useVideoControlContext();
   const audioCtx = useAudioControlContext();
   /** Video module takes precedence if both contexts were ever nested (normally one applies). */
@@ -134,12 +132,12 @@ export function ElementRange({
   const layout = {
     width,
     height,
-    align,
+    align: selfAlign,
     marginTop,
     marginBottom,
     marginLeft,
     marginRight,
-    zIndex,
+    zIndex: layer,
     constraints,
     effects,
     wrapperStyle,
@@ -147,13 +145,11 @@ export function ElementRange({
     blendMode,
     boxShadow,
     filter,
-    backdropFilter,
+    bgBlur,
     hidden,
   } as LayoutProps;
 
-  const initialValue = Number.isFinite(defaultValue)
-    ? Math.max(min, Math.min(max, defaultValue as number))
-    : min;
+  const initialValue = min;
   const [progress, setProgress] = useState(initialValue);
   const [isActive, setIsActive] = useState(false);
   const rawId = useId();
@@ -188,16 +184,16 @@ export function ElementRange({
     ...restStyle
   } = styleObj;
 
-  const resolvedTrackColor = resolveThemeString(trackColor as ThemeString | undefined, themeMode);
-  const resolvedFillColor = resolveThemeString(fillColor as ThemeString | undefined, themeMode);
-  const resolvedAccentColor = resolveThemeString(accentColor as ThemeString | undefined, themeMode);
-  const resolvedRestStyle = resolveThemeStyleObject(restStyle, themeMode);
+  const resolvedTrackColor = lowerThemeStringToCss(trackColor as ThemeString | undefined);
+  const resolvedFillColor = lowerThemeStringToCss(fillColor as ThemeString | undefined);
+  const resolvedAccentColor = lowerThemeStringToCss(accentColor as ThemeString | undefined);
+  const resolvedRestStyle = lowerThemeStyleObject(restStyle);
   const use2Tone = typeof resolvedTrackColor === "string" && typeof resolvedFillColor === "string";
   const trackH = trackHeight as string | undefined;
   const thumbS = thumbSize as string | undefined;
   const thumbW = (thumbWidth as string | undefined) ?? thumbS;
   const thumbH = (thumbHeight as string | undefined) ?? thumbS;
-  const radius = (borderRadius as string | undefined) ?? "9999px";
+  const radius = (borderRadius as string | undefined) ?? globals.uiRangeDefaultBorderRadius;
   const parseNumberish = (value: unknown, fallback: number): number => {
     if (typeof value === "number" && Number.isFinite(value)) return value;
     if (typeof value === "string") {
@@ -229,7 +225,8 @@ export function ElementRange({
     const bezelWidthRaw =
       typeof g.bezelWidth === "number"
         ? g.bezelWidth
-        : parseFloat(String(g.bezelWidth ?? "")) || thumbHalfMin * 0.16;
+        : parseFloat(String(g.bezelWidth ?? "")) ||
+          thumbHalfMin * globals.uiRangeThumbGlassBezelFactor;
     const bezelWidth = Math.min(Math.max(bezelWidthRaw, 1), Math.max(thumbHalfMin * 0.9, 4));
     const glassThickness = Math.max(
       typeof g.glassThickness === "number"
@@ -286,7 +283,8 @@ export function ElementRange({
     margin: 0,
     opacity: 0,
     cursor: "pointer",
-    zIndex: 1,
+    pointerEvents: isDisabled ? "none" : "auto",
+    zIndex: globals.zIndexRaised,
   };
 
   const canRenderCustom = use2Tone && trackH && thumbS && thumbW && thumbH;
@@ -367,14 +365,13 @@ export function ElementRange({
           : "0 3px 14px rgba(0,0,0,0.1)",
         ...(thumbGlassParams
           ? {
-              border: "1px solid rgba(255,255,255,0.2)",
-              outline: "1px solid rgba(255,255,255,0.08)",
+              border: "1px solid var(--pb-glass-border, rgba(255,255,255,0.2))",
+              outline: "1px solid var(--pb-glass-outline, rgba(255,255,255,0.08))",
               outlineOffset: "-1px",
             }
           : {}),
         transition: "transform 180ms cubic-bezier(0.22, 1, 0.36, 1)",
         pointerEvents: "none",
-        overflow: "hidden",
         ...(resolvedThumbBackdropFilter
           ? {
               backdropFilter: resolvedThumbBackdropFilter,
@@ -397,8 +394,8 @@ export function ElementRange({
   }, []);
 
   const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const v = parseFloat(e.target.value);
+    (e: React.ChangeEvent<HTMLInputElement> | React.FormEvent<HTMLInputElement>) => {
+      const v = parseFloat((e.currentTarget as HTMLInputElement).value);
       if (onVolumeChange) {
         onVolumeChange(v);
         return;
@@ -435,11 +432,25 @@ export function ElementRange({
             max={max}
             step={step}
             value={value}
+            onInput={handleChange}
             onChange={handleChange}
-            onPointerDown={() => setIsActive(true)}
-            onMouseDown={() => setIsActive(true)}
-            onTouchStart={() => setIsActive(true)}
-            onPointerUp={() => setIsActive(false)}
+            onClick={(event) => event.stopPropagation()}
+            onPointerDown={(event) => {
+              event.stopPropagation();
+              setIsActive(true);
+            }}
+            onMouseDown={(event) => {
+              event.stopPropagation();
+              setIsActive(true);
+            }}
+            onTouchStart={(event) => {
+              event.stopPropagation();
+              setIsActive(true);
+            }}
+            onPointerUp={(event) => {
+              event.stopPropagation();
+              setIsActive(false);
+            }}
             disabled={isDisabled}
             style={inputStyle}
             aria-label={ariaLabel ?? "Range"}

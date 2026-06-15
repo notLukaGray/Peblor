@@ -36,7 +36,7 @@ function extractIdFromIntent(filePath: string): string | null {
   try {
     const content = readFileSync(join(REPO_ROOT, filePath), "utf8");
     const match = content.match(/^id:\s*(.+)$/m);
-    return match ? match[1].trim() : null;
+    return match?.[1]?.trim() ?? null;
   } catch {
     return null;
   }
@@ -54,7 +54,7 @@ function getProposalIds(): Map<string, string> {
       const idMatch = content.match(/^id:\s*(.+)$/m);
       const statusMatch = content.match(/^status:\s*(.+)$/m);
       if (idMatch && statusMatch) {
-        ids.set(idMatch[1].trim(), statusMatch[1].trim());
+        ids.set(idMatch[1]!.trim(), statusMatch[1]!.trim());
       }
     } catch {
       continue;

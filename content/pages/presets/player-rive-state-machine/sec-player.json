@@ -1,0 +1,314 @@
+{
+  "preset": "player-section",
+  "elementOrder": ["player-label", "load-rive", "player-surface", "state-showcase"],
+  "definitions": {
+    "player-label": {
+      "preset": "type-h3-label",
+      "text": "Rive State Machine — Fire Triggers · Read Output"
+    },
+    "load-rive": {
+      "preset": "player-load-btn",
+      "label": "Load Rive Player",
+      "action": "setVariable",
+      "actionPayload": {
+        "key": "riveLoaded",
+        "value": true
+      }
+    },
+    "player-surface": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "0",
+      "width": "100%",
+      "borderRadius": "18px",
+      "scroll": "hidden",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+      },
+      "visibleWhen": {
+        "variable": "riveLoaded",
+        "operator": "equals",
+        "value": true
+      },
+      "section": {
+        "elementOrder": ["rive-canvas", "peblor-controls", "rive-inputs"],
+        "definitions": {
+          "rive-canvas": {
+            "type": "elementRive",
+            "id": "rive-sm",
+            "src": "https://cdn.rive.app/animations/vehicles.riv",
+            "autoplay": true,
+            "loop": true,
+            "hover": true,
+            "width": "100%",
+            "aspectRatio": "16 / 9",
+            "interactivity": [
+              {
+                "event": "click",
+                "input": "jump"
+              },
+              {
+                "event": "hoverEnter",
+                "input": "hover",
+                "value": true
+              },
+              {
+                "event": "hoverLeave",
+                "input": "hover",
+                "value": false
+              }
+            ],
+            "onStateChange": {
+              "type": "setVariable",
+              "payload": {
+                "key": "riveState",
+                "value": "$event.stateName"
+              }
+            },
+            "onPlay": {
+              "type": "setVariable",
+              "payload": {
+                "key": "riveStatus",
+                "value": "playing"
+              }
+            },
+            "onPause": {
+              "type": "setVariable",
+              "payload": {
+                "key": "riveStatus",
+                "value": "paused"
+              }
+            }
+          },
+          "peblor-controls": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "row",
+            "align": "center",
+            "gap": "0.5rem",
+            "padding": "0.75rem 1rem 0 1rem",
+            "wrap": "wrap",
+            "section": {
+              "elementOrder": ["btn-play", "btn-pause", "btn-reset"],
+              "definitions": {
+                "btn-play": {
+                  "preset": "player-demo-btn",
+                  "label": "▶ Play",
+                  "action": "rive.play",
+                  "actionPayload": {
+                    "id": "rive-sm"
+                  },
+                  "wrapperFill": "color-mix(in oklab, var(--pb-accent) 15%, transparent)"
+                },
+                "btn-pause": {
+                  "preset": "player-demo-btn",
+                  "label": "⏸ Pause",
+                  "action": "rive.pause",
+                  "actionPayload": {
+                    "id": "rive-sm"
+                  },
+                  "wrapperFill": "color-mix(in oklab, var(--pb-accent) 15%, transparent)"
+                },
+                "btn-reset": {
+                  "preset": "player-demo-btn",
+                  "label": "↺ Reset",
+                  "action": "rive.reset",
+                  "actionPayload": {
+                    "id": "rive-sm"
+                  },
+                  "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+                }
+              }
+            }
+          },
+          "rive-inputs": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.4rem",
+            "padding": "0.5rem 1rem 0.85rem 1rem",
+            "section": {
+              "elementOrder": ["inputs-label", "inputs-row"],
+              "definitions": {
+                "inputs-label": {
+                  "preset": "type-h5-meta",
+                  "text": "Fire inputs into Rive state machine (Peblor → Rive)"
+                },
+                "inputs-row": {
+                  "type": "elementGroup",
+                  "display": "flex",
+                  "flow": "row",
+                  "wrap": "wrap",
+                  "gap": "0.45rem",
+                  "section": {
+                    "elementOrder": ["btn-jump", "btn-speed1", "btn-speed2", "btn-input-off"],
+                    "definitions": {
+                      "btn-jump": {
+                        "preset": "player-demo-btn",
+                        "label": "rive.fireTrigger → jump",
+                        "action": "rive.fireTrigger",
+                        "actionPayload": {
+                          "id": "rive-sm",
+                          "input": "jump"
+                        },
+                        "wrapperFill": "color-mix(in oklab, var(--pb-accent) 15%, transparent)"
+                      },
+                      "btn-speed1": {
+                        "preset": "player-demo-btn",
+                        "label": "rive.setInput → speed=1",
+                        "action": "rive.setInput",
+                        "actionPayload": {
+                          "id": "rive-sm",
+                          "input": "speed",
+                          "value": 1
+                        },
+                        "wrapperFill": "color-mix(in oklab, var(--pb-primary) 18%, transparent)"
+                      },
+                      "btn-speed2": {
+                        "preset": "player-demo-btn",
+                        "label": "rive.setInput → speed=2",
+                        "action": "rive.setInput",
+                        "actionPayload": {
+                          "id": "rive-sm",
+                          "input": "speed",
+                          "value": 2
+                        },
+                        "wrapperFill": "color-mix(in oklab, var(--pb-primary) 18%, transparent)"
+                      },
+                      "btn-input-off": {
+                        "preset": "player-demo-btn",
+                        "label": "rive.setInput → hover=off",
+                        "action": "rive.setInput",
+                        "actionPayload": {
+                          "id": "rive-sm",
+                          "input": "hover",
+                          "value": false
+                        },
+                        "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "state-showcase": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "0.75rem",
+      "width": "100%",
+      "section": {
+        "elementOrder": ["sc-label", "panel-a", "panel-b", "panel-c", "panel-d"],
+        "definitions": {
+          "sc-label": {
+            "preset": "type-h5-meta",
+            "text": "Rive → Peblor: state machine output drives page content"
+          },
+          "panel-a": {
+            "preset": "player-rive-state-panel",
+            "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+            "wrapperStyle": {
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+            },
+            "visibleWhen": {
+              "variable": "riveState",
+              "operator": "equals",
+              "value": "Idle"
+            },
+            "section": {
+              "elementOrder": ["pa-label", "pa-body"],
+              "definitions": {
+                "pa-label": {
+                  "preset": "type-h3-label",
+                  "text": "Rive says: Idle"
+                },
+                "pa-body": {
+                  "preset": "type-body-standard",
+                  "text": "The Rive state machine is at rest. Hover the canvas, fire a trigger, or click a button above — Rive will transition states and this panel will update live."
+                }
+              }
+            }
+          },
+          "panel-b": {
+            "preset": "player-rive-state-panel",
+            "fill": "color-mix(in oklab, var(--pb-accent) 14%, transparent)",
+            "wrapperStyle": {
+              "border": "1px solid color-mix(in oklab, var(--pb-accent) 22%, transparent)"
+            },
+            "visibleWhen": {
+              "variable": "riveState",
+              "operator": "equals",
+              "value": "Hover"
+            },
+            "section": {
+              "elementOrder": ["pb-label", "pb-body"],
+              "definitions": {
+                "pb-label": {
+                  "preset": "type-h3-label",
+                  "text": "Rive says: Hover"
+                },
+                "pb-body": {
+                  "preset": "type-body-standard",
+                  "text": "onStateChange fired with stateName=Hover. Peblor caught it, stored it in riveState, and rendered this block. This is Rive→Peblor in action — no JavaScript written."
+                }
+              }
+            }
+          },
+          "panel-c": {
+            "preset": "player-rive-state-panel",
+            "fill": "color-mix(in oklab, var(--pb-primary) 14%, transparent)",
+            "wrapperStyle": {
+              "border": "1px solid color-mix(in oklab, var(--pb-primary) 22%, transparent)"
+            },
+            "visibleWhen": {
+              "variable": "riveState",
+              "operator": "equals",
+              "value": "Moving"
+            },
+            "section": {
+              "elementOrder": ["pc-label", "pc-body"],
+              "definitions": {
+                "pc-label": {
+                  "preset": "type-h3-label",
+                  "text": "Rive says: Moving"
+                },
+                "pc-body": {
+                  "preset": "type-body-standard",
+                  "text": "Animation is running. The trigger you fired caused Rive to transition — Peblor is now showing this section in response. Entire content blocks can be gated this way."
+                }
+              }
+            }
+          },
+          "panel-d": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "row",
+            "align": "center",
+            "gap": "0.75rem",
+            "padding": "0.75rem 1.25rem",
+            "borderRadius": "12px",
+            "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+            "wrapperStyle": {
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+            },
+            "section": {
+              "elementOrder": ["pd-label"],
+              "definitions": {
+                "pd-label": {
+                  "preset": "type-h5-meta",
+                  "text": "riveState variable updates live — any state name from the machine will be caught"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

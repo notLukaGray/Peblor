@@ -74,10 +74,9 @@ describe("analytics payload schemas — PII safety", () => {
       }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const def = obj._def as any;
-    if (def && Array.isArray(def.options)) {
-      for (const opt of def.options) {
+    const zodDef = obj._def as { options?: unknown[] } | undefined;
+    if (zodDef && Array.isArray(zodDef.options)) {
+      for (const opt of zodDef.options) {
         for (const f of collectFieldNames(opt)) fields.add(f);
       }
     }
@@ -87,6 +86,7 @@ describe("analytics payload schemas — PII safety", () => {
 
   it("no PII-shaped keys in any event payload schema", () => {
     const fields = collectFieldNames(analyticsEventPayloadSchema);
+    expect(fields.size).toBeGreaterThan(0);
     for (const piiKey of PII_KEYS) {
       for (const field of fields) {
         const lowerField = field.toLowerCase();
@@ -97,6 +97,7 @@ describe("analytics payload schemas — PII safety", () => {
 
   it("no PII-shaped keys in common payload schema", () => {
     const fields = collectFieldNames(analyticsCommonPayloadSchema);
+    expect(fields.size).toBeGreaterThan(0);
     for (const piiKey of PII_KEYS) {
       for (const field of fields) {
         const lowerField = field.toLowerCase();

@@ -1,0 +1,17 @@
+{
+  "definitions": {
+    "hero-badge": {
+      "preset": "demo-hero-badge",
+      "text": "backgroundVariable · loop motion"
+    },
+    "hero-title": {
+      "preset": "demo-hero-title",
+      "text": "bg-dark-moody"
+    },
+    "hero-desc": {
+      "preset": "demo-hero-description",
+      "text": "Deep atmospheric dark — forced dark regardless of system theme. Two radial accents breathe at different rhythms, an 80s sci-fi glow that never stops."
+    }
+  },
+  "preset": "demo-hero-100vh"
+}

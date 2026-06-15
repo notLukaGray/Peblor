@@ -1,0 +1,21 @@
+{
+  "preset": "demo-hero",
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "PBR · Spot Lights · SSAO"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "3D Material & Light"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Solid scene background (#050505). PBR head under spot lights with bloom and SSAO. Loads immediately — transparent canvas variant is on 3D Minimal.",
+      "width": {
+        "base": "100%",
+        "md": "78%"
+      }
+    }
+  }
+}

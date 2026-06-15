@@ -1,0 +1,59 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "width": "100%",
+  "maxWidth": "1000px",
+  "selfAlign": "center",
+  "align": "stretch",
+  "height": "hug",
+  "padding": {
+    "base": "2rem 1.25rem",
+    "md": "2.5rem 1.5rem"
+  },
+  "gap": "1.25rem",
+  "borderRadius": "20px",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 11%, transparent)"
+  },
+  "elementOrder": ["media", "meta", "caption"],
+  "definitions": {
+    "media": {
+      "type": "elementImage",
+      "src": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1000&q=80&auto=format&fit=crop",
+      "alt": "Workspace with laptop and notebook",
+      "width": "100%",
+      "borderRadius": "14px"
+    },
+    "meta": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "align": "center",
+      "gap": "0.85rem",
+      "padding": "0",
+      "width": "100%",
+      "section": {
+        "elementOrder": ["tag", "date"],
+        "definitions": {
+          "tag": {
+            "preset": "type-body-fine",
+            "text": "Design",
+            "wrapperPadding": "0.35rem 0.75rem",
+            "wrapperBorderRadius": "999px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-accent) 14%, transparent)"
+          },
+          "date": {
+            "preset": "type-body-fine",
+            "text": "Field Notes · 2026"
+          }
+        }
+      }
+    },
+    "caption": {
+      "preset": "type-body-standard",
+      "text": "Media-first single-flow composition with controlled caption hierarchy and resilient long-copy behavior.",
+      "width": "100%"
+    }
+  }
+}

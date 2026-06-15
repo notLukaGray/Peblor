@@ -1,0 +1,21 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Crossmedia Control Surface — Preset Demo",
+  "description": "Play All broadcasts to every media element. Rive→3D bridge: buttons control both runtimes simultaneously.",
+  "presets": [
+    "demo",
+    "type/core",
+    "ui/link",
+    "type/motion",
+    "player/crossmedia",
+    "bg",
+    "player/section"
+  ],
+  "bgKey": "bg-players",
+  "sectionOrder": ["nav-header", "hero", "sec-player"],
+  "definitions": {
+    "bg-players": {
+      "preset": "bg-players"
+    }
+  }
+}

@@ -66,7 +66,7 @@ axes:
   - name: state
     fields: [disabled, loading, loadingLabel]
   - name: events
-    fields: [pointerDownAction, pointerUpAction]
+    fields: [interactions]
 
 covers:
   - description: "Primary CTA button linking to a page section"

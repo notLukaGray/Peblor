@@ -1,0 +1,77 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "staggerChildren": 0.15,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "compare-group"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Before / After Comparison"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Drag the slider handle left and right to compare two images. The compare element supports horizontal or vertical split, keyboard stepping, and optional before/after labels."
+    },
+    "compare-group": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "stretch",
+      "gap": "2rem",
+      "width": "100%",
+      "motionTiming": {
+        "staggerChildren": 0.1,
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": ["compare-horizontal", "compare-vertical"],
+        "definitions": {
+          "compare-horizontal": {
+            "type": "elementImageCompare",
+            "before": {
+              "src": "/dev/before-placeholder.svg",
+              "alt": "Before state"
+            },
+            "after": {
+              "src": "/dev/after-placeholder.svg",
+              "alt": "After state"
+            },
+            "initialPosition": 0.5,
+            "direction": "horizontal",
+            "beforeLabel": "Before",
+            "afterLabel": "After",
+            "hoverActivate": true,
+            "handleSize": "40px",
+            "handleIcon": "chevron",
+            "dividerWidth": "2px",
+            "width": "100%",
+            "borderRadius": "12px",
+            "scroll": "hidden"
+          },
+          "compare-vertical": {
+            "type": "elementImageCompare",
+            "before": {
+              "src": "/dev/before-placeholder.svg",
+              "alt": "Before state"
+            },
+            "after": {
+              "src": "/dev/after-placeholder.svg",
+              "alt": "After state"
+            },
+            "initialPosition": 0.5,
+            "direction": "vertical",
+            "beforeLabel": "Before",
+            "afterLabel": "After",
+            "handleIcon": "chevron",
+            "dividerWidth": "2px",
+            "width": "100%",
+            "borderRadius": "12px",
+            "scroll": "hidden"
+          }
+        }
+      }
+    }
+  }
+}

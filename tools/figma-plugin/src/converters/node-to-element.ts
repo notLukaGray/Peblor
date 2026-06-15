@@ -16,6 +16,7 @@ import {
   findUnsupportedAnnotationKeys,
   ELEMENT_SUPPORTED_ANNOTATION_KEYS,
 } from "./annotations-parse";
+import { stripAnnotations } from "./annotations-parse";
 import { buildMotionTiming } from "./motion";
 import { isLikelyButton, convertButtonNode, inferButtonInferenceMeta } from "./button";
 import { isVideoNode, convertVideoNode, inferVideoInferenceMeta } from "./video";
@@ -36,6 +37,347 @@ import { EXPORT_DROP_REASON, getOrCreateExportParity, recordConverterDrop } from
 export type { GroupNodeParentCtx };
 
 void buildMotionTiming; // referenced transitively via applyElementAnnotationProps
+
+const NATIVE_ANNOTATION_TYPES = new Set(["button", "spacer", "svg", "image"]);
+const FORM_FIELD_TYPES = new Set([
+  "text",
+  "email",
+  "password",
+  "tel",
+  "url",
+  "number",
+  "date",
+  "time",
+  "datetime-local",
+  "color",
+  "search",
+  "paragraph",
+  "checkbox",
+  "checkboxgroup",
+  "radio",
+  "select",
+  "switch",
+  "range",
+  "hidden",
+  "button",
+  "row",
+  "submit",
+]);
+
+const INTENT_ONLY_ANNOTATION_TYPE_MAP: Record<string, string> = {
+  elementaudio: "elementAudio",
+  audio: "elementAudio",
+  elementtabs: "elementTabs",
+  tabs: "elementTabs",
+  elementtooltip: "elementTooltip",
+  tooltip: "elementTooltip",
+  elementlottie: "elementLottie",
+  lottie: "elementLottie",
+  elementmodel3d: "elementModel3D",
+  model3d: "elementModel3D",
+  elementdrag: "elementDrag",
+  drag: "elementDrag",
+  elementmarquee: "elementMarquee",
+  marquee: "elementMarquee",
+  elementimagecompare: "elementImageCompare",
+  imagecompare: "elementImageCompare",
+  elementcounter: "elementCounter",
+  counter: "elementCounter",
+  elementinfinitescroll: "elementInfiniteScroll",
+  infinitescroll: "elementInfiniteScroll",
+  elementvideotime: "elementVideoTime",
+  videotime: "elementVideoTime",
+  elementvideoqualityselect: "elementVideoQualitySelect",
+  videoqualityselect: "elementVideoQualitySelect",
+  elementrange: "elementRange",
+  range: "elementRange",
+  elementvector: "elementVector",
+  vector: "elementVector",
+  elementdivider: "elementDivider",
+  divider: "elementDivider",
+  elementformfield: "elementFormField",
+  formfield: "elementFormField",
+};
+
+function applyAnnotationTypeIntent(
+  result: ElementBlock | null,
+  node: SceneNode,
+  annotations: Record<string, string>,
+  warnings: string[]
+): void {
+  if (!result) return;
+  const rawType = (annotations.type ?? "").trim().toLowerCase();
+  if (!rawType) return;
+  if (NATIVE_ANNOTATION_TYPES.has(rawType)) return;
+  const intendedType = INTENT_ONLY_ANNOTATION_TYPE_MAP[rawType];
+  if (!intendedType) return;
+  mergeElementMetaFigma(result, {
+    inference: {
+      kind: intendedType,
+      confidence: "low",
+      detail: "Annotation requested an element type without a dedicated Figma exporter converter.",
+    },
+    fallbackReason: `annotation-intent:${intendedType}`,
+  });
+  warnings.push(
+    `[intent] "${node.name}" requested ${intendedType} via annotation, but exporter has no direct converter yet; exported nearest supported representation.`
+  );
+}
+
+function parseBooleanAnnotation(value: string | undefined): boolean | undefined {
+  if (value === undefined) return undefined;
+  const normalized = value.trim().toLowerCase();
+  if (normalized === "true") return true;
+  if (normalized === "false") return false;
+  return undefined;
+}
+
+function parseNumberAnnotation(value: string | undefined): number | undefined {
+  if (value === undefined) return undefined;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+function buildAnnotatedSpecialElement(
+  node: SceneNode,
+  ctx: ConversionContext,
+  annotations: Record<string, string>,
+  parentCtx?: GroupNodeParentCtx
+): ElementBlock | null {
+  const rawType = (annotations.type ?? "").trim().toLowerCase();
+  const id = ensureUniqueId(slugify(inferNodeId(node)), ctx.usedIds);
+  const src = annotations.src?.trim();
+  const moduleId = annotations.module?.trim();
+  const ariaLabel = annotations.arialabel?.trim();
+
+  if (rawType === "audio" || rawType === "elementaudio") {
+    if (!src) return null;
+    const result: ElementBlock = {
+      type: "elementAudio",
+      id,
+      src,
+      ...(moduleId ? { module: moduleId } : {}),
+      ...(ariaLabel ? { ariaLabel } : {}),
+      ...(parseBooleanAnnotation(annotations.autoplay) !== undefined
+        ? { autoplay: parseBooleanAnnotation(annotations.autoplay) }
+        : {}),
+      ...(parseBooleanAnnotation(annotations.loop) !== undefined
+        ? { loop: parseBooleanAnnotation(annotations.loop) }
+        : {}),
+      ...(parseBooleanAnnotation(annotations.muted) !== undefined
+        ? { muted: parseBooleanAnnotation(annotations.muted) }
+        : {}),
+      ...(parseBooleanAnnotation(annotations.controls) !== undefined
+        ? { controls: parseBooleanAnnotation(annotations.controls) }
+        : {}),
+      ...(annotations.preload === "none" ||
+      annotations.preload === "metadata" ||
+      annotations.preload === "auto"
+        ? { preload: annotations.preload }
+        : {}),
+      ...(parseBooleanAnnotation(annotations.showwaveform) !== undefined
+        ? { showWaveform: parseBooleanAnnotation(annotations.showwaveform) }
+        : {}),
+      ...(parseBooleanAnnotation(annotations.showtimedisplay) !== undefined
+        ? { showTimeDisplay: parseBooleanAnnotation(annotations.showtimedisplay) }
+        : {}),
+    };
+    applyAbsPos(result, node, parentCtx);
+    applyElementAnnotationProps(result, node, annotations, ctx.warnings);
+    return result;
+  }
+
+  if (rawType === "lottie" || rawType === "elementlottie") {
+    if (!src) return null;
+    const result: ElementBlock = {
+      type: "elementLottie",
+      id,
+      src,
+      ...(ariaLabel ? { ariaLabel } : {}),
+      ...(parseBooleanAnnotation(annotations.autoplay) !== undefined
+        ? { autoplay: parseBooleanAnnotation(annotations.autoplay) }
+        : {}),
+      ...(parseBooleanAnnotation(annotations.loop) !== undefined
+        ? { loop: parseBooleanAnnotation(annotations.loop) }
+        : {}),
+      ...(annotations.poster ? { poster: annotations.poster } : {}),
+    };
+    applyAbsPos(result, node, parentCtx);
+    applyElementAnnotationProps(result, node, annotations, ctx.warnings);
+    return result;
+  }
+
+  if (rawType === "tooltip" || rawType === "elementtooltip") {
+    const content =
+      annotations.content?.trim() ||
+      annotations.label?.trim() ||
+      stripAnnotations(node.name || "Tooltip").trim();
+    const result: ElementBlock = {
+      type: "elementTooltip",
+      id,
+      content,
+      ...(ariaLabel ? { ariaLabel } : {}),
+      ...(annotations.placement ? { placement: annotations.placement } : {}),
+      ...(parseNumberAnnotation(annotations.showdelay) !== undefined
+        ? { showDelay: parseNumberAnnotation(annotations.showdelay) }
+        : {}),
+      ...(parseNumberAnnotation(annotations.hidedelay) !== undefined
+        ? { hideDelay: parseNumberAnnotation(annotations.hidedelay) }
+        : {}),
+      ...(annotations.offset ? { offset: annotations.offset } : {}),
+      ...(parseBooleanAnnotation(annotations.arrow) !== undefined
+        ? { arrow: parseBooleanAnnotation(annotations.arrow) }
+        : {}),
+      ...(parseBooleanAnnotation(annotations.interactive) !== undefined
+        ? { interactive: parseBooleanAnnotation(annotations.interactive) }
+        : {}),
+      ...(parseBooleanAnnotation(annotations.followcursor) !== undefined
+        ? { followCursor: parseBooleanAnnotation(annotations.followcursor) }
+        : {}),
+      ...(annotations.maxwidth ? { maxWidth: annotations.maxwidth } : {}),
+    };
+    applyAbsPos(result, node, parentCtx);
+    applyElementAnnotationProps(result, node, annotations, ctx.warnings);
+    return result;
+  }
+
+  if (rawType === "tabs" || rawType === "elementtabs") {
+    const labelsRaw = annotations.tabs?.trim() || annotations.label?.trim() || "Tab 1|Tab 2";
+    const labels = labelsRaw
+      .split("|")
+      .map((entry) => entry.trim())
+      .filter((entry) => entry.length > 0);
+    const tabs = labels.map((label) => ({ label, elements: [] as Array<Record<string, unknown>> }));
+    const result: ElementBlock = {
+      type: "elementTabs",
+      id,
+      tabs,
+      ...(ariaLabel ? { ariaLabel } : {}),
+      ...(parseNumberAnnotation(annotations.activetab) !== undefined
+        ? { activeTab: parseNumberAnnotation(annotations.activetab) }
+        : {}),
+      ...(annotations.tabalignment ? { tabAlignment: annotations.tabalignment } : {}),
+      ...(annotations.contentanimation ? { contentAnimation: annotations.contentanimation } : {}),
+      ...(parseBooleanAnnotation(annotations.lazyload) !== undefined
+        ? { lazyLoad: parseBooleanAnnotation(annotations.lazyload) }
+        : {}),
+      ...(parseBooleanAnnotation(annotations.scrollable) !== undefined
+        ? { scrollable: parseBooleanAnnotation(annotations.scrollable) }
+        : {}),
+      ...(parseBooleanAnnotation(annotations.mobilecollapse) !== undefined
+        ? { mobileCollapse: parseBooleanAnnotation(annotations.mobilecollapse) }
+        : {}),
+      ...(parseBooleanAnnotation(annotations.keyboardnav) !== undefined
+        ? { keyboardNav: parseBooleanAnnotation(annotations.keyboardnav) }
+        : {}),
+    };
+    applyAbsPos(result, node, parentCtx);
+    applyElementAnnotationProps(result, node, annotations, ctx.warnings);
+    return result;
+  }
+
+  if (rawType === "counter" || rawType === "elementcounter") {
+    const target = parseNumberAnnotation(annotations.target) ?? 100;
+    const start = parseNumberAnnotation(annotations.start) ?? 0;
+    const result: ElementBlock = {
+      type: "elementCounter",
+      id,
+      target,
+      start,
+      tween: { duration: 1200, easing: "easeOut" },
+      ...(annotations.prefix ? { prefix: annotations.prefix } : {}),
+      ...(annotations.suffix ? { suffix: annotations.suffix } : {}),
+      ...(ariaLabel ? { ariaLabel } : {}),
+    };
+    applyAbsPos(result, node, parentCtx);
+    applyElementAnnotationProps(result, node, annotations, ctx.warnings);
+    return result;
+  }
+
+  if (rawType === "marquee" || rawType === "elementmarquee") {
+    const text =
+      annotations.text?.trim() ||
+      annotations.label?.trim() ||
+      stripAnnotations(node.name || "Marquee").trim();
+    const result: ElementBlock = {
+      type: "elementMarquee",
+      id,
+      text,
+      ...(ariaLabel ? { ariaLabel } : {}),
+      ...(annotations.direction ? { direction: annotations.direction } : {}),
+      ...(parseNumberAnnotation(annotations.speed) !== undefined
+        ? { speed: parseNumberAnnotation(annotations.speed) }
+        : {}),
+    };
+    applyAbsPos(result, node, parentCtx);
+    applyElementAnnotationProps(result, node, annotations, ctx.warnings);
+    return result;
+  }
+
+  if (rawType === "drag" || rawType === "elementdrag") {
+    const result: ElementBlock = {
+      type: "elementDrag",
+      id,
+      ...(ariaLabel ? { ariaLabel } : {}),
+      ...(annotations.axis ? { axis: annotations.axis } : {}),
+      ...(parseBooleanAnnotation(annotations.snapback) !== undefined
+        ? { snapBack: parseBooleanAnnotation(annotations.snapback) }
+        : {}),
+    };
+    applyAbsPos(result, node, parentCtx);
+    applyElementAnnotationProps(result, node, annotations, ctx.warnings);
+    return result;
+  }
+
+  if (rawType === "range" || rawType === "elementrange") {
+    const min = parseNumberAnnotation(annotations.min);
+    const max = parseNumberAnnotation(annotations.max);
+    const step = parseNumberAnnotation(annotations.step);
+    const defaultValue = parseNumberAnnotation(annotations.value);
+    const result: ElementBlock = {
+      type: "elementRange",
+      id,
+      ...(ariaLabel ? { ariaLabel } : {}),
+      ...(min !== undefined ? { min } : {}),
+      ...(max !== undefined ? { max } : {}),
+      ...(step !== undefined ? { step } : {}),
+      ...(defaultValue !== undefined ? { defaultValue } : {}),
+    };
+    applyAbsPos(result, node, parentCtx);
+    applyElementAnnotationProps(result, node, annotations, ctx.warnings);
+    return result;
+  }
+
+  if (rawType === "formfield" || rawType === "elementformfield") {
+    const rawFieldType = annotations.fieldtype?.trim().toLowerCase() || "text";
+    const fieldType = FORM_FIELD_TYPES.has(rawFieldType) ? rawFieldType : "text";
+    if (rawFieldType !== fieldType) {
+      ctx.warnings.push(
+        `[annotations] "${node.name}" has unsupported fieldType="${rawFieldType}"; defaulted to fieldType="text".`
+      );
+    }
+    const label = annotations.label?.trim() || stripAnnotations(node.name || "Field").trim();
+    const result: ElementBlock = {
+      type: "elementFormField",
+      id,
+      field: {
+        type: "formField",
+        fieldType,
+        label,
+        ...(annotations.name ? { name: annotations.name } : {}),
+        ...(annotations.placeholder ? { placeholder: annotations.placeholder } : {}),
+        ...(parseBooleanAnnotation(annotations.required) !== undefined
+          ? { required: parseBooleanAnnotation(annotations.required) }
+          : {}),
+      },
+    };
+    applyAbsPos(result, node, parentCtx);
+    applyElementAnnotationProps(result, node, annotations, ctx.warnings);
+    return result;
+  }
+
+  return null;
+}
 
 function isVectorLikeType(type: SceneNode["type"]): boolean {
   return (
@@ -107,7 +449,12 @@ export async function convertNode(
   ctx: ConversionContext,
   parentCtx?: GroupNodeParentCtx
 ): Promise<ElementBlock | null> {
-  return finalizeConvertNodeResult(ctx, node, await convertNodeImpl(node, ctx, parentCtx));
+  const annotations = parseNodeAnnotations(
+    node as unknown as { name?: string } & Record<string, unknown>
+  );
+  const result = await convertNodeImpl(node, ctx, parentCtx);
+  applyAnnotationTypeIntent(result, node, annotations, ctx.warnings);
+  return finalizeConvertNodeResult(ctx, node, result);
 }
 
 async function convertNodeImpl(
@@ -129,6 +476,9 @@ async function convertNodeImpl(
   }
 
   // Annotation type overrides — bypass normal heuristic routing
+  const special = buildAnnotatedSpecialElement(node, ctx, annotations, parentCtx);
+  if (special) return special;
+
   if (annotations.type === "button") {
     const result = await convertButtonNode(node, ctx, annotations);
     applyAbsPos(result, node, parentCtx);

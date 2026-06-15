@@ -4,13 +4,45 @@ import { loadPage } from "@pb/core/load";
 import { validatePage } from "@pb/core/validate";
 import { expandPage } from "@pb/core/resolve";
 import { resolveAssets } from "@pb/core/resolve";
+import { loadPeblorByPathAsync, discoverAllPages, PAGE_DATA_DIR } from "@pb/core/loader";
 import { loadCatalog } from "@pb/catalog";
 import type { CatalogEntry } from "@pb/catalog";
 import type { Peblor } from "@pb/contracts";
+import {
+  knownPageTagsConfigSchema,
+  pageTagsSchema,
+  filterConfigSchema,
+  projectGroupsSchema,
+  validateKnownPageTags,
+  validateKnownFilterCategories,
+  validateProjectGroups,
+  type KnownPageTagsConfig,
+} from "@pb/contracts";
 import { schemaTypeHint } from "./explain-schema.js";
 import { readJsonFile } from "../lib/json-file.js";
 import { validateSectionValue } from "../lib/section-validate.js";
 import type { CommandIo } from "./types.js";
+
+/**
+ * When a page path is inside PAGE_DATA_DIR and points to an index.json,
+ * derive the slug segments so we can use the strict route-aware loader.
+ * Returns null if the path is outside the content tree or not a page index.
+ */
+export function deriveSlugSegments(contentPath: string): string[] | null {
+  const absContent = path.resolve(contentPath);
+  const absDataDir = path.resolve(PAGE_DATA_DIR);
+  if (!absContent.startsWith(absDataDir + path.sep)) return null;
+  const rel = absContent.slice(absDataDir.length + 1).replace(/\\/g, "/");
+  // Root index.json has no slug segments — not a routable page under a slug.
+  if (rel === "index.json") return null;
+  // Non-index JSON files are sidecar section fragments, not routes.
+  if (!rel.endsWith("/index.json")) return null;
+  const segments = rel
+    .replace(/\/index\.json$/, "")
+    .split("/")
+    .filter(Boolean);
+  return segments.length > 0 ? segments : null;
+}
 
 type StageName = "load" | "validate" | "expand" | "resolve" | "assets";
 const VALID_STAGES = new Set<StageName>(["load", "validate", "expand", "resolve", "assets"]);
@@ -38,7 +70,7 @@ function parseDoctorArgs(args: string[]): {
   const fragmentPath = fragmentIndex >= 0 ? args[fragmentIndex + 1] : undefined;
   const consumed = new Set<number>();
   for (let i = 0; i < args.length; i += 1) {
-    if (["--json", "--verbose", "--quiet", "--strict", "--help", "-h"].includes(args[i]))
+    if (["--json", "--verbose", "--quiet", "--strict", "--help", "-h"].includes(args[i]!))
       consumed.add(i);
     if (args[i] === "--stage") {
       consumed.add(i);
@@ -55,7 +87,8 @@ function parseDoctorArgs(args: string[]): {
 
 export function resolveSectionFiles(
   pageFile: string,
-  sectionOrder: string[]
+  sectionOrder: string[],
+  definitions?: Record<string, unknown>
 ): {
   sections: number;
   loaded: number;
@@ -66,6 +99,15 @@ export function resolveSectionFiles(
   const failures: Array<{ key: string; message: string }> = [];
   let loaded = 0;
   for (const key of sectionOrder) {
+    if (
+      definitions &&
+      definitions[key] &&
+      typeof definitions[key] === "object" &&
+      "type" in (definitions[key] as object)
+    ) {
+      loaded += 1;
+      continue;
+    }
     const file = path.join(dir, `${key}.json`);
     if (!fs.existsSync(file)) {
       failures.push({ key, message: `Section file not found: ${file}` });
@@ -84,6 +126,94 @@ export function resolveSectionFiles(
     loaded += 1;
   }
   return { sections: sectionOrder.length, loaded, failed: failures.length, failures };
+}
+
+/**
+ * Run the same CI-level tag/filterConfig/projectGroups checks that
+ * `scripts/validate-pages.ts` runs, but scoped to a single page.
+ * Returns a flat array of diagnostic objects (same shape as stage diagnostics).
+ */
+async function runCiChecks(
+  page: Record<string, unknown> | Peblor
+): Promise<
+  Array<{ severity: string; stage: string; code: string; path: string; message: string }>
+> {
+  const issues: Array<{
+    severity: string;
+    stage: string;
+    code: string;
+    path: string;
+    message: string;
+  }> = [];
+
+  // Load the known-tags config. If absent (project doesn't use it) skip silently.
+  let tagsConfig: KnownPageTagsConfig | undefined;
+  const tagsConfigPath = path.join(path.dirname(PAGE_DATA_DIR), "config", "tags.json");
+  if (fs.existsSync(tagsConfigPath)) {
+    try {
+      const raw = fs.readFileSync(tagsConfigPath, "utf-8");
+      const result = knownPageTagsConfigSchema.safeParse(JSON.parse(raw));
+      if (result.success) tagsConfig = result.data;
+    } catch (err) {
+      console.warn("[pb-cli] Failed to parse tags config", tagsConfigPath, err);
+    }
+  }
+
+  const pageRec = page as Record<string, unknown>;
+
+  if (tagsConfig) {
+    // Validate tags.
+    const tagsResult = pageRec.tags !== undefined ? pageTagsSchema.safeParse(pageRec.tags) : null;
+    if (tagsResult?.success) {
+      for (const issue of validateKnownPageTags(tagsResult.data, tagsConfig)) {
+        issues.push({
+          severity: "error",
+          stage: "ci-checks",
+          code: "PB_UNKNOWN_TAG",
+          path: issue.path.join(".") || "$",
+          message: issue.message,
+        });
+      }
+    }
+
+    // Validate filterConfig.
+    const filterResult =
+      pageRec.filterConfig !== undefined
+        ? filterConfigSchema.safeParse(pageRec.filterConfig)
+        : null;
+    if (filterResult?.success) {
+      for (const issue of validateKnownFilterCategories(filterResult.data, tagsConfig)) {
+        issues.push({
+          severity: "error",
+          stage: "ci-checks",
+          code: "PB_UNKNOWN_FILTER_CATEGORY",
+          path: issue.path.join(".") || "$",
+          message: issue.message,
+        });
+      }
+    }
+  }
+
+  // Validate projectGroups — requires knowing all page slugs.
+  const groupsResult =
+    pageRec.projectGroups !== undefined
+      ? projectGroupsSchema.safeParse(pageRec.projectGroups)
+      : null;
+  if (groupsResult?.success) {
+    const allPages = await discoverAllPages();
+    const knownSlugs = new Set(allPages.map((p) => p.slugSegments.join("/")));
+    for (const issue of validateProjectGroups(groupsResult.data, knownSlugs)) {
+      issues.push({
+        severity: "error",
+        stage: "ci-checks",
+        code: "PB_INVALID_PROJECT_GROUP",
+        path: issue.path.join(".") || "$",
+        message: issue.message,
+      });
+    }
+  }
+
+  return issues;
 }
 
 function collectAssetUrls(value: unknown, urls: Set<string>): void {
@@ -249,54 +379,101 @@ export async function runDoctor(args: string[], io: CommandIo): Promise<number> 
 
   let loaded: Awaited<ReturnType<typeof loadPage>> | null = null;
   let validated: ReturnType<typeof validatePage> | null = null;
+  let strictPage: Peblor | null = null;
   let expanded: ReturnType<typeof expandPage> | null = null;
   let assets: ReturnType<typeof resolveAssets> | null = null;
 
-  try {
-    loaded = await loadPage(contentPath!);
-    stages.load = { ok: true, details: { file: loaded.filePath } };
-  } catch (error) {
-    stages.load = { ok: false, error: error instanceof Error ? error.message : String(error) };
+  const slugSegments = deriveSlugSegments(contentPath!);
+  const isRoutePage = slugSegments !== null;
+
+  if (isRoutePage) {
+    // Route-aware strict load: same path as the app and CI scripts.
+    // load + validate collapse into one async operation.
+    try {
+      strictPage = await loadPeblorByPathAsync(slugSegments);
+      if (strictPage === null) {
+        stages.load = { ok: false, error: `Page not found at route /${slugSegments.join("/")}` };
+      } else {
+        stages.load = {
+          ok: true,
+          details: { file: contentPath!, route: `/${slugSegments.join("/")}`, mode: "strict-load" },
+        };
+        stages.validate = {
+          ok: true,
+          details: { schema: "peblorSchema", mode: "strict-load", note: "includes ref checks" },
+        };
+      }
+    } catch (error) {
+      stages.load = { ok: false, error: error instanceof Error ? error.message : String(error) };
+    }
+  } else {
+    // Legacy path for files outside the content tree (temp files, fragments being diagnosed).
+    try {
+      loaded = await loadPage(contentPath!);
+      stages.load = { ok: true, details: { file: loaded.filePath, mode: "schema-only" } };
+    } catch (error) {
+      stages.load = { ok: false, error: error instanceof Error ? error.message : String(error) };
+    }
+
+    if (
+      stages.load.ok &&
+      loaded &&
+      (!stage || ["validate", "expand", "resolve", "assets"].includes(stage))
+    ) {
+      validated = loaded.validate;
+      stages.validate = {
+        ok: validated.valid,
+        ...(validated.valid
+          ? { details: { schema: "peblorSchema", mode: "schema-only" } }
+          : { error: validated.diagnostics.map((d) => d.message).join("; ") }),
+      };
+    }
   }
+
+  // The page to expand: prefer strictPage (route-aware load), fall back to validated legacy load.
+  const pageForExpansion: Peblor | null = strictPage ?? (validated?.page as Peblor | null) ?? null;
 
   if (
-    stages.load.ok &&
-    loaded &&
-    (!stage || ["validate", "expand", "resolve", "assets"].includes(stage))
+    stages.validate.ok &&
+    pageForExpansion &&
+    (!stage || ["expand", "resolve", "assets"].includes(stage))
   ) {
-    validated = validatePage(loaded.raw);
-    stages.validate = {
-      ok: validated.valid,
-      ...(validated.valid
-        ? { details: { schema: "peblorSchema" } }
-        : { error: validated.diagnostics.map((d) => d.message).join("; ") }),
-    };
-  }
-
-  if (stages.validate.ok && (!stage || ["expand", "resolve", "assets"].includes(stage))) {
     try {
-      expanded = expandPage(validated!.page as Peblor);
-      const raw = loaded?.raw as Record<string, unknown>;
-      const sectionOrder = Array.isArray(raw.sectionOrder)
-        ? raw.sectionOrder.filter((value): value is string => typeof value === "string")
-        : [];
-      const sectionLoad = resolveSectionFiles(loaded!.filePath, sectionOrder);
-      stages.expand = {
-        ok: sectionLoad.failed === 0,
-        details: {
-          sections: sectionLoad.sections,
-          loaded: sectionLoad.loaded,
-          failed: sectionLoad.failed,
-          failures: sectionLoad.failures,
-        },
-        ...(sectionLoad.failed > 0
-          ? {
-              error: sectionLoad.failures
-                .map((failure) => `${failure.key}: ${failure.message}`)
-                .join("; "),
-            }
-          : {}),
-      };
+      expanded = expandPage(pageForExpansion);
+      if (isRoutePage) {
+        // For strict-load pages, section hydration already happened inside loadPeblorByPathAsync.
+        // Report the sections from the expanded output.
+        const sectionCount = expanded.sections.length;
+        stages.expand = {
+          ok: true,
+          details: { sections: sectionCount, loaded: sectionCount, failed: 0, mode: "strict-load" },
+        };
+      } else {
+        // Legacy: manually check sidecar section files.
+        const raw = loaded?.raw as Record<string, unknown>;
+        const sectionOrder = Array.isArray(raw.sectionOrder)
+          ? raw.sectionOrder.filter((value): value is string => typeof value === "string")
+          : [];
+        const resolvedDefs = (loaded as { resolved?: Record<string, unknown> } | null)?.resolved
+          ?.definitions as Record<string, unknown> | undefined;
+        const sectionLoad = resolveSectionFiles(loaded!.filePath, sectionOrder, resolvedDefs);
+        stages.expand = {
+          ok: sectionLoad.failed === 0,
+          details: {
+            sections: sectionLoad.sections,
+            loaded: sectionLoad.loaded,
+            failed: sectionLoad.failed,
+            failures: sectionLoad.failures,
+          },
+          ...(sectionLoad.failed > 0
+            ? {
+                error: sectionLoad.failures
+                  .map((failure) => `${failure.key}: ${failure.message}`)
+                  .join("; "),
+              }
+            : {}),
+        };
+      }
     } catch (error) {
       stages.expand = { ok: false, error: error instanceof Error ? error.message : String(error) };
     }
@@ -308,7 +485,7 @@ export async function runDoctor(args: string[], io: CommandIo): Promise<number> 
 
   if (shouldRunResolve) {
     try {
-      assets = resolveAssets(validated!.page as Peblor);
+      assets = resolveAssets(pageForExpansion!);
       const resolvedSections = assets?.resolvedSections ?? [];
       stages.resolve = {
         ok: true,
@@ -329,13 +506,13 @@ export async function runDoctor(args: string[], io: CommandIo): Promise<number> 
   if (shouldRunAssetManifest && stages.resolve.ok) {
     try {
       if (!assets) {
-        assets = resolveAssets(validated!.page as Peblor);
+        assets = resolveAssets(pageForExpansion!);
       }
       const resolvedSections = assets?.resolvedSections ?? [];
 
       // Surface asset manifest: collect all asset keys from the resolved page.
       const assetUrlSet = new Set<string>();
-      collectAssetUrls((validated!.page as Peblor & { bg?: unknown }).bg, assetUrlSet);
+      collectAssetUrls((pageForExpansion as Peblor & { bg?: unknown }).bg, assetUrlSet);
       collectAssetUrls(resolvedSections, assetUrlSet);
       const assetUrls = Array.from(assetUrlSet);
 
@@ -356,6 +533,20 @@ export async function runDoctor(args: string[], io: CommandIo): Promise<number> 
     stages.assets = { ok: true, details: { skipped: "run full doctor or --stage assets" } };
   }
 
+  // Mark any stage that never ran (ok: false, no error) as explicitly skipped.
+  // This happens when --stage stops the pipeline early. Without this, skipped stages
+  // look identical to failed stages in the JSON output.
+  if (stage) {
+    const stageOrder: StageName[] = ["load", "validate", "expand", "resolve", "assets"];
+    const stopAt = stageOrder.indexOf(stage);
+    for (let i = stopAt + 1; i < stageOrder.length; i++) {
+      const s = stageOrder[i]!;
+      if (!stages[s].ok && !stages[s].error) {
+        stages[s] = { ok: true, details: { skipped: true, reason: `--stage ${stage} stops here` } };
+      }
+    }
+  }
+
   const typeTally = new Map<string, number>();
   if (assets?.resolvedSections) walkTypes(assets.resolvedSections, typeTally);
   const catalog = loadCatalog();
@@ -366,7 +557,7 @@ export async function runDoctor(args: string[], io: CommandIo): Promise<number> 
       .sort((a, b) => Number(b[1]) - Number(a[1]))
   );
 
-  const diagnostics = Object.entries(stages)
+  const stageDiagnostics = Object.entries(stages)
     .filter(([, result]) => !result.ok && result.error)
     .map(([stageName, result]) => ({
       severity: "error",
@@ -375,6 +566,13 @@ export async function runDoctor(args: string[], io: CommandIo): Promise<number> 
       message: result.error,
       suggested_action: `Inspect ${stageName} stage inputs and run pb-cli explain on related cluster ids.`,
     }));
+
+  // CI-level checks: tags, filterConfig, projectGroups — same checks as validate-pages script.
+  // Only run when we have a valid loaded page to inspect.
+  const pageForCiChecks = strictPage ?? (validated?.page as Record<string, unknown> | undefined);
+  const ciDiagnostics = stages.load.ok && pageForCiChecks ? await runCiChecks(pageForCiChecks) : [];
+
+  const diagnostics = [...stageDiagnostics, ...ciDiagnostics];
 
   if (asJson) {
     const payload = {

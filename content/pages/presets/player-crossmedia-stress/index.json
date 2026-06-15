@@ -1,0 +1,21 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Crossmedia Stress — Preset Demo",
+  "description": "Dense page with multiple simultaneous media players — action collision and state stability stress test.",
+  "presets": [
+    "demo",
+    "type/core",
+    "ui/link",
+    "type/motion",
+    "player/crossmedia",
+    "bg",
+    "player/section"
+  ],
+  "bgKey": "bg-players",
+  "sectionOrder": ["nav-header", "hero", "sec-player"],
+  "definitions": {
+    "bg-players": {
+      "preset": "bg-players"
+    }
+  }
+}

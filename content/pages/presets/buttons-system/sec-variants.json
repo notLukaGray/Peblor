@@ -1,0 +1,104 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "entrancePreset": "slideUp",
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "variants-row"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Button Variants"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Seven visual variants demonstrating the full range of button styling — fill, border, radius, density, glass, and treatment."
+    },
+    "variants-row": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "align": "center",
+      "distribute": "center",
+      "gap": "1.2rem",
+      "section": {
+        "elementOrder": [
+          "btn-primary",
+          "btn-secondary",
+          "btn-ghost",
+          "btn-pill",
+          "btn-quiet",
+          "btn-utility",
+          "btn-glass"
+        ],
+        "definitions": {
+          "btn-primary": {
+            "preset": "btn-primary",
+            "label": "Primary",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            }
+          },
+          "btn-secondary": {
+            "preset": "btn-secondary",
+            "label": "Secondary",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            }
+          },
+          "btn-ghost": {
+            "preset": "btn-ghost",
+            "label": "Ghost",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            }
+          },
+          "btn-pill": {
+            "preset": "btn-squircle",
+            "label": "Squircle",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            }
+          },
+          "btn-quiet": {
+            "preset": "btn-quiet",
+            "label": "Quiet",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            }
+          },
+          "btn-utility": {
+            "preset": "btn-utility",
+            "label": "Utility",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            }
+          },
+          "btn-glass": {
+            "preset": "btn-glass",
+            "label": "Glass",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            }
+          }
+        }
+      },
+      "scroll": "visible"
+    }
+  }
+}

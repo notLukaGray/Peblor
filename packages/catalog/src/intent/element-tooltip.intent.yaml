@@ -18,7 +18,7 @@ feels_like: >
 not_this_if:
   - "you need a full-screen modal dialog (use modal)"
   - "you need an expandable inline reveal (use section.reveal)"
-  - "you need hover gesture keyframes on the element itself (use motion.whileHover)"
+  - "you need hover gesture keyframes on the element itself (use motion.onHover)"
 
 axes:
   - name: content
@@ -29,8 +29,8 @@ axes:
     fields: [trigger, showDelay, hideDelay]
   - name: behavior
     fields: [interactive, followCursor, maxWidth, zIndex]
-  - name: animation
-    fields: [animation]
+  - name: entrance
+    fields: [motion]
   - name: typography
     fields: [color, fontFamily, fontSize, fontWeight]
   - name: accessibility
@@ -42,7 +42,7 @@ does_not_cover:
   - what: "Expandable inline reveal"
     use_instead: section.reveal
   - what: "Gesture keyframes on hover"
-    use_instead: motion.whileHover
+    use_instead: motion.onHover
   - what: "Rich HTML content inside tooltip"
     use_instead: "external — content is text-only in v1"
 
@@ -54,7 +54,7 @@ covers:
 composes_with:
   parents: [section.column, section.contentBlock]
   siblings_typical: [element.heading, element.button, element.image]
-  motion: "external — motionTiming for entrance; animation field controls tooltip show/hide transition"
+  motion: "external — motionTiming for entrance; layout motion controls tooltip show/hide transition"
 
 known_limitations:
   - "Trigger element is the immediate previous sibling or wrapping parent — position resolves relative to it"

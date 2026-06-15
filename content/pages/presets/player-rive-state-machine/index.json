@@ -1,0 +1,13 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Rive State Machine — Preset Demo",
+  "description": "Load on demand. Peblor fires triggers into Rive. Rive state changes drive peblor page content. Full bidirectional control.",
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "bg", "player/section"],
+  "bgKey": "bg-players",
+  "sectionOrder": ["nav-header", "hero", "sec-player"],
+  "definitions": {
+    "bg-players": {
+      "preset": "bg-players"
+    }
+  }
+}

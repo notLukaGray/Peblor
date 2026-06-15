@@ -1,0 +1,61 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "entrancePreset": "slideUp",
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "theme-buttons"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "setTheme"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Buttons that toggle the page color theme between light, dark, and system preference. setTheme accepts light, dark, or toggle as the mode value."
+    },
+    "theme-buttons": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "align": "center",
+      "distribute": "center",
+      "gap": "1rem",
+      "section": {
+        "elementOrder": ["theme-light", "theme-dark", "theme-toggle"],
+        "definitions": {
+          "theme-light": {
+            "preset": "btn-primary",
+            "label": "Light Mode",
+            "action": "setTheme",
+            "actionPayload": {
+              "mode": "light"
+            },
+            "wrapperBorderRadius": "10px"
+          },
+          "theme-dark": {
+            "preset": "btn-squircle",
+            "label": "Dark Mode",
+            "action": "setTheme",
+            "actionPayload": {
+              "mode": "dark"
+            },
+            "wrapperBorderRadius": "10px",
+            "wrapperPadding": "0.7rem 1.5rem"
+          },
+          "theme-toggle": {
+            "preset": "btn-ghost",
+            "label": "Toggle Theme",
+            "action": "setTheme",
+            "actionPayload": {
+              "mode": "toggle"
+            },
+            "wrapperBorderRadius": "10px"
+          }
+        }
+      }
+    }
+  },
+  "id": "sec-set-theme"
+}

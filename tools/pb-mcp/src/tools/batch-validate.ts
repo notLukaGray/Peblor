@@ -1,26 +1,31 @@
 import type { Tool } from "../types.js";
 import { runCli } from "../lib/cli.js";
-import { listPages } from "../lib/fs.js";
 
 export const batchValidate: Tool = {
   def: {
     name: "batch_validate",
     description:
-      "Validate all pages in the project. Returns per-page diagnostics and a summary of errors.",
-    inputSchema: { type: "object", properties: {} },
+      "Strict-load validate every page in the project. Uses the same route-aware pipeline as the app (presets, global modules, section hydration, cross-ref checks) — equivalent to the CI validate-all-pages.ts script. Returns per-page results and a summary.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        changed: {
+          type: "boolean",
+          description:
+            "When true, only validate pages that changed since the merge base of origin/main and HEAD (fast for pre-commit checks).",
+        },
+        baseRef: {
+          type: "string",
+          description: "Git base ref for changed-only mode (default: origin/main).",
+        },
+      },
+    },
   },
-  run: async () => {
-    const pages = await listPages();
-    const results = await Promise.all(
-      pages.map(async ({ route, path }) => {
-        try {
-          return { route, path, diagnostics: await runCli(["validate", path]) };
-        } catch (err) {
-          return { route, path, error: err instanceof Error ? err.message : String(err) };
-        }
-      })
-    );
-    const errorCount = results.filter((r) => "error" in r).length;
-    return { summary: { total: pages.length, errors: errorCount }, pages: results };
+  run: async (args) => {
+    const { changed, baseRef } = (args ?? {}) as { changed?: boolean; baseRef?: string };
+    const cliArgs = ["validate-all"];
+    if (changed) cliArgs.push("--changed");
+    if (baseRef) cliArgs.push("--base", baseRef);
+    return runCli(cliArgs);
   },
 };

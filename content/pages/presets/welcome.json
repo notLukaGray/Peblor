@@ -1,0 +1,93 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["welcome-title", "welcome-body", "welcome-cta-row"],
+  "definitions": {
+    "welcome-title": {
+      "type": "elementHeading",
+      "level": 1,
+      "text": "Preset Kit",
+      "selfAlign": "center",
+      "textAlign": "center",
+      "width": "100%",
+      "wordWrap": true,
+      "color": "var(--pb-on-secondary)",
+      "motionTiming": {
+        "entrancePreset": "slideUp"
+      }
+    },
+    "welcome-body": {
+      "type": "elementBody",
+      "level": 3,
+      "text": "A library of reusable page building blocks. Each preset is a complete, self-contained definition you can drop into any page. Open the sidebar to browse categories.",
+      "selfAlign": "center",
+      "textAlign": "center",
+      "width": {
+        "base": "100%",
+        "md": "65%"
+      },
+      "wordWrap": true,
+      "color": "color-mix(in oklab, var(--pb-on-secondary) 62%, transparent)",
+      "motionTiming": {
+        "entrancePreset": "fade"
+      }
+    },
+    "welcome-cta-row": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": {
+        "base": "column",
+        "md": "row"
+      },
+      "wrap": "wrap",
+      "align": "center",
+      "distribute": "center",
+      "gap": "0.5rem",
+      "width": "100%",
+      "motionTiming": {
+        "entrancePreset": "slideUp"
+      },
+      "section": {
+        "elementOrder": ["btn-gradients", "btn-video"],
+        "definitions": {
+          "btn-gradients": {
+            "type": "elementButton",
+            "label": "Open Sidebar",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "sidebarOpen",
+              "value": "open"
+            },
+            "level": 4,
+            "wrapperPadding": "0.7rem 1.5rem",
+            "wrapperBorderRadius": "999px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+            "wrapperStroke": "color-mix(in oklab, var(--pb-on-secondary) 18%, transparent)",
+            "wrapperStrokeWidth": 1,
+            "linkDefault": "var(--pb-on-secondary)",
+            "selfAlign": "center"
+          },
+          "btn-video": {
+            "type": "elementButton",
+            "label": "Browse Backgrounds",
+            "level": 4,
+            "wrapperPadding": "0.7rem 1.5rem",
+            "wrapperBorderRadius": "999px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+            "wrapperStroke": "color-mix(in oklab, var(--pb-on-secondary) 18%, transparent)",
+            "wrapperStrokeWidth": 1,
+            "linkDefault": "var(--pb-on-secondary)",
+            "selfAlign": "center",
+            "action": "navigate",
+            "actionPayload": {
+              "href": "/presets/bg-solid"
+            }
+          }
+        }
+      }
+    }
+  },
+  "fill": "transparent",
+  "align": "center",
+  "distribute": "center",
+  "scroll": "hidden"
+}

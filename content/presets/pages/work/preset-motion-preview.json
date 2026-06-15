@@ -1,0 +1,34 @@
+{
+  "preset": "work-preview-card",
+  "visibleWhen": {
+    "variable": "selectedProject",
+    "operator": "equals",
+    "value": "motion"
+  },
+  "section": {
+    "elementOrder": ["preview-content"],
+    "definitions": {
+      "preview-content": {
+        "preset": "work-preview-content",
+        "section": {
+          "elementOrder": ["preview-title", "preview-desc", "preview-cta"],
+          "definitions": {
+            "preview-title": {
+              "preset": "work-preview-title",
+              "text": "Parallax \u2014 Title Sequence"
+            },
+            "preview-desc": {
+              "preset": "work-preview-desc",
+              "text": "Main title sequence for Parallax, a six-part science fiction series \u2014 motion design, typography, and 3D visual language for the opening two minutes."
+            },
+            "preview-cta": {
+              "preset": "work-preview-cta",
+              "label": "View project",
+              "href": "/work/project-motion"
+            }
+          }
+        }
+      }
+    }
+  }
+}

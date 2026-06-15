@@ -1,0 +1,16 @@
+{
+  "type": "elementHeading",
+  "level": 4,
+  "semanticLevel": 2,
+  "width": "100%",
+  "selfAlign": {
+    "base": "center",
+    "md": "left"
+  },
+  "textAlign": {
+    "base": "center",
+    "md": "left"
+  },
+  "text": "",
+  "color": "var(--pb-on-secondary)"
+}

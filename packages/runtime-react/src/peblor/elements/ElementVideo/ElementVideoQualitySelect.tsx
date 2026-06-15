@@ -3,6 +3,7 @@
 import type { ElementBlock } from "@pb/contracts/types";
 import { ElementVector } from "@/peblor/elements/ElementVector";
 import { useVideoControlContext } from "./VideoControlContext";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 type Props = Extract<ElementBlock, { type: "elementVideoQualitySelect" }>;
 
@@ -34,14 +35,14 @@ export function ElementVideoQualitySelect({ icon, style, width, height }: Props)
         backgroundImage: "none",
       }}
     >
-      <span className="sr-only">Video quality</span>
+      <span className="sr-only">{globals.stringsAriaLabelVideoQuality}</span>
       {icon && (
         <span className="pointer-events-none flex items-center justify-center">
-          <ElementVector {...icon} ariaLabel="Video quality" />
+          <ElementVector {...icon} ariaLabel={globals.stringsAriaLabelVideoQuality} />
         </span>
       )}
       <select
-        aria-label="Video quality"
+        aria-label={globals.stringsAriaLabelVideoQuality}
         value={videoCtx.selectedQuality}
         onChange={(e) => videoCtx.setSelectedQuality(e.target.value)}
         className="absolute inset-0 h-full w-full cursor-pointer opacity-0 focus:outline-none"

@@ -1,0 +1,21 @@
+{
+  "preset": "demo-hero",
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Load · Fire · State → Page"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Rive State Machine"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Load Rive on demand. Peblor buttons fire triggers and set inputs into the state machine. When Rive changes state, onStateChange drives page content — entire blocks appear and disappear.",
+      "width": {
+        "base": "100%",
+        "md": "78%"
+      }
+    }
+  }
+}

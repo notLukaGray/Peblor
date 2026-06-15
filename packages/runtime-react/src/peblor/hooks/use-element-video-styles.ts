@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { resolveResponsiveValue } from "@pb/runtime-react/core/lib/responsive-value";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
 import { useDeviceType } from "@pb/runtime-react/core/providers/device-type-provider";
 import type { CSSProperties } from "react";
 import type { ElementLayoutTransformOptions } from "@pb/core/layout";
@@ -12,31 +12,26 @@ import {
   type ElementVideoObjectFit,
 } from "@pb/core/media";
 import { globals } from "@pb/runtime-react/core/lib/globals";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
-import { resolveThemeStyleObject } from "@/peblor/theme/theme-string";
+import { lowerThemeStyleObject } from "@/peblor/theme/theme-string";
+import type { ResponsiveValueOf } from "@pb/contracts/peblor/core/peblor-schemas/responsive-value-schemas";
 
-/** Layout props may be responsive (tuple). Hook passes through to lib which resolves. */
+/** Layout props may be responsive (any responsive shape). Hook passes through to lib which resolves. */
 export type UseElementVideoStylesParams = {
-  width?: string | [string, string];
-  height?: string | [string, string];
-  align?:
-    | "left"
-    | "center"
-    | "right"
-    | "full"
-    | ["left" | "center" | "right" | "full", "left" | "center" | "right" | "full"];
-  alignY?: "top" | "center" | "bottom" | ["top" | "center" | "bottom", "top" | "center" | "bottom"];
-  borderRadius?: string | [string, string];
-  constraints?:
-    | { minWidth?: string; maxWidth?: string; minHeight?: string; maxHeight?: string }
-    | [
-        { minWidth?: string; maxWidth?: string; minHeight?: string; maxHeight?: string }?,
-        { minWidth?: string; maxWidth?: string; minHeight?: string; maxHeight?: string }?,
-      ];
-  marginTop?: string | [string, string];
-  marginBottom?: string | [string, string];
-  marginLeft?: string | [string, string];
-  marginRight?: string | [string, string];
+  width?: ResponsiveValueOf<string>;
+  height?: ResponsiveValueOf<string>;
+  align?: ResponsiveValueOf<"left" | "center" | "right" | "full">;
+  alignY?: ResponsiveValueOf<"top" | "center" | "bottom">;
+  borderRadius?: ResponsiveValueOf<string>;
+  constraints?: ResponsiveValueOf<{
+    minWidth?: string;
+    maxWidth?: string;
+    minHeight?: string;
+    maxHeight?: string;
+  }>;
+  marginTop?: ResponsiveValueOf<string>;
+  marginBottom?: ResponsiveValueOf<string>;
+  marginLeft?: ResponsiveValueOf<string>;
+  marginRight?: ResponsiveValueOf<string>;
   zIndex?: number;
   fixed?: boolean;
   wrapperStyle?: CSSProperties;
@@ -50,10 +45,17 @@ export type UseElementVideoStylesParams = {
   rotate?: number | string;
   flipHorizontal?: boolean;
   flipVertical?: boolean;
-  objectFit?: ElementVideoObjectFit | [ElementVideoObjectFit, ElementVideoObjectFit];
+  objectFit?: ResponsiveValueOf<ElementVideoObjectFit>;
   objectPosition?: string;
-  aspectRatio?: string | [string, string];
-  moduleConfig?: { container?: { padding?: string; borderRadius?: string; aspectRatio?: string } };
+  aspectRatio?: ResponsiveValueOf<string | number>;
+  moduleConfig?: {
+    container?: {
+      padding?: string;
+      borderRadius?: string;
+      aspectRatio?: string | null;
+      minHeight?: string;
+    };
+  };
 };
 
 export type UseElementVideoStylesResult = {
@@ -95,10 +97,8 @@ export function useElementVideoStyles({
   moduleConfig,
 }: UseElementVideoStylesParams): UseElementVideoStylesResult {
   const { isMobile } = useDeviceType();
-  const themeMode = usePeblorThemeMode();
-  const resolvedLayoutWrapperStyle = resolveThemeStyleObject(
-    layoutWrapperStyle as Record<string, unknown> | undefined,
-    themeMode
+  const resolvedLayoutWrapperStyle = lowerThemeStyleObject(
+    layoutWrapperStyle as Record<string, unknown> | undefined
   ) as CSSProperties | undefined;
   const resolvedAspectRatioRaw =
     aspectRatio ??
@@ -106,9 +106,11 @@ export function useElementVideoStyles({
       ? (moduleConfig?.container?.aspectRatio ?? globals.uiVideoDefaultAspectRatio)
       : undefined);
   const resolvedAspectRatio =
-    typeof resolvedAspectRatioRaw === "string"
-      ? resolvedAspectRatioRaw
-      : resolveResponsiveValue(resolvedAspectRatioRaw, isMobile);
+    typeof resolvedAspectRatioRaw === "number"
+      ? String(resolvedAspectRatioRaw)
+      : typeof resolvedAspectRatioRaw === "string"
+        ? resolvedAspectRatioRaw
+        : resolveResponsiveValue(resolvedAspectRatioRaw, isMobile);
 
   const layoutStyle = useMemo(
     () =>

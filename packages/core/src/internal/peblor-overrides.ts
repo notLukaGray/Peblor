@@ -1,12 +1,7 @@
 import type { bgBlock, ElementBlock, SectionBlock } from "@pb/contracts/peblor/core/peblor-schemas";
+import { BG_BLOCK_TYPE_STRINGS } from "@pb/contracts";
 
-const KNOWN_BG_TYPES = new Set([
-  "backgroundImage",
-  "backgroundVideo",
-  "backgroundPattern",
-  "backgroundVariable",
-  "backgroundTransition",
-]);
+const KNOWN_BG_TYPES = new Set(BG_BLOCK_TYPE_STRINGS);
 
 export type OverridesMap = Record<string, unknown>;
 

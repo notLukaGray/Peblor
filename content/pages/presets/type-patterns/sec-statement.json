@@ -1,0 +1,20 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "staggerChildren": 0.15,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["statement", "tags"],
+  "definitions": {
+    "statement": {
+      "preset": "type-centered-statement",
+      "text": "Every page is built from patterns. Build the patterns, build faster."
+    },
+    "tags": {
+      "preset": "type-tag-row",
+      "selfAlign": "center",
+      "gap": "0.75rem"
+    }
+  },
+  "align": "start"
+}

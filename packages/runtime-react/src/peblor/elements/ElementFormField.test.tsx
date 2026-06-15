@@ -14,7 +14,7 @@ describe("ElementFormField standalone mobile layout", () => {
             fieldType: "text",
             label: "Name",
             name: "name",
-            width: ["100%", "20rem"],
+            width: { base: "100%", md: "20rem" },
           }}
         />
       </ServerBreakpointProvider>

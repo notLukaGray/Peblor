@@ -2,9 +2,15 @@
 
 import { useMemo, useRef, type CSSProperties, type ReactNode } from "react";
 import type { SectionBlock } from "@pb/contracts/types";
-import { handleSectionWheel, getDefaultScrollSpeed, applySectionFillStyle } from "@pb/core/layout";
-import { resolveResponsiveValue } from "@pb/runtime-react/core/lib/responsive-value";
+import {
+  handleSectionWheel,
+  getDefaultScrollSpeed,
+  applySectionFillStyle,
+  getColumnFlexStyles,
+} from "@pb/core/layout";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
 import { useDeviceType } from "@pb/runtime-react/core/providers/device-type-provider";
+import { gridTemplateFromFlexStyles } from "@/peblor/section/SectionColumnGrid/section-column-grid-rendering";
 import { SectionMotionWrapper } from "@/peblor/integrations/framer-motion";
 import { useSectionBaseStyles } from "@/peblor/section/position/use-section-base-styles";
 import { useStickyTrait } from "@/peblor/section/position/use-sticky-trait";
@@ -14,25 +20,15 @@ import { SectionGlassEffect } from "@/peblor/section/stack/SectionGlassEffect";
 import { useSectionViewportTrigger } from "@/peblor/triggers/core/use-section-viewport-trigger";
 import { useSectionCustomTriggers } from "@/peblor/triggers/core/use-section-custom-triggers";
 import { SectionScrollTargetProvider } from "@/peblor/section/position/SectionScrollTargetContext";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
-import { resolveThemeString } from "@/peblor/theme/theme-string";
+import { lowerThemeStringToCss } from "@/peblor/theme/theme-string";
+import { resolveResponsiveUnknown } from "@/peblor/utils/resolve-responsive-unknown";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 type SectionColumnBase = Extract<SectionBlock, { type: "sectionColumn" }>;
 
 export type MixedSectionColumnIslandProps = Omit<SectionColumnBase, "elements"> & {
   children: ReactNode;
 };
-
-function resolveResponsiveUnknown(value: unknown, isMobile: boolean): unknown {
-  if (Array.isArray(value)) return value[isMobile ? 0 : 1] ?? value[0];
-  if (value != null && typeof value === "object") {
-    const record = value as { mobile?: unknown; desktop?: unknown };
-    if ("mobile" in record || "desktop" in record) {
-      return isMobile ? (record.mobile ?? record.desktop) : (record.desktop ?? record.mobile);
-    }
-  }
-  return value;
-}
 
 export function MixedSectionColumnIsland({
   id,
@@ -42,7 +38,7 @@ export function MixedSectionColumnIsland({
   effects,
   width,
   height,
-  align,
+  selfAlign,
   marginLeft,
   marginRight,
   marginTop,
@@ -51,16 +47,38 @@ export function MixedSectionColumnIsland({
   border,
   boxShadow,
   filter,
-  backdropFilter,
-  clipPath,
+  bgBlur,
+  clipShape,
   cursor,
   aspectRatio,
   scrollSpeed = getDefaultScrollSpeed(),
   initialX,
   initialY,
-  zIndex,
+  layer,
+  padding,
+  paddingTop,
+  paddingRight,
+  paddingBottom,
+  paddingLeft,
+  margin,
+  scroll,
+  scrollX,
+  scrollY,
+  wrapperStyle,
+  sectionGap,
+  position,
+  top,
+  right,
+  bottom,
+  left,
+  inset,
+  interaction,
+  selectable,
+  willChange,
+  opacity,
   columns,
   columnGaps,
+  columnWidths,
   minWidth,
   maxWidth,
   minHeight,
@@ -87,14 +105,21 @@ export function MixedSectionColumnIsland({
   cursorTriggers,
   scrollDirectionTriggers,
   idleTriggers,
+  variableTriggers,
+  tabVisibilityTriggers,
+  mediaEndTriggers,
+  customEventTriggers,
+  elementEventTriggers,
+  scrollThresholdTriggers,
+  mediaProgressTriggers,
   children,
 }: MixedSectionColumnIslandProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const placeholderRef = useRef<HTMLDivElement>(null);
   const { isMobile } = useDeviceType();
-  const themeMode = usePeblorThemeMode();
-  const resolvedAriaLabel = resolveResponsiveValue(ariaLabel, isMobile) ?? id ?? "Column layout";
-  const resolvedFill = resolveThemeString(resolveResponsiveValue(fill, isMobile), themeMode);
+  const resolvedAriaLabel =
+    resolveResponsiveValue(ariaLabel, isMobile) ?? id ?? globals.stringsAriaLabelColumnLayout;
+  const resolvedFill = lowerThemeStringToCss(resolveResponsiveValue(fill, isMobile));
   const resolvedStickyOffset = resolveResponsiveValue(stickyOffset, isMobile) ?? "0px";
   const resolvedFixedOffset = resolveResponsiveValue(fixedOffset, isMobile) ?? "0px";
 
@@ -115,9 +140,16 @@ export function MixedSectionColumnIsland({
     cursorTriggers,
     scrollDirectionTriggers,
     idleTriggers,
+    variableTriggers,
+    tabVisibilityTriggers,
+    mediaEndTriggers,
+    customEventTriggers,
+    elementEventTriggers,
+    scrollThresholdTriggers,
+    mediaProgressTriggers,
   });
 
-  const { baseStyle, resolvedLayout, alignStyle, transformY, hasInitialPosition } =
+  const { baseStyle, resolvedLayout, alignStyle, parallaxY, hasInitialPosition } =
     useSectionBaseStyles({
       fill,
       width,
@@ -126,7 +158,7 @@ export function MixedSectionColumnIsland({
       maxWidth,
       minHeight,
       maxHeight,
-      align,
+      selfAlign,
       marginLeft,
       marginRight,
       marginTop,
@@ -135,17 +167,37 @@ export function MixedSectionColumnIsland({
       border,
       boxShadow,
       filter,
-      backdropFilter,
-      clipPath,
+      bgBlur,
+      clipShape,
       cursor,
       aspectRatio,
+      scroll,
+      scrollX,
+      scrollY,
       scrollSpeed,
       initialX,
       initialY,
-      zIndex,
+      layer,
+      padding,
+      paddingTop,
+      paddingRight,
+      paddingBottom,
+      paddingLeft,
+      margin,
+      wrapperStyle,
+      sectionGap,
+      position,
+      top,
+      right,
+      bottom,
+      left,
+      inset,
+      interaction,
+      selectable,
+      willChange,
+      opacity,
       effects,
       sectionRef,
-      usePadding: true,
       reduceMotion,
     });
 
@@ -158,7 +210,6 @@ export function MixedSectionColumnIsland({
     hasInitialPosition,
     resolvedLayout,
     alignStyle,
-    transformY,
   });
 
   const fixedStyleOverrides = useFixedTrait({
@@ -166,7 +217,7 @@ export function MixedSectionColumnIsland({
     fixedPosition,
     fixedOffset: resolvedFixedOffset,
     resolvedLayout,
-    zIndex,
+    zIndex: layer,
   });
 
   const finalStyle = useMemo(() => {
@@ -184,11 +235,28 @@ export function MixedSectionColumnIsland({
   const resolvedColumnGap =
     (resolveResponsiveUnknown(columnGaps, isMobile) as string | undefined) ?? "1rem";
 
+  const resolvedColumnWidths = useMemo(
+    () => resolveResponsiveUnknown(columnWidths, isMobile),
+    [columnWidths, isMobile]
+  );
+  const columnFlexStyles = useMemo(
+    () =>
+      getColumnFlexStyles(
+        resolvedColumnWidths as Parameters<typeof getColumnFlexStyles>[0],
+        resolvedColumns
+      ),
+    [resolvedColumnWidths, resolvedColumns]
+  );
+  const gridTemplateColumns = useMemo(
+    () => gridTemplateFromFlexStyles(columnFlexStyles, { forCssGrid: true }),
+    [columnFlexStyles]
+  );
+
   const gridStyle: CSSProperties = {
     position: "relative",
-    zIndex: 10,
+    zIndex: globals.zIndexColumnGrid,
     display: "grid",
-    gridTemplateColumns: `repeat(${resolvedColumns}, minmax(0, 1fr))`,
+    gridTemplateColumns,
     gap: resolvedColumnGap,
     width: "100%",
   };
@@ -203,6 +271,7 @@ export function MixedSectionColumnIsland({
         motion={motionFromJson}
         motionTiming={motionTiming}
         reduceMotion={reduceMotion}
+        parallaxY={parallaxY}
         className="relative z-[var(--pb-z-raised)] flex shrink-0 flex-col min-h-0"
         style={applySectionFillStyle(resolvedFill, layers, finalStyle)}
         aria-label={resolvedAriaLabel}
@@ -211,7 +280,9 @@ export function MixedSectionColumnIsland({
         <SectionScrollTargetProvider sectionRef={sectionRef}>
           {layers?.length ? <LayerStack layers={layers} /> : null}
           <SectionGlassEffect effects={effects} sectionRef={sectionRef} isSectionFixed={!!fixed} />
-          <div style={gridStyle}>{children}</div>
+          <div style={gridStyle} data-pb-grid="">
+            {children}
+          </div>
         </SectionScrollTargetProvider>
       </SectionMotionWrapper>
     </>

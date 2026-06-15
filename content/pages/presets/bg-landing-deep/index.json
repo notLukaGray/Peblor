@@ -1,0 +1,19 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "bg-landing-deep — Preset Demo",
+  "description": "Deep dimensional gradient with pulsing accent orbs",
+  "presets": ["demo", "bg"],
+  "sectionOrder": ["nav-header", "hero"],
+  "bgKey": "bg-landing-deep",
+  "scroll": {
+    "smooth": false,
+    "lockBody": true,
+    "scrollX": "hidden",
+    "scrollY": "hidden"
+  },
+  "definitions": {
+    "bg-landing-deep": {
+      "preset": "bg-landing-deep"
+    }
+  }
+}

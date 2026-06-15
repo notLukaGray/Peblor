@@ -1,0 +1,23 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Column · Sidebar · Priority Content"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Composition Column 70 30 Sidebar"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Primary narrative with secondary sidebar metadata and clean responsive collapse behavior.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  },
+  "align": "start"
+}

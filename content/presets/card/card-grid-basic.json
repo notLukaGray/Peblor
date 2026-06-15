@@ -1,0 +1,154 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "row",
+  "wrap": "wrap",
+  "gap": "1rem",
+  "width": "100%",
+  "section": {
+    "elementOrder": ["card-a", "card-b", "card-c"],
+    "definitions": {
+      "card-a": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "align": "start",
+        "gap": "0.9rem",
+        "width": {
+          "base": "100%",
+          "md": "calc(33.33% - 0.67rem)"
+        },
+        "padding": "1.25rem",
+        "borderRadius": "18px",
+        "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+        "wrapperStyle": {
+          "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+        },
+        "motion": {
+          "onHover": {
+            "y": -4
+          },
+          "transition": {
+            "duration": 0.18
+          }
+        },
+        "section": {
+          "elementOrder": ["kicker", "title", "body", "link"],
+          "definitions": {
+            "kicker": {
+              "preset": "type-kicker-badge",
+              "text": "Design"
+            },
+            "title": {
+              "preset": "type-h4-card",
+              "text": "Composable surfaces"
+            },
+            "body": {
+              "preset": "type-body-standard",
+              "text": "Each card is a reusable slot-based surface with predictable internal zones."
+            },
+            "link": {
+              "preset": "type-link-nav",
+              "label": "Explore →",
+              "href": "#"
+            }
+          }
+        }
+      },
+      "card-b": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "align": "start",
+        "gap": "0.9rem",
+        "width": {
+          "base": "100%",
+          "md": "calc(33.33% - 0.67rem)"
+        },
+        "padding": "1.25rem",
+        "borderRadius": "18px",
+        "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+        "wrapperStyle": {
+          "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+        },
+        "motion": {
+          "onHover": {
+            "y": -4
+          },
+          "transition": {
+            "duration": 0.18
+          }
+        },
+        "section": {
+          "elementOrder": ["kicker", "title", "body", "link"],
+          "definitions": {
+            "kicker": {
+              "preset": "type-kicker-badge",
+              "text": "Motion"
+            },
+            "title": {
+              "preset": "type-h4-card",
+              "text": "Hover lift built in"
+            },
+            "body": {
+              "preset": "type-body-standard",
+              "text": "Cards animate on hover with a subtle upward lift and smooth transition."
+            },
+            "link": {
+              "preset": "type-link-nav",
+              "label": "Explore →",
+              "href": "#"
+            }
+          }
+        }
+      },
+      "card-c": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "align": "start",
+        "gap": "0.9rem",
+        "width": {
+          "base": "100%",
+          "md": "calc(33.33% - 0.67rem)"
+        },
+        "padding": "1.25rem",
+        "borderRadius": "18px",
+        "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+        "wrapperStyle": {
+          "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+        },
+        "motion": {
+          "onHover": {
+            "y": -4
+          },
+          "transition": {
+            "duration": 0.18
+          }
+        },
+        "section": {
+          "elementOrder": ["kicker", "title", "body", "link"],
+          "definitions": {
+            "kicker": {
+              "preset": "type-kicker-badge",
+              "text": "System"
+            },
+            "title": {
+              "preset": "type-h4-card",
+              "text": "Preset-driven"
+            },
+            "body": {
+              "preset": "type-body-standard",
+              "text": "All card styles live in one preset file. Pages only reference them."
+            },
+            "link": {
+              "preset": "type-link-nav",
+              "label": "Explore →",
+              "href": "#"
+            }
+          }
+        }
+      }
+    }
+  }
+}

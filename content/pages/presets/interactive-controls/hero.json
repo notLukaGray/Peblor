@@ -1,0 +1,26 @@
+{
+  "preset": "demo-hero",
+  "maxWidth": "820px",
+  "padding": {
+    "base": "8rem 0 5rem",
+    "md": "10rem 0 7rem"
+  },
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Form Fields · Range Sliders · Input State"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Interactive Controls"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Form and control input patterns — standalone text fields, select menus, custom range sliders, and input-driven state displays.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  }
+}

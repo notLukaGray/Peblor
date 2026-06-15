@@ -1,0 +1,46 @@
+{
+  "preset": "player-section",
+  "elementOrder": ["player-label", "player-surface"],
+  "definitions": {
+    "player-label": {
+      "preset": "type-h3-label",
+      "text": "Playlist Player"
+    },
+    "player-surface": {
+      "preset": "player-audio-surface-playlist"
+    }
+  },
+  "padding": {
+    "base": "3rem 0",
+    "md": "3rem 0 10rem"
+  },
+  "variableTriggers": [
+    {
+      "variable": "playlistInit",
+      "operator": "notEquals",
+      "value": "ready",
+      "fireOnMount": true,
+      "action": {
+        "type": "fireMultiple",
+        "payload": {
+          "actions": [
+            {
+              "type": "setVariable",
+              "payload": {
+                "key": "activeTrack",
+                "value": "track-1"
+              }
+            },
+            {
+              "type": "setVariable",
+              "payload": {
+                "key": "playlistInit",
+                "value": "ready"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

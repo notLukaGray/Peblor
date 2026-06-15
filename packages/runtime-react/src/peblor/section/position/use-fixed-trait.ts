@@ -2,7 +2,7 @@
 
 import { useMemo, type CSSProperties } from "react";
 import { parseCssValueToPixels, buildTransformString } from "@pb/core/layout";
-import { Z_INDEX } from "@pb/core/layout";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 import type { ResolvedSectionLayout } from "@/peblor/section/position/use-section-base-styles";
 
 export type UseFixedTraitProps = {
@@ -25,7 +25,7 @@ export function useFixedTrait({
 
     const w = resolvedLayout.width ?? "100%";
     const h = resolvedLayout.height;
-    const a = resolvedLayout.align ?? "left";
+    const a = resolvedLayout.selfAlign ?? "left";
 
     const offsetPixels =
       parseCssValueToPixels(fixedOffset, fixedPosition === "top" || fixedPosition === "bottom") ??
@@ -33,7 +33,7 @@ export function useFixedTrait({
 
     const style: CSSProperties = {
       position: "fixed",
-      zIndex: zIndex ?? Z_INDEX.FIXED_SECTION,
+      zIndex: zIndex ?? globals.zIndexFixedSection,
     };
 
     let existingTransform: string | undefined;
@@ -76,7 +76,7 @@ export function useFixedTrait({
     fixedOffset,
     resolvedLayout.width,
     resolvedLayout.height,
-    resolvedLayout.align,
+    resolvedLayout.selfAlign,
     zIndex,
   ]);
 }

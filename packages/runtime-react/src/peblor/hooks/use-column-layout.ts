@@ -18,6 +18,7 @@ import type {
   ItemLayoutEntryInput,
   ElementWithId,
 } from "@pb/core/layout";
+import type { ResponsiveValueOf } from "@pb/contracts/peblor/core/peblor-schemas/responsive-value-schemas";
 import {
   buildElementMap,
   orderElementsByOrder,
@@ -48,8 +49,8 @@ export type UseColumnLayoutParams<T extends ElementWithId> = {
   gridMode?: GridModeInput;
   itemLayout?: ItemLayoutInput;
   elementOrder: ElementOrderInput;
-  contentWidth?: string | [string, string];
-  contentHeight?: string | [string, string];
+  contentWidth?: ResponsiveValueOf<string>;
+  contentHeight?: ResponsiveValueOf<string>;
 };
 
 export type UseColumnLayoutResult<T extends ElementWithId> = {

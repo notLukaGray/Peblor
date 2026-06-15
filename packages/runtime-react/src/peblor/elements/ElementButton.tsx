@@ -32,12 +32,13 @@ import {
   resolveElementButtonVectorBlock,
 } from "./ElementButton/element-button-link-and-vector";
 import { useModel3DReadyButtonExit } from "./ElementButton/use-model3d-ready-button-exit";
+import { useButtonPointer } from "./ElementButton/use-button-pointer";
+import type { BgFillConfig } from "./ElementButton/use-button-pointer";
 import { SectionGlassEffect } from "@/peblor/section/stack/SectionGlassEffect";
-import { useDeviceType } from "@/core/hooks/use-device-type";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
+import { useDeviceType } from "@pb/runtime-react/core/hooks/use-device-type";
 import { resolveAuthoredUrl } from "@pb/core/lib/url-policy";
-import { resolveThemeString, resolveThemeValueDeep } from "@/peblor/theme/theme-string";
-import { coerceSectionEffects } from "@/peblor/elements/ElementModule/element-module-style-utils";
+import { lowerThemeStringToCss, lowerThemeValueDeep } from "@/peblor/theme/theme-string";
+import { useElementEffects } from "@/peblor/elements/Shared/use-element-effects";
 
 type Props = Extract<ElementBlock, { type: "elementButton" }>;
 
@@ -58,7 +59,7 @@ export function ElementButton({
   referrerPolicy,
   action,
   actionPayload,
-  align,
+  selfAlign,
   textAlign,
   width,
   height,
@@ -96,22 +97,32 @@ export function ElementButton({
   wrapperFillDisabled,
   wrapperTransition,
   wrapperInteractionVars,
-  pointerDownAction,
-  pointerUpAction,
+  interactions,
   aria,
   tabIndex,
   role,
   motion,
   exitPreset,
   effects,
+  bgFill,
 }: Props) {
   const pathname = usePathname();
   const { isMobile } = useDeviceType();
-  const themeMode = usePeblorThemeMode();
   const shellRef = useRef<HTMLDivElement | null>(null);
   // Ref for the wrapper span when glass is active — overlay anchors and measures from here,
   // so scale/transform on the wrapper carries the glass along with the content.
   const glassTargetRef = useRef<HTMLSpanElement | null>(null);
+  const { ref: bgMotionRef, animationStyle: bgMotionAnimationStyle } = useButtonPointer(
+    bgFill != null ? (bgFill as unknown as BgFillConfig) : undefined
+  );
+  // Stable callback ref: glass always gets set, bg motion attaches via bgMotionRef.
+  const wrapperSpanRef: React.RefCallback<HTMLSpanElement> = useCallback(
+    (el) => {
+      glassTargetRef.current = el;
+      bgMotionRef(el);
+    },
+    [bgMotionRef]
+  );
   const isDisabled = disabled || loading;
   const definitions = useDefinitions();
   const resolvedWrapperBorderRadius = useMemo(
@@ -150,33 +161,30 @@ export function ElementButton({
     wrapperStyle: rawWrapperStyle,
     innerWrapperStyle,
     hasStateVars,
-  } = buildElementButtonWrapperStyles(
-    definitions as Record<string, unknown> | null | undefined,
-    themeMode,
-    {
-      wrapperFill,
-      wrapperStroke,
-      wrapperFillRef,
-      wrapperStrokeRef,
-      wrapperStrokeWidth,
-      wrapperPadding: resolvedWrapperPadding,
-      wrapperBorderRadius: resolvedWrapperBorderRadius,
-      wrapperWidth: resolvedWrapperWidth,
-      wrapperHeight: resolvedWrapperHeight,
-      wrapperMinWidth: resolvedWrapperMinWidth,
-      wrapperMinHeight: resolvedWrapperMinHeight,
-      wrapperFillHover,
-      wrapperStrokeHover,
-      wrapperFillActive,
-      wrapperScaleHover,
-      wrapperScaleActive,
-      wrapperScaleDisabled,
-      wrapperOpacityHover,
-      wrapperFillDisabled,
-      wrapperTransition,
-      wrapperInteractionVars,
-    }
-  );
+  } = buildElementButtonWrapperStyles(definitions as Record<string, unknown> | null | undefined, {
+    wrapperFill,
+    wrapperStroke,
+    wrapperFillRef,
+    wrapperStrokeRef,
+    wrapperStrokeWidth,
+    wrapperPadding: resolvedWrapperPadding,
+    wrapperBorderRadius: resolvedWrapperBorderRadius,
+    wrapperWidth: resolvedWrapperWidth,
+    wrapperHeight: resolvedWrapperHeight,
+    wrapperMinWidth: resolvedWrapperMinWidth,
+    wrapperMinHeight: resolvedWrapperMinHeight,
+    wrapperFillHover,
+    wrapperStrokeHover,
+    wrapperFillActive,
+    wrapperScaleHover,
+    wrapperScaleActive,
+    wrapperScaleDisabled,
+    wrapperOpacityHover,
+    wrapperFillDisabled,
+    wrapperTransition,
+    wrapperInteractionVars,
+    bgFill,
+  });
   const { hasLink, isInternal, linkStyle, linkClassName } = buildElementButtonLinkState(
     pathname,
     {
@@ -189,8 +197,7 @@ export function ElementButton({
       linkTransition,
       disabled: isDisabled,
     },
-    typographyClass,
-    themeMode
+    typographyClass
   );
   const ariaProps = aria as Record<string, string | boolean> | undefined;
   const resolvedTarget = target ?? (external ? "_blank" : undefined);
@@ -201,7 +208,7 @@ export function ElementButton({
       buildElementButtonBlockStyle({
         width,
         height,
-        align,
+        selfAlign,
         textAlign,
         marginTop,
         marginBottom,
@@ -209,7 +216,17 @@ export function ElementButton({
         marginRight,
         wordWrap,
       }),
-    [width, height, align, textAlign, marginTop, marginBottom, marginLeft, marginRight, wordWrap]
+    [
+      width,
+      height,
+      selfAlign,
+      textAlign,
+      marginTop,
+      marginBottom,
+      marginLeft,
+      marginRight,
+      wordWrap,
+    ]
   );
   const resolvedFontFamily = resolveFontFamily(fontFamily);
   const vectorBlock = resolveElementButtonVectorBlock(
@@ -222,11 +239,7 @@ export function ElementButton({
     model3DExitRef.current = model3DExit;
   }, [model3DExit]);
 
-  const buttonEffects = useMemo(
-    () => coerceSectionEffects(resolveThemeValueDeep(effects, themeMode)),
-    [effects, themeMode]
-  );
-  const hasGlassEffect = (buttonEffects ?? []).some((effect) => effect.type === "glass");
+  const { resolvedEffects: buttonEffects, hasGlassEffect } = useElementEffects(effects);
   const glassSyncBorderRadius =
     hasGlassEffect && resolvedWrapperBorderRadius != null && resolvedWrapperBorderRadius !== ""
       ? resolvedWrapperBorderRadius
@@ -244,29 +257,29 @@ export function ElementButton({
   }, [hasGlassEffect, rawWrapperStyle]);
 
   const exitMotion = useMemo(() => {
-    const resolvedMotion = resolveThemeValueDeep(motion, themeMode) as typeof motion;
+    const resolvedMotion = lowerThemeValueDeep(motion) as typeof motion;
     const base = mergeMotionDefaults(resolvedMotion ?? {}) ?? {};
     const exitFromPreset =
       exitPreset && typeof exitPreset === "string"
         ? getExitMotionFromPreset(exitPreset, {
             duration: model3DExit.exitDurationMs / 1000,
             ease: model3DExit.exitEasing,
-          }).exit
+          }).leave
         : undefined;
-    const exitKeyframes = (base.exit as Record<string, unknown> | undefined) ??
+    const exitKeyframes = (base.leave as Record<string, unknown> | undefined) ??
       exitFromPreset ?? { opacity: 0 };
     return {
       ...base,
-      initial: base.initial ?? { opacity: 1 },
-      animate: base.animate ?? { opacity: 1 },
-      exit: exitKeyframes as Record<string, string | number | number[]>,
+      from: base.from ?? { opacity: 1 },
+      to: base.to ?? { opacity: 1 },
+      leave: exitKeyframes as Record<string, string | number | number[]>,
       transition: {
         ...(typeof base.transition === "object" && base.transition ? base.transition : {}),
         duration: model3DExit.exitDurationMs / 1000,
         ease: model3DExit.exitEasing,
       },
     };
-  }, [motion, exitPreset, model3DExit.exitDurationMs, model3DExit.exitEasing, themeMode]);
+  }, [motion, exitPreset, model3DExit.exitDurationMs, model3DExit.exitEasing]);
 
   const policyMode = external ? "external" : "any";
   const resolvedHrefResult = href != null ? resolveAuthoredUrl(href, policyMode) : null;
@@ -276,7 +289,9 @@ export function ElementButton({
   const hasLabel = resolvedLabel != null && resolvedLabel !== "";
   const hasVector = vectorBlock != null;
   const hasAction = !!action && !href;
-  const resolvedLinkDefault = resolveThemeString(linkDefault, themeMode);
+  const resolvedLinkDefault = lowerThemeStringToCss(linkDefault);
+  const resolvedLinkHover = lowerThemeStringToCss(linkHover);
+  const resolvedLinkActive = lowerThemeStringToCss(linkActive);
   const contentWrapStyle: CSSProperties = useMemo(
     () =>
       hasLabel && hasVector
@@ -291,14 +306,14 @@ export function ElementButton({
   );
 
   const handleActionPointerDown = useCallback(() => {
-    if (!pointerDownAction) return;
-    firePeblorAction(pointerDownAction as Parameters<typeof firePeblorAction>[0], "button");
-  }, [pointerDownAction]);
+    if (!interactions?.onPointerDown) return;
+    firePeblorAction(interactions.onPointerDown, "button");
+  }, [interactions]);
 
   const handleActionPointerUp = useCallback(() => {
-    if (!pointerUpAction) return;
-    firePeblorAction(pointerUpAction as Parameters<typeof firePeblorAction>[0], "button");
-  }, [pointerUpAction]);
+    if (!interactions?.onPointerUp) return;
+    firePeblorAction(interactions.onPointerUp, "button");
+  }, [interactions]);
 
   const handleDisabledLinkClick = useCallback((event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
@@ -317,7 +332,9 @@ export function ElementButton({
   const nakedSurfacePadding: CSSProperties = useMemo(
     () =>
       hasWrapper
-        ? {}
+        ? resolvedWrapperPadding != null
+          ? { padding: resolvedWrapperPadding as string | number }
+          : {}
         : {
             paddingTop: "var(--pb-button-naked-pad-y)",
             paddingBottom: "var(--pb-button-naked-pad-y)",
@@ -325,7 +342,7 @@ export function ElementButton({
             paddingRight: "var(--pb-button-naked-pad-x)",
             borderRadius: "var(--pb-button-naked-radius)",
           },
-    [hasWrapper]
+    [hasWrapper, resolvedWrapperPadding]
   );
 
   const content = (
@@ -335,11 +352,19 @@ export function ElementButton({
     >
       {hasLabel && (
         <span
-          className={`m-0 block ${typographyClass}`}
+          className={`m-0 block ${typographyClass}${!hasLink ? " element-btn-text" : ""}`}
           style={{
             ...(resolvedFontFamily ? { fontFamily: resolvedFontFamily } : {}),
             ...(!hasLink && resolvedLinkDefault != null && resolvedLinkDefault !== ""
-              ? { color: resolvedLinkDefault }
+              ? {
+                  "--element-btn-text": resolvedLinkDefault,
+                  ...(resolvedLinkHover != null
+                    ? { "--element-btn-text-hover": resolvedLinkHover }
+                    : {}),
+                  ...(resolvedLinkActive != null
+                    ? { "--element-btn-text-active": resolvedLinkActive }
+                    : {}),
+                }
               : {}),
             ...(isDisabled && hasLink ? { opacity: 0.6 } : {}),
           }}
@@ -406,11 +431,11 @@ export function ElementButton({
       <button
         type="button"
         onClick={handleActionButtonClick}
-        onPointerDown={pointerDownAction ? handleActionPointerDown : undefined}
-        onPointerUp={pointerUpAction ? handleActionPointerUp : undefined}
+        onPointerDown={interactions?.onPointerDown ? handleActionPointerDown : undefined}
+        onPointerUp={interactions?.onPointerUp ? handleActionPointerUp : undefined}
         disabled={isDisabled}
         aria-busy={loading || undefined}
-        className={`inline-flex items-center justify-center ${isDisabled ? "cursor-not-allowed" : "cursor-pointer"}`}
+        className={`inline-flex items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--pb-ring)] ${isDisabled ? "cursor-not-allowed" : "cursor-pointer"}`}
         style={{
           appearance: "none",
           background: "transparent",
@@ -418,7 +443,7 @@ export function ElementButton({
           color: "inherit",
           font: "inherit",
           textAlign: "inherit",
-          ...(hasWrapper ? { padding: 0 } : nakedSurfacePadding),
+          ...(hasWrapper ? { padding: resolvedWrapperPadding ?? "0" } : nakedSurfacePadding),
           ...(isDisabled ? { opacity: 0.6 } : {}),
         }}
       >
@@ -453,9 +478,10 @@ export function ElementButton({
   const wrappedInner =
     hasWrapper || hasStateVars ? (
       <span
-        ref={hasGlassEffect ? glassTargetRef : undefined}
+        ref={wrapperSpanRef}
         style={{
           ...wrapperStyle,
+          ...bgMotionAnimationStyle,
           ...(hasGlassEffect ? { position: "relative" as const } : {}),
         }}
         className={wrapperClassName}

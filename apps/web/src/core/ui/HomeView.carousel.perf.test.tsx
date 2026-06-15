@@ -14,7 +14,7 @@ function carouselProbeGlobal(): GlobalWithCarouselProbe {
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
-vi.mock("@/core/hooks/use-after-lcp", () => ({
+vi.mock("@pb/runtime-react/core/hooks/use-after-lcp", () => ({
   useAfterLcp: () => true,
 }));
 
@@ -61,7 +61,7 @@ vi.mock("framer-motion", () => {
     onAnimationComplete?: unknown;
     [key: string]: unknown;
   }) => <div {...rest}>{children}</div>;
-  return { motion: { div: Passthrough, nav: Passthrough } };
+  return { m: { div: Passthrough, nav: Passthrough } };
 });
 
 const heroProjects: HeroProject[] = [

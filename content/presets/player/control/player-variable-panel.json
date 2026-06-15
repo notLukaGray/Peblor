@@ -1,0 +1,32 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "gap": "0.5rem",
+  "padding": "1rem",
+  "borderRadius": "14px",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+  },
+  "section": {
+    "elementOrder": ["panel-label", "chips-row"],
+    "definitions": {
+      "panel-label": {
+        "type": "elementBody",
+        "level": 5,
+        "text": "Variable State",
+        "color": "color-mix(in oklab, var(--pb-on-secondary) 55%, transparent)",
+        "wrapperStyle": {
+          "fontFamily": "var(--pb-font-mono)",
+          "fontSize": "0.7rem",
+          "textTransform": "uppercase",
+          "letterSpacing": "0.06em"
+        }
+      },
+      "chips-row": {
+        "preset": "player-controls-state-chip"
+      }
+    }
+  }
+}

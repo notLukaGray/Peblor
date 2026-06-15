@@ -1,8 +1,8 @@
 {
-  "animate": {
+  "to": {
     "opacity": 1
   },
-  "initial": {
+  "from": {
     "opacity": 0
   }
 }

@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { pageView, initAnalytics } from "@/core/lib/analytics";
 
-let initialized = false;
-
 export function PageViewTracker({ path, title }: { path: string; title?: string }) {
+  const initialized = useRef(false);
+
   useEffect(() => {
-    if (!initialized) {
+    if (!initialized.current) {
       initAnalytics();
-      initialized = true;
+      initialized.current = true;
     }
     pageView(path, { title });
   }, [path, title]);

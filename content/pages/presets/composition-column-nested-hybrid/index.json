@@ -1,0 +1,183 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Composition Column Nested Hybrid — Preset Demo",
+  "description": "Multi-region system containing nested flow regions to demonstrate advanced composition depth.",
+  "sectionOrder": ["nav-header", "hero", "demo-primary", "demo-stress"],
+  "definitions": {
+    "bg-composition": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "radial-gradient(120% 110% at 92% 2%, color-mix(in oklab, var(--pb-accent) 16%, transparent) 0%, transparent 54%), linear-gradient(160deg, color-mix(in oklab, var(--pb-primary) 11%, var(--pb-secondary)) 0%, var(--pb-secondary) 66%, color-mix(in oklab, var(--pb-accent) 6%, var(--pb-secondary)) 100%)"
+        }
+      ],
+      "preset": "bg-composition"
+    },
+    "nav-header": {
+      "preset": "preset-demo-nav-header"
+    },
+    "hero": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "align": "start",
+      "height": "hug",
+      "padding": {
+        "base": "10rem 0 6rem",
+        "md": "12rem 0 8rem"
+      },
+      "gap": "1rem",
+      "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+      "definitions": {
+        "hero-eyebrow": {
+          "preset": "type-kicker-badge",
+          "text": "Column · Hybrid · Nested Composition"
+        },
+        "hero-title": {
+          "preset": "type-h1-display",
+          "text": "Composition Column Nested Hybrid"
+        },
+        "hero-description": {
+          "preset": "type-body-standard",
+          "text": "Multi-region system containing nested flow regions to demonstrate advanced composition depth.",
+          "width": {
+            "base": "100%",
+            "md": "72%"
+          }
+        }
+      }
+    },
+    "demo-primary": {
+      "preset": "composition-column-nested-hybrid",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "1060px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "2rem 0 4rem",
+        "md": "2rem 0 5rem"
+      },
+      "definitions": {
+        "left-stack": {
+          "section": {
+            "definitions": {
+              "a": {
+                "section": {
+                  "definitions": {
+                    "kicker": {
+                      "text": "Input"
+                    },
+                    "title": {
+                      "text": "Signal Intake"
+                    }
+                  }
+                }
+              },
+              "b": {
+                "section": {
+                  "definitions": {
+                    "kicker": {
+                      "text": "Filter"
+                    },
+                    "title": {
+                      "text": "Priority Shaping"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "right-stack": {
+          "section": {
+            "definitions": {
+              "quote": {
+                "section": {
+                  "definitions": {
+                    "quote": {
+                      "text": "Nested groups inside assigned tracks preserve depth without sacrificing grid discipline.",
+                      "preset": "type-body-fine"
+                    }
+                  }
+                },
+                "type": "elementGroup"
+              },
+              "metric": {
+                "section": {
+                  "definitions": {
+                    "label": {
+                      "text": "Nested Slots",
+                      "preset": "type-body-fine"
+                    },
+                    "body": {
+                      "text": "Hybrid pattern combines grid placement with internal flow stacks.",
+                      "preset": "type-body-fine"
+                    }
+                  }
+                },
+                "type": "elementGroup"
+              }
+            }
+          }
+        }
+      }
+    },
+    "demo-stress": {
+      "preset": "composition-column-nested-hybrid",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "1060px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 0 8rem",
+        "md": "0 0 12rem"
+      },
+      "definitions": {
+        "left-stack": {
+          "section": {
+            "definitions": {
+              "a": {
+                "section": {
+                  "definitions": {
+                    "body": {
+                      "text": "Long internal note to stress the nested stack and verify spacing continuity when one child card grows significantly taller than its sibling.",
+                      "preset": "type-body-fine"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "right-stack": {
+          "section": {
+            "definitions": {
+              "quote": {
+                "section": {
+                  "definitions": {
+                    "quote": {
+                      "text": "Utility-dense compositions can stay multi-region on desktop while gracefully collapsing to one track on mobile for tap comfort and reading flow.",
+                      "preset": "type-body-fine"
+                    }
+                  }
+                },
+                "type": "elementGroup"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "layout", "card", "bg"],
+  "bgKey": "bg-composition"
+}

@@ -45,7 +45,7 @@ composes_with:
 known_limitations:
   - "reorderable only applies to section.contentBlock — not available on other section types"
   - "reorderDragUnit: 'content' drags the visual element; 'frame' uses a drag handle overlay"
-  - "reorderAxis must match the content block's flexDirection — x for row, y for column"
+  - "reorderAxis must match the content block's flow — x for row, y for column"
 
 proposal_hints:
   new_variant_value: "N/A — section capability, no variant"

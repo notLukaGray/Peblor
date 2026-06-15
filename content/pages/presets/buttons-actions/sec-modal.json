@@ -1,0 +1,52 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "entrancePreset": "slideUp",
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "modal-buttons"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "modalOpen / modalClose"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Buttons that open and close the Unlock modal. modalOpen triggers the modal with its entrance animation; modalClose dismisses it with the exit animation. modals use the same element system as pages."
+    },
+    "modal-buttons": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "align": "center",
+      "distribute": "center",
+      "gap": "1rem",
+      "section": {
+        "elementOrder": ["modal-open-btn", "modal-close-btn"],
+        "definitions": {
+          "modal-open-btn": {
+            "preset": "btn-primary",
+            "label": "Open Modal",
+            "action": "modalOpen",
+            "actionPayload": {
+              "id": "unlock"
+            },
+            "wrapperBorderRadius": "10px"
+          },
+          "modal-close-btn": {
+            "preset": "btn-squircle",
+            "label": "Close Modal",
+            "action": "modalClose",
+            "actionPayload": {
+              "id": "unlock"
+            },
+            "wrapperBorderRadius": "10px",
+            "wrapperPadding": "0.7rem 1.5rem"
+          }
+        }
+      }
+    }
+  },
+  "id": "sec-modal"
+}

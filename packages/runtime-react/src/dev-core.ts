@@ -1,5 +1,6 @@
 export type { FontSlotName } from "@pb/core/typography";
 export { resolveEntranceMotion, resolveEntranceMotionsForElement } from "@pb/core/motion";
+export { invalidateCached } from "@pb/core";
 export {
   evaluateConditions,
   type ConditionOperator,

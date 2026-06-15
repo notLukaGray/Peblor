@@ -1,0 +1,101 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "align": "center",
+  "distribute": "center",
+  "minHeight": "100dvh",
+  "padding": {
+    "base": "4rem 1.5rem",
+    "md": "6rem 2rem"
+  },
+  "gap": {
+    "base": "1.25rem",
+    "md": "1.5rem"
+  },
+  "elementOrder": ["error-code", "headline", "description", "home-link"],
+  "definitions": {
+    "error-code": {
+      "type": "elementHeading",
+      "level": 1,
+      "text": "404",
+      "fontSize": "clamp(6rem, 14vw, 14rem)",
+      "fontWeight": 700,
+      "letterSpacing": "-0.03em",
+      "lineHeight": 1,
+      "color": "color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)",
+      "motionTiming": {
+        "entrancePreset": "blurIn",
+        "trigger": "onFirstVisible",
+        "entranceMotion": {
+          "transition": {
+            "duration": 0.6
+          }
+        }
+      }
+    },
+    "headline": {
+      "type": "elementHeading",
+      "level": 1,
+      "variant": "display",
+      "text": "Page not found",
+      "color": "var(--pb-on-secondary)",
+      "wordWrap": true,
+      "motionTiming": {
+        "entrancePreset": "slideUp",
+        "trigger": "onFirstVisible",
+        "entranceMotion": {
+          "transition": {
+            "duration": 0.5,
+            "delay": 0.1
+          }
+        }
+      }
+    },
+    "description": {
+      "type": "elementBody",
+      "level": 1,
+      "text": "The page you're looking for doesn't exist or has been moved.",
+      "color": "color-mix(in oklab, var(--pb-on-secondary) 65%, transparent)",
+      "wordWrap": true,
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      },
+      "motionTiming": {
+        "entrancePreset": "fade",
+        "trigger": "onFirstVisible",
+        "entranceMotion": {
+          "transition": {
+            "duration": 0.5,
+            "delay": 0.2
+          }
+        }
+      }
+    },
+    "home-link": {
+      "type": "elementButton",
+      "label": "Back to home",
+      "href": "/",
+      "level": 4,
+      "wrapperPadding": "0.7rem 1.5rem",
+      "wrapperBorderRadius": "999px",
+      "wrapperFill": "var(--pb-on-secondary)",
+      "linkDefault": "var(--pb-secondary)",
+      "wrapperFillHover": "color-mix(in oklab, var(--pb-on-secondary) 88%, white)",
+      "wrapperFillActive": "color-mix(in oklab, var(--pb-on-secondary) 80%, black)",
+      "selfAlign": "left",
+      "wrapperScaleHover": 1.04,
+      "wrapperScaleActive": 0.97,
+      "motionTiming": {
+        "entrancePreset": "slideUp",
+        "trigger": "onFirstVisible",
+        "entranceMotion": {
+          "transition": {
+            "duration": 0.5,
+            "delay": 0.35
+          }
+        }
+      }
+    }
+  }
+}

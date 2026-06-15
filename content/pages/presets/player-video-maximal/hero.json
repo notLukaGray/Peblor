@@ -1,0 +1,21 @@
+{
+  "preset": "demo-hero",
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Play · Audio · Seek · Time · Quality · Fullscreen"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Video Maximal"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Full module with chapter rail, overlay controls, and state-gated visibility layers.",
+      "width": {
+        "base": "100%",
+        "md": "78%"
+      }
+    }
+  }
+}

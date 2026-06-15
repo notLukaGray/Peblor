@@ -1,0 +1,13 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Video Fullscreen Max — Preset Demo",
+  "description": "Full-viewport video with layered controls — transport, chapter, quality, volume — all visibleWhen-gated.",
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "bg", "player/section"],
+  "bgKey": "bg-players",
+  "sectionOrder": ["nav-header", "hero", "sec-player"],
+  "definitions": {
+    "bg-players": {
+      "preset": "bg-players"
+    }
+  }
+}

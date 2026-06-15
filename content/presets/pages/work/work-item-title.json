@@ -1,0 +1,8 @@
+{
+  "type": "elementBody",
+  "level": 3,
+  "width": "100%",
+  "textAlign": "left",
+  "text": "",
+  "color": "var(--work-list-title-color, var(--pb-on-secondary))"
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import { MOTION_DEFAULTS } from "@pb/contracts/peblor/core/peblor-motion-defaults";
 
 export type FeedbackType = "play" | "pause" | "seekForward" | "seekBack";
 
@@ -14,7 +15,7 @@ export type AudioPlayerState = {
   feedback: { type: FeedbackType; at: number } | null;
 };
 
-const FEEDBACK_DURATION_MS = 400;
+const FEEDBACK_DURATION_MS = MOTION_DEFAULTS.defaultFeedbackDurationMs;
 
 export function useAudioPlayerState(initiallyVisible = true) {
   const [isPlaying, setIsPlaying] = useState(false);

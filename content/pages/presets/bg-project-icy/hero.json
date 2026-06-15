@@ -1,0 +1,17 @@
+{
+  "definitions": {
+    "hero-badge": {
+      "preset": "demo-hero-badge",
+      "text": "backgroundVariable · entrance"
+    },
+    "hero-title": {
+      "preset": "demo-hero-title",
+      "text": "bg-project-icy"
+    },
+    "hero-desc": {
+      "preset": "demo-hero-description",
+      "text": "Clean base with a cool cerulean crown that fades in on mount — the top glow appears softly, giving the page a cinematic open."
+    }
+  },
+  "preset": "demo-hero-100vh"
+}

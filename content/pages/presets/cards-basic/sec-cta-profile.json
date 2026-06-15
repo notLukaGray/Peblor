@@ -1,0 +1,44 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "staggerChildren": 0.1,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "cards-row"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "CTA + Profile"
+    },
+    "cards-row": {
+      "preset": "card-grid-row",
+      "section": {
+        "elementOrder": ["cta", "profile"],
+        "definitions": {
+          "cta": {
+            "preset": "card-cta-compact",
+            "width": {
+              "base": "100%",
+              "md": "calc(62% - 0.75rem)"
+            },
+            "flex": {
+              "base": "1 1 100%",
+              "md": "1 1 calc(62% - 0.75rem)"
+            }
+          },
+          "profile": {
+            "preset": "card-profile-mini",
+            "width": {
+              "base": "100%",
+              "md": "calc(38% - 0.75rem)"
+            },
+            "flex": {
+              "base": "1 1 100%",
+              "md": "1 1 calc(38% - 0.75rem)"
+            }
+          }
+        }
+      }
+    }
+  }
+}

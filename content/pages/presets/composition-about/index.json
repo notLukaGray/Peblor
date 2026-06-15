@@ -1,0 +1,601 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "About — Composition Demo",
+  "description": "Team and company about page: mission hero, story narrative, values grid, stats, team profiles, press marquee, proof block, and hiring CTA.",
+  "sectionOrder": [
+    "nav-header",
+    "hero",
+    "sec-story",
+    "sec-values",
+    "sec-stats",
+    "sec-team-label",
+    "sec-team",
+    "sec-press",
+    "sec-proof",
+    "sec-cta"
+  ],
+  "definitions": {
+    "nav-header": {
+      "preset": "preset-demo-nav-header"
+    },
+    "hero": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "960px",
+      "selfAlign": "center",
+      "align": "center",
+      "height": "hug",
+      "padding": {
+        "base": "5rem 1.5rem 8rem",
+        "md": "14rem 2rem 12rem"
+      },
+      "gap": "2rem",
+      "motionTiming": {
+        "staggerChildren": 0.1,
+        "trigger": "onMount"
+      },
+      "elementOrder": ["hero-kicker", "hero-title", "hero-body"],
+      "definitions": {
+        "hero-kicker": {
+          "preset": "type-kicker-badge",
+          "text": "Est. 2019 · Remote-first",
+          "selfAlign": "center",
+          "width": "auto"
+        },
+        "hero-title": {
+          "text": "We exist to make great product design accessible to every team.",
+          "selfAlign": "center",
+          "textAlign": "center",
+          "type": "elementHeading",
+          "level": 2,
+          "wordWrap": true,
+          "width": {
+            "base": "90%",
+            "md": "62%"
+          },
+          "color": "var(--pb-on-secondary)",
+          "motionTiming": {
+            "entrancePreset": "blurIn",
+            "trigger": "onFirstVisible"
+          }
+        },
+        "hero-body": {
+          "preset": "type-body-lead",
+          "text": "Orbit is a distributed design-and-build studio. We partner with founders, product teams, and enterprises to close the gap between idea and shipped experience.",
+          "textAlign": "center",
+          "selfAlign": "center",
+          "width": {
+            "base": "100%",
+            "md": "72%"
+          }
+        }
+      }
+    },
+    "sec-story": {
+      "preset": "composition-flow-asymmetric-stack",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "5rem 0 6rem",
+        "md": "8rem 0 10rem"
+      },
+      "definitions": {
+        "kicker": {
+          "text": "Our story"
+        },
+        "headline": {
+          "text": "We started as a two-person consultancy. Now we’re the studio other studios call."
+        },
+        "body": {
+          "text": "In 2019, we shipped a design system for a seed-stage startup in six weeks. Word spread. By 2021 we had a waitlist. By 2023 we had turned down more work than we took on — not out of arrogance, but out of commitment to doing fewer things well. Today Orbit is a studio of 18 people, fully distributed, deeply embedded in the products we help build."
+        },
+        "quote": {
+          "text": "“We measure success by whether teams can own the work after we’re gone. That’s the real delivery.” — Alex Morgan, Founder"
+        },
+        "actions": {
+          "section": {
+            "definitions": {
+              "primary": {
+                "label": "Work with us",
+                "href": "#"
+              },
+              "secondary": {
+                "label": "Read our story",
+                "href": "#"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-values": {
+      "preset": "composition-column-3col-features",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "4rem 0 5rem",
+        "md": "6rem 0 8rem"
+      },
+      "definitions": {
+        "feature-a": {
+          "section": {
+            "definitions": {
+              "kicker": {
+                "text": "Craft"
+              },
+              "title": {
+                "text": "Make it real, make it right"
+              },
+              "body": {
+                "text": "We don’t ship placeholders. Every component is production-hardened before it reaches a client."
+              },
+              "link": {
+                "label": "Our process →",
+                "href": "#"
+              }
+            }
+          }
+        },
+        "feature-b": {
+          "section": {
+            "definitions": {
+              "kicker": {
+                "text": "Clarity"
+              },
+              "title": {
+                "text": "Simple answers to hard design problems"
+              },
+              "body": {
+                "text": "Complexity is a symptom of unclear thinking. We work until the simplest solution becomes obvious."
+              },
+              "link": {
+                "label": "Case studies →",
+                "href": "#"
+              }
+            }
+          }
+        },
+        "feature-c": {
+          "section": {
+            "definitions": {
+              "kicker": {
+                "text": "Velocity"
+              },
+              "title": {
+                "text": "Design and engineering as one motion"
+              },
+              "body": {
+                "text": "No handoff ceremonies. Design and code evolve together from the first sketch to the final deploy."
+              },
+              "link": {
+                "label": "How we work →",
+                "href": "#"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-stats": {
+      "preset": "composition-column-kpi-matrix",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "3rem 0 5rem",
+        "md": "4rem 0 8rem"
+      },
+      "definitions": {
+        "kpi-1": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 6,
+                "suffix": "",
+                "tween": {
+                  "duration": 1000
+                }
+              },
+              "label": {
+                "text": "Years building"
+              },
+              "body": {
+                "text": "Operating since 2019 across 4 continents."
+              }
+            }
+          }
+        },
+        "kpi-2": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 140,
+                "suffix": "+",
+                "tween": {
+                  "duration": 1200
+                }
+              },
+              "label": {
+                "text": "Projects shipped"
+              },
+              "body": {
+                "text": "From MVPs to enterprise-scale design systems."
+              }
+            }
+          }
+        },
+        "kpi-3": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 92,
+                "suffix": "%",
+                "tween": {
+                  "duration": 1400
+                }
+              },
+              "label": {
+                "text": "Client retention"
+              },
+              "body": {
+                "text": "Most clients stay for the second project too."
+              }
+            }
+          }
+        },
+        "kpi-4": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 18,
+                "suffix": "",
+                "tween": {
+                  "duration": 800
+                }
+              },
+              "label": {
+                "text": "Team members"
+              },
+              "body": {
+                "text": "Distributed, senior, and focused."
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-team-label": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "5rem 0 3rem",
+        "md": "8rem 0 4rem"
+      },
+      "elementOrder": ["team-heading", "team-desc"],
+      "definitions": {
+        "team-heading": {
+          "preset": "type-h3-label",
+          "text": "The people behind the work",
+          "selfAlign": "center",
+          "width": "auto"
+        },
+        "team-desc": {
+          "preset": "type-body-standard",
+          "text": "Senior practitioners from Figma, Vercel, Linear, and Stripe. No juniors, no account managers — just the people doing the work.",
+          "textAlign": "center",
+          "selfAlign": "center"
+        }
+      }
+    },
+    "sec-team": {
+      "type": "sectionColumn",
+      "columns": {
+        "base": 2,
+        "md": 3
+      },
+      "columnWidths": {
+        "base": [1, 1],
+        "md": [1, 1, 1]
+      },
+      "columnGaps": {
+        "base": "1rem",
+        "md": "1.5rem"
+      },
+      "columnAssignments": {
+        "base": {
+          "m-1": 0,
+          "m-2": 1,
+          "m-3": 0,
+          "m-4": 1,
+          "m-5": 0,
+          "m-6": 1
+        },
+        "md": {
+          "m-1": 0,
+          "m-2": 1,
+          "m-3": 2,
+          "m-4": 0,
+          "m-5": 1,
+          "m-6": 2
+        }
+      },
+      "contentWidth": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "contentHeight": "hug",
+      "gridMode": "grid",
+      "gridAutoRows": "auto",
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 0 6rem",
+        "md": "0 0 8rem"
+      },
+      "elementOrder": ["m-1", "m-2", "m-3", "m-4", "m-5", "m-6"],
+      "definitions": {
+        "m-1": {
+          "preset": "card-profile-mini",
+          "section": {
+            "definitions": {
+              "avatar": {
+                "src": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&q=80&auto=format&fit=crop&crop=face",
+                "alt": "Alex"
+              },
+              "name": {
+                "text": "Alex Morgan"
+              },
+              "role": {
+                "text": "Design Lead"
+              }
+            }
+          }
+        },
+        "m-2": {
+          "preset": "card-profile-mini",
+          "section": {
+            "definitions": {
+              "avatar": {
+                "src": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80&auto=format&fit=crop&crop=face",
+                "alt": "Sarah"
+              },
+              "name": {
+                "text": "Sarah Chen"
+              },
+              "role": {
+                "text": "Engineering Lead"
+              }
+            }
+          }
+        },
+        "m-3": {
+          "preset": "card-profile-mini",
+          "section": {
+            "definitions": {
+              "avatar": {
+                "src": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80&auto=format&fit=crop&crop=face",
+                "alt": "Marcus"
+              },
+              "name": {
+                "text": "Marcus Webb"
+              },
+              "role": {
+                "text": "Motion & 3D"
+              }
+            }
+          }
+        },
+        "m-4": {
+          "preset": "card-profile-mini",
+          "section": {
+            "definitions": {
+              "avatar": {
+                "src": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80&auto=format&fit=crop&crop=face",
+                "alt": "Priya"
+              },
+              "name": {
+                "text": "Priya Nair"
+              },
+              "role": {
+                "text": "Product Strategy"
+              }
+            }
+          }
+        },
+        "m-5": {
+          "preset": "card-profile-mini",
+          "section": {
+            "definitions": {
+              "avatar": {
+                "src": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80&auto=format&fit=crop&crop=face",
+                "alt": "Jordan"
+              },
+              "name": {
+                "text": "Jordan Flint"
+              },
+              "role": {
+                "text": "Systems & Infra"
+              }
+            }
+          }
+        },
+        "m-6": {
+          "preset": "card-profile-mini",
+          "section": {
+            "definitions": {
+              "avatar": {
+                "src": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&q=80&auto=format&fit=crop&crop=face",
+                "alt": "Tom"
+              },
+              "name": {
+                "text": "Tom Archer"
+              },
+              "role": {
+                "text": "Brand & Type"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-press": {
+      "type": "contentBlock",
+      "width": "100%",
+      "height": "hug",
+      "padding": {
+        "base": "3rem 0",
+        "md": "4rem 0"
+      },
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+      "elementOrder": ["press-marquee"],
+      "definitions": {
+        "press-marquee": {
+          "preset": "type-marquee-label",
+          "text": "Fast Company · Wired · The Verge · Design Week · It's Nice That · Eye On Design · Dezeen · Creative Review · Print Magazine · AIGA"
+        }
+      }
+    },
+    "sec-cta": {
+      "preset": "composition-flow-hero-stack",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "860px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "2.5rem 1.5rem 2.5rem",
+        "md": "4rem 2rem 8rem"
+      },
+      "definitions": {
+        "eyebrow": {
+          "text": "Join the team"
+        },
+        "title": {
+          "text": "We’re hiring thoughtful builders."
+        },
+        "lead": {
+          "text": "If you care about craft, move fast, and want to do the best work of your career, we want to hear from you."
+        },
+        "actions": {
+          "section": {
+            "definitions": {
+              "primary": {
+                "label": "See open roles",
+                "href": "#"
+              },
+              "secondary": {
+                "label": "Learn about culture",
+                "href": "#"
+              }
+            }
+          }
+        }
+      }
+    },
+    "bg-page": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "oklch(0.05 0.003 262)"
+        },
+        {
+          "fill": "radial-gradient(ellipse 90% 55% at 50% -8%, oklch(0.28 0.07 265 / 0.55) 0%, transparent 68%)",
+          "backgroundSize": "200% 200%",
+          "motion": [
+            {
+              "type": "loop",
+              "to": {
+                "opacity": [0.65, 1, 0.65]
+              },
+              "transition": {
+                "duration": 8,
+                "ease": "easeInOut",
+                "repeatType": "mirror"
+              }
+            }
+          ]
+        },
+        {
+          "fill": "radial-gradient(ellipse 55% 45% at 78% 72%, oklch(0.16 0.04 272 / 0.28) 0%, transparent 62%)"
+        }
+      ]
+    },
+    "sec-proof": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "3rem 0 4rem",
+        "md": "5rem 0 7rem"
+      },
+      "elementOrder": ["proof-card"],
+      "definitions": {
+        "proof-card": {
+          "preset": "card-proof-block",
+          "section": {
+            "definitions": {
+              "quote": {
+                "text": "\"Orbit doesn’t just ship work — they leave behind a team that’s smarter for having worked with them.\""
+              },
+              "attribution": {
+                "section": {
+                  "definitions": {
+                    "name": {
+                      "text": "Vera Huang"
+                    },
+                    "role": {
+                      "text": "CPO, Fieldwork"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "presets": [
+    "demo",
+    "type/core",
+    "type/effects",
+    "type/motion",
+    "ui/button",
+    "ui/link",
+    "layout",
+    "card",
+    "bg"
+  ],
+  "bgKey": "bg-page",
+  "scroll": {
+    "smooth": true,
+    "lockBody": true,
+    "scrollX": "hidden"
+  }
+}

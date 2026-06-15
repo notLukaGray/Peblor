@@ -21,8 +21,6 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import Ajv2020 from "ajv/dist/2020.js";
-import addFormats from "ajv-formats";
 import { z } from "zod";
 import {
   knownPageTagsConfigSchema,
@@ -30,6 +28,7 @@ import {
   peblorSchema,
   peblorDefinitionBlockSchema,
   moduleBlockSchema,
+  modalBuilderSchema,
 } from "@pb/contracts";
 import { resolveContentDir } from "@pb/core/lib/peblor-config";
 
@@ -61,13 +60,6 @@ const ENTRANCE_REQUIRED_KEYS = new Set([
 ]);
 
 type JsonSchemaObject = Record<string, unknown>;
-
-const ajv = new Ajv2020({ strict: false, allErrors: true, validateSchema: true });
-addFormats(
-  // ajv-formats types expect Ajv from its own nested ajv dep; Ajv2020 from root ajv
-  // is structurally identical at runtime. Cast through unknown to satisfy both.
-  ajv as unknown as Parameters<typeof addFormats>[0]
-);
 
 function formatZodIssues(error: z.ZodError): string {
   return error.issues
@@ -158,33 +150,6 @@ function stripEntranceFromRequired(schema: unknown): unknown {
     );
   }
 
-  // If this is a contentBlock section definition, make sure reorderable & friends are allowed.
-  if (obj.properties && typeof obj.properties === "object") {
-    const props = obj.properties as Record<string, unknown>;
-    const typeProp = props.type as { const?: unknown } | undefined;
-    if (typeProp && typeof typeProp === "object" && typeProp.const === "contentBlock") {
-      if (!props.reorderable) props.reorderable = { type: "boolean" };
-      if (!props.reorderAxis) {
-        props.reorderAxis = {
-          type: "string",
-          enum: ["x", "y"],
-        };
-      }
-      if (!props.reorderDragUnit) {
-        props.reorderDragUnit = {
-          type: "string",
-          enum: ["frame", "content"],
-        };
-      }
-      if (!props.reorderDragBehavior) {
-        props.reorderDragBehavior = {
-          type: "string",
-          enum: ["elasticSnap", "free", "none"],
-        };
-      }
-    }
-  }
-
   for (const [k, v] of Object.entries(obj)) {
     obj[k] = stripEntranceFromRequired(v);
   }
@@ -192,170 +157,133 @@ function stripEntranceFromRequired(schema: unknown): unknown {
   return obj;
 }
 
+/** Recursively walk and remove from "required" any field whose property definition has a "default". */
+function stripDefaultsFromRequired(schema: unknown): unknown {
+  if (!schema || typeof schema !== "object") return schema;
+
+  if (Array.isArray(schema)) {
+    return schema.map((item) => stripDefaultsFromRequired(item));
+  }
+
+  const obj = schema as Record<string, unknown>;
+
+  if (Array.isArray(obj.required) && obj.properties && typeof obj.properties === "object") {
+    const props = obj.properties as Record<string, unknown>;
+    obj.required = (obj.required as unknown[]).filter((key) => {
+      if (typeof key !== "string") return true;
+      const prop = props[key];
+      if (!prop || typeof prop !== "object") return true;
+      return !("default" in prop);
+    });
+  }
+
+  for (const [k, v] of Object.entries(obj)) {
+    obj[k] = stripDefaultsFromRequired(v);
+  }
+
+  return obj;
+}
+
+// ---------------------------------------------------------------------------
+// Deduplication: z.toJSONSchema() inlines every type everywhere it's
+// referenced, producing 50–110 MB files. We walk the tree to find
+// discriminated-union arrays (oneOf/anyOf where every entry has a
+// properties.type.const discriminator) and extract each variant into a
+// named $defs entry, replacing the inline definition with a $ref.
+//
+// We run in a fixpoint loop: after extracting top-level unions (element
+// types, section types, backgrounds, actions), we re-walk $defs values
+// to extract any nested unions within those variants (e.g. the 86-action
+// trigger union that appears inside every element's triggers field).
+// ---------------------------------------------------------------------------
+
 /**
- * Returns true for objects that are substantial enough to be worth extracting
- * into $defs. Skips primitives, bare $ref nodes, and trivially small objects.
+ * Recursively walk a JSON Schema tree, extracting discriminated-union
+ * variants into the root `$defs` and replacing them with `$ref` pointers.
  */
-function isSubstantial(node: Record<string, unknown>): boolean {
-  const keys = Object.keys(node);
-  // Skip bare $ref nodes — already a reference
-  if (keys.length === 1 && keys[0] === "$ref") return false;
-  // Skip tiny schemas like { type: "string" } or { type: "boolean" }
-  if (keys.length <= 2 && !("properties" in node) && !("anyOf" in node) && !("oneOf" in node)) {
-    return false;
+function deduplicateSchema(root: JsonSchemaObject): void {
+  if (!root.$defs) root.$defs = {};
+  const defs = root.$defs as Record<string, unknown>;
+
+  // Fixpoint: keep walking $defs until no new entries are added.
+  // Each pass may extract nested discriminated unions from previously
+  // extracted variants (e.g. the trigger action union inside element types).
+  let prevDefCount = -1;
+  while (Object.keys(defs).length !== prevDefCount) {
+    prevDefCount = Object.keys(defs).length;
+
+    // Walk all $defs values (snapshot keys so new additions are visited
+    // on the next iteration).
+    for (const defKey of Object.keys(defs)) {
+      defs[defKey] = walk(defs[defKey], defs);
+    }
+
+    // Walk the rest of the schema (properties, etc.) excluding $defs
+    for (const key of Object.keys(root)) {
+      if (key === "$defs" || key === "$schema" || key === "$id") continue;
+      root[key] = walk(root[key], defs);
+    }
   }
-  return true;
 }
 
-function fnv1aHash(input: string): string {
-  let hash = 0x811c9dc5;
-  for (let i = 0; i < input.length; i += 1) {
-    hash ^= input.charCodeAt(i);
-    hash = Math.imul(hash, 0x01000193);
+function walk(node: unknown, defs: Record<string, unknown>): unknown {
+  if (!node || typeof node !== "object") return node;
+
+  if (Array.isArray(node)) {
+    // Discriminated union? Extract each variant to $defs.
+    if (node.length >= 2 && isDiscriminatedUnion(node as JsonSchemaObject[])) {
+      return (node as JsonSchemaObject[]).map((entry) => {
+        const constValue = (
+          (entry.properties as Record<string, unknown>)?.type as Record<string, unknown>
+        ).const as string;
+        if (!defs[constValue]) {
+          defs[constValue] = entry;
+        }
+        return { $ref: `#/$defs/${constValue}` };
+      });
+    }
+    // Plain array — recurse into items
+    return node.map((item) => walk(item, defs));
   }
-  return (hash >>> 0).toString(16).padStart(8, "0");
+
+  const obj = node as JsonSchemaObject;
+
+  // Recurse into children
+  for (const key of Object.keys(obj)) {
+    // $defs inside variants are unused — $ref always resolves to the root
+    if (key === "$defs") continue;
+    obj[key] = walk(obj[key], defs);
+  }
+
+  return obj;
 }
 
-/**
- * Post-process a JSON Schema to deduplicate repeated inline definitions into $defs.
- * This dramatically reduces file size (12–14 MB → ~150 KB) by using $ref instead of
- * inlining the same schema hundreds of times.
- */
-function deduplicateRefs(schema: Record<string, unknown>): Record<string, unknown> {
-  // Pass 1: walk and fingerprint every object node, count occurrences
-  const fingerprintCount = new Map<string, number>();
-  const fingerprintToNode = new Map<string, Record<string, unknown>>();
-
-  function countNode(node: unknown): void {
-    if (!node || typeof node !== "object") return;
-
-    if (Array.isArray(node)) {
-      for (const item of node) countNode(item);
-      return;
-    }
-
-    const obj = node as Record<string, unknown>;
-
-    // Don't fingerprint the top-level schema itself
-    const fp = fnv1aHash(JSON.stringify(obj));
-    if (isSubstantial(obj)) {
-      fingerprintCount.set(fp, (fingerprintCount.get(fp) ?? 0) + 1);
-      if (!fingerprintToNode.has(fp)) {
-        fingerprintToNode.set(fp, obj);
-      }
-    }
-
-    for (const v of Object.values(obj)) {
-      countNode(v);
-    }
-  }
-
-  // Count all nodes except the root itself
-  for (const v of Object.values(schema)) {
-    countNode(v);
-  }
-
-  // Pass 2: build $defs for nodes seen more than once
-  const defs: Record<string, Record<string, unknown>> = {};
-  // Preserve any existing $defs from Zod's cycle handling
-  if (schema.$defs && typeof schema.$defs === "object" && !Array.isArray(schema.$defs)) {
-    Object.assign(defs, schema.$defs as Record<string, unknown>);
-  }
-
-  const fingerprintToDef = new Map<string, string>();
-  let counter = 0;
-
-  for (const [fp, count] of fingerprintCount) {
-    if (count < 2) continue;
-    const node = fingerprintToNode.get(fp)!;
-    // Don't re-extract nodes that are already a $ref
-    if ("$ref" in node && Object.keys(node).length === 1) continue;
-
-    // Derive a name from the node's title field, or from a counter
-    let name: string;
-    if (typeof node.title === "string" && node.title.length > 0) {
-      // Sanitize: remove spaces and special chars, keep alphanumerics
-      const base = node.title.replace(/[^a-zA-Z0-9_]/g, "");
-      // Make unique in case two distinct nodes share a title
-      name = base in defs ? `${base}_${++counter}` : base;
-    } else {
-      name = `Def${++counter}`;
-    }
-
-    defs[name] = node;
-    fingerprintToDef.set(fp, name);
-  }
-
-  // Pass 3: walk the schema again, replacing duplicate occurrences with $ref
-  // We skip the very first occurrence so the def itself stays intact in $defs.
-  const fingerprintSeenCount = new Map<string, number>();
-
-  function replaceNode(node: unknown): unknown {
-    if (!node || typeof node !== "object") return node;
-
-    if (Array.isArray(node)) {
-      return node.map((item) => replaceNode(item));
-    }
-
-    const obj = node as Record<string, unknown>;
-    const fp = fnv1aHash(JSON.stringify(obj));
-
-    if (isSubstantial(obj) && fingerprintToDef.has(fp)) {
-      const seen = fingerprintSeenCount.get(fp) ?? 0;
-      fingerprintSeenCount.set(fp, seen + 1);
-      // Always replace with a $ref — the canonical copy lives in $defs
-      return { $ref: `#/$defs/${fingerprintToDef.get(fp)}` };
-    }
-
-    // Recurse into children
-    const result: Record<string, unknown> = {};
-    for (const [k, v] of Object.entries(obj)) {
-      if (k === "$defs") {
-        // Skip existing $defs — we'll re-attach them at the end
-        continue;
-      }
-      result[k] = replaceNode(v);
-    }
-    return result;
-  }
-
-  // Build the deduplicated schema body (without $defs key)
-  const deduped = replaceNode(schema) as Record<string, unknown>;
-
-  // Re-run deduplication on the $defs themselves so shared sub-schemas
-  // inside $defs are also collapsed — but only one level to avoid cycles
-  const deduplicatedDefs: Record<string, unknown> = {};
-  for (const [name, defNode] of Object.entries(defs)) {
-    deduplicatedDefs[name] = replaceNode(defNode);
-  }
-
-  // Return with $defs prepended
-  const { $defs: _removed, ...rest } = deduped;
-  void _removed;
-
-  return {
-    ...(Object.keys(deduplicatedDefs).length > 0 ? { $defs: deduplicatedDefs } : {}),
-    ...rest,
-  };
+/** Every entry has a `properties.type.const` discriminator? */
+function isDiscriminatedUnion(arr: JsonSchemaObject[]): boolean {
+  return arr.every((entry) => {
+    if (!entry || typeof entry !== "object") return false;
+    if (entry.$ref) return false; // already extracted
+    const t = (entry.properties as Record<string, unknown>)?.type as
+      | Record<string, unknown>
+      | undefined;
+    return typeof t?.const === "string" && t.const.length > 0;
+  });
 }
+
+// ---------------------------------------------------------------------------
 
 function writeSchemaFile(filename: string, schema: object): void {
   const filePath = path.join(SCHEMAS_DIR, filename);
-  const cleaned = stripEntranceFromRequired(schema) as Record<string, unknown>;
-  const compileTarget = {
-    $schema: "https://json-schema.org/draft/2020-12/schema",
-    $id: `${filename}:compile`,
-    ...cleaned,
-  };
-  ajv.compile(compileTarget);
-  const deduped = deduplicateRefs(cleaned);
+  const cleaned = stripDefaultsFromRequired(stripEntranceFromRequired(schema)) as JsonSchemaObject;
+  deduplicateSchema(cleaned);
   const wrapped = {
     $schema: "https://json-schema.org/draft/2020-12/schema",
     $id: filename,
-    ...deduped,
+    ...cleaned,
   };
   fs.mkdirSync(SCHEMAS_DIR, { recursive: true });
-  fs.writeFileSync(filePath, JSON.stringify(wrapped, null, 2), "utf-8");
+  // Minified output — pretty-printing was adding ~80% whitespace overhead
+  fs.writeFileSync(filePath, JSON.stringify(wrapped), "utf-8");
   const stats = fs.statSync(filePath);
   process.stdout.write(`  ✓ ${filename} (${(stats.size / 1024).toFixed(1)} KB)\n`);
 }
@@ -384,6 +312,13 @@ function main(): void {
   const moduleSchema = z.toJSONSchema(moduleBlockSchema, toJSONSchemaOptions);
   if (moduleSchema && typeof moduleSchema === "object") {
     writeSchemaFile("module.schema.json", moduleSchema as object);
+  }
+
+  // Modal: modal definition JSON (modals/*.json)
+  process.stdout.write("  → modal.schema.json\n");
+  const modalSchema = z.toJSONSchema(modalBuilderSchema, toJSONSchemaOptions);
+  if (modalSchema && typeof modalSchema === "object") {
+    writeSchemaFile("modal.schema.json", modalSchema as object);
   }
 
   // Definitions-only file: work/slug-sections.json

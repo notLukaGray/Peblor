@@ -4,6 +4,15 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import type { UseVideoControlsResult } from "@/peblor/hooks/use-video-controls";
+import { globals } from "@pb/runtime-react/core/lib/globals";
+
+export type VideoTrack = {
+  src: string;
+  kind?: "subtitles" | "captions" | "descriptions" | "chapters" | "metadata";
+  srclang?: string;
+  label?: string;
+  default?: boolean;
+};
 
 export type ElementVideoCoreProps = {
   setVideoRef: (el: HTMLVideoElement | null) => void;
@@ -21,9 +30,9 @@ export type ElementVideoCoreProps = {
   preload?: "none" | "metadata" | "auto";
   crossOrigin?: "anonymous" | "use-credentials";
   controlsList?: string;
+  tracks?: VideoTrack[];
 };
 
-const DEFAULT_CONTROLS_LIST = "nodownload nofullscreen";
 const BASE_VIDEO_WRAPPER_STYLE: CSSProperties = { position: "relative", width: "100%" };
 const MODULE_VIDEO_WRAPPER_STYLE: CSSProperties = {
   ...BASE_VIDEO_WRAPPER_STYLE,
@@ -39,7 +48,7 @@ function isIosLikeDevice(): boolean {
 
 function resolveControlsList(controlsList?: string): string {
   if (controlsList != null) return controlsList;
-  return isIosLikeDevice() ? "nodownload" : DEFAULT_CONTROLS_LIST;
+  return isIosLikeDevice() ? "nodownload" : globals.uiVideoDefaultControlsList;
 }
 
 export function ElementVideoCore({
@@ -58,6 +67,7 @@ export function ElementVideoCore({
   preload,
   crossOrigin,
   controlsList,
+  tracks,
 }: ElementVideoCoreProps) {
   const videoElRef = useRef<HTMLVideoElement | null>(null);
   const resolvedControlsList = resolveControlsList(controlsList);
@@ -91,6 +101,7 @@ export function ElementVideoCore({
           alt=""
           fill
           priority={priority}
+          sizes="100vw"
           className="absolute inset-0 object-cover"
         />
       )}
@@ -116,9 +127,21 @@ export function ElementVideoCore({
         onLoadedData={controls.handleVolumeChange}
         onTimeUpdate={controls.onTimeUpdate}
         onLoadedMetadata={controls.onLoadedMetadata}
+        onDurationChange={controls.onDurationChange}
         onPlaying={() => setHasPlayed(true)}
         aria-label={ariaLabel || "Video"}
-      />
+      >
+        {tracks?.map((track, i) => (
+          <track
+            key={i}
+            src={track.src}
+            kind={track.kind ?? "subtitles"}
+            srcLang={track.srclang}
+            label={track.label}
+            default={track.default}
+          />
+        ))}
+      </video>
     </div>
   );
 }

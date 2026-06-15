@@ -8,10 +8,9 @@ import {
   getHeadingTypographyClass,
   resolveFontFamily,
 } from "@pb/core/typography";
-import { resolveThemeString } from "@/peblor/theme/theme-string";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
+import { lowerThemeStringToCss } from "@/peblor/theme/theme-string";
 import { useDeviceType } from "@pb/runtime-react/core/providers/device-type-provider";
-import { resolveResponsiveValue } from "@pb/runtime-react/core/lib/responsive-value";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
 import { ElementLayoutWrapper } from "./Shared/ElementLayoutWrapper";
 import { useVariable } from "@/peblor/runtime/peblor-variable-store";
 
@@ -67,7 +66,7 @@ export function ElementCounter({
   start = 0,
   tween,
   variableTween,
-  scroll,
+  counterScroll,
   prefix = "",
   suffix = "",
   decimals = 0,
@@ -88,12 +87,12 @@ export function ElementCounter({
   tabIndex,
   width,
   height,
-  align,
+  selfAlign,
   marginTop,
   marginBottom,
   marginLeft,
   marginRight,
-  zIndex,
+  layer,
   constraints,
   effects,
   interactions,
@@ -102,15 +101,15 @@ export function ElementCounter({
   blendMode,
   boxShadow,
   filter,
-  backdropFilter,
+  bgBlur,
   hidden,
 }: Props) {
-  const themeMode = usePeblorThemeMode();
   const { isMobile } = useDeviceType();
   const variableValue = useVariable(variableKey ?? "");
-  const scrollStart = scroll?.scrollStart ?? 0;
-  const scrollEnd = scroll?.scrollEnd ?? 1;
-  const scrollEasing = scroll?.easing;
+  const counterScrollConfig = counterScroll ?? {};
+  const scrollStart = counterScrollConfig.scrollStart ?? 0;
+  const scrollEnd = counterScrollConfig.scrollEnd ?? 1;
+  const scrollEasing = counterScrollConfig.easing;
 
   const resolvedTarget = useMemo(
     () => (variableKey ? readNumericVariable(variableValue, target) : target),
@@ -294,13 +293,13 @@ export function ElementCounter({
           : resolvedTarget;
   const formatted = formatCounterValue(displayValue, decimals, separator, locale);
 
-  const resolvedTextFill = resolveThemeString(textFill?.value, themeMode);
-  const resolvedColor = resolveThemeString(color, themeMode);
+  const resolvedTextFill = lowerThemeStringToCss(textFill?.value);
+  const resolvedColor = lowerThemeStringToCss(color);
   const resolvedFontFamily = resolveFontFamily(fontFamily);
   const resolvedFontSize = resolveResponsiveValue(fontSize, isMobile);
 
   const textStyle: CSSProperties = {
-    letterSpacing,
+    letterSpacing: letterSpacing as CSSProperties["letterSpacing"],
     ...(resolvedFontFamily !== undefined ? { fontFamily: resolvedFontFamily } : {}),
     ...(resolvedFontSize !== undefined ? { fontSize: resolvedFontSize } : {}),
     ...(fontWeight !== undefined ? { fontWeight: fontWeight as CSSProperties["fontWeight"] } : {}),
@@ -321,12 +320,12 @@ export function ElementCounter({
   const layout = {
     width: width as string | undefined,
     height: height as string | undefined,
-    align: align as "left" | "center" | "right" | undefined,
+    align: selfAlign as "left" | "center" | "right" | undefined,
     marginTop: marginTop as string | undefined,
     marginBottom: marginBottom as string | undefined,
     marginLeft: marginLeft as string | undefined,
     marginRight: marginRight as string | undefined,
-    zIndex,
+    zIndex: layer,
     constraints,
     effects,
     wrapperStyle,
@@ -334,7 +333,7 @@ export function ElementCounter({
     blendMode,
     boxShadow,
     filter,
-    backdropFilter,
+    backdropFilter: bgBlur,
     hidden,
   };
 

@@ -1,0 +1,24 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Interactive Reveal — Preset Demo",
+  "description": "Compare, reveal, and disclosure UI patterns — before/after image comparison, expandable reveal sections, and staged progressive reveal.",
+  "presets": ["demo", "type/core", "ui/link"],
+  "sectionOrder": [
+    "nav-header",
+    "hero",
+    "sec-image-compare",
+    "toggle-reveal-section",
+    "sec-staged-reveal"
+  ],
+  "bgKey": "bg-reveal",
+  "definitions": {
+    "bg-reveal": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "linear-gradient(160deg, color-mix(in oklab, var(--pb-primary) 8%, var(--pb-secondary)) 0%, var(--pb-secondary) 55%, color-mix(in oklab, var(--pb-accent) 9%, var(--pb-secondary)) 100%)"
+        }
+      ]
+    }
+  }
+}

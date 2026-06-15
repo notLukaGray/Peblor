@@ -1,0 +1,7 @@
+{
+  "type": "setVariable",
+  "payload": {
+    "key": "pageReady",
+    "value": true
+  }
+}

@@ -1,0 +1,442 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Contact — Composition Demo",
+  "description": "Interactive capstone page: contact formBlock, setVariable → visibleWhen thank-you panel, sectionTrigger scroll banner, and office split.",
+  "presets": [
+    "demo",
+    "type/core",
+    "type/effects",
+    "type/motion",
+    "ui/button",
+    "ui/link",
+    "layout",
+    "card",
+    "bg"
+  ],
+  "bgKey": "bg-page",
+  "scroll": {
+    "smooth": true,
+    "lockBody": true,
+    "scrollX": "hidden"
+  },
+  "sectionOrder": [
+    "nav-header",
+    "hero",
+    "sec-form-label",
+    "sec-form",
+    "sec-scroll-trigger",
+    "sec-thanks-wrapper",
+    "sec-office",
+    "sec-scroll-banner-wrapper",
+    "sec-links"
+  ],
+  "definitions": {
+    "bg-page": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "oklch(0.05 0.003 262)"
+        },
+        {
+          "fill": "radial-gradient(ellipse 80% 55% at 50% -10%, oklch(0.2 0.05 268 / 0.5) 0%, transparent 68%)",
+          "motion": [
+            {
+              "type": "loop",
+              "to": {
+                "opacity": [0.6, 1, 0.6]
+              },
+              "transition": {
+                "duration": 8,
+                "ease": "easeInOut",
+                "repeatType": "mirror"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "nav-header": {
+      "preset": "preset-demo-nav-header"
+    },
+    "hero": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "align": "center",
+      "height": "hug",
+      "padding": {
+        "base": "8rem 1.5rem 5rem",
+        "md": "14rem 2rem 7rem"
+      },
+      "gap": "1.5rem",
+      "motionTiming": {
+        "staggerChildren": 0.1,
+        "trigger": "onMount"
+      },
+      "elementOrder": ["hero-kicker", "hero-title", "hero-body"],
+      "definitions": {
+        "hero-kicker": {
+          "preset": "type-kicker-badge",
+          "text": "Get in touch",
+          "selfAlign": "center",
+          "width": "auto"
+        },
+        "hero-title": {
+          "type": "elementHeading",
+          "level": 1,
+          "text": "Let's build something worth using.",
+          "textAlign": "center",
+          "selfAlign": "center",
+          "wordWrap": true,
+          "width": {
+            "base": "100%",
+            "md": "80%"
+          },
+          "color": "var(--pb-on-secondary)",
+          "motionTiming": {
+            "entrancePreset": "blurIn",
+            "trigger": "onFirstVisible"
+          }
+        },
+        "hero-body": {
+          "preset": "type-body-lead",
+          "text": "We typically respond within one business day. For urgent requests, mention it in your message.",
+          "textAlign": "center",
+          "selfAlign": "center",
+          "width": {
+            "base": "100%",
+            "md": "56%"
+          }
+        }
+      }
+    },
+    "sec-form-label": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "3rem 0 1.5rem",
+        "md": "4rem 0 2rem"
+      },
+      "elementOrder": ["form-heading"],
+      "definitions": {
+        "form-heading": {
+          "preset": "type-h3-label",
+          "text": "Send us a message"
+        }
+      }
+    },
+    "sec-form": {
+      "type": "formBlock",
+      "contentWidth": {
+        "base": "92%",
+        "md": "600px"
+      },
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 1.5rem 3rem",
+        "md": "0 2rem 4rem"
+      },
+      "action": "contact",
+      "method": "post",
+      "fields": [
+        {
+          "type": "formField",
+          "fieldType": "text",
+          "name": "name",
+          "label": "Your name",
+          "required": true,
+          "width": "100%"
+        },
+        {
+          "type": "formField",
+          "fieldType": "text",
+          "name": "email",
+          "label": "Email address",
+          "required": true,
+          "width": "100%"
+        },
+        {
+          "type": "formField",
+          "fieldType": "select",
+          "name": "subject",
+          "label": "Subject",
+          "width": "100%",
+          "options": [
+            {
+              "value": "project",
+              "label": "New project"
+            },
+            {
+              "value": "partnership",
+              "label": "Partnership"
+            },
+            {
+              "value": "press",
+              "label": "Press inquiry"
+            },
+            {
+              "value": "other",
+              "label": "Something else"
+            }
+          ]
+        },
+        {
+          "type": "formField",
+          "fieldType": "paragraph",
+          "name": "message",
+          "label": "Message",
+          "width": "100%"
+        },
+        {
+          "type": "formField",
+          "fieldType": "button",
+          "label": "Send message",
+          "width": "auto"
+        }
+      ]
+    },
+    "sec-scroll-trigger": {
+      "type": "sectionTrigger",
+      "onVisible": {
+        "type": "setVariable",
+        "payload": {
+          "key": "scrolledPast",
+          "value": "yes"
+        }
+      },
+      "threshold": 0.3,
+      "triggerOnce": true
+    },
+    "sec-thanks-wrapper": {
+      "type": "contentBlock",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "2rem 0 3rem",
+        "md": "3rem 0 4rem"
+      },
+      "fill": "transparent",
+      "elementOrder": ["thanks-panel"],
+      "definitions": {
+        "thanks-panel": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "column",
+          "gap": "0.75rem",
+          "width": "100%",
+          "padding": "1.5rem 2rem",
+          "borderRadius": "16px",
+          "fill": "color-mix(in oklab, var(--pb-accent) 10%, transparent)",
+          "wrapperStyle": {
+            "border": "1px solid color-mix(in oklab, var(--pb-accent) 24%, transparent)"
+          },
+          "visibleWhen": {
+            "variable": "scrolledPast",
+            "operator": "equals",
+            "value": "yes"
+          },
+          "section": {
+            "elementOrder": ["thanks-title", "thanks-body"],
+            "definitions": {
+              "thanks-title": {
+                "preset": "type-h4-card",
+                "text": "You've scrolled past the trigger point."
+              },
+              "thanks-body": {
+                "preset": "type-body-fine",
+                "text": "This panel appeared via sectionTrigger → setVariable → visibleWhen. The trigger fired when this section entered the viewport with 30% threshold."
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-office": {
+      "type": "sectionColumn",
+      "columns": {
+        "base": 1,
+        "md": 2
+      },
+      "columnWidths": {
+        "base": [1],
+        "md": [1, 1]
+      },
+      "columnGaps": {
+        "base": "1.5rem",
+        "md": "2.5rem"
+      },
+      "columnAssignments": {
+        "left": 0,
+        "right": 1
+      },
+      "contentWidth": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "contentHeight": "hug",
+      "gridMode": "grid",
+      "gridAutoRows": "auto",
+      "selfAlign": "center",
+      "padding": {
+        "base": "4rem 0 3rem",
+        "md": "6rem 0 5rem"
+      },
+      "elementOrder": ["left", "right"],
+      "definitions": {
+        "left": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "column",
+          "gap": "0.75rem",
+          "section": {
+            "elementOrder": ["heading", "address"],
+            "definitions": {
+              "heading": {
+                "preset": "type-h4-card",
+                "text": "London"
+              },
+              "address": {
+                "preset": "type-body-fine",
+                "text": "14 Garrett Street\nShoreditch, London EC1A 4HR\nUnited Kingdom"
+              }
+            }
+          }
+        },
+        "right": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "column",
+          "gap": "0.75rem",
+          "section": {
+            "elementOrder": ["heading", "address"],
+            "definitions": {
+              "heading": {
+                "preset": "type-h4-card",
+                "text": "New York"
+              },
+              "address": {
+                "preset": "type-body-fine",
+                "text": "Floor 12, 28 Liberty Street\nFiDi, New York NY 10005\nUnited States"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-scroll-banner-wrapper": {
+      "type": "contentBlock",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "2rem 0 3rem",
+        "md": "3rem 0 4rem"
+      },
+      "fill": "transparent",
+      "elementOrder": ["scroll-banner"],
+      "definitions": {
+        "scroll-banner": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": {
+            "base": "column",
+            "md": "row"
+          },
+          "align": {
+            "base": "start",
+            "md": "center"
+          },
+          "distribute": "between",
+          "gap": "1rem",
+          "width": "100%",
+          "padding": "1.25rem 1.5rem",
+          "borderRadius": "14px",
+          "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+          "wrapperStyle": {
+            "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+          },
+          "visibleWhen": {
+            "variable": "scrolledPast",
+            "operator": "equals",
+            "value": "yes"
+          },
+          "section": {
+            "elementOrder": ["banner-text", "banner-btn"],
+            "definitions": {
+              "banner-text": {
+                "preset": "type-body-standard",
+                "text": "Prefer a call? Schedule 30 minutes directly."
+              },
+              "banner-btn": {
+                "preset": "btn-ghost",
+                "label": "Book a call",
+                "href": "#",
+                "wrapperPadding": "0.6rem 1.25rem",
+                "wrapperBorderRadius": "8px"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-links": {
+      "type": "contentBlock",
+      "flow": {
+        "base": "column",
+        "md": "row"
+      },
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "2rem 0 5rem",
+        "md": "3rem 0 8rem"
+      },
+      "gap": "1.5rem",
+      "elementOrder": ["lnk-email", "lnk-twitter", "lnk-linkedin", "lnk-github"],
+      "definitions": {
+        "lnk-email": {
+          "preset": "type-link-inline",
+          "label": "hello@orbitstudio.co",
+          "href": "#"
+        },
+        "lnk-twitter": {
+          "preset": "type-link-inline",
+          "label": "Twitter / X",
+          "href": "#"
+        },
+        "lnk-linkedin": {
+          "preset": "type-link-inline",
+          "label": "LinkedIn",
+          "href": "#"
+        },
+        "lnk-github": {
+          "preset": "type-link-inline",
+          "label": "GitHub",
+          "href": "#"
+        }
+      }
+    }
+  }
+}

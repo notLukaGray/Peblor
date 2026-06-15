@@ -1,0 +1,40 @@
+{
+  "preset": "player-section",
+  "elementOrder": ["player-label", "player-note", "player-surface"],
+  "definitions": {
+    "player-label": {
+      "preset": "type-h3-label",
+      "text": "Lottie Minimal — Event Bridge"
+    },
+    "player-note": {
+      "preset": "type-body-fine",
+      "text": "The Lottie animation autoplays. When it completes, an onComplete action fires setVariable('lottieDone', true). The state chip below reflects this. Note: elementLottie schema not yet registered — this page demonstrates the intended structure (see players-4-bugs.md)."
+    },
+    "player-surface": {
+      "preset": "player-lottie-surface-minimal",
+      "section": {
+        "elementOrder": ["lottie-canvas", "state-readout"],
+        "definitions": {
+          "lottie-canvas": {
+            "type": "elementLottie",
+            "src": "https://assets10.lottiefiles.com/packages/lf20_tll0j4bb.json",
+            "autoplay": true,
+            "loop": false,
+            "width": "100%",
+            "aspectRatio": "4 / 3",
+            "onComplete": {
+              "type": "setVariable",
+              "payload": {
+                "key": "lottieDone",
+                "value": true
+              }
+            }
+          },
+          "state-readout": {
+            "preset": "player-variable-panel"
+          }
+        }
+      }
+    }
+  }
+}

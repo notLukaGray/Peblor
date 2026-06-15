@@ -1,5 +1,12 @@
 import fs from "node:fs";
-import { findPagesDir, findPageFile, walkAllPages, isRecord } from "../lib/pages.js";
+import path from "node:path";
+import {
+  findPagesDir,
+  findPageFile,
+  walkAllPages,
+  isRecord,
+  findPresetsDir,
+} from "../lib/pages.js";
 import type { CommandIo } from "./types.js";
 
 const ASSET_KEYS = new Set(["url", "src", "poster", "image", "video"]);
@@ -125,8 +132,36 @@ export async function runListAssets(args: string[], io: CommandIo): Promise<numb
   }
 
   const refs: AssetRef[] = [];
+  const presetsDir = findPresetsDir();
+  const assetPresetCache = new Map<string, AssetRef[]>();
+
   for (const { route: r, data } of pages) {
     collectAssets(data, [], refs, r);
+
+    // Also collect assets from preset files the page imports.
+    const presets = Array.isArray(data.presets)
+      ? (data.presets as unknown[]).filter(
+          (p): p is string => typeof p === "string" && p.endsWith(".json")
+        )
+      : [];
+    if (presetsDir) {
+      for (const presetFilename of presets) {
+        let presetRefs = assetPresetCache.get(presetFilename);
+        if (presetRefs === undefined) {
+          const presetPath = path.join(presetsDir, presetFilename);
+          try {
+            const presetData = JSON.parse(fs.readFileSync(presetPath, "utf8"));
+            presetRefs = [];
+            collectAssets(presetData, [`$(preset:${presetFilename})`], presetRefs, r);
+          } catch (err) {
+            console.warn("[pb-cli] Failed to parse preset for asset collection", presetPath, err);
+            presetRefs = [];
+          }
+          assetPresetCache.set(presetFilename, presetRefs);
+        }
+        refs.push(...presetRefs);
+      }
+    }
   }
 
   let filtered = refs;

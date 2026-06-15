@@ -39,6 +39,10 @@ describe("peblor-resolved-assets", () => {
         format: expect.any(String),
       });
     });
+    it("builds a responsive width ladder for element images", () => {
+      const out = getBunnyImageParams({ type: "elementImage", width: "400px" }, "src");
+      expect(out.widths).toEqual([200, 400, 600, 800]);
+    });
     it("uses containerWidthPx for elementVideo poster with no width", () => {
       const out = getBunnyImageParams({ type: "elementVideo", id: "e1" }, "poster", {
         containerWidthPx: 600,
@@ -98,7 +102,7 @@ describe("peblor-resolved-assets", () => {
 
   describe("buildUrlByKeyMap", () => {
     it("returns empty object for null bg, empty sections and definitions", () => {
-      const fn = () => "https://signed/url";
+      const fn = () => ({ src: "https://signed/url" });
       expect(buildUrlByKeyMap(null, [], {}, fn)).toEqual({});
     });
     it("builds map for section with image ref", () => {
@@ -108,8 +112,8 @@ describe("peblor-resolved-assets", () => {
           elements: [{ type: "elementImage", id: "el1", src: "work/img.webp" }],
         },
       ];
-      const getSigned = (ref: string) => `https://cdn/${ref}`;
-      const map = buildUrlByKeyMap(null, sections as never[], {}, getSigned);
+      const resolveImageAsset = (ref: string) => ({ src: `https://cdn/${ref}` });
+      const map = buildUrlByKeyMap(null, sections as never[], {}, resolveImageAsset);
       expect(map["work/img.webp:el1"]).toBe("https://cdn/work/img.webp");
     });
   });
@@ -151,7 +155,7 @@ describe("peblor-resolved-assets", () => {
         ["work/b.webp", "https://cdn/b.webp"],
       ]);
       const containerWidthByElementId: Record<string, number | undefined> = {};
-      const getSignedImageUrl = (
+      const resolveImageAsset = (
         ref: string,
         _obj: Record<string, unknown>,
         _key: string,
@@ -164,9 +168,9 @@ describe("peblor-resolved-assets", () => {
             1920
           );
         }
-        return urlByRef.get(ref) ?? ref;
+        return { src: urlByRef.get(ref) ?? ref };
       };
-      injectResolvedUrlsIntoPage(null, sections as never[], urlByRef, undefined, getSignedImageUrl);
+      injectResolvedUrlsIntoPage(null, sections as never[], urlByRef, undefined, resolveImageAsset);
       const desktopViewport = 1920;
       const contentAreaPx = desktopViewport;
       const total = 3;

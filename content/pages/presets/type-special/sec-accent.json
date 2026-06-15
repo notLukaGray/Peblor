@@ -1,0 +1,49 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "align": "start",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "820px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "6rem 0",
+    "md": "10rem 0"
+  },
+  "gap": "3.5rem",
+  "height": "hug",
+  "motionTiming": {
+    "staggerChildren": 0.15,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["accent-group"],
+  "definitions": {
+    "accent-group": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "gap": "0.75rem",
+      "scroll": "visible",
+      "section": {
+        "elementOrder": ["a-label", "a-heading", "a-desc"],
+        "definitions": {
+          "a-label": {
+            "preset": "type-h3-label",
+            "text": "Accent Heading"
+          },
+          "a-heading": {
+            "preset": "type-accent-heading",
+            "text": "This heading carries a left accent bar"
+          },
+          "a-desc": {
+            "preset": "type-body-standard",
+            "text": "wrapperStyle — a 3px left border in var(--pb-accent) with 1rem padding. Pairs with slideRight entrance so the bar arrives with the text."
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "align": "stretch",
+  "gap": "1rem",
+  "width": "100%",
+  "padding": {
+    "base": "1rem",
+    "md": "1.25rem"
+  },
+  "borderRadius": "18px",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+  },
+  "motion": {
+    "onHover": {
+      "y": -4
+    },
+    "transition": {
+      "duration": 0.18
+    }
+  },
+  "section": {
+    "elementOrder": ["content"],
+    "definitions": {
+      "content": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "gap": "0.75rem",
+        "section": {
+          "elementOrder": ["kicker", "title", "body"],
+          "definitions": {
+            "kicker": {
+              "preset": "type-kicker-badge",
+              "text": "Shell · Basic"
+            },
+            "title": {
+              "preset": "type-h4-card",
+              "text": "Basic card shell"
+            },
+            "body": {
+              "preset": "type-body-fine",
+              "text": "Reusable surface with a single content zone: media / copy / actions / footer."
+            }
+          }
+        }
+      }
+    }
+  }
+}

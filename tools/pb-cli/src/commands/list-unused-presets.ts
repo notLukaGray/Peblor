@@ -29,7 +29,8 @@ function listAllPresetIds(presetsDir: string): string[] {
     let entries: fs.Dirent[];
     try {
       entries = fs.readdirSync(dir, { withFileTypes: true });
-    } catch {
+    } catch (err) {
+      console.warn("[pb-cli] Failed to read presets directory", dir, err);
       return;
     }
     for (const entry of entries) {

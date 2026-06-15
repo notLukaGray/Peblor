@@ -1,0 +1,154 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Composition Flow Tag Cloud — Preset Demo",
+  "description": "High-density wrapped items to test spacing, readability, and touch behavior under content pressure.",
+  "sectionOrder": ["nav-header", "hero", "demo-label", "demo-primary", "demo-stress"],
+  "definitions": {
+    "bg-composition": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "radial-gradient(120% 110% at 92% 2%, color-mix(in oklab, var(--pb-accent) 16%, transparent) 0%, transparent 54%), linear-gradient(160deg, color-mix(in oklab, var(--pb-primary) 11%, var(--pb-secondary)) 0%, var(--pb-secondary) 66%, color-mix(in oklab, var(--pb-accent) 6%, var(--pb-secondary)) 100%)"
+        }
+      ],
+      "preset": "bg-composition"
+    },
+    "nav-header": {
+      "preset": "preset-demo-nav-header"
+    },
+    "hero": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "align": "start",
+      "height": "hug",
+      "padding": {
+        "base": "10rem 0 6rem",
+        "md": "12rem 0 8rem"
+      },
+      "gap": "1rem",
+      "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+      "definitions": {
+        "hero-eyebrow": {
+          "preset": "type-kicker-badge",
+          "text": "Flow · Wrap Stress · Density"
+        },
+        "hero-title": {
+          "preset": "type-h1-display",
+          "text": "Composition Flow Tag Cloud"
+        },
+        "hero-description": {
+          "preset": "type-body-standard",
+          "text": "High-density wrapped items to test spacing, readability, and touch behavior under content pressure.",
+          "width": {
+            "base": "100%",
+            "md": "72%"
+          }
+        }
+      }
+    },
+    "demo-label": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "align": "start",
+      "height": "hug",
+      "padding": {
+        "base": "3rem 0 0.75rem",
+        "md": "4rem 0 0.75rem"
+      },
+      "elementOrder": ["label"],
+      "definitions": {
+        "label": {
+          "preset": "type-h3-label",
+          "text": "Primary + Stress Variant"
+        }
+      }
+    },
+    "demo-primary": {
+      "preset": "composition-flow-tag-cloud",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "marginBottom": {
+        "base": "2rem",
+        "md": "3rem"
+      }
+    },
+    "demo-stress": {
+      "preset": "composition-flow-tag-cloud",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "definitions": {
+        "eyebrow": {
+          "text": "Stress"
+        },
+        "title": {
+          "text": "Long-label cloud under density pressure"
+        },
+        "description": {
+          "text": "This scenario pushes long multi-word tags to validate wrapping, spacing, and tap comfort when labels are verbose and content teams add too many filters at once."
+        },
+        "chips": {
+          "section": {
+            "definitions": {
+              "chip-1": {
+                "label": "Cross-functional Stakeholder Alignment"
+              },
+              "chip-2": {
+                "label": "Internationalization and Locale Fallbacks"
+              },
+              "chip-3": {
+                "label": "Operational Guardrails"
+              },
+              "chip-4": {
+                "label": "Design Token Governance"
+              },
+              "chip-5": {
+                "label": "Real-world QA Notes"
+              },
+              "chip-6": {
+                "label": "Evidence-based Prioritization"
+              },
+              "chip-7": {
+                "label": "Long Tail Discoverability"
+              },
+              "chip-8": {
+                "label": "Contributor Onboarding"
+              },
+              "chip-9": {
+                "label": "Exception Handling"
+              },
+              "chip-10": {
+                "label": "Mobile Touch Ergonomics"
+              }
+            }
+          }
+        }
+      },
+      "marginBottom": {
+        "base": "4rem",
+        "md": "8rem"
+      }
+    }
+  },
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "layout", "bg"],
+  "bgKey": "bg-composition"
+}

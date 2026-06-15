@@ -1,0 +1,272 @@
+{
+  "preset": "player-section",
+  "elementOrder": ["player-label", "load-btn", "player-surface"],
+  "definitions": {
+    "player-label": {
+      "preset": "type-h3-label",
+      "text": "3D Minimal — Mouse-Driven Viewer"
+    },
+    "load-btn": {
+      "preset": "player-load-btn",
+      "label": "Load 3D Scene",
+      "action": "three.load",
+      "actionPayload": {
+        "id": "model-3d-minimal",
+        "fadeInOnReady": {
+          "durationMs": 900
+        },
+        "buttonFadeOutOnModelReady": {
+          "durationMs": 650
+        },
+        "buttonUnmountOnModelReady": true
+      }
+    },
+    "player-surface": {
+      "preset": "player-3d-surface-lazy",
+      "section": {
+        "elementOrder": ["model-canvas", "controls-row"],
+        "definitions": {
+          "model-canvas": {
+            "type": "elementModel3D",
+            "id": "model-3d-minimal",
+            "width": "100%",
+            "aspectRatio": "16 / 9",
+            "initiallyLoaded": false,
+            "models": {
+              "flamingo": {
+                "geometry": "https://threejs.org/examples/models/gltf/Flamingo.glb"
+              }
+            },
+            "canvas": {
+              "dpr": 2,
+              "gl": {
+                "antialias": true,
+                "powerPreference": "high-performance",
+                "alpha": true
+              }
+            },
+            "scene": {
+              "controls": {
+                "mode": "orbit"
+              },
+              "cameraPresets": {
+                "front": {
+                  "position": [0, 1.2, 4.5],
+                  "lookAt": [0, 0.8, 0],
+                  "fov": 46
+                },
+                "side": {
+                  "position": [4.5, 1.2, 0.5],
+                  "lookAt": [0, 0.8, 0],
+                  "fov": 46
+                },
+                "top": {
+                  "position": [0, 5, 1.5],
+                  "lookAt": [0, 0, 0],
+                  "fov": 46
+                }
+              },
+              "camera": {
+                "type": "perspective",
+                "position": [0, 1.2, 4.5],
+                "fov": 46,
+                "near": 0.1,
+                "far": 120
+              },
+              "cameraEffects": {
+                "bobbing": {
+                  "amount": 0.2,
+                  "speed": 0.65
+                },
+                "mouseFollow": {
+                  "sensitivity": -0.09,
+                  "smoothness": 0.07,
+                  "desktopOnly": true
+                }
+              },
+              "lights": [
+                {
+                  "type": "ambient",
+                  "intensity": 0.3
+                },
+                {
+                  "type": "spot",
+                  "position": [3, 5, 4],
+                  "target": [0, 0, 0],
+                  "intensity": 3,
+                  "angle": 0.32,
+                  "penumbra": 0.6,
+                  "castShadow": true
+                },
+                {
+                  "type": "spot",
+                  "position": [-4, 1.5, 2],
+                  "target": [0, 0, 0],
+                  "intensity": 1.1,
+                  "angle": 0.5,
+                  "penumbra": 0.9
+                },
+                {
+                  "type": "point",
+                  "position": [0, -1, 1],
+                  "intensity": 0.35,
+                  "color": "#5533ff",
+                  "distance": 6
+                }
+              ],
+              "background": {
+                "type": "color",
+                "color": "#080808"
+              },
+              "contents": {
+                "models": [
+                  {
+                    "model": "flamingo"
+                  }
+                ]
+              }
+            },
+            "postProcessing": [
+              {
+                "type": "bloom",
+                "intensity": 0.6,
+                "luminanceThreshold": 0.6,
+                "luminanceSmoothing": 0.1,
+                "radius": 0.45,
+                "mipmapBlur": true
+              },
+              {
+                "type": "noise",
+                "opacity": 0.055
+              }
+            ]
+          },
+          "controls-row": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "row",
+            "align": "center",
+            "wrap": "wrap",
+            "gap": "0.5rem",
+            "padding": "0.75rem 1rem",
+            "section": {
+              "elementOrder": ["btn-front", "btn-side", "btn-top", "btn-orbit", "btn-reset"],
+              "definitions": {
+                "btn-front": {
+                  "type": "elementButton",
+                  "label": "Front",
+                  "action": "three.setCameraPreset",
+                  "actionPayload": {
+                    "id": "model-3d-minimal",
+                    "preset": "front"
+                  },
+                  "level": 5,
+                  "wrapperPadding": "0.4rem 0.9rem",
+                  "wrapperBorderRadius": "10px",
+                  "wrapperFill": "color-mix(in oklab, var(--pb-accent) 15%, transparent)",
+                  "linkDefault": "var(--pb-on-secondary)",
+                  "motion": {
+                    "onHover": {
+                      "scale": 1.04
+                    },
+                    "transition": {
+                      "duration": 0.15
+                    }
+                  }
+                },
+                "btn-side": {
+                  "type": "elementButton",
+                  "label": "Side",
+                  "action": "three.setCameraPreset",
+                  "actionPayload": {
+                    "id": "model-3d-minimal",
+                    "preset": "side"
+                  },
+                  "level": 5,
+                  "wrapperPadding": "0.4rem 0.9rem",
+                  "wrapperBorderRadius": "10px",
+                  "wrapperFill": "color-mix(in oklab, var(--pb-accent) 15%, transparent)",
+                  "linkDefault": "var(--pb-on-secondary)",
+                  "motion": {
+                    "onHover": {
+                      "scale": 1.04
+                    },
+                    "transition": {
+                      "duration": 0.15
+                    }
+                  }
+                },
+                "btn-top": {
+                  "type": "elementButton",
+                  "label": "Top",
+                  "action": "three.setCameraPreset",
+                  "actionPayload": {
+                    "id": "model-3d-minimal",
+                    "preset": "top"
+                  },
+                  "level": 5,
+                  "wrapperPadding": "0.4rem 0.9rem",
+                  "wrapperBorderRadius": "10px",
+                  "wrapperFill": "color-mix(in oklab, var(--pb-accent) 15%, transparent)",
+                  "linkDefault": "var(--pb-on-secondary)",
+                  "motion": {
+                    "onHover": {
+                      "scale": 1.04
+                    },
+                    "transition": {
+                      "duration": 0.15
+                    }
+                  }
+                },
+                "btn-orbit": {
+                  "type": "elementButton",
+                  "label": "Auto-Rotate",
+                  "action": "three.orbitEnable",
+                  "actionPayload": {
+                    "id": "model-3d-minimal",
+                    "autoRotate": true,
+                    "autoRotateSpeed": 1.2
+                  },
+                  "level": 5,
+                  "wrapperPadding": "0.4rem 0.9rem",
+                  "wrapperBorderRadius": "10px",
+                  "wrapperFill": "color-mix(in oklab, var(--pb-primary) 18%, transparent)",
+                  "linkDefault": "var(--pb-on-secondary)",
+                  "motion": {
+                    "onHover": {
+                      "scale": 1.04
+                    },
+                    "transition": {
+                      "duration": 0.15
+                    }
+                  }
+                },
+                "btn-reset": {
+                  "type": "elementButton",
+                  "label": "Reset Camera",
+                  "action": "three.resetCamera",
+                  "actionPayload": {
+                    "id": "model-3d-minimal"
+                  },
+                  "level": 5,
+                  "wrapperPadding": "0.4rem 0.9rem",
+                  "wrapperBorderRadius": "10px",
+                  "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+                  "linkDefault": "var(--pb-on-secondary)",
+                  "motion": {
+                    "onHover": {
+                      "scale": 1.04
+                    },
+                    "transition": {
+                      "duration": 0.15
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

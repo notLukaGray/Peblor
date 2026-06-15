@@ -1,0 +1,85 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "entrancePreset": "fade"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "demo-buttons", "copy-indicator"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "copyToClipboard — Copy Text"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Click the button to copy text to clipboard. It also sets a variable so the confirmation panel appears — combining two actions into one interaction."
+    },
+    "demo-buttons": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "gap": "0.75rem",
+      "section": {
+        "elementOrder": ["btn-copy", "btn-dismiss"],
+        "definitions": {
+          "btn-copy": {
+            "preset": "btn-primary",
+            "label": "Copy & Confirm",
+            "action": "fireMultiple",
+            "actionPayload": {
+              "actions": [
+                {
+                  "type": "copyToClipboard",
+                  "payload": {
+                    "text": "Actions & Logic demo text — copied at "
+                  }
+                },
+                {
+                  "type": "setVariable",
+                  "payload": {
+                    "key": "copyState",
+                    "value": "copied"
+                  }
+                }
+              ],
+              "mode": "sequence",
+              "delayBetween": 0
+            },
+            "wrapperBorderRadius": "10px"
+          },
+          "btn-dismiss": {
+            "preset": "btn-squircle",
+            "label": "Dismiss",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "copyState",
+              "value": "idle"
+            },
+            "wrapperBorderRadius": "10px",
+            "wrapperPadding": "0.7rem 1.5rem"
+          }
+        }
+      }
+    },
+    "copy-indicator": {
+      "preset": "ui-indicator-panel",
+      "visibleWhen": {
+        "variable": "copyState",
+        "operator": "equals",
+        "value": "copied"
+      },
+      "section": {
+        "elementOrder": ["copy-indicator-text"],
+        "definitions": {
+          "copy-indicator-text": {
+            "type": "elementBody",
+            "level": 4,
+            "text": "Text copied to clipboard! Dismiss to reset.",
+            "color": "var(--pb-on-secondary)"
+          }
+        }
+      }
+    }
+  },
+  "id": "sec-copyToClipboard"
+}

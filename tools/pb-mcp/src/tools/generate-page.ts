@@ -5,7 +5,7 @@ export const generatePage: Tool = {
   def: {
     name: "generate_page",
     description:
-      "Return a scaffold + schema hints + a structured prompt for generating a new page. The caller (AI agent) fills in the scaffold using the prompt and then writes it via scaffold_page or edit_page.",
+      "Return a rich generation prompt for a new Peblor page. Includes: page-type detection, recommended backgrounds and card presets, a section plan, responsive/motion/theme-token rules, and excerpts from the element/section/preset/motion catalogs. The caller (AI agent) uses this prompt to generate valid page JSON, then writes it via open_page_session + patch_page_session + commit_page_session.",
     inputSchema: {
       type: "object",
       properties: {

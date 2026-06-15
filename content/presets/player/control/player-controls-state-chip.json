@@ -1,0 +1,62 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "row",
+  "wrap": "wrap",
+  "align": "center",
+  "gap": "0.4rem",
+  "padding": "0.5rem 0.75rem",
+  "section": {
+    "elementOrder": ["chip-transport", "chip-mode", "chip-scene", "chip-muted"],
+    "definitions": {
+      "chip-transport": {
+        "type": "elementBody",
+        "level": 5,
+        "text": "⏵ Playing",
+        "color": "var(--pb-text-secondary)",
+        "width": "hug",
+        "wrapperStyle": {
+          "background": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+          "padding": "0.15rem 0.5rem",
+          "borderRadius": "999px"
+        }
+      },
+      "chip-mode": {
+        "type": "elementBody",
+        "level": 5,
+        "text": "Mode",
+        "color": "var(--pb-text-secondary)",
+        "width": "hug",
+        "wrapperStyle": {
+          "background": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+          "padding": "0.15rem 0.5rem",
+          "borderRadius": "999px"
+        }
+      },
+      "chip-scene": {
+        "type": "elementBody",
+        "level": 5,
+        "text": "Scene",
+        "color": "var(--pb-text-secondary)",
+        "width": "hug",
+        "wrapperStyle": {
+          "background": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+          "padding": "0.15rem 0.5rem",
+          "borderRadius": "999px"
+        }
+      },
+      "chip-muted": {
+        "type": "elementBody",
+        "level": 5,
+        "text": "Muted",
+        "color": "var(--pb-text-secondary)",
+        "width": "hug",
+        "wrapperStyle": {
+          "background": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+          "padding": "0.15rem 0.5rem",
+          "borderRadius": "999px"
+        }
+      }
+    }
+  }
+}

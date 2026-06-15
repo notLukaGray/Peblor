@@ -1,17 +1,14 @@
 import { z } from "zod";
 import { elementLayoutSchema } from "./element-foundation-schemas";
 import { jsonNullishOptional, themeStringSchema } from "./schema-primitives";
+import {
+  headingLevelSchema,
+  textFillBaseSchema,
+  typographyOverridesSchema,
+} from "./schema-shared-primitives";
 
 const marqueeDirectionSchema = z.enum(["left", "right", "up", "down"]).optional();
 const marqueeVariantSchema = jsonNullishOptional(z.enum(["display", "section", "label"]));
-const headingLevelSchema = z.union([
-  z.literal(1),
-  z.literal(2),
-  z.literal(3),
-  z.literal(4),
-  z.literal(5),
-  z.literal(6),
-]);
 
 export const elementMarqueeFollowPathSchema = z.object({
   /** SVG path `d` in user units; scaled to the marquee box (see height). */
@@ -42,22 +39,14 @@ export const elementMarqueeSchema = z
     autoFill: z.boolean().optional(),
     reverseOnEnd: z.boolean().optional(),
     duplicateContent: z.boolean().optional(),
-    /** Heading scale (native outline uses role=heading elsewhere on the page). */
+    /** Heading scale (native h1-h6 tags are used for page headings). */
     level: headingLevelSchema.optional(),
     /** Body-style scale when `level` is omitted (display / section / label). */
     variant: marqueeVariantSchema,
-    fontFamily: z.string().optional(),
-    fontSize: z.union([z.string(), z.number()]).optional(),
-    fontWeight: z.union([z.string(), z.number()]).optional(),
-    letterSpacing: z.union([z.string(), z.number()]).optional(),
     color: themeStringSchema.optional(),
-    textFill: z
-      .union([
-        z.object({ type: z.literal("color"), value: themeStringSchema }),
-        z.object({ type: z.literal("gradient"), value: themeStringSchema }),
-      ])
-      .optional(),
+    textFill: textFillBaseSchema.optional(),
     /** Motion along an SVG path (CSS motion path). Linear translate marquee when omitted. */
     followPath: elementMarqueeFollowPathSchema.optional(),
   })
+  .merge(typographyOverridesSchema)
   .merge(elementLayoutSchema);

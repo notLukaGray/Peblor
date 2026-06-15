@@ -6,14 +6,11 @@ import { reconcileElementOrderWithDefinitions } from "@pb/core/modules";
 import { generateElementKey } from "@pb/core/keys";
 import { ElementLayoutWrapper } from "./Shared/ElementLayoutWrapper";
 import { ElementRenderer } from "./Shared/ElementRenderer";
+import { globals } from "@pb/runtime-react/core/lib/globals";
+import { MOTION_DEFAULTS } from "@pb/contracts/peblor/core/peblor-motion-defaults";
+import { clamp } from "./Shared/css-declaration-utils";
 
 type Props = Extract<ElementBlock, { type: "elementDrag" }>;
-
-function clamp(val: number, min: number, max: number): number {
-  if (val < min) return min;
-  if (val > max) return max;
-  return val;
-}
 
 function snapValue(val: number, grid: number): number {
   if (!grid) return val;
@@ -69,12 +66,12 @@ export function ElementDrag({
   dragHandleHeight,
   width,
   height,
-  align,
+  selfAlign,
   marginTop,
   marginBottom,
   marginLeft,
   marginRight,
-  zIndex,
+  layer,
   constraints,
   effects,
   interactions,
@@ -83,7 +80,7 @@ export function ElementDrag({
   blendMode,
   boxShadow,
   filter,
-  backdropFilter,
+  bgBlur,
   hidden,
 }: Props) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -150,10 +147,10 @@ export function ElementDrag({
       setIsDragging(false);
       try {
         e.currentTarget.releasePointerCapture(e.pointerId);
-      } catch {
-        /* not captured */
+      } catch (err) {
+        console.warn("[pb-runtime-react] Failed to release pointer capture (Drag)", err);
       }
-      if (snapBack && offset.current.x === 0 && offset.current.y === 0) {
+      if (snapBack) {
         setPosition({ x: 0, y: 0 });
       }
     },
@@ -207,19 +204,31 @@ export function ElementDrag({
   );
 
   const dragSurfaceLabel = useMemo(() => {
-    const base = ariaLabel?.trim() ? ariaLabel.trim() : "Draggable content";
+    const base = ariaLabel?.trim() ? ariaLabel.trim() : globals.stringsAriaLabelDraggableContent;
     return `${base}. Use arrow keys to move, or drag with a mouse or touch.`;
   }, [ariaLabel]);
+
+  const dragWrapperStyle: React.CSSProperties = useMemo(
+    () => ({
+      transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
+      transition:
+        snapBack && !isDragging
+          ? `transform ${(snapBackDuration ?? MOTION_DEFAULTS.snapBackDurationMs) / 1000}s ease-out`
+          : undefined,
+      opacity: dragOpacity,
+    }),
+    [position, snapBack, isDragging, snapBackDuration, dragOpacity]
+  );
 
   const layout = {
     width: width as string | undefined,
     height: height as string | undefined,
-    align: align as "left" | "center" | "right" | undefined,
+    align: selfAlign as "left" | "center" | "right" | undefined,
     marginTop: marginTop as string | undefined,
     marginBottom: marginBottom as string | undefined,
     marginLeft: marginLeft as string | undefined,
     marginRight: marginRight as string | undefined,
-    zIndex,
+    zIndex: layer,
     constraints,
     effects,
     wrapperStyle,
@@ -227,7 +236,7 @@ export function ElementDrag({
     blendMode,
     boxShadow,
     filter,
-    backdropFilter,
+    bgBlur,
     hidden,
   };
 
@@ -237,34 +246,30 @@ export function ElementDrag({
   };
 
   return (
-    <ElementLayoutWrapper layout={layout} interactions={interactions}>
-      <div ref={containerRef} className="relative w-full h-full select-none" data-element-id={id}>
-        <div
-          role="group"
-          aria-label={dragSurfaceLabel}
-          tabIndex={0}
-          className="absolute cursor-grab active:cursor-grabbing touch-none outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:rounded-sm focus-visible:outline-[rgba(255,255,255,0.5)]"
-          style={{
-            transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
-            transition:
-              snapBack && !isDragging
-                ? `transform ${(snapBackDuration ?? 300) / 1000}s ease-out`
-                : undefined,
-            opacity: dragOpacity,
-            ...handleStyle,
-          }}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerCancel={onPointerUp}
-          onLostPointerCapture={onLostPointerCapture}
-          onKeyDown={onKeyDown}
-        >
-          {childBlocks.map((block, index) => (
-            <ElementRenderer key={generateElementKey(block, index)} block={block} />
-          ))}
+    <div style={dragWrapperStyle}>
+      <ElementLayoutWrapper layout={layout} interactions={interactions}>
+        <div ref={containerRef} className="relative w-full h-full select-none" data-element-id={id}>
+          <div
+            role="group"
+            aria-label={dragSurfaceLabel}
+            tabIndex={0}
+            className="absolute cursor-grab active:cursor-grabbing touch-none outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:rounded-sm focus-visible:outline-[rgba(255,255,255,0.5)]"
+            style={{
+              ...handleStyle,
+            }}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={onPointerUp}
+            onPointerCancel={onPointerUp}
+            onLostPointerCapture={onLostPointerCapture}
+            onKeyDown={onKeyDown}
+          >
+            {childBlocks.map((block, index) => (
+              <ElementRenderer key={generateElementKey(block, index)} block={block} />
+            ))}
+          </div>
         </div>
-      </div>
-    </ElementLayoutWrapper>
+      </ElementLayoutWrapper>
+    </div>
   );
 }

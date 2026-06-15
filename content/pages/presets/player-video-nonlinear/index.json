@@ -1,0 +1,13 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Video Nonlinear — Preset Demo",
+  "description": "conditionalAction-driven chapter navigation with scene jump buttons. Transport controls owned by module.",
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "bg", "player/section"],
+  "bgKey": "bg-players",
+  "sectionOrder": ["nav-header", "hero", "sec-player"],
+  "definitions": {
+    "bg-players": {
+      "preset": "bg-players"
+    }
+  }
+}

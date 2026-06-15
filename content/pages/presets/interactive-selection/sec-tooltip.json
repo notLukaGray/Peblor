@@ -1,0 +1,297 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "staggerChildren": 0.15,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "tooltip-row-1", "tooltip-row-2"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Hover Tooltips"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Tooltip examples with different placements, triggers, and interactive mode. Hover each label to reveal contextual information."
+    },
+    "tooltip-row-1": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "gap": "3rem",
+      "align": "center",
+      "distribute": "center",
+      "padding": "3rem 0",
+      "width": "100%",
+      "motionTiming": {
+        "staggerChildren": 0.1,
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": ["tt-top", "tt-bottom", "tt-left", "tt-right"],
+        "definitions": {
+          "tt-top": {
+            "type": "elementTooltip",
+            "triggerLabel": "Top",
+            "content": "Placed above the trigger element. Default position.",
+            "placement": "top",
+            "trigger": "hover",
+            "showDelay": 100,
+            "arrow": true,
+            "width": "auto",
+            "height": "hug",
+            "padding": "0.5rem 0.75rem",
+            "fill": "color-mix(in oklab, var(--pb-secondary) 95%, transparent)",
+            "color": "var(--pb-on-secondary)",
+            "borderRadius": "8px",
+            "fontSize": "13px",
+            "motion": {
+              "from": {
+                "opacity": 0,
+                "y": 4
+              },
+              "to": {
+                "opacity": 1,
+                "y": 0,
+                "transition": {
+                  "duration": 0.2
+                }
+              },
+              "leave": {
+                "opacity": 0,
+                "y": 4,
+                "transition": {
+                  "duration": 0.15
+                }
+              }
+            }
+          },
+          "tt-bottom": {
+            "type": "elementTooltip",
+            "triggerLabel": "Bottom",
+            "content": "Placed below the trigger. Best for navigation bars.",
+            "placement": "bottom",
+            "trigger": "hover",
+            "showDelay": 100,
+            "arrow": true,
+            "width": "auto",
+            "height": "hug",
+            "padding": "0.5rem 0.75rem",
+            "fill": "color-mix(in oklab, var(--pb-secondary) 95%, transparent)",
+            "color": "var(--pb-on-secondary)",
+            "borderRadius": "8px",
+            "fontSize": "13px",
+            "motion": {
+              "from": {
+                "opacity": 0,
+                "y": -4
+              },
+              "to": {
+                "opacity": 1,
+                "y": 0,
+                "transition": {
+                  "duration": 0.2
+                }
+              },
+              "leave": {
+                "opacity": 0,
+                "y": -4,
+                "transition": {
+                  "duration": 0.15
+                }
+              }
+            }
+          },
+          "tt-left": {
+            "type": "elementTooltip",
+            "triggerLabel": "Left",
+            "content": "Positioned to the left. Works well for sidebars.",
+            "placement": "left",
+            "trigger": "hover",
+            "showDelay": 100,
+            "arrow": true,
+            "width": "auto",
+            "height": "hug",
+            "padding": "0.5rem 0.75rem",
+            "fill": "color-mix(in oklab, var(--pb-secondary) 95%, transparent)",
+            "color": "var(--pb-on-secondary)",
+            "borderRadius": "8px",
+            "fontSize": "13px",
+            "motion": {
+              "from": {
+                "opacity": 0,
+                "x": 4
+              },
+              "to": {
+                "opacity": 1,
+                "x": 0,
+                "transition": {
+                  "duration": 0.2
+                }
+              },
+              "leave": {
+                "opacity": 0,
+                "x": 4,
+                "transition": {
+                  "duration": 0.15
+                }
+              }
+            }
+          },
+          "tt-right": {
+            "type": "elementTooltip",
+            "triggerLabel": "Right",
+            "content": "Positioned to the right. Best for detail panels.",
+            "placement": "right",
+            "trigger": "hover",
+            "showDelay": 100,
+            "arrow": true,
+            "width": "auto",
+            "height": "hug",
+            "padding": "0.5rem 0.75rem",
+            "fill": "color-mix(in oklab, var(--pb-secondary) 95%, transparent)",
+            "color": "var(--pb-on-secondary)",
+            "borderRadius": "8px",
+            "fontSize": "13px",
+            "motion": {
+              "from": {
+                "opacity": 0,
+                "x": -4
+              },
+              "to": {
+                "opacity": 1,
+                "x": 0,
+                "transition": {
+                  "duration": 0.2
+                }
+              },
+              "leave": {
+                "opacity": 0,
+                "x": -4,
+                "transition": {
+                  "duration": 0.15
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "tooltip-row-2": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "gap": "0.3rem",
+      "align": "baseline",
+      "distribute": "center",
+      "wrap": "wrap",
+      "padding": "1rem 0",
+      "width": "100%",
+      "motionTiming": {
+        "staggerChildren": 0.1,
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": ["tt-pre", "tt-inline-hover", "tt-mid", "tt-inline-click", "tt-post"],
+        "definitions": {
+          "tt-pre": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "Inline tooltips like",
+            "wordWrap": false,
+            "color": "color-mix(in oklab, var(--pb-on-secondary) 68%, transparent)",
+            "width": "auto"
+          },
+          "tt-inline-hover": {
+            "type": "elementTooltip",
+            "triggerLabel": "hover trigger",
+            "content": "Hover-triggered tooltip with interactive mode. You can hover over the tooltip content itself without it closing.",
+            "placement": "top",
+            "trigger": "hover",
+            "showDelay": 200,
+            "interactive": true,
+            "arrow": true,
+            "width": "auto",
+            "height": "hug",
+            "padding": "0.5rem 0.75rem",
+            "fill": "color-mix(in oklab, var(--pb-secondary) 95%, transparent)",
+            "color": "var(--pb-on-secondary)",
+            "borderRadius": "8px",
+            "fontSize": "13px",
+            "motion": {
+              "from": {
+                "opacity": 0
+              },
+              "to": {
+                "opacity": 1,
+                "transition": {
+                  "duration": 0.35
+                }
+              },
+              "leave": {
+                "opacity": 0,
+                "transition": {
+                  "duration": 0.2
+                }
+              }
+            }
+          },
+          "tt-mid": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "and",
+            "wordWrap": false,
+            "color": "color-mix(in oklab, var(--pb-on-secondary) 68%, transparent)",
+            "width": "auto"
+          },
+          "tt-inline-click": {
+            "type": "elementTooltip",
+            "triggerLabel": "click trigger",
+            "content": "Click-triggered tooltip. Tap to toggle visibility. Useful for mobile-friendly tooltip interactions.",
+            "placement": "top",
+            "trigger": "click",
+            "showDelay": 0,
+            "interactive": true,
+            "arrow": true,
+            "width": "auto",
+            "height": "hug",
+            "padding": "0.5rem 0.75rem",
+            "fill": "color-mix(in oklab, var(--pb-secondary) 95%, transparent)",
+            "color": "var(--pb-on-secondary)",
+            "borderRadius": "8px",
+            "fontSize": "13px",
+            "motion": {
+              "from": {
+                "opacity": 0,
+                "scale": 0.95
+              },
+              "to": {
+                "opacity": 1,
+                "scale": 1,
+                "transition": {
+                  "duration": 0.25
+                }
+              },
+              "leave": {
+                "opacity": 0,
+                "scale": 0.95,
+                "transition": {
+                  "duration": 0.15
+                }
+              }
+            }
+          },
+          "tt-post": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "appear naturally in text.",
+            "wordWrap": false,
+            "color": "color-mix(in oklab, var(--pb-on-secondary) 68%, transparent)",
+            "width": "auto"
+          }
+        }
+      }
+    }
+  }
+}

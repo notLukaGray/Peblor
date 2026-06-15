@@ -94,8 +94,8 @@ describe("peblor-load", () => {
       const slug = "unlock";
       const segments = [slug];
       const absolutePath = await resolvePagePath(segments);
-      expect(absolutePath).not.toBeNull();
-      if (!absolutePath) return;
+      if (!absolutePath)
+        throw new Error(`Page "${slug}" not found — check content/pages/${slug}/index.json exists`);
 
       const asyncSingle = await loadPeblorAsync(slug);
       const asyncByPath = await loadPeblorByPathAsync(segments);
@@ -145,30 +145,29 @@ describe("peblor-load", () => {
     it("includes object values keyed by string", () => {
       const data = {
         a: { type: "elementVector", viewBox: "0 0 1 1", shapes: [] },
-        b: { type: "section", title: "S" },
+        b: { type: "elementHeading", text: "Title" },
       };
       const out = coercePresetMap(data);
       expect(Object.keys(out)).toEqual(["a", "b"]);
-      expect(out.a).toEqual(data.a);
-      expect(out.b).toEqual(data.b);
+      expect(out.a).toMatchObject({ type: "elementVector", viewBox: "0 0 1 1" });
+      expect(out.b).toMatchObject({ type: "elementHeading", text: "Title" });
     });
-    it("skips non-object values", () => {
-      const data = { ok: { type: "x" }, skip: "string", skip2: 1, skip3: null };
+    it("skips non-object and invalid-block values", () => {
+      const data = { skip: "string", skip2: 1, skip3: null };
       const out = coercePresetMap(data);
-      expect(out).toEqual({ ok: { type: "x" } });
+      expect(out).toEqual({});
     });
     it("merge order: later Object.assign overwrites earlier (caller responsibility)", () => {
-      const first = { key: { type: "a", value: 1 } };
-      const second = { key: { type: "b", value: 2 } };
+      const first = { key: { type: "elementHeading", text: "First" } };
+      const second = { key: { type: "elementBody", text: "Second" } };
       const merged = { ...coercePresetMap(first), ...coercePresetMap(second) };
-      expect(merged.key).toEqual(second.key);
+      expect(merged.key).toMatchObject({ type: "elementBody", text: "Second" });
     });
 
-    it("keeps array values because they are objects at runtime", () => {
+    it("skips array values (not valid definition blocks)", () => {
       const data = { arr: [1, 2, 3] as unknown as { type: string } };
       const out = coercePresetMap(data);
-      expect(out).toHaveProperty("arr");
-      expect(Array.isArray(out.arr)).toBe(true);
+      expect(out).not.toHaveProperty("arr");
     });
   });
 

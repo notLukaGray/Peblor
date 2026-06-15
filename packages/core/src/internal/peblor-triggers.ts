@@ -1,105 +1,217 @@
-import type {
-  CoreTriggerAction,
-  PeblorAction,
-  PeblorDefinitionBlock,
-  SectionBlock,
-  bgBlock,
-} from "@pb/contracts";
+import type { PeblorAction, PeblorDefinitionBlock, SectionBlock, bgBlock } from "@pb/contracts";
 import { isBgBlockShape, resolveBgBlockUrls } from "./peblor-blocks";
 
-export type TriggerPayloadResolveContext = {
-  defs: Record<string, PeblorDefinitionBlock> | undefined;
-  base: string;
-};
-
-function resolvePayloadStringKey(key: string, ctx: TriggerPayloadResolveContext): unknown {
-  const { defs } = ctx;
-  if (defs && defs[key] != null && typeof defs[key] === "object") return defs[key];
-  return key;
-}
-
-function resolvePayloadWithValueKey(
-  obj: Record<string, unknown>,
-  ctx: TriggerPayloadResolveContext
+/**
+ * Unified trigger payload resolver.
+ * Resolves definition-key references in trigger payloads.
+ * Optionally resolves bg-block asset URLs when resolveBgBlockUrl callback is provided.
+ * Always returns new objects (immutable).
+ *
+ * Callers that don't need bg-block URL resolution (e.g. expand-stage) pass only payload and defs.
+ * Callers that do need it (e.g. resolve-stage) pass all arguments.
+ */
+export function resolveTriggerPayload(
+  payload: unknown,
+  defs: Record<string, PeblorDefinitionBlock> | undefined,
+  resolveBgBlockUrl?: (value: bgBlock, base: string) => bgBlock,
+  base?: string
 ): unknown {
-  if (typeof obj.value !== "string") return obj;
-  const resolvedValue = resolvePayloadStringKey(obj.value, ctx);
-  const next = { ...obj, value: resolvedValue };
-  if (isBgBlockShape(resolvedValue)) {
-    return { ...next, value: resolveBgBlockUrls(resolvedValue as bgBlock, ctx.base) };
-  }
-  return next;
-}
-
-function resolvePayloadAsBgBlock(value: unknown, base: string): unknown {
-  if (!isBgBlockShape(value)) return value;
-  return resolveBgBlockUrls(value as bgBlock, base);
-}
-
-function resolveTriggerPayload(payload: unknown, ctx: TriggerPayloadResolveContext): unknown {
   if (payload == null) return payload;
-  if (typeof payload === "string") return resolvePayloadStringKey(payload, ctx);
+
+  // String = definition key reference
+  if (typeof payload === "string") {
+    if (defs && defs[payload] != null && typeof defs[payload] === "object") return defs[payload];
+    return payload;
+  }
+
   if (typeof payload !== "object") return payload;
 
   const obj = payload as Record<string, unknown>;
-  const withValueResolved = resolvePayloadWithValueKey(obj, ctx);
-  if (withValueResolved !== obj) return withValueResolved;
 
-  if (isBgBlockShape(payload)) return resolveBgBlockUrls(payload as bgBlock, ctx.base);
-  if (obj.value != null && typeof obj.value === "object" && isBgBlockShape(obj.value)) {
-    return { ...obj, value: resolvePayloadAsBgBlock(obj.value, ctx.base) };
+  // Recurse into fireMultiple actions to resolve nested action payloads
+  if (Array.isArray(obj.actions)) {
+    let changed = false;
+    const resolvedActions = obj.actions.map((action: unknown) => {
+      if (action == null || typeof action !== "object") return action;
+      const a = action as Record<string, unknown>;
+      if (a.payload != null) {
+        const resolved = resolveTriggerPayload(a.payload, defs, resolveBgBlockUrl, base);
+        if (resolved !== a.payload) {
+          changed = true;
+          return { ...a, payload: resolved };
+        }
+      }
+      return action;
+    });
+    return changed ? { ...obj, actions: resolvedActions } : payload;
   }
+
+  // Resolve value key reference (string value pointing to a definition key)
+  if (typeof obj.value === "string") {
+    const resolvedValue =
+      defs && defs[obj.value] != null && typeof defs[obj.value] === "object"
+        ? defs[obj.value]
+        : obj.value;
+    if (resolvedValue !== obj.value) {
+      const next = { ...obj, value: resolvedValue } as Record<string, unknown>;
+      if (resolveBgBlockUrl && isBgBlockShape(resolvedValue)) {
+        return { ...next, value: resolveBgBlockUrl(resolvedValue, base!) };
+      }
+      return next;
+    }
+  }
+
+  // Resolve bg-block asset URLs for the whole payload
+  if (resolveBgBlockUrl && isBgBlockShape(payload)) {
+    return resolveBgBlockUrl(payload, base!);
+  }
+
+  // Resolve bg-block asset URLs for value when it's an object (not a string ref)
+  if (
+    resolveBgBlockUrl &&
+    obj.value != null &&
+    typeof obj.value === "object" &&
+    isBgBlockShape(obj.value)
+  ) {
+    return { ...obj, value: resolveBgBlockUrl(obj.value as bgBlock, base!) };
+  }
+
   return payload;
 }
 
+/** Resolve payloads inside array-based trigger entries (scrollDirectionTriggers, idleTriggers). */
+function resolveArrayTriggerPayloads(
+  entries: Array<Record<string, unknown>> | undefined,
+  fieldNames: string[],
+  defs: Record<string, PeblorDefinitionBlock> | undefined,
+  resolveBgBlockUrl?: (value: bgBlock, base: string) => bgBlock,
+  base?: string
+): Array<Record<string, unknown>> | undefined {
+  if (!Array.isArray(entries)) return entries;
+  let changed = false;
+  const resolved = entries.map((entry) => {
+    let entryChanged = false;
+    const next = { ...entry };
+    for (const field of fieldNames) {
+      if (next[field] != null && typeof next[field] === "object") {
+        const action = next[field] as Record<string, unknown>;
+        if (action.payload != null) {
+          const resolvedPayload = resolveTriggerPayload(
+            action.payload,
+            defs,
+            resolveBgBlockUrl,
+            base
+          );
+          if (resolvedPayload !== action.payload) {
+            next[field] = { ...action, payload: resolvedPayload };
+            entryChanged = true;
+          }
+        }
+      }
+    }
+    if (entryChanged) changed = true;
+    return next;
+  });
+  return changed ? resolved : entries;
+}
+
+type SectionTriggerFields = {
+  onVisible?: PeblorAction;
+  onInvisible?: PeblorAction;
+  onProgress?: PeblorAction;
+  onViewportProgress?: PeblorAction;
+  scrollDirectionTriggers?: Array<{
+    onScrollDown?: PeblorAction;
+    onScrollUp?: PeblorAction;
+  }>;
+  idleTriggers?: Array<{
+    onIdle?: PeblorAction;
+    onActive?: PeblorAction;
+  }>;
+};
+
 function applyTriggerPayloadResolutions(
   section: SectionBlock,
-  ctx: TriggerPayloadResolveContext
+  defs: Record<string, PeblorDefinitionBlock> | undefined,
+  resolveBgBlockUrl?: (value: bgBlock, base: string) => bgBlock,
+  base?: string
 ): SectionBlock {
-  const withTriggers = section as SectionBlock & {
-    onVisible?: PeblorAction;
-    onInvisible?: PeblorAction;
-    onProgress?: PeblorAction;
-    onViewportProgress?: PeblorAction;
-  };
+  const withTriggers = section as SectionBlock & SectionTriggerFields;
   if (
     !withTriggers.onVisible &&
     !withTriggers.onInvisible &&
     !withTriggers.onProgress &&
-    !withTriggers.onViewportProgress
+    !withTriggers.onViewportProgress &&
+    !Array.isArray(withTriggers.scrollDirectionTriggers) &&
+    !Array.isArray(withTriggers.idleTriggers)
   )
     return section;
 
-  const out = { ...section } as SectionBlock & {
-    onVisible?: PeblorAction;
-    onInvisible?: PeblorAction;
-    onProgress?: PeblorAction;
-    onViewportProgress?: PeblorAction;
-  };
+  const out = { ...section } as SectionBlock & SectionTriggerFields;
   if (withTriggers.onVisible) {
     out.onVisible = {
       ...withTriggers.onVisible,
-      payload: resolveTriggerPayload(withTriggers.onVisible.payload, ctx),
-    } as CoreTriggerAction;
+      payload: resolveTriggerPayload(withTriggers.onVisible.payload, defs, resolveBgBlockUrl, base),
+    } as unknown as PeblorAction;
   }
   if (withTriggers.onInvisible) {
     out.onInvisible = {
       ...withTriggers.onInvisible,
-      payload: resolveTriggerPayload(withTriggers.onInvisible.payload, ctx),
-    } as CoreTriggerAction;
+      payload: resolveTriggerPayload(
+        withTriggers.onInvisible.payload,
+        defs,
+        resolveBgBlockUrl,
+        base
+      ),
+    } as unknown as PeblorAction;
   }
   if (withTriggers.onProgress) {
     out.onProgress = {
       ...withTriggers.onProgress,
-      payload: resolveTriggerPayload(withTriggers.onProgress.payload, ctx),
-    } as CoreTriggerAction;
+      payload: resolveTriggerPayload(
+        withTriggers.onProgress.payload,
+        defs,
+        resolveBgBlockUrl,
+        base
+      ),
+    } as unknown as PeblorAction;
   }
   if (withTriggers.onViewportProgress) {
     out.onViewportProgress = {
       ...withTriggers.onViewportProgress,
-      payload: resolveTriggerPayload(withTriggers.onViewportProgress.payload, ctx),
-    } as CoreTriggerAction;
+      payload: resolveTriggerPayload(
+        withTriggers.onViewportProgress.payload,
+        defs,
+        resolveBgBlockUrl,
+        base
+      ),
+    } as unknown as PeblorAction;
   }
+
+  // Resolve payloads inside scrollDirectionTriggers entries
+  const resolvedScrollDir = resolveArrayTriggerPayloads(
+    withTriggers.scrollDirectionTriggers as unknown as Array<Record<string, unknown>>,
+    ["onScrollDown", "onScrollUp"],
+    defs,
+    resolveBgBlockUrl,
+    base
+  );
+  if (resolvedScrollDir !== withTriggers.scrollDirectionTriggers) {
+    (out as Record<string, unknown>).scrollDirectionTriggers = resolvedScrollDir;
+  }
+
+  // Resolve payloads inside idleTriggers entries
+  const resolvedIdle = resolveArrayTriggerPayloads(
+    withTriggers.idleTriggers as unknown as Array<Record<string, unknown>>,
+    ["onIdle", "onActive"],
+    defs,
+    resolveBgBlockUrl,
+    base
+  );
+  if (resolvedIdle !== withTriggers.idleTriggers) {
+    (out as Record<string, unknown>).idleTriggers = resolvedIdle;
+  }
+
   return out as SectionBlock;
 }
 
@@ -109,6 +221,7 @@ export function resolveTriggerPayloadUrls(
   base: string,
   defs?: Record<string, PeblorDefinitionBlock>
 ): SectionBlock[] {
-  const ctx: TriggerPayloadResolveContext = { defs, base };
-  return sections.map((section) => applyTriggerPayloadResolutions(section, ctx));
+  return sections.map((section) =>
+    applyTriggerPayloadResolutions(section, defs, resolveBgBlockUrls, base)
+  );
 }

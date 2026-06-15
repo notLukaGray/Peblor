@@ -1,0 +1,21 @@
+{
+  "preset": "demo-hero",
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Play All · Rive → 3D Bridge"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Crossmedia Control Surface"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "One button plays every media element on the page. Separate controls bridge Rive and 3D — fire a Rive trigger and move the 3D camera at once. This is how peblor coordinates surfaces.",
+      "width": {
+        "base": "100%",
+        "md": "78%"
+      }
+    }
+  }
+}

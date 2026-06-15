@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import type { FormFieldBlock, FormFieldOption } from "@pb/contracts/peblor/core/peblor-schemas";
 import type { ElementBodyVariant } from "@pb/contracts/types";
 import type { FormFieldValue } from "..";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 import { formFieldStructuralClasses } from "./form-field-classes";
 import { FormFieldDescription, getFieldDescribedBy, getFieldErrorId } from "./FormFieldFeedback";
 import { FormFieldShell } from "./FormFieldShell";
@@ -70,7 +71,11 @@ function FormFieldSelect({
   const [activeIndex, setActiveIndex] = useState(selectedIndex);
   const [popupStyle, setPopupStyle] = useState<React.CSSProperties | null>(null);
   const selectedOption = options.find((opt) => opt.value === strVal);
-  const displayLabel = selectedOption?.label ?? field.placeholder ?? options[0]?.label ?? "Select";
+  const displayLabel =
+    selectedOption?.label ??
+    field.placeholder ??
+    options[0]?.label ??
+    globals.stringsLabelSelectPlaceholder;
   const submittedValue =
     selectedOption?.value ?? (field.placeholder ? "" : (options[0]?.value ?? ""));
 
@@ -90,7 +95,7 @@ function FormFieldSelect({
       top: openAbove ? rect.top - height - gap : rect.bottom + gap,
       width: rect.width,
       maxHeight: height,
-      zIndex: 7000,
+      zIndex: "var(--pb-z-overlay)",
     });
   }, []);
 

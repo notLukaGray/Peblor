@@ -1,0 +1,19 @@
+{
+  "type": "elementBody",
+  "level": 5,
+  "text": "",
+  "selfAlign": "center",
+  "textAlign": "center",
+  "width": "auto",
+  "wordWrap": false,
+  "wrapperStyle": {
+    "display": "inline-flex",
+    "background": "color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)",
+    "padding": "0.2rem 0.65rem",
+    "borderRadius": "999px"
+  },
+  "color": "color-mix(in oklab, var(--pb-on-secondary) 68%, transparent)",
+  "motionTiming": {
+    "entrancePreset": "fade"
+  }
+}

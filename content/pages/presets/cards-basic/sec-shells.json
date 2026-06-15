@@ -1,0 +1,28 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["sec-label", "cards-row"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Card Anatomy"
+    },
+    "cards-row": {
+      "type": "elementGroup",
+      "preset": "card-grid-row",
+      "section": {
+        "elementOrder": ["shell-basic", "shell-media", "shell-copy"],
+        "definitions": {
+          "shell-basic": {
+            "preset": "card-shell-basic"
+          },
+          "shell-media": {
+            "preset": "card-shell-media-top"
+          },
+          "shell-copy": {
+            "preset": "card-copy-stack"
+          }
+        }
+      }
+    }
+  }
+}

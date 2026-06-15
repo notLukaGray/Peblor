@@ -11,9 +11,9 @@ import {
   getContainerWrapperStyle,
   shouldRenderChildWrapper,
 } from "./element-module-style-utils";
-import { resolveResponsiveValue } from "@pb/runtime-react/core/lib/responsive-value";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
-import { resolveThemeStyleObject } from "@/peblor/theme/theme-string";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
+import { lowerThemeStyleObject } from "@/peblor/theme/theme-string";
+import { useDisclosureContext } from "./DisclosureContext";
 
 type ElementModuleChildrenProps = {
   blocks: ElementBlock[];
@@ -47,25 +47,31 @@ export function ElementModuleChildren({
   slotDefaultWrapper,
   getActionHandler,
 }: ElementModuleChildrenProps) {
-  const themeMode = usePeblorThemeMode();
+  const disclosure = useDisclosureContext();
   const resolvedParentAlignItems =
     parentAlignItems ?? getPbContentGuidelines().frameAlignItemsDefault;
   return blocks.map((block, index) => {
     const key = generateElementKey(block, index);
+    const blockId = (block as ElementBlock & { id?: string }).id;
     const action = (block as ElementBlock & { action?: string }).action;
     const actionPayload = (block as ElementBlock & { actionPayload?: number }).actionPayload;
     const handler = getActionHandler?.(action, actionPayload);
-    const elWrapperStyle = (block as ElementBlock & { wrapperStyle?: CssInlineStyle }).wrapperStyle;
-    const hasMotion = !!(block as ElementBlock & { motion?: unknown }).motion;
+    const isDisclosureTrigger = !!(blockId && disclosure?.triggerKeys.has(blockId));
+    // elementGroup blocks apply their own wrapperStyle internally via
+    // ElementModuleGroup's resolvedGroupWrapperStyle — applying it here too
+    // creates a double visual (e.g. two pill boxes on a kicker badge, or a
+    // backgroundColor rectangle behind a borderRadius: 999px pill).
+    // Other element types (elementBody, elementHeading, elementLink, etc.)
+    // apply wrapperStyle via computeVisualStyle, so skip them too.
+    const elWrapperStyle: CssInlineStyle | undefined = undefined;
+    const resolvedElWrapperStyle = lowerThemeStyleObject(elWrapperStyle) ?? {};
     const baseWrapperStyle = (
       handler
         ? {
-            ...resolveThemeStyleObject(slotDefaultWrapper, themeMode),
-            ...resolveThemeStyleObject(elWrapperStyle, themeMode),
+            ...lowerThemeStyleObject(slotDefaultWrapper),
+            ...resolvedElWrapperStyle,
           }
-        : hasMotion
-          ? {}
-          : (resolveThemeStyleObject(elWrapperStyle, themeMode) ?? {})
+        : resolvedElWrapperStyle
     ) as CSSProperties;
     const wrapperStyle = getContainerWrapperStyle(baseWrapperStyle);
     const blockWidth = (block as ElementBlock & { width?: unknown }).width;
@@ -168,18 +174,19 @@ export function ElementModuleChildren({
       columnChildFillsMainAxis || rowChildFillsMainAxis ? "min-h-0 min-w-0" : "shrink-0 min-w-0";
     const content = <ElementRenderer key={key} block={block} />;
 
-    if (handler) {
+    if (handler || isDisclosureTrigger) {
       return (
         <button
           key={key}
           type="button"
           onClick={(event) => {
             event.stopPropagation();
-            handler();
+            handler?.();
+            if (isDisclosureTrigger) disclosure?.toggle();
           }}
           className="flex shrink-0 min-w-0 items-center justify-center text-white rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
           style={{ cursor: "pointer", ...cellStyle }}
-          aria-label={action ?? "Control"}
+          aria-label={action ?? "Toggle disclosure"}
         >
           {content}
         </button>

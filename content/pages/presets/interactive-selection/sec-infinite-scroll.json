@@ -1,0 +1,224 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "staggerChildren": 0.15,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "scroll-cards"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Infinite Scroll"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Horizontal infinite scroll carousel with snap alignment. Click or drag to navigate. Active card is full opacity and scale; inactive cards recede."
+    },
+    "scroll-cards": {
+      "type": "elementInfiniteScroll",
+      "scrollDirection": "horizontal",
+      "snapAlign": "center",
+      "activeScale": 1,
+      "inactiveScale": 0.88,
+      "activeOpacity": 1,
+      "inactiveOpacity": 0.5,
+      "gap": "1.5rem",
+      "centerOnClick": true,
+      "section": {
+        "elementOrder": ["card-1", "card-2", "card-3", "card-4", "card-5"],
+        "definitions": {
+          "card-1": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "padding": "2rem",
+            "gap": "1rem",
+            "width": "320px",
+            "height": "hug",
+            "borderRadius": "16px",
+            "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+            "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+            "section": {
+              "elementOrder": ["num", "title", "desc"],
+              "definitions": {
+                "num": {
+                  "type": "elementHeading",
+                  "level": 1,
+                  "variant": "display",
+                  "text": "01",
+                  "color": "color-mix(in oklab, var(--pb-accent) 50%, transparent)",
+                  "width": "auto"
+                },
+                "title": {
+                  "type": "elementHeading",
+                  "level": 3,
+                  "text": "Card Grid",
+                  "width": "auto",
+                  "color": "var(--pb-on-secondary)"
+                },
+                "desc": {
+                  "type": "elementBody",
+                  "level": 3,
+                  "text": "Three equal-width feature cards in a responsive flex grid. Stacks on mobile for single-column reading.",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 60%, transparent)"
+                }
+              }
+            }
+          },
+          "card-2": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "padding": "2rem",
+            "gap": "1rem",
+            "width": "320px",
+            "height": "hug",
+            "borderRadius": "16px",
+            "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+            "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+            "section": {
+              "elementOrder": ["num", "title", "desc"],
+              "definitions": {
+                "num": {
+                  "type": "elementHeading",
+                  "level": 1,
+                  "variant": "display",
+                  "text": "02",
+                  "color": "color-mix(in oklab, var(--pb-accent) 50%, transparent)",
+                  "width": "auto"
+                },
+                "title": {
+                  "type": "elementHeading",
+                  "level": 3,
+                  "text": "Editorial Row",
+                  "width": "auto",
+                  "color": "var(--pb-on-secondary)"
+                },
+                "desc": {
+                  "type": "elementBody",
+                  "level": 3,
+                  "text": "Article preview cards with divider and meta-date treatment for editorial contexts.",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 60%, transparent)"
+                }
+              }
+            }
+          },
+          "card-3": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "padding": "2rem",
+            "gap": "1rem",
+            "width": "320px",
+            "height": "hug",
+            "borderRadius": "16px",
+            "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+            "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+            "section": {
+              "elementOrder": ["num", "title", "desc"],
+              "definitions": {
+                "num": {
+                  "type": "elementHeading",
+                  "level": 1,
+                  "variant": "display",
+                  "text": "03",
+                  "color": "color-mix(in oklab, var(--pb-accent) 50%, transparent)",
+                  "width": "auto"
+                },
+                "title": {
+                  "type": "elementHeading",
+                  "level": 3,
+                  "text": "Card Carousel",
+                  "width": "auto",
+                  "color": "var(--pb-on-secondary)"
+                },
+                "desc": {
+                  "type": "elementBody",
+                  "level": 3,
+                  "text": "Horizontal infinite scroll. Click or drag to advance cards. Loops indefinitely with snap alignment.",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 60%, transparent)"
+                }
+              }
+            }
+          },
+          "card-4": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "padding": "2rem",
+            "gap": "1rem",
+            "width": "320px",
+            "height": "hug",
+            "borderRadius": "16px",
+            "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+            "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+            "section": {
+              "elementOrder": ["num", "title", "desc"],
+              "definitions": {
+                "num": {
+                  "type": "elementHeading",
+                  "level": 1,
+                  "variant": "display",
+                  "text": "04",
+                  "color": "color-mix(in oklab, var(--pb-accent) 50%, transparent)",
+                  "width": "auto"
+                },
+                "title": {
+                  "type": "elementHeading",
+                  "level": 3,
+                  "text": "Bento Grid",
+                  "width": "auto",
+                  "color": "var(--pb-on-secondary)"
+                },
+                "desc": {
+                  "type": "elementBody",
+                  "level": 3,
+                  "text": "Mixed-size card composition using flex-wrap. Stacks to single column on mobile viewports.",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 60%, transparent)"
+                }
+              }
+            }
+          },
+          "card-5": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "padding": "2rem",
+            "gap": "1rem",
+            "width": "320px",
+            "height": "hug",
+            "borderRadius": "16px",
+            "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+            "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+            "section": {
+              "elementOrder": ["num", "title", "desc"],
+              "definitions": {
+                "num": {
+                  "type": "elementHeading",
+                  "level": 1,
+                  "variant": "display",
+                  "text": "05",
+                  "color": "color-mix(in oklab, var(--pb-accent) 50%, transparent)",
+                  "width": "auto"
+                },
+                "title": {
+                  "type": "elementHeading",
+                  "level": 3,
+                  "text": "Selector + Preview",
+                  "width": "auto",
+                  "color": "var(--pb-on-secondary)"
+                },
+                "desc": {
+                  "type": "elementBody",
+                  "level": 3,
+                  "text": "Vertical scroll selector linked to a preview panel via shared variable state.",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 60%, transparent)"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

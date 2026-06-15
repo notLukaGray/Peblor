@@ -19,10 +19,11 @@ describe("unlock rate limit cookie SameSite", () => {
       env.NODE_ENV = "development";
 
       const set = getRateLimitCookieHeader(0, "fp-unlock-test");
-      expect(set).toContain("SameSite=Strict");
+      expect(set).not.toBeNull();
+      expect(set!.sameSite).toBe("Strict");
 
       const clear = getClearRateLimitCookieHeader();
-      expect(clear).toContain("SameSite=Strict");
+      expect(clear.sameSite).toBe("Strict");
     } finally {
       restoreEnv("RATE_LIMIT_COOKIE_SAMESITE", prevSameSite);
       restoreEnv("SITE_PASSWORD", prevSitePassword);

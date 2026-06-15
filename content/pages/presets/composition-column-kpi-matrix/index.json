@@ -1,0 +1,192 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Composition Column KPI Matrix — Preset Demo",
+  "description": "Dense metric matrix demonstrating structured numeric storytelling across viewports.",
+  "sectionOrder": ["nav-header", "hero", "demo-primary", "demo-stress"],
+  "definitions": {
+    "bg-composition": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "radial-gradient(120% 110% at 92% 2%, color-mix(in oklab, var(--pb-accent) 16%, transparent) 0%, transparent 54%), linear-gradient(160deg, color-mix(in oklab, var(--pb-primary) 11%, var(--pb-secondary)) 0%, var(--pb-secondary) 66%, color-mix(in oklab, var(--pb-accent) 6%, var(--pb-secondary)) 100%)"
+        }
+      ],
+      "preset": "bg-composition"
+    },
+    "nav-header": {
+      "preset": "preset-demo-nav-header"
+    },
+    "hero": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "align": "start",
+      "height": "hug",
+      "padding": {
+        "base": "10rem 0 6rem",
+        "md": "12rem 0 8rem"
+      },
+      "gap": "1rem",
+      "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+      "definitions": {
+        "hero-eyebrow": {
+          "preset": "type-kicker-badge",
+          "text": "Column · Metrics · Structured Data"
+        },
+        "hero-title": {
+          "preset": "type-h1-display",
+          "text": "Composition Column KPI Matrix"
+        },
+        "hero-description": {
+          "preset": "type-body-standard",
+          "text": "Dense metric matrix demonstrating structured numeric storytelling across viewports.",
+          "width": {
+            "base": "100%",
+            "md": "72%"
+          }
+        }
+      }
+    },
+    "demo-primary": {
+      "preset": "composition-column-kpi-matrix",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "2rem 0 3rem",
+        "md": "2rem 0 4rem"
+      },
+      "definitions": {
+        "kpi-1": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 128
+              },
+              "label": {
+                "text": "Active Clients"
+              },
+              "body": {
+                "text": "Teams currently using the system in production."
+              }
+            }
+          }
+        },
+        "kpi-2": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 97,
+                "suffix": "%"
+              },
+              "label": {
+                "text": "Uptime"
+              },
+              "body": {
+                "text": "Average service availability over trailing quarter."
+              }
+            }
+          }
+        },
+        "kpi-3": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 42,
+                "suffix": "+"
+              },
+              "label": {
+                "text": "Integrations"
+              },
+              "body": {
+                "text": "Connected tools across analytics, CMS, and automation."
+              }
+            }
+          }
+        },
+        "kpi-4": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 18,
+                "suffix": "d"
+              },
+              "label": {
+                "text": "Avg Onboarding"
+              },
+              "body": {
+                "text": "Time from kickoff to first published launch."
+              }
+            }
+          }
+        }
+      }
+    },
+    "demo-stress": {
+      "preset": "composition-column-kpi-matrix",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 0 8rem",
+        "md": "0 0 12rem"
+      },
+      "definitions": {
+        "kpi-1": {
+          "section": {
+            "definitions": {
+              "label": {
+                "text": "Stress: exceptionally long metric label for wrap testing"
+              }
+            }
+          }
+        },
+        "kpi-2": {
+          "section": {
+            "definitions": {
+              "body": {
+                "text": "This explanatory line is intentionally verbose to ensure cards remain aligned when one metric needs caveats and context."
+              }
+            }
+          }
+        },
+        "kpi-3": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 3200,
+                "suffix": "",
+                "separator": true
+              },
+              "label": {
+                "text": "Weekly Events Processed"
+              }
+            }
+          }
+        },
+        "kpi-4": {
+          "section": {
+            "definitions": {
+              "body": {
+                "text": "Maintains legibility and tap-safe spacing even when compact screens keep a two-track matrix."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "layout", "card", "bg"],
+  "bgKey": "bg-composition"
+}

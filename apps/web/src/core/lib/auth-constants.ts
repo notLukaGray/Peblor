@@ -1,1 +1,1 @@
-export { accessCookieName } from "./globals";
+export { accessCookieName, accessCookieMaxAgeDays } from "./globals";

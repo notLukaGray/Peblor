@@ -1,0 +1,27 @@
+{
+  "preset": "demo-hero",
+  "maxWidth": "900px",
+  "padding": {
+    "base": "10rem 0 6rem",
+    "md": "12rem 0 8rem"
+  },
+  "gap": "1rem",
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Marquee · Counter · Stagger · Entrance Presets"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Type Motion"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Marquee in three modes, counters in five configurations, stagger sequences, and scroll-driven text animation.",
+      "width": {
+        "base": "100%",
+        "md": "82%"
+      }
+    }
+  }
+}

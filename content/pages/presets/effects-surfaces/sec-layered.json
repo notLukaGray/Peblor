@@ -1,0 +1,185 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "entrancePreset": "fade",
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "layered-panel"],
+  "definitions": {
+    "sec-label": {
+      "type": "elementGroup",
+      "display": "flex",
+      "align": "center",
+      "padding": "0.6rem 0",
+      "wrapperStyle": {
+        "position": "sticky",
+        "top": "3rem",
+        "layer": 10,
+        "backgroundColor": "color-mix(in oklab, var(--pb-secondary) 88%, transparent)",
+        "bgBlur": "blur(20px)",
+        "WebkitBackdropFilter": "blur(20px)",
+        "borderBottom": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["label-text"],
+        "definitions": {
+          "label-text": {
+            "preset": "type-h3-label",
+            "text": "Layered Treatments"
+          }
+        }
+      }
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Combine glass, glow, border gradient, and translucent fill in a single composition. Each effect layer stacks independently — change or remove any layer without affecting the others."
+    },
+    "layered-panel": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": {
+        "base": "column",
+        "md": "row"
+      },
+      "gap": "1.5rem",
+      "width": "100%",
+      "padding": "0",
+      "scroll": "visible",
+      "section": {
+        "elementOrder": ["panel-background", "panel-foreground"],
+        "definitions": {
+          "panel-background": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "padding": "2.5rem",
+            "gap": "1.5rem",
+            "flex": "1 1 0px",
+            "borderRadius": "24px",
+            "scroll": "visible",
+            "effects": [
+              {
+                "type": "glass",
+                "blur": "8px",
+                "lightIntensity": 0.2,
+                "refraction": 0.08,
+                "dispersion": 0.03,
+                "bezelWidth": "1px",
+                "bezelType": "convex_squircle",
+                "glassThickness": 60,
+                "specularOpacity": 0.35,
+                "specularSaturation": 3,
+                "dropShadow": false,
+                "magnifyingScale": 0.02
+              },
+              {
+                "type": "backdropBlur",
+                "amount": "6px"
+              },
+              {
+                "type": "glow",
+                "blur": "20px",
+                "spread": "2px",
+                "color": "color-mix(in oklab, var(--pb-accent) 25%, transparent)"
+              }
+            ],
+            "borderGradient": {
+              "stroke": "linear-gradient(135deg, color-mix(in oklab, var(--pb-accent) 35%, transparent), color-mix(in oklab, var(--pb-primary) 25%, transparent), color-mix(in oklab, var(--pb-accent) 12%, transparent))",
+              "width": "1px"
+            },
+            "wrapperStyle": {
+              "backgroundColor": "color-mix(in oklab, var(--pb-on-secondary) 3%, transparent)"
+            },
+            "motionTiming": {
+              "entrancePreset": "fade",
+              "trigger": "onFirstVisible"
+            },
+            "section": {
+              "elementOrder": ["badge", "title", "body"],
+              "definitions": {
+                "badge": {
+                  "preset": "type-kicker-badge",
+                  "text": "glassLayer: background"
+                },
+                "title": {
+                  "preset": "type-h4-card",
+                  "text": "Content above glass"
+                },
+                "body": {
+                  "preset": "type-body-fine",
+                  "text": "Content renders above the glass overlay. The glass blurs the background behind the surface while text stays sharp and clear on top. The default behavior for readable cards, panels, and overlays — combined here with backdrop-filter for additional background diffusion."
+                }
+              }
+            }
+          },
+          "panel-foreground": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "padding": "2.5rem",
+            "gap": "1.5rem",
+            "flex": "1 1 0px",
+            "borderRadius": "24px",
+            "scroll": "visible",
+            "glassLayer": "foreground",
+            "effects": [
+              {
+                "type": "glass",
+                "blur": "8px",
+                "lightIntensity": 0.2,
+                "refraction": 0.08,
+                "dispersion": 0.03,
+                "bezelWidth": "1px",
+                "bezelType": "convex_squircle",
+                "glassThickness": 60,
+                "specularOpacity": 0.35,
+                "specularSaturation": 3,
+                "dropShadow": false,
+                "magnifyingScale": 0.02
+              },
+              {
+                "type": "backdropBlur",
+                "amount": "6px"
+              },
+              {
+                "type": "glow",
+                "blur": "20px",
+                "spread": "2px",
+                "color": "color-mix(in oklab, var(--pb-accent) 25%, transparent)"
+              }
+            ],
+            "borderGradient": {
+              "stroke": "linear-gradient(135deg, color-mix(in oklab, var(--pb-accent) 35%, transparent), color-mix(in oklab, var(--pb-primary) 25%, transparent), color-mix(in oklab, var(--pb-accent) 12%, transparent))",
+              "width": "1px"
+            },
+            "wrapperStyle": {
+              "backgroundColor": "color-mix(in oklab, var(--pb-on-secondary) 3%, transparent)"
+            },
+            "motionTiming": {
+              "entrancePreset": "zoomIn",
+              "trigger": "onFirstVisible"
+            },
+            "section": {
+              "elementOrder": ["badge", "title", "body"],
+              "definitions": {
+                "badge": {
+                  "preset": "type-kicker-badge",
+                  "text": "glassLayer: foreground"
+                },
+                "title": {
+                  "preset": "type-h4-card",
+                  "text": "Glass above content"
+                },
+                "body": {
+                  "preset": "type-body-fine",
+                  "text": "The glass overlay floats above the content, creating a frosted-pane effect where the glass refraction and specular highlights sit on top of the text. Use sparingly for atmospheric decorative panels where readability is secondary."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "scroll": "visible"
+}

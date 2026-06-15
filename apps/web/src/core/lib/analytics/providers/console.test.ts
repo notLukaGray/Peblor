@@ -14,8 +14,8 @@ describe("console provider", () => {
     expect(createConsoleProvider().name).toBe("console");
   });
 
-  it("logs event to console", () => {
-    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+  it("writes event to console.warn", () => {
+    const logSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
     const p = createConsoleProvider();
 
     p.send({

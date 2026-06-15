@@ -5,7 +5,7 @@ import {
   rateLimitLockoutMinutes,
   rateLimitCookieExpiryHours,
 } from "./globals";
-import { buildCookieHeader } from "./cookies/build-cookie-header";
+import type { CookieAttrs } from "./cookies/build-cookie-header";
 import { getRateLimitCookieSameSite } from "./cookies/rate-limit-cookie-samesite";
 import { isRequestHttps } from "./cookies/cookie-request-secure";
 import { getRememberedCount, rememberFingerprint } from "./rate-limit/fingerprint-store";
@@ -33,7 +33,8 @@ function verify(payload: string, signature: string): boolean {
   if (signature.length !== expected.length) return false;
   try {
     return timingSafeEqual(Buffer.from(signature, "utf8"), Buffer.from(expected, "utf8"));
-  } catch {
+  } catch (err) {
+    console.warn("[web-core] timingSafeEqual failed for rate limit signature verification", err);
     return false;
   }
 }
@@ -89,7 +90,8 @@ export function getUnlockRateLimitState(
       return { locked: false, count: 0 };
     }
     return { locked: false, count: effectiveCount };
-  } catch {
+  } catch (err) {
+    console.warn("[web-core] Failed to parse rate limit state", err);
     return { locked: false, count: remembered ?? 0 };
   }
 }
@@ -98,7 +100,7 @@ export function getRateLimitCookieHeader(
   currentCount: number,
   fp?: string,
   headers?: Headers
-): string {
+): CookieAttrs | null {
   const count = currentCount + 1;
   const now = Date.now();
   const lockoutMs = rateLimitLockoutMinutes * 60 * 1000;
@@ -115,30 +117,30 @@ export function getRateLimitCookieHeader(
   };
   const payloadB64 = Buffer.from(JSON.stringify(payload), "utf8").toString("base64url");
   const signature = sign(payloadB64);
-  if (!signature) return "";
+  if (!signature) return null;
 
   const value = `${payloadB64}.${signature}`;
   const cookieExpirySeconds = rateLimitCookieExpiryHours * 60 * 60;
   const maxAge = lockedUntil != null ? Math.ceil((lockedUntil - now) / 1000) : cookieExpirySeconds;
   const secure = headers ? isRequestHttps(headers) : process.env.NODE_ENV === "production";
-  return buildCookieHeader({
+  return {
     name: rateLimitCookieName,
     value,
     maxAge,
     secure,
     sameSite: getRateLimitCookieSameSite(),
-  });
+  };
 }
 
-export function getClearRateLimitCookieHeader(headers?: Headers): string {
+export function getClearRateLimitCookieHeader(headers?: Headers): CookieAttrs {
   const secure = headers ? isRequestHttps(headers) : process.env.NODE_ENV === "production";
-  return buildCookieHeader({
+  return {
     name: rateLimitCookieName,
     value: "",
     maxAge: 0,
     secure,
     sameSite: getRateLimitCookieSameSite(),
-  });
+  };
 }
 
 export const RATE_LIMIT_COOKIE_NAME = rateLimitCookieName;

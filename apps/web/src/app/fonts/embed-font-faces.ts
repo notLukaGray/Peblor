@@ -20,7 +20,7 @@ export const getBunnyFontCssCached = cache(async (url: string): Promise<string> 
     const res = await fetch(url, {
       headers: {
         // Bunny Fonts may serve different formats per UA; request woff2-capable UA
-        "User-Agent": "Mozilla/5.0 (compatible; PeblorBot/1.0)",
+        "User-Agent": "Mozilla/5.0 (compatible; OpenCodeBot/1.0; +https://notlukagray.com)",
       },
       next: {
         // Re-fetch at most once per hour — font file URLs change rarely

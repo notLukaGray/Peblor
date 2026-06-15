@@ -1,0 +1,27 @@
+{
+  "preset": "demo-hero",
+  "maxWidth": "900px",
+  "padding": {
+    "base": "8rem 0 5rem",
+    "md": "10rem 0 7rem"
+  },
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "setVariable · setTheme · copyToClipboard · scrollTo · fireMultiple"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Actions & Logic"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "A sandbox exploring peblor's action system. Each section demonstrates a different action type with live state feedback using visibleWhen panels.",
+      "width": {
+        "base": "100%",
+        "md": "78%"
+      }
+    }
+  },
+  "id": "hero"
+}

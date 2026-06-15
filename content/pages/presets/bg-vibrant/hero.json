@@ -1,0 +1,17 @@
+{
+  "definitions": {
+    "hero-badge": {
+      "preset": "demo-hero-badge",
+      "text": "backgroundVariable · loop pan"
+    },
+    "hero-title": {
+      "preset": "demo-hero-title",
+      "text": "bg-vibrant"
+    },
+    "hero-desc": {
+      "preset": "demo-hero-description",
+      "text": "Bold diagonal gradient at 300% size, continuously panning its backgroundPosition — the colours cycle through accent, primary, and secondary in a perpetual loop."
+    }
+  },
+  "preset": "demo-hero-100vh"
+}

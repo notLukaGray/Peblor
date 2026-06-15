@@ -1,0 +1,73 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Effects Surfaces — Preset Demo",
+  "description": "Glassmorphism, glow, blur, and layered surface treatments — a visual catalogue of CSS-driven surface effects for UI panels, cards, and overlays.",
+  "presets": ["demo", "type/core", "ui/link", "type/effects", "bg"],
+  "sectionOrder": ["nav-header", "hero", "sec-glass", "sec-glow", "sec-blur", "sec-layered"],
+  "bgKey": "bg",
+  "definitions": {
+    "bg": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "var(--pb-secondary)"
+        },
+        {
+          "fill": "linear-gradient(color-mix(in oklab, var(--pb-on-secondary) 8%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklab, var(--pb-on-secondary) 8%, transparent) 1px, transparent 1px)",
+          "backgroundSize": "40px 40px",
+          "motion": [
+            {
+              "type": "entrance",
+              "from": {
+                "opacity": 0
+              },
+              "to": {
+                "opacity": 1
+              },
+              "transition": {
+                "duration": 1.4,
+                "ease": "easeOut"
+              },
+              "trigger": "onMount"
+            },
+            {
+              "type": "parallax",
+              "speed": 0.06,
+              "axis": "y"
+            }
+          ]
+        }
+      ]
+    },
+    "nav-header": {
+      "preset": "preset-demo-nav-header"
+    },
+    "hero": {
+      "preset": "demo-hero",
+      "maxWidth": "900px",
+      "padding": {
+        "base": "8rem 0 5rem",
+        "md": "10rem 0 7rem"
+      },
+      "definitions": {
+        "hero-eyebrow": {
+          "preset": "type-kicker-badge",
+          "text": "Glass · Glow · Blur · Layered"
+        },
+        "hero-title": {
+          "preset": "type-h1-display",
+          "text": "Surface Effects"
+        },
+        "hero-description": {
+          "preset": "type-body-standard",
+          "text": "CSS-driven surface treatments — glassmorphism, glow, blur, and layered composites — demonstrated as reusable peblor patterns.",
+          "width": {
+            "base": "100%",
+            "md": "72%"
+          }
+        }
+      },
+      "id": "hero"
+    }
+  }
+}

@@ -11,11 +11,11 @@ describe("peblor-resolve-breakpoint-server", () => {
       expect(isMobileFromUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0)")).toBe(false);
     });
 
-    it("resolves responsive array in bg (mobile)", () => {
+    it("resolves responsive tier map in bg (mobile)", () => {
       const bg: bgBlock = {
         type: "backgroundImage",
         image: "work/hero.jpg",
-        width: ["100%", "50%"],
+        width: { base: "100%", md: "50%" },
       } as bgBlock;
       const result = resolvePeblorBreakpoint({
         sections: [],
@@ -27,11 +27,11 @@ describe("peblor-resolve-breakpoint-server", () => {
       expect((result.bg as Record<string, unknown>).width).toBe("100%");
     });
 
-    it("resolves responsive array in bg (desktop)", () => {
+    it("resolves responsive tier map in bg (desktop)", () => {
       const bg: bgBlock = {
         type: "backgroundImage",
         image: "work/hero.jpg",
-        width: ["100%", "50%"],
+        width: { base: "100%", md: "50%" },
       } as bgBlock;
       const result = resolvePeblorBreakpoint({
         sections: [],
@@ -43,11 +43,11 @@ describe("peblor-resolve-breakpoint-server", () => {
       expect((result.bg as Record<string, unknown>).width).toBe("50%");
     });
 
-    it("resolves responsive object in bg", () => {
+    it("resolves responsive tier map in bg", () => {
       const bg: bgBlock = {
         type: "backgroundImage",
         image: "work/hero.jpg",
-        width: { mobile: "100%", desktop: "60%" },
+        width: { base: "100%", md: "60%" },
       } as bgBlock;
       const result = resolvePeblorBreakpoint({
         sections: [],
@@ -63,7 +63,7 @@ describe("peblor-resolve-breakpoint-server", () => {
       const def: bgBlock = {
         type: "backgroundImage",
         image: "work/card.jpg",
-        width: ["100%", "33%"],
+        width: { base: "100%", md: "33%" },
       } as bgBlock;
       const result = resolvePeblorBreakpoint({
         sections: [],
@@ -79,12 +79,12 @@ describe("peblor-resolve-breakpoint-server", () => {
       const fromBg: bgBlock = {
         type: "backgroundImage",
         image: "a.jpg",
-        width: ["100%", "50%"],
+        width: { base: "100%", md: "50%" },
       } as bgBlock;
       const toBg: bgBlock = {
         type: "backgroundImage",
         image: "b.jpg",
-        width: { mobile: "100%", desktop: "75%" },
+        width: { base: "100%", md: "75%" },
       } as bgBlock;
       const bg: bgBlock = {
         type: "backgroundTransition",
@@ -142,8 +142,8 @@ describe("peblor-resolve-breakpoint-server", () => {
       const section = {
         type: "contentBlock",
         elements: [],
-        contentWidth: ["100%", "75%"],
-        contentHeight: { mobile: "auto", desktop: "80vh" },
+        contentWidth: { base: "100%", md: "75%" },
+        contentHeight: { base: "auto", md: "80vh" },
       } as unknown as SectionBlock;
       const mobile = resolvePeblorBreakpoint({
         sections: [section],
@@ -167,14 +167,14 @@ describe("peblor-resolve-breakpoint-server", () => {
       const section = {
         type: "contentBlock",
         elements: [],
-        aspectRatio: ["4 / 3", "16 / 9"],
-        flexDirection: ["column", "row"],
-        alignItems: ["center", "stretch"],
-        justifyContent: ["center", "space-between"],
-        flexWrap: ["nowrap", "wrap"],
-        gap: ["8px", "24px"],
-        rowGap: ["4px", "12px"],
-        columnGap: ["2px", "10px"],
+        aspectRatio: { base: "4 / 3", md: "16 / 9" },
+        flow: { base: "column", md: "row" },
+        align: { base: "center", md: "stretch" },
+        distribute: { base: "center", md: "space-between" },
+        wrap: { base: "nowrap", md: "wrap" },
+        gap: { base: "8px", md: "24px" },
+        rowGap: { base: "4px", md: "12px" },
+        columnGap: { base: "2px", md: "10px" },
       } as unknown as SectionBlock;
 
       const mobile = resolvePeblorBreakpoint({
@@ -192,8 +192,8 @@ describe("peblor-resolve-breakpoint-server", () => {
 
       expect((mobile.sections[0] as Record<string, unknown>).aspectRatio).toBe("4 / 3");
       expect((desktop.sections[0] as Record<string, unknown>).aspectRatio).toBe("16 / 9");
-      expect((mobile.sections[0] as Record<string, unknown>).flexDirection).toBe("column");
-      expect((desktop.sections[0] as Record<string, unknown>).flexDirection).toBe("row");
+      expect((mobile.sections[0] as Record<string, unknown>).flow).toBe("column");
+      expect((desktop.sections[0] as Record<string, unknown>).flow).toBe("row");
       expect((mobile.sections[0] as Record<string, unknown>).gap).toBe("8px");
       expect((desktop.sections[0] as Record<string, unknown>).gap).toBe("24px");
     });

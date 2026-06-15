@@ -1,0 +1,11 @@
+{
+  "type": "elementBody",
+  "level": 3,
+  "maxLines": 3,
+  "textOverflow": "ellipsis",
+  "scroll": "hidden",
+  "color": "color-mix(in oklab, var(--pb-on-secondary) 68%, transparent)",
+  "wordWrap": true,
+  "width": "100%",
+  "text": ""
+}

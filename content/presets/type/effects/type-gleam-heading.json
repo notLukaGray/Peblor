@@ -1,0 +1,44 @@
+{
+  "type": "elementHeading",
+  "level": 1,
+  "textFill": {
+    "type": "gradient",
+    "value": "linear-gradient(105deg, var(--pb-on-secondary) 0%, var(--pb-on-secondary) 38%, rgba(255,255,255,0.6) 45%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0.6) 55%, var(--pb-on-secondary) 62%, var(--pb-on-secondary) 100%)"
+  },
+  "color": "transparent",
+  "wordWrap": true,
+  "width": {
+    "base": "100%",
+    "md": "80%"
+  },
+  "motionTiming": {
+    "trigger": "onMount"
+  },
+  "motion": {
+    "from": {
+      "opacity": 0,
+      "filter": "blur(8px)"
+    },
+    "to": {
+      "opacity": 1,
+      "filter": "blur(0px)"
+    },
+    "transition": {
+      "duration": 0.5,
+      "ease": "easeOut"
+    },
+    "loop": {
+      "to": {
+        "--pb-bg-x": [0, 100, 0]
+      },
+      "transition": {
+        "--pb-bg-x": {
+          "duration": 1.2,
+          "repeat": "Infinity",
+          "ease": "easeInOut"
+        }
+      }
+    }
+  },
+  "text": ""
+}

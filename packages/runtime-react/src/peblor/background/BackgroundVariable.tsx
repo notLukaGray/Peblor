@@ -2,10 +2,11 @@
 
 import type { bgBlock } from "@pb/contracts/types";
 import { AnimatedBgVariableLayer } from "./AnimatedBgVariableLayer";
-import { resolveThemeString } from "@/peblor/theme/theme-string";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
+import { lowerThemeStringOrGradientToCss } from "@/peblor/theme/theme-string";
 
 type Props = Extract<bgBlock, { type: "backgroundVariable" }>;
+const THEMED_BACKGROUND_CLASS =
+  "pointer-events-none fixed inset-0 z-[var(--pb-z-base)] [color-scheme:light] dark:[color-scheme:dark]";
 
 /**
  * Page builder background: variable layers (fill, blend mode, opacity, motion).
@@ -15,15 +16,14 @@ type Props = Extract<bgBlock, { type: "backgroundVariable" }>;
  * scroll, pointer, parallax, trigger — composable in any combination).
  */
 export function BackgroundVariable({ layers }: Props) {
-  const themeMode = usePeblorThemeMode();
   if (!layers?.length) return null;
 
   return (
-    <section className="pointer-events-none fixed inset-0 z-[var(--pb-z-base)]" aria-hidden>
+    <section className={THEMED_BACKGROUND_CLASS} aria-hidden>
       {layers.map((layer, i) => (
         <AnimatedBgVariableLayer
           key={i}
-          fill={resolveThemeString(layer.fill, themeMode)}
+          fill={lowerThemeStringOrGradientToCss(layer.fill)}
           blendMode={layer.blendMode}
           opacity={layer.opacity}
           backgroundSize={layer.backgroundSize}

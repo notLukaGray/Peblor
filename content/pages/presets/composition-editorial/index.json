@@ -1,0 +1,679 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "The Composable Interface — Composition Demo",
+  "description": "Long-form editorial article page: article header, scroll progress bar, 70-30 sidebar with table of contents, pull quote, media break, tag cloud, and related articles.",
+  "sectionOrder": [
+    "nav-header",
+    "hero",
+    "sec-body",
+    "sec-pull-quote",
+    "sec-media-break",
+    "sec-tags",
+    "sec-more-label",
+    "sec-more-articles"
+  ],
+  "definitions": {
+    "bg-page": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "oklch(0.05 0.003 262)"
+        },
+        {
+          "fill": "radial-gradient(ellipse 80% 55% at 30% -5%, oklch(0.22 0.055 255 / 0.45) 0%, transparent 65%)",
+          "backgroundSize": "200% 200%",
+          "motion": [
+            {
+              "type": "loop",
+              "to": {
+                "opacity": [0.6, 1, 0.6]
+              },
+              "transition": {
+                "duration": 10,
+                "ease": "easeInOut",
+                "repeatType": "mirror"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "nav-header": {
+      "preset": "preset-demo-nav-header"
+    },
+    "hero": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "align": "start",
+      "height": "hug",
+      "padding": {
+        "base": "5rem 0 5rem",
+        "md": "14rem 0 6rem"
+      },
+      "gap": "1.25rem",
+      "elementOrder": ["scroll-bar", "article-kicker", "article-title", "article-meta"],
+      "definitions": {
+        "scroll-bar": {
+          "type": "elementScrollProgressBar",
+          "fixed": true,
+          "top": "0",
+          "left": "0",
+          "width": "100%",
+          "height": "3px",
+          "fill": "var(--pb-accent)",
+          "layer": 150
+        },
+        "article-kicker": {
+          "preset": "type-kicker-badge",
+          "text": "Design Systems · 12 min read"
+        },
+        "article-title": {
+          "type": "elementHeading",
+          "level": 1,
+          "text": "The Composable Interface: How JSON-Driven Layout Is Replacing Component Libraries",
+          "wordWrap": true,
+          "width": "100%",
+          "color": "var(--pb-on-secondary)",
+          "motionTiming": {
+            "entrancePreset": "blurIn",
+            "trigger": "onFirstVisible"
+          }
+        },
+        "article-meta": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "row",
+          "wrap": "wrap",
+          "gap": "1.5rem",
+          "section": {
+            "elementOrder": ["meta-date", "meta-author"],
+            "definitions": {
+              "meta-date": {
+                "preset": "type-h5-meta",
+                "text": "29 May 2026"
+              },
+              "meta-author": {
+                "preset": "type-h5-meta",
+                "text": "Alex Morgan, Orbit Studio"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-body": {
+      "preset": "composition-column-70-30-sidebar",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "4rem 0 5rem",
+        "md": "6rem 0 8rem"
+      },
+      "definitions": {
+        "title": {
+          "text": "Why composability wins"
+        },
+        "narrative": {
+          "width": "100%",
+          "text": "The history of frontend development is a history of abstractions. We went from raw HTML to CSS frameworks, from component libraries to design systems. Each jump was supposed to solve the handoff problem — the gap between what designers imagine and what engineers ship.\n\nBut something changed. The tools got better, but the gap stayed the same. Designers were still pushing Figma files over the wall. Engineers were still translating them into JSX.\n\nJSON-driven layout is the next attempt to close that gap. Not by adding another tool — but by making the interface itself the artifact. When a page is a plain JSON document, anyone can read it, version it, fork it, and ship it. The renderer becomes an interpreter. The designer becomes an author.\n\nThe key insight: layout decisions are data. Column widths, spacing rhythms, typographic scale, entrance animations — all of these are values, not code. When you treat them as data, you gain composability for free."
+        },
+        "meta-heading": {
+          "text": "In this article"
+        },
+        "meta-list": {
+          "text": "→ Why composability wins\n→ The abstraction problem\n→ JSON as interface\n→ What comes next"
+        },
+        "meta-link": {
+          "preset": "type-h5-meta",
+          "text": "∞ 12 min read"
+        }
+      }
+    },
+    "sec-pull-quote": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "4rem 0 5rem",
+        "md": "6rem 0 8rem"
+      },
+      "elementOrder": ["pull-quote"],
+      "definitions": {
+        "pull-quote": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "column",
+          "align": "center",
+          "gap": "0.75rem",
+          "width": {
+            "base": "100%",
+            "md": "82%"
+          },
+          "selfAlign": "center",
+          "section": {
+            "elementOrder": ["pq-mark", "pq-text", "pq-attr"],
+            "definitions": {
+              "pq-mark": {
+                "type": "elementHeading",
+                "level": 1,
+                "text": "“",
+                "color": "color-mix(in oklab, var(--pb-accent) 70%, transparent)",
+                "textAlign": "left",
+                "width": "100%",
+                "lineHeight": "0.6"
+              },
+              "pq-text": {
+                "type": "elementHeading",
+                "level": 2,
+                "wordWrap": true,
+                "textAlign": "center",
+                "color": "var(--pb-on-secondary)",
+                "text": "When a page is a plain JSON document, anyone can read it, version it, fork it, and ship it."
+              },
+              "pq-attr": {
+                "type": "elementBody",
+                "level": 5,
+                "textAlign": "center",
+                "textTransform": "uppercase",
+                "letterSpacing": "0.08em",
+                "color": "color-mix(in oklab, var(--pb-on-secondary) 45%, transparent)",
+                "text": "— The Composable Interface, 2026"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-media-break": {
+      "preset": "composition-flow-media-caption",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "2rem 0 3rem",
+        "md": "3rem 0 5rem"
+      },
+      "definitions": {
+        "media": {
+          "src": "https://images.unsplash.com/photo-1555099962-4199c345e5dd?w=1000&q=80&auto=format&fit=crop",
+          "alt": "Code structure visualization"
+        },
+        "meta": {
+          "section": {
+            "definitions": {
+              "tag": {
+                "text": "Architecture"
+              },
+              "date": {
+                "text": "Illustration · Orbit Studio"
+              }
+            }
+          }
+        },
+        "caption": {
+          "text": "A visual model of how JSON definitions resolve into rendered sections. The tree collapses into a flat namespace at load time, enabling O(1) lookups for any definition key."
+        }
+      }
+    },
+    "sec-tags": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "2rem 0 4rem",
+        "md": "3rem 0 6rem"
+      },
+      "gap": "1rem",
+      "elementOrder": ["tags-label", "tags-row"],
+      "definitions": {
+        "tags-label": {
+          "preset": "type-h5-meta",
+          "text": "Topics"
+        },
+        "tags-row": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "row",
+          "wrap": "wrap",
+          "align": "center",
+          "gap": "0.4rem",
+          "width": "100%",
+          "section": {
+            "elementOrder": ["tag-1", "tag-2", "tag-3", "tag-4", "tag-5"],
+            "definitions": {
+              "tag-1": {
+                "preset": "type-kicker-badge",
+                "text": "Design Systems"
+              },
+              "tag-2": {
+                "preset": "type-kicker-badge",
+                "text": "Component Architecture"
+              },
+              "tag-3": {
+                "preset": "type-kicker-badge",
+                "text": "JSON"
+              },
+              "tag-4": {
+                "preset": "type-kicker-badge",
+                "text": "Composability"
+              },
+              "tag-5": {
+                "preset": "type-kicker-badge",
+                "text": "Frontend"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-more-articles": {
+      "type": "sectionColumn",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 0 8rem",
+        "md": "0 0 12rem"
+      },
+      "elementOrder": ["more-label", "more-row", "more-grid", "art-a", "art-b", "art-c"],
+      "definitions": {
+        "more-label": {
+          "preset": "type-h3-label",
+          "text": "More from the archive"
+        },
+        "more-row": {
+          "preset": "card-row-editorial",
+          "section": {
+            "definitions": {
+              "article-a": {
+                "section": {
+                  "definitions": {
+                    "meta": {
+                      "text": "Process · 7 min"
+                    },
+                    "title": {
+                      "text": "Why the design-to-code gap is a process problem, not a tools problem"
+                    }
+                  }
+                }
+              },
+              "article-b": {
+                "section": {
+                  "definitions": {
+                    "meta": {
+                      "text": "Craft · 5 min"
+                    },
+                    "title": {
+                      "text": "Motion as communication: how animation carries meaning without adding weight"
+                    }
+                  }
+                }
+              },
+              "article-c": {
+                "section": {
+                  "definitions": {
+                    "meta": {
+                      "text": "Systems · 9 min"
+                    },
+                    "title": {
+                      "text": "Building a typographic scale that survives every breakpoint"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "more-grid": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": {
+            "base": "column",
+            "md": "row"
+          },
+          "align": "start",
+          "wrap": "wrap",
+          "gap": {
+            "base": "1.5rem",
+            "md": "2rem"
+          },
+          "width": "100%",
+          "section": {
+            "elementOrder": ["art-a", "art-b", "art-c"],
+            "definitions": {
+              "art-a": {
+                "type": "elementGroup",
+                "display": "flex",
+                "flow": "column",
+                "align": "start",
+                "gap": "0.85rem",
+                "flex": {
+                  "base": "1 1 100%",
+                  "md": "1 1 calc(33.333% - 1.34rem)"
+                },
+                "width": {
+                  "base": "100%",
+                  "md": "calc(33.333% - 1.34rem)"
+                },
+                "constraints": {
+                  "minWidth": "18rem"
+                },
+                "padding": "1.1rem 0",
+                "wrapperStyle": {
+                  "borderTop": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+                },
+                "section": {
+                  "elementOrder": ["a-meta", "a-title", "a-body", "a-link"],
+                  "definitions": {
+                    "a-meta": {
+                      "preset": "type-h5-meta",
+                      "text": "Process · 7 min"
+                    },
+                    "a-title": {
+                      "preset": "type-h4-card",
+                      "text": "Why the design-to-code gap is a process problem, not a tools problem"
+                    },
+                    "a-body": {
+                      "preset": "type-body-fine",
+                      "text": "Most teams blame tooling for the gap. The real culprit is how decisions are communicated."
+                    },
+                    "a-link": {
+                      "preset": "type-link-inline",
+                      "label": "Read more",
+                      "href": "#"
+                    }
+                  }
+                }
+              },
+              "art-b": {
+                "type": "elementGroup",
+                "display": "flex",
+                "flow": "column",
+                "align": "start",
+                "gap": "0.85rem",
+                "flex": {
+                  "base": "1 1 100%",
+                  "md": "1 1 calc(33.333% - 1.34rem)"
+                },
+                "width": {
+                  "base": "100%",
+                  "md": "calc(33.333% - 1.34rem)"
+                },
+                "constraints": {
+                  "minWidth": "18rem"
+                },
+                "padding": "1.1rem 0",
+                "wrapperStyle": {
+                  "borderTop": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+                },
+                "section": {
+                  "elementOrder": ["b-meta", "b-title", "b-body", "b-link"],
+                  "definitions": {
+                    "b-meta": {
+                      "preset": "type-h5-meta",
+                      "text": "Craft · 5 min"
+                    },
+                    "b-title": {
+                      "preset": "type-h4-card",
+                      "text": "Motion as communication: how animation carries meaning without adding weight"
+                    },
+                    "b-body": {
+                      "preset": "type-body-fine",
+                      "text": "Well-timed transitions carry meaning. The challenge is knowing when to stop."
+                    },
+                    "b-link": {
+                      "preset": "type-link-inline",
+                      "label": "Read more",
+                      "href": "#"
+                    }
+                  }
+                }
+              },
+              "art-c": {
+                "type": "elementGroup",
+                "display": "flex",
+                "flow": "column",
+                "align": "start",
+                "gap": "0.85rem",
+                "flex": {
+                  "base": "1 1 100%",
+                  "md": "1 1 calc(33.333% - 1.34rem)"
+                },
+                "width": {
+                  "base": "100%",
+                  "md": "calc(33.333% - 1.34rem)"
+                },
+                "constraints": {
+                  "minWidth": "18rem"
+                },
+                "padding": "1.1rem 0",
+                "wrapperStyle": {
+                  "borderTop": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+                },
+                "section": {
+                  "elementOrder": ["c-meta", "c-title", "c-body", "c-link"],
+                  "definitions": {
+                    "c-meta": {
+                      "preset": "type-h5-meta",
+                      "text": "Systems · 9 min"
+                    },
+                    "c-title": {
+                      "preset": "type-h4-card",
+                      "text": "Building a typographic scale that survives every breakpoint"
+                    },
+                    "c-body": {
+                      "preset": "type-body-fine",
+                      "text": "A single token table that generates your entire type system. Here’s how we build it."
+                    },
+                    "c-link": {
+                      "preset": "type-link-inline",
+                      "label": "Read more",
+                      "href": "#"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "art-a": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "column",
+          "align": "start",
+          "gap": "0.85rem",
+          "width": "100%",
+          "padding": "1.1rem 0",
+          "wrapperStyle": {
+            "borderTop": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+          },
+          "section": {
+            "elementOrder": ["a-meta", "a-title", "a-body", "a-link"],
+            "definitions": {
+              "a-meta": {
+                "preset": "type-h5-meta",
+                "text": "Process · 7 min"
+              },
+              "a-title": {
+                "preset": "type-h4-card",
+                "text": "Why the design-to-code gap is a process problem, not a tools problem"
+              },
+              "a-body": {
+                "preset": "type-body-fine",
+                "text": "Most teams blame tooling. The real culprit is how decisions are communicated."
+              },
+              "a-link": {
+                "preset": "type-link-inline",
+                "label": "Read more",
+                "href": "#"
+              }
+            }
+          }
+        },
+        "art-b": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "column",
+          "align": "start",
+          "gap": "0.85rem",
+          "width": "100%",
+          "padding": "1.1rem 0",
+          "wrapperStyle": {
+            "borderTop": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+          },
+          "section": {
+            "elementOrder": ["b-meta", "b-title", "b-body", "b-link"],
+            "definitions": {
+              "b-meta": {
+                "preset": "type-h5-meta",
+                "text": "Craft · 5 min"
+              },
+              "b-title": {
+                "preset": "type-h4-card",
+                "text": "Motion as communication: how animation carries meaning without adding weight"
+              },
+              "b-body": {
+                "preset": "type-body-fine",
+                "text": "Well-timed transitions carry meaning. The challenge is knowing when to stop."
+              },
+              "b-link": {
+                "preset": "type-link-inline",
+                "label": "Read more",
+                "href": "#"
+              }
+            }
+          }
+        },
+        "art-c": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "column",
+          "align": "start",
+          "gap": "0.85rem",
+          "width": "100%",
+          "padding": "1.1rem 0",
+          "wrapperStyle": {
+            "borderTop": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+          },
+          "section": {
+            "elementOrder": ["c-meta", "c-title", "c-body", "c-link"],
+            "definitions": {
+              "c-meta": {
+                "preset": "type-h5-meta",
+                "text": "Systems · 9 min"
+              },
+              "c-title": {
+                "preset": "type-h4-card",
+                "text": "Building a typographic scale that survives every breakpoint"
+              },
+              "c-body": {
+                "preset": "type-body-fine",
+                "text": "A single token table that generates your entire type system."
+              },
+              "c-link": {
+                "preset": "type-link-inline",
+                "label": "Read more",
+                "href": "#"
+              }
+            }
+          }
+        }
+      },
+      "columns": {
+        "base": 1,
+        "md": 3
+      },
+      "columnWidths": {
+        "base": [1],
+        "md": [1, 1, 1]
+      },
+      "columnGaps": {
+        "base": "1.5rem",
+        "md": "2rem"
+      },
+      "columnAssignments": {
+        "base": {
+          "art-a": 0,
+          "art-b": 0,
+          "art-c": 0
+        },
+        "md": {
+          "art-a": 0,
+          "art-b": 1,
+          "art-c": 2
+        }
+      },
+      "contentWidth": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "contentHeight": "hug",
+      "gridMode": "grid",
+      "gridAutoRows": "auto"
+    },
+    "sec-more-label": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "3rem 0 1.5rem",
+        "md": "5rem 0 2rem"
+      },
+      "elementOrder": ["more-heading"],
+      "definitions": {
+        "more-heading": {
+          "preset": "type-h3-label",
+          "text": "More from the archive"
+        }
+      }
+    }
+  },
+  "presets": [
+    "demo",
+    "type/core",
+    "type/effects",
+    "type/motion",
+    "ui/button",
+    "ui/link",
+    "layout",
+    "card",
+    "bg"
+  ],
+  "bgKey": "bg-page",
+  "scroll": {
+    "smooth": true,
+    "lockBody": true,
+    "scrollX": "hidden"
+  }
+}

@@ -1,0 +1,187 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "entrancePreset": "slideUp",
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "cta-primary-row", "cta-mixed-row", "cta-stacked-row"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Grouped CTAs"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Multiple buttons in a single row with mixed priorities — primary, secondary, and ghost buttons arranged in various combination patterns."
+    },
+    "cta-primary-row": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "align": "center",
+      "distribute": "center",
+      "gap": "1rem",
+      "section": {
+        "elementOrder": ["cta-get-started", "cta-learn-more", "cta-docs"],
+        "definitions": {
+          "cta-get-started": {
+            "preset": "btn-primary",
+            "label": "Get Started",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            },
+            "wrapperFillHover": {
+              "light": "color-mix(in oklab, var(--pb-on-secondary) 85%, oklch(0.62 0.14 60))",
+              "dark": "color-mix(in oklab, var(--pb-on-secondary) 78%, oklch(0.80 0.10 58))"
+            },
+            "wrapperFillActive": {
+              "light": "color-mix(in oklab, var(--pb-on-secondary) 74%, oklch(0.54 0.16 62))",
+              "dark": "color-mix(in oklab, var(--pb-on-secondary) 65%, oklch(0.72 0.14 55))"
+            }
+          },
+          "cta-learn-more": {
+            "preset": "btn-secondary",
+            "label": "Learn More",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            }
+          },
+          "cta-docs": {
+            "preset": "btn-ghost",
+            "label": "Read the Docs",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            }
+          }
+        }
+      },
+      "scroll": "visible"
+    },
+    "cta-mixed-row": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "align": "center",
+      "distribute": "center",
+      "gap": "0.8rem",
+      "padding": "0.5rem 0",
+      "section": {
+        "elementOrder": ["cta-primary-sm", "cta-secondary-sm", "cta-ghost-sm"],
+        "definitions": {
+          "cta-primary-sm": {
+            "preset": "btn-primary",
+            "label": "Primary Action",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            },
+            "wrapperFillHover": {
+              "light": "color-mix(in oklab, var(--pb-on-secondary) 85%, oklch(0.55 0.14 250))",
+              "dark": "color-mix(in oklab, var(--pb-on-secondary) 77%, oklch(0.74 0.15 245))"
+            },
+            "wrapperFillActive": {
+              "light": "color-mix(in oklab, var(--pb-on-secondary) 74%, oklch(0.46 0.16 252))",
+              "dark": "color-mix(in oklab, var(--pb-on-secondary) 65%, oklch(0.64 0.17 248))"
+            }
+          },
+          "cta-secondary-sm": {
+            "preset": "btn-secondary",
+            "label": "Secondary",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            }
+          },
+          "cta-ghost-sm": {
+            "preset": "btn-quiet",
+            "label": "Cancel",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            }
+          }
+        }
+      },
+      "scroll": "visible"
+    },
+    "cta-stacked-row": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "align": "center",
+      "distribute": "center",
+      "gap": "1rem",
+      "section": {
+        "elementOrder": ["cta-action-1", "cta-action-2", "cta-action-3", "cta-action-4"],
+        "definitions": {
+          "cta-action-1": {
+            "preset": "btn-primary",
+            "label": "Save",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            },
+            "wrapperFillHover": {
+              "light": "color-mix(in oklab, var(--pb-on-secondary) 86%, oklch(0.58 0.10 145))",
+              "dark": "color-mix(in oklab, var(--pb-on-secondary) 78%, oklch(0.76 0.11 142))"
+            },
+            "wrapperFillActive": {
+              "light": "color-mix(in oklab, var(--pb-on-secondary) 76%, oklch(0.50 0.12 148))",
+              "dark": "color-mix(in oklab, var(--pb-on-secondary) 68%, oklch(0.66 0.13 145))"
+            }
+          },
+          "cta-action-2": {
+            "preset": "btn-secondary",
+            "label": "Edit",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            }
+          },
+          "cta-action-3": {
+            "preset": "btn-secondary",
+            "label": "Delete",
+            "linkDefault": "var(--pb-accent)",
+            "wrapperFill": "color-mix(in oklab, var(--pb-accent) 10%, transparent)",
+            "wrapperStroke": "color-mix(in oklab, var(--pb-accent) 22%, transparent)",
+            "wrapperStrokeWidth": 1,
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            },
+            "wrapperFillHover": "color-mix(in oklab, var(--pb-accent) 18%, transparent)",
+            "wrapperFillActive": "color-mix(in oklab, var(--pb-accent) 30%, transparent)",
+            "wrapperStrokeHover": "color-mix(in oklab, var(--pb-accent) 38%, transparent)",
+            "wrapperScaleHover": 1.02
+          },
+          "cta-action-4": {
+            "preset": "btn-ghost",
+            "label": "Export",
+            "linkDefault": "color-mix(in oklab, var(--pb-on-secondary) 48%, transparent)",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "_demo_btn",
+              "value": "clicked"
+            }
+          }
+        }
+      },
+      "scroll": "visible"
+    }
+  }
+}

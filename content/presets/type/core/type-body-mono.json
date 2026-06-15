@@ -1,0 +1,8 @@
+{
+  "type": "elementBody",
+  "level": 4,
+  "fontFamily": "var(--font-mono)",
+  "color": "color-mix(in oklab, var(--pb-accent) 82%, transparent)",
+  "wordWrap": false,
+  "text": ""
+}

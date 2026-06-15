@@ -5,7 +5,8 @@ import type { VideoEngineKind } from "./video-engine-types";
 function srcPathname(src: string): string {
   try {
     return new URL(src, "https://local.invalid").pathname.toLowerCase();
-  } catch {
+  } catch (err) {
+    console.warn("[pb-runtime-react] Failed to parse video src URL", err);
     return src.split(/[?#]/, 1)[0]?.toLowerCase() ?? "";
   }
 }

@@ -1,0 +1,144 @@
+{
+  "type": "sectionColumn",
+  "columns": {
+    "base": 1,
+    "md": 3
+  },
+  "columnWidths": {
+    "base": [1],
+    "md": [1, 1, 1]
+  },
+  "columnGaps": {
+    "base": "1.25rem",
+    "md": "2rem"
+  },
+  "columnAssignments": {
+    "feature-a": 0,
+    "feature-b": 1,
+    "feature-c": 2
+  },
+  "contentWidth": "100%",
+  "contentHeight": "hug",
+  "elementOrder": ["feature-a", "feature-b", "feature-c"],
+  "gridMode": "grid",
+  "gridAutoRows": "auto",
+  "definitions": {
+    "feature-a": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "gap": "1.25rem",
+      "width": "100%",
+      "padding": {
+        "base": "1.5rem",
+        "md": "1.75rem"
+      },
+      "borderRadius": "16px",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["kicker", "title", "body", "link"],
+        "definitions": {
+          "kicker": {
+            "preset": "type-kicker-badge",
+            "text": "Feature"
+          },
+          "title": {
+            "preset": "type-h4-card",
+            "text": "Feature title"
+          },
+          "body": {
+            "preset": "type-body-fine",
+            "text": "Feature support copy."
+          },
+          "link": {
+            "preset": "type-link-nav",
+            "label": "Explore ->",
+            "href": "#"
+          }
+        }
+      }
+    },
+    "feature-b": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "gap": "1.25rem",
+      "width": "100%",
+      "padding": {
+        "base": "1.5rem",
+        "md": "1.75rem"
+      },
+      "borderRadius": "16px",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["kicker", "title", "body", "link"],
+        "definitions": {
+          "kicker": {
+            "preset": "type-kicker-badge",
+            "text": "Feature"
+          },
+          "title": {
+            "preset": "type-h4-card",
+            "text": "Feature title"
+          },
+          "body": {
+            "preset": "type-body-fine",
+            "text": "Feature support copy."
+          },
+          "link": {
+            "preset": "type-link-nav",
+            "label": "Explore ->",
+            "href": "#"
+          }
+        }
+      }
+    },
+    "feature-c": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "gap": "1.25rem",
+      "width": "100%",
+      "padding": {
+        "base": "1.5rem",
+        "md": "1.75rem"
+      },
+      "borderRadius": "16px",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["kicker", "title", "body", "link"],
+        "definitions": {
+          "kicker": {
+            "preset": "type-kicker-badge",
+            "text": "Feature"
+          },
+          "title": {
+            "preset": "type-h4-card",
+            "text": "Feature title"
+          },
+          "body": {
+            "preset": "type-body-fine",
+            "text": "Feature support copy."
+          },
+          "link": {
+            "preset": "type-link-nav",
+            "label": "Explore ->",
+            "href": "#"
+          }
+        }
+      }
+    }
+  }
+}

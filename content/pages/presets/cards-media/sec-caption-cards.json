@@ -1,0 +1,144 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["sec-label", "cards-row"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Caption Cards"
+    },
+    "cards-row": {
+      "preset": "card-grid-row",
+      "section": {
+        "elementOrder": ["card-1", "card-2", "card-3"],
+        "definitions": {
+          "card-1": {
+            "preset": "card-media-caption",
+            "section": {
+              "elementOrder": ["image", "meta-row", "caption"],
+              "definitions": {
+                "image": {
+                  "type": "elementImage",
+                  "src": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80&auto=format&fit=crop",
+                  "alt": "Design system documentation screenshot",
+                  "width": "100%",
+                  "height": "200px",
+                  "objectFit": "cover",
+                  "borderRadius": "16px"
+                },
+                "meta-row": {
+                  "type": "elementGroup",
+                  "display": "flex",
+                  "flow": "row",
+                  "distribute": "between",
+                  "align": "center",
+                  "padding": "0 0.15rem",
+                  "section": {
+                    "elementOrder": ["tag", "date"],
+                    "definitions": {
+                      "tag": {
+                        "preset": "type-kicker-badge",
+                        "text": "Design System"
+                      },
+                      "date": {
+                        "preset": "type-body-fine",
+                        "text": "Apr 2026"
+                      }
+                    }
+                  }
+                },
+                "caption": {
+                  "preset": "type-body-fine",
+                  "text": "Documentation homepage for the Atlas design system component library."
+                }
+              }
+            }
+          },
+          "card-2": {
+            "preset": "card-media-caption",
+            "section": {
+              "elementOrder": ["image", "meta-row", "caption"],
+              "definitions": {
+                "image": {
+                  "type": "elementImage",
+                  "src": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80&auto=format&fit=crop",
+                  "alt": "Mobile app product screenshot",
+                  "width": "100%",
+                  "height": "200px",
+                  "objectFit": "cover",
+                  "borderRadius": "16px"
+                },
+                "meta-row": {
+                  "type": "elementGroup",
+                  "display": "flex",
+                  "flow": "row",
+                  "distribute": "between",
+                  "align": "center",
+                  "padding": "0 0.15rem",
+                  "section": {
+                    "elementOrder": ["tag", "date"],
+                    "definitions": {
+                      "tag": {
+                        "preset": "type-kicker-badge",
+                        "text": "Product"
+                      },
+                      "date": {
+                        "preset": "type-body-fine",
+                        "text": "Feb 2026"
+                      }
+                    }
+                  }
+                },
+                "caption": {
+                  "preset": "type-body-fine",
+                  "text": "Vessel app — finance dashboard, transaction view, and onboarding screens."
+                }
+              }
+            }
+          },
+          "card-3": {
+            "preset": "card-media-caption",
+            "section": {
+              "elementOrder": ["image", "meta-row", "caption"],
+              "definitions": {
+                "image": {
+                  "type": "elementImage",
+                  "src": "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80&auto=format&fit=crop",
+                  "alt": "Exhibition installation photo",
+                  "width": "100%",
+                  "height": "200px",
+                  "objectFit": "cover",
+                  "borderRadius": "16px"
+                },
+                "meta-row": {
+                  "type": "elementGroup",
+                  "display": "flex",
+                  "flow": "row",
+                  "distribute": "between",
+                  "align": "center",
+                  "padding": "0 0.15rem",
+                  "section": {
+                    "elementOrder": ["tag", "date"],
+                    "definitions": {
+                      "tag": {
+                        "preset": "type-kicker-badge",
+                        "text": "Exhibition"
+                      },
+                      "date": {
+                        "preset": "type-body-fine",
+                        "text": "Jan 2026"
+                      }
+                    }
+                  }
+                },
+                "caption": {
+                  "preset": "type-body-fine",
+                  "text": "Shifting Ground installation — Kunsthalle Oslo, opening night."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

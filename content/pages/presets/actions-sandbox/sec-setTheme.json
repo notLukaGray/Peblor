@@ -1,0 +1,70 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "entrancePreset": "fade"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "demo-buttons"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "setTheme — Light / Dark Switch"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Buttons toggle between light and dark themes. The setTheme action accepts light, dark, or toggle as the mode value."
+    },
+    "demo-buttons": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "gap": "0.75rem",
+      "section": {
+        "elementOrder": ["btn-light", "btn-dark", "btn-toggle"],
+        "definitions": {
+          "btn-light": {
+            "preset": "btn-primary",
+            "label": "Light Theme",
+            "action": "setTheme",
+            "actionPayload": {
+              "mode": "light"
+            },
+            "wrapperBorderRadius": "10px"
+          },
+          "btn-dark": {
+            "preset": "btn-squircle",
+            "label": "Dark Theme",
+            "action": "setTheme",
+            "actionPayload": {
+              "mode": "dark"
+            },
+            "wrapperBorderRadius": "10px",
+            "wrapperPadding": "0.7rem 1.5rem"
+          },
+          "btn-toggle": {
+            "type": "elementButton",
+            "label": "Toggle Theme",
+            "action": "setTheme",
+            "actionPayload": {
+              "mode": "toggle"
+            },
+            "level": 4,
+            "wrapperPadding": "0.7rem 1.5rem",
+            "wrapperBorderRadius": "10px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-accent) 22%, transparent)",
+            "linkDefault": "var(--pb-on-secondary)",
+            "motion": {
+              "onHover": {
+                "scale": 1.04
+              },
+              "transition": {
+                "duration": 0.15
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "id": "sec-setTheme"
+}

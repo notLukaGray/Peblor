@@ -26,6 +26,9 @@ import { runResolveAsset } from "./commands/resolve-asset.js";
 import { runAuditAssets } from "./commands/audit-assets.js";
 import { runAudit } from "./commands/audit.js";
 import { runLint } from "./commands/lint.js";
+import { runLintObservers } from "./commands/lint-observers.js";
+import { runScoreHero } from "./commands/score-hero.js";
+import { runLintGpu } from "./commands/lint-gpu.js";
 import { runCheckRoutes } from "./commands/check-routes.js";
 import { runListOverlays, runReadOverlay, runWriteOverlay } from "./commands/overlays.js";
 import { runGeneratePage } from "./commands/generate-page.js";
@@ -43,6 +46,9 @@ import { runValidateAll } from "./commands/validate-all.js";
 import { runSitemap } from "./commands/sitemap.js";
 import { runListCapabilities } from "./commands/list-capabilities.js";
 import { runValidateCapability } from "./commands/validate-capability.js";
+import { runImportFigma } from "./commands/import-figma.js";
+import { runGenerateCatalogs } from "./commands/generate-catalogs.js";
+import { runStealPage, runStealSplit, runStealVerify } from "./commands/steal/index.js";
 import type { CommandIo, CliResult } from "./commands/types.js";
 
 function printJson(result: CliResult): void {
@@ -90,7 +96,9 @@ function printUsage(): void {
   printText(
     '  probe [--kind <element|trigger|motion|section|background>] [--strict-kind] [--strict] [--top <n>] [--verbose] [--json] "<intent>"'
   );
-  printText("  doctor <page-index.json> [--stage <load|validate|expand|resolve|assets>] [--json]");
+  printText(
+    "  doctor <page-index.json> [--stage <load|validate|expand|resolve|assets>] [--json]  (runs the real pipeline — most trustworthy diagnostic)"
+  );
   printText("  doctor --fragment <section-fragment.json> [--json]");
   printText(
     "  scaffold <route> [--out <file>] [--from <cluster-id|preset.json>] [--force] [--json]"
@@ -115,6 +123,12 @@ function printUsage(): void {
   printText("AI Generation:");
   printText('  generate <route> --intent "..." [--dry-run] [--json]');
   printText('  fill-section <route> --key <key> --intent "..." [--write] [--json]');
+  printText("  steal <url> [--route /path] [--dry-run] [--json]");
+  printText("  steal-split <route> [--dry-run] [--json]");
+  printText(
+    "  steal-verify <route> [--base-url <url>] [--viewport mobile,tablet,desktop] [--dry-run] [--json]"
+  );
+  printText("  generate-catalogs [--out <dir>]");
   printText("");
   printText("Cross-Page:");
   printText('  clone <source-route> <dest-route> [--title "..."] [--force] [--json]');
@@ -132,6 +146,9 @@ function printUsage(): void {
   printText("Diagnostics:");
   printText("  audit <route|--all> [--json]");
   printText("  lint <route|--all> [--json]");
+  printText("  lint-observers <route|--all> [--threshold N] [--json]");
+  printText("  lint-gpu <route|--all> [--json]");
+  printText("  score-hero <route|--all> [--first N] [--threshold N] [--json]");
   printText("  check-routes [--json]");
   printText("  validate-all [--fail-fast] [--json]");
   printText("");
@@ -160,6 +177,8 @@ function printUsage(): void {
   printText("Capabilities:");
   printText("  list-capabilities [--type importer|exporter|cmsAdapter] [--json]");
   printText("  validate-capability <file> [--json]");
+  printText("  import-figma <file> [--write] [--force] [--json]");
+  printText("  import-figma --inline '<json>' [--write] [--force] [--json]");
   printText("");
   printText("Use '<command> --help' for command-specific help.");
 }
@@ -238,6 +257,12 @@ export async function runCli(argv = process.argv): Promise<number> {
       return runGeneratePage(args, io);
     case "fill-section":
       return runFillSection(args, io);
+    case "steal":
+      return runStealPage(args, io);
+    case "steal-split":
+      return runStealSplit(args, io);
+    case "steal-verify":
+      return runStealVerify(pb, args, io);
     // Cross-Page
     case "clone":
       return runClonePage(args, io);
@@ -259,6 +284,12 @@ export async function runCli(argv = process.argv): Promise<number> {
       return runAudit(args, io);
     case "lint":
       return runLint(args, io);
+    case "lint-observers":
+      return runLintObservers(args, io);
+    case "score-hero":
+      return runScoreHero(args, io);
+    case "lint-gpu":
+      return runLintGpu(args, io);
     case "check-routes":
       return runCheckRoutes(args, io);
     case "validate-all":
@@ -292,6 +323,11 @@ export async function runCli(argv = process.argv): Promise<number> {
       return runListCapabilities(args, io);
     case "validate-capability":
       return runValidateCapability(args, io);
+    case "import-figma":
+      return runImportFigma(args, io);
+    // AI Catalog Generation
+    case "generate-catalogs":
+      return runGenerateCatalogs(args, io);
     default:
       printUsage();
       return 2;

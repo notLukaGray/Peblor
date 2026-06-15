@@ -1,0 +1,21 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Video Compact — Preset Demo",
+  "description": "Compact module with 16:9 surface and module-owned transport controls.",
+  "presets": [
+    "demo",
+    "type/core",
+    "ui/link",
+    "type/motion",
+    "player/surface",
+    "bg",
+    "player/section"
+  ],
+  "bgKey": "bg-players",
+  "sectionOrder": ["nav-header", "hero", "sec-player"],
+  "definitions": {
+    "bg-players": {
+      "preset": "bg-players"
+    }
+  }
+}

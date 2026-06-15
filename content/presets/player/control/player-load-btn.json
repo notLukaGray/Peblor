@@ -1,0 +1,17 @@
+{
+  "type": "elementButton",
+  "label": "",
+  "level": 4,
+  "wrapperPadding": "0.65rem 1.5rem",
+  "wrapperBorderRadius": "999px",
+  "wrapperFill": "color-mix(in oklab, var(--pb-accent) 22%, transparent)",
+  "linkDefault": "var(--pb-on-secondary)",
+  "motion": {
+    "onHover": {
+      "scale": 1.04
+    },
+    "transition": {
+      "duration": 0.15
+    }
+  }
+}

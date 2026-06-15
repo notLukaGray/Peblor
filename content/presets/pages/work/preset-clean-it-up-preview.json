@@ -1,0 +1,34 @@
+{
+  "preset": "work-preview-card",
+  "visibleWhen": {
+    "variable": "selectedProject",
+    "operator": "equals",
+    "value": "clean-it-up"
+  },
+  "section": {
+    "elementOrder": ["preview-content"],
+    "definitions": {
+      "preview-content": {
+        "preset": "work-preview-content",
+        "section": {
+          "elementOrder": ["preview-title", "preview-desc", "preview-cta"],
+          "definitions": {
+            "preview-title": {
+              "preset": "work-preview-title",
+              "text": "Clean It Up"
+            },
+            "preview-desc": {
+              "preset": "work-preview-desc",
+              "text": "Clean It Up"
+            },
+            "preview-cta": {
+              "preset": "work-preview-cta",
+              "label": "View project",
+              "href": "/work/clean-it-up"
+            }
+          }
+        }
+      }
+    }
+  }
+}

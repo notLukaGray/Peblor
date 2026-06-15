@@ -1,0 +1,23 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Flow · Row · Wrap Fallback"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Composition Flow Action Row Wrap"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Horizontal action clusters that stay usable on mobile by wrapping intentionally instead of collapsing awkwardly.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  },
+  "align": "start"
+}

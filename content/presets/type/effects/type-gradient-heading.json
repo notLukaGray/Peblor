@@ -1,0 +1,19 @@
+{
+  "type": "elementHeading",
+  "level": 1,
+  "textFill": {
+    "type": "gradient",
+    "value": "linear-gradient(135deg, var(--pb-primary) 0%, var(--pb-accent) 55%, var(--pb-on-secondary) 100%)"
+  },
+  "color": "transparent",
+  "wordWrap": true,
+  "width": {
+    "base": "100%",
+    "md": "80%"
+  },
+  "motionTiming": {
+    "entrancePreset": "blurIn",
+    "trigger": "onFirstVisible"
+  },
+  "text": ""
+}

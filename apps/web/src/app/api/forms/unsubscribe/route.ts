@@ -86,7 +86,8 @@ async function postHandler(request: NextRequest) {
           formErrorResponse("Update failed. Try again later.", 502),
           rateLimit
         );
-    } catch {
+    } catch (err) {
+      console.warn("[web] Failed to process unsubscribe email", err);
       return withFormRateLimitCookie(
         formErrorResponse("Update failed. Try again later.", 502),
         rateLimit

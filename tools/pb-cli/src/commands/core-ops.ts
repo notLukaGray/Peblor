@@ -1,5 +1,8 @@
 import { CONTRACT_VERSION } from "@pb/contracts";
+import { getPageAsync } from "@pb/core/load";
+import { validatePageAsync } from "@pb/core";
 import type { DiffResult } from "@pb/sdk";
+import path from "node:path";
 import { readJsonFile, isRecord } from "../lib/json-file.js";
 import type { CommandIo } from "./types.js";
 
@@ -28,11 +31,65 @@ function fileError(message: string): Record<string, unknown> {
   };
 }
 
+function routeFromPageFile(filePath: string): string | null {
+  const absolute = path.resolve(filePath);
+  const pagesRoot = path.resolve(process.cwd(), "content/pages");
+  const relative = path.relative(pagesRoot, absolute);
+  if (relative.startsWith("..") || path.isAbsolute(relative)) return null;
+  if (!relative.endsWith(".json")) return null;
+
+  const normalized = relative.split(path.sep).join("/");
+  if (normalized === "index.json") return "index";
+  if (normalized.endsWith("/index.json")) {
+    const route = normalized.slice(0, -"/index.json".length);
+    return route;
+  }
+
+  const route = normalized.slice(0, -".json".length);
+  return route;
+}
+
 export async function runValidate(pb: PbClient, io: CommandIo, filePath: string): Promise<number> {
+  const route = routeFromPageFile(filePath);
+  if (route) {
+    try {
+      const loaded = await getPageAsync(route);
+      if (loaded) {
+        const result = await pb.validate(loaded);
+        const payload = {
+          command: "validate",
+          mode: "strict-load",
+          file: filePath,
+          contractVersion: CONTRACT_VERSION,
+          valid: result.valid,
+          diagnostics: result.diagnostics,
+        };
+        if (result.valid) {
+          io.printJson(payload);
+          return 0;
+        }
+        io.printErrorJson(payload);
+        return 1;
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      io.printErrorJson({
+        command: "validate",
+        mode: "strict-load",
+        file: filePath,
+        contractVersion: CONTRACT_VERSION,
+        valid: false,
+        diagnostics: [fileError(message)],
+      });
+      return 1;
+    }
+  }
+
   const read = readJsonFile(filePath);
   if (!read.ok) {
     io.printErrorJson({
       command: "validate",
+      mode: "schema-only",
       file: filePath,
       valid: false,
       diagnostics: [fileError("error" in read ? read.error : "Read failed")],
@@ -40,9 +97,10 @@ export async function runValidate(pb: PbClient, io: CommandIo, filePath: string)
     return 2;
   }
 
-  const result = await pb.validate(read.value);
+  const result = await validatePageAsync(read.value);
   const payload = {
     command: "validate",
+    mode: "schema-only",
     file: filePath,
     contractVersion: CONTRACT_VERSION,
     valid: result.valid,

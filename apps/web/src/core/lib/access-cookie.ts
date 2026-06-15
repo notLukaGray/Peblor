@@ -33,7 +33,8 @@ export function verifyAccessToken(value: string | undefined): boolean {
   if (value.length !== expected.length) return false;
   try {
     return timingSafeEqual(Buffer.from(value, "utf8"), Buffer.from(expected, "utf8"));
-  } catch {
+  } catch (err) {
+    console.warn("[web-core] timingSafeEqual failed for access cookie validation", err);
     return false;
   }
 }

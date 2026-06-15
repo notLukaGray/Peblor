@@ -21,7 +21,6 @@ export function ElementRive(props: Props) {
     autoplay,
     loop,
     speed,
-    playMode,
     preserveAspectRatio,
     objectFit,
     aspectRatio,
@@ -37,12 +36,12 @@ export function ElementRive(props: Props) {
     ariaLabel,
     width,
     height,
-    align,
+    selfAlign,
     marginTop,
     marginBottom,
     marginLeft,
     marginRight,
-    zIndex,
+    layer,
     constraints,
     effects,
     interactions,
@@ -51,7 +50,7 @@ export function ElementRive(props: Props) {
     blendMode,
     boxShadow,
     filter,
-    backdropFilter,
+    bgBlur,
     hidden,
   } = props;
 
@@ -70,12 +69,12 @@ export function ElementRive(props: Props) {
   const layout = {
     width: width as string | undefined,
     height: height as string | undefined,
-    align: align as "left" | "center" | "right" | undefined,
+    align: selfAlign as "left" | "center" | "right" | undefined,
     marginTop: marginTop as string | undefined,
     marginBottom: marginBottom as string | undefined,
     marginLeft: marginLeft as string | undefined,
     marginRight: marginRight as string | undefined,
-    zIndex,
+    zIndex: layer,
     constraints,
     effects,
     wrapperStyle,
@@ -83,7 +82,7 @@ export function ElementRive(props: Props) {
     blendMode,
     boxShadow,
     filter,
-    backdropFilter,
+    bgBlur,
     hidden,
   };
 
@@ -114,26 +113,26 @@ export function ElementRive(props: Props) {
             ? { ...onStateChange.payload, stateName }
             : { stateName },
       } as PeblorAction;
-      firePeblorAction(enriched, "system");
+      firePeblorAction(enriched, "system", { stateName });
     },
     [onStateChange]
   );
 
   const handleComplete = useCallback(() => {
     setLoaded(true);
-    if (onComplete) firePeblorAction(onComplete as PeblorAction, "system");
+    if (onComplete) firePeblorAction(onComplete as PeblorAction, "system", { event: "complete" });
   }, [onComplete]);
 
   const handlePlay = useCallback(() => {
-    if (onPlay) firePeblorAction(onPlay as PeblorAction, "system");
+    if (onPlay) firePeblorAction(onPlay as PeblorAction, "system", { event: "play" });
   }, [onPlay]);
 
   const handlePause = useCallback(() => {
-    if (onPause) firePeblorAction(onPause as PeblorAction, "system");
+    if (onPause) firePeblorAction(onPause as PeblorAction, "system", { event: "pause" });
   }, [onPause]);
 
   const handleStop = useCallback(() => {
-    if (onStop) firePeblorAction(onStop as PeblorAction, "system");
+    if (onStop) firePeblorAction(onStop as PeblorAction, "system", { event: "stop" });
   }, [onStop]);
 
   // Track loop count for numeric loop limits
@@ -142,18 +141,18 @@ export function ElementRive(props: Props) {
     loopCountRef.current += 1;
     if (typeof loop === "number" && loopCountRef.current >= loop) {
       riveRef.current?.stop();
-      if (onComplete) firePeblorAction(onComplete as PeblorAction, "system");
+      if (onComplete)
+        firePeblorAction(onComplete as PeblorAction, "system", {
+          event: "complete",
+          loopCount: loopCountRef.current,
+        });
     }
-    if (onLoop) firePeblorAction(onLoop as PeblorAction, "system");
+    if (onLoop)
+      firePeblorAction(onLoop as PeblorAction, "system", {
+        event: "loop",
+        loopCount: loopCountRef.current,
+      });
   }, [loop, onLoop, onComplete]);
-
-  // Apply playMode when rive loads
-  useEffect(() => {
-    if (!riveRef.current || !playMode) return;
-    if (playMode === "bounce") {
-      // Rive's built-in loop type handles bounce internally
-    }
-  }, [playMode]);
 
   const handleMouseEnter = useCallback(() => {
     if (hover && riveRef.current) riveRef.current.play();

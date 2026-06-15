@@ -5,6 +5,26 @@
     "canvasLoadTimeoutMs": 5000,
     "crossfadeDurationMs": 400,
     "videoPauseButtonHideDelayMs": 2000,
+    "breakpoints": {
+      "desktopPx": 768
+    },
+    "layout": {
+      "navHeightFallbackPx": 64,
+      "pageBottomPaddingPx": 48
+    },
+    "marquee": {
+      "defaultGapPx": 48
+    },
+    "tooltip": {
+      "gapDefaultPx": 8,
+      "viewportPadPx": 8,
+      "bridgeOverlapPx": 6,
+      "maxWidthPx": 320
+    },
+    "range": {
+      "defaultBorderRadius": "9999px",
+      "thumbGlassBezelFactor": 0.16
+    },
     "home": {
       "heroCarousel": {
         "opacityCurve": [0, 0.2, 0.4, 0.8, 0.4, 0.2, 0],
@@ -37,5 +57,14 @@
   },
   "cache": {
     "videoUrlPrefix": "video_url_"
+  },
+  "triggers": {
+    "idleAfterMs": 5000,
+    "audioSleepAfterMs": 3000,
+    "scrollDirectionThresholdPx": 5,
+    "viewportThresholdSteps": 21
+  },
+  "videoControls": {
+    "defaultControlsList": "nodownload nofullscreen"
   }
 }

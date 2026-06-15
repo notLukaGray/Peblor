@@ -21,7 +21,15 @@ export type ElementType =
   | "elementButton"
   | "elementModel3D"
   | "elementRive"
-  | "elementGroup";
+  | "elementGroup"
+  | "elementAudio"
+  | "elementTabs"
+  | "elementTooltip"
+  | "elementLottie"
+  | "elementCounter"
+  | "elementMarquee"
+  | "elementDrag"
+  | "elementFormField";
 
 export interface ElementHeading extends LayoutProps {
   type: "elementHeading";

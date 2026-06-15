@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  useEffect,
   useId,
   useLayoutEffect,
   useMemo,
@@ -15,7 +14,6 @@ import { GlassFilter } from "./GlassFilter";
 import { GlassClipPath } from "./GlassClipPath";
 import {
   blurToMobileFallbackPx,
-  clamp,
   liftNormalizedBlur,
   normalizeBezelType,
   parseLength,
@@ -25,13 +23,13 @@ import {
   withGlassPhysicsClamped,
   type GlassDimensions,
 } from "./glass-effect-utils";
+import { clamp } from "../../elements/Shared/css-declaration-utils";
 import {
   detectClientPlatformSnapshot,
   getSupportsBackdropFilterUrlClientSnapshot,
   type ClientPlatform,
 } from "@pb/runtime-react/core/lib/platform-runtime";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
-import { resolveThemeValueDeep } from "@/peblor/theme/theme-string";
+import { lowerThemeValueDeep } from "@/peblor/theme/theme-string";
 
 type GlassEffect = Extract<SectionEffect, { type: "glass" }>;
 type GlassRuntimeSnapshot = {
@@ -75,22 +73,27 @@ function getGlassRuntimeSnapshot(): GlassRuntimeSnapshot {
   return glassRuntimeSnapshot;
 }
 
-let cachedGlassServerSnapshot: GlassRuntimeSnapshot | null = null;
+/**
+ * Server-side snapshot for useSyncExternalStore.
+ *
+ * Must return a VALUE-PER-STABLE reference that is identical between SSR and
+ * client hydration.  A frozen module constant satisfies this because the
+ * server-side state never changes (no browser APIs are available during SSR),
+ * and React compares the result of this function across the two phases using
+ * Object.is — any difference triggers a hydration mismatch warning.
+ *
+ * React only calls this function during SSR and during client hydration; after
+ * hydration completes, useSyncExternalStore uses `getGlassRuntimeSnapshot`
+ * (the live module-global state) exclusively.
+ */
+const glassRuntimeServerSnapshot: Readonly<GlassRuntimeSnapshot> = {
+  supportsBackdropUrl: false,
+  fallbackPlatform: "other",
+  ready: false,
+};
 
 function getGlassRuntimeServerSnapshot(): GlassRuntimeSnapshot {
-  if (
-    !cachedGlassServerSnapshot ||
-    cachedGlassServerSnapshot.supportsBackdropUrl !== glassRuntimeSnapshot.supportsBackdropUrl ||
-    cachedGlassServerSnapshot.fallbackPlatform !== glassRuntimeSnapshot.fallbackPlatform ||
-    cachedGlassServerSnapshot.ready !== glassRuntimeSnapshot.ready
-  ) {
-    cachedGlassServerSnapshot = {
-      supportsBackdropUrl: glassRuntimeSnapshot.supportsBackdropUrl,
-      fallbackPlatform: glassRuntimeSnapshot.fallbackPlatform,
-      ready: glassRuntimeSnapshot.ready,
-    };
-  }
-  return cachedGlassServerSnapshot;
+  return glassRuntimeServerSnapshot;
 }
 
 function refreshGlassRuntimeSnapshot(): void {
@@ -137,10 +140,9 @@ export function SectionGlassEffect({
   variant: _variant = "rich",
   syncBorderRadius,
 }: SectionGlassEffectProps) {
-  const themeMode = usePeblorThemeMode();
   const resolvedEffects = useMemo(
-    () => resolveThemeValueDeep(effects, themeMode) as SectionEffect[] | undefined,
-    [effects, themeMode]
+    () => lowerThemeValueDeep(effects) as SectionEffect[] | undefined,
+    [effects]
   );
   const glass = useMemo(() => resolveGlassEffect(resolvedEffects), [resolvedEffects]);
   const runtimeSnapshot = useGlassRuntimeSnapshot();
@@ -158,7 +160,7 @@ export function SectionGlassEffect({
   const observingRef = useRef<HTMLElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     refreshGlassRuntimeSnapshot();
   }, []);
 
@@ -169,36 +171,67 @@ export function SectionGlassEffect({
     let rafRetry = 0;
     let rafCatchup = 0;
     let retryFrames = 0;
+    // RAF-batched setDims: coalesce multiple resize observations into one update per frame.
+    let measureRaf = 0;
+    let pendingMeasure: (() => void) | null = null;
 
     const sync =
       typeof syncBorderRadius === "string" && syncBorderRadius.trim().length > 0
         ? syncBorderRadius.trim()
         : undefined;
 
-    const measure = (target: HTMLElement) => {
+    const scheduleMeasure = (fn: () => void): void => {
+      pendingMeasure = fn;
+      if (!measureRaf) {
+        measureRaf = window.requestAnimationFrame(() => {
+          measureRaf = 0;
+          if (cancelled || !pendingMeasure) return;
+          pendingMeasure();
+          pendingMeasure = null;
+        });
+      }
+    };
+
+    const measure = (
+      target: HTMLElement,
+      preMeasuredWidth?: number,
+      preMeasuredHeight?: number
+    ): void => {
       if (cancelled) return;
       const overlay = overlayRef.current;
       const raw =
         sync && overlay
-          ? readGlassOverlaySyncedDimensions(target, overlay)
-          : readElementDimensions(target);
+          ? readGlassOverlaySyncedDimensions(target, overlay, preMeasuredWidth, preMeasuredHeight)
+          : readElementDimensions(target, preMeasuredWidth, preMeasuredHeight);
       setDims(withGlassPhysicsClamped(raw));
     };
 
-    const attach = (target: HTMLElement) => {
+    const attach = (target: HTMLElement): void => {
       if (cancelled) return;
       observingRef.current = target;
       ro?.disconnect();
-      const boundMeasure = () => measure(target);
-      boundMeasure();
-      ro = new ResizeObserver(boundMeasure);
+      // Initial measurement: no pre-measured dimensions available yet.
+      const initialMeasure = () => measure(target);
+      initialMeasure();
+      ro = new ResizeObserver((entries: ResizeObserverEntry[]) => {
+        const entry = entries[0];
+        if (entry && entry.borderBoxSize?.[0]) {
+          const { inlineSize, blockSize } = entry.borderBoxSize[0];
+          scheduleMeasure(() => measure(target, inlineSize, blockSize));
+        } else {
+          scheduleMeasure(() => measure(target));
+        }
+      });
       ro.observe(target);
       const overlay = overlayRef.current;
       if (sync && overlay) {
         try {
           ro.observe(overlay);
-        } catch {
-          // Some engines throw if observe is duplicated; safe to ignore.
+        } catch (err) {
+          console.warn(
+            "[pb-runtime-react] ResizeObserver.observe(overlay) threw (engine limitation)",
+            err
+          );
         }
       }
       // Overlay only exists after the first successful `dims` read clears the early `return null`.
@@ -210,11 +243,14 @@ export function SectionGlassEffect({
         if (sync && overlay2) {
           try {
             ro.observe(overlay2);
-          } catch {
-            /* ignore */
+          } catch (err) {
+            console.warn(
+              "[pb-runtime-react] ResizeObserver.observe(overlay2) threw (engine limitation)",
+              err
+            );
           }
         }
-        boundMeasure();
+        scheduleMeasure(() => measure(target));
       });
     };
 
@@ -226,11 +262,17 @@ export function SectionGlassEffect({
     };
 
     if (!tryAttach()) {
+      // RAF retry loop: the sectionRef may not yet be attached to the DOM when this
+      // layout effect runs (React refs are set asynchronously relative to useLayoutEffect).
+      // Retrying over ~10 frames (~160ms at ~60fps) covers:
+      //   - Server components that need a client island to mount first
+      //   - Section wrappers with conditional rendering (visibleWhen / triggers)
+      //   - Nested overlays where the host container mounts after the effect fires
+      // Without this retry, `dims` would stay null, glass would be invisible, and
+      // users would see an un-styled surface until a window resize triggers a fix.
       const retry = () => {
         if (cancelled) return;
         if (tryAttach()) return;
-        // Child layout can run before the host `ref` is attached; retry briefly instead of
-        // leaving `dims` stuck at null (glass invisible everywhere, hover fill only).
         if (retryFrames++ > 120) return;
         rafRetry = window.requestAnimationFrame(retry);
       };
@@ -241,6 +283,7 @@ export function SectionGlassEffect({
       cancelled = true;
       window.cancelAnimationFrame(rafRetry);
       window.cancelAnimationFrame(rafCatchup);
+      window.cancelAnimationFrame(measureRaf);
       ro?.disconnect();
       observingRef.current = null;
     };

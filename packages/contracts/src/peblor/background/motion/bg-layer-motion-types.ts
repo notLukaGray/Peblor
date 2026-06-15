@@ -7,7 +7,7 @@ import type {
   bgParallaxMotionSchema,
   bgTriggerMotionSchema,
   bgLayerMotionSchema,
-} from "./bg-layer-motion-schema";
+} from "../../core/peblor-schemas/background-motion-schemas";
 
 export type BgLoopMotion = z.infer<typeof bgLoopMotionSchema>;
 export type BgEntranceMotion = z.infer<typeof bgEntranceMotionSchema>;

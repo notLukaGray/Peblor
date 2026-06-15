@@ -53,6 +53,32 @@ function makeLinearGradientPaint(overrides: Partial<GradientPaint> = {}): Gradie
 }
 
 describe("section fallback slotting", () => {
+  it("exports sectionTrigger when annotated", async () => {
+    const ctx = makeCtx();
+    const section = await convertFrameToSection(
+      {
+        type: "FRAME",
+        name: "Trigger Band [pb: type=sectionTrigger, triggerOnce=true, threshold=0.4]",
+        width: 1024,
+        height: 120,
+        x: 0,
+        y: 0,
+        visible: true,
+        fills: [],
+        strokes: [],
+        effects: [],
+        layoutMode: "NONE",
+        clipsContent: false,
+        children: [],
+      } as unknown as FrameNode,
+      ctx
+    );
+
+    expect(section.type).toBe("sectionTrigger");
+    expect((section as { triggerOnce?: boolean }).triggerOnce).toBe(true);
+    expect((section as { threshold?: number }).threshold).toBe(0.4);
+  });
+
   it("keeps unslotted reveal children in revealedElements", async () => {
     const ctx = makeCtx();
     const section = await convertFrameToRevealSection(

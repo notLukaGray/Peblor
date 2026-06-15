@@ -3,6 +3,8 @@
  * Used by useColumnLayout; unit-testable.
  */
 
+import { resolveResponsiveValue } from "../lib/responsive-value";
+import { BREAKPOINT_TIER_NAMES } from "@pb/contracts/peblor/core/breakpoint-tiers";
 import {
   type ColumnAssignmentsInput,
   type ColumnCountInput,
@@ -68,15 +70,37 @@ export {
   type GridLayoutItem,
 } from "./section-column-layout-builders";
 
-/** Pick value for breakpoint from responsive shape { mobile?, desktop? }; primitives/arrays pass through. */
+/**
+ * Pick value for a section-column responsive input at the given breakpoint.
+ *
+ * Handles:
+ *   - scalar T → passthrough
+ *   - `{ base?, sm?, md?, lg?, xl?, "2xl"? }` → tier map (mobile-first cascade via
+ *     `resolveResponsiveValue`)
+ *
+ * NOTE: unlike the general `resolveResponsiveValue`, this helper takes `isDesktop`
+ * (not `isMobile`) to match the existing section-column resolver convention.
+ */
 function pickResponsive<T>(
-  value: T | { mobile?: T; desktop?: T } | undefined,
+  value: T | { base?: T; sm?: T; md?: T; lg?: T; xl?: T; "2xl"?: T } | undefined,
   isDesktop: boolean
 ): T | undefined {
   if (value === undefined) return undefined;
-  if (typeof value !== "object" || value === null || Array.isArray(value)) return value;
-  const r = value as { mobile?: T; desktop?: T };
-  return isDesktop ? (r.desktop ?? r.mobile) : (r.mobile ?? r.desktop);
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return value as T;
+
+  // Tier map — delegate to the shared resolver (mobile-first cascade).
+  return resolveResponsiveValue(value, !isDesktop);
+}
+
+/**
+ * Returns true if `obj` is a responsive wrapper (a tier map
+ * `{ base, sm, md, lg, xl, "2xl" }`), as opposed to a flat value record.
+ */
+function isSectionColumnResponsiveObject(obj: object): boolean {
+  for (const tier of BREAKPOINT_TIER_NAMES) {
+    if (tier in obj) return true;
+  }
+  return false;
 }
 
 export function resolveColumnCount(
@@ -103,13 +127,20 @@ export function resolveColumnAssignments(
   isDesktop: boolean
 ): Record<string, number> {
   if (columnAssignments === undefined || Array.isArray(columnAssignments)) return {};
-  const r = columnAssignments as {
-    mobile?: Record<string, number>;
-    desktop?: Record<string, number>;
-  };
-  const hasResponsive = "mobile" in columnAssignments || "desktop" in columnAssignments;
-  if (!hasResponsive) return columnAssignments as Record<string, number>;
-  const picked = pickResponsive(r, isDesktop);
+  if (!isSectionColumnResponsiveObject(columnAssignments)) {
+    return columnAssignments as Record<string, number>;
+  }
+  const picked = pickResponsive(
+    columnAssignments as {
+      base?: Record<string, number>;
+      sm?: Record<string, number>;
+      md?: Record<string, number>;
+      lg?: Record<string, number>;
+      xl?: Record<string, number>;
+      "2xl"?: Record<string, number>;
+    },
+    isDesktop
+  );
   return (picked as Record<string, number> | undefined) ?? {};
 }
 
@@ -121,7 +152,14 @@ export function resolveColumnGaps(
   if (typeof columnGaps === "string") return columnGaps;
   if (Array.isArray(columnGaps)) return columnGaps;
   return pickResponsive(
-    columnGaps as { mobile?: string | string[]; desktop?: string | string[] },
+    columnGaps as {
+      base?: string | string[];
+      sm?: string | string[];
+      md?: string | string[];
+      lg?: string | string[];
+      xl?: string | string[];
+      "2xl"?: string | string[];
+    },
     isDesktop
   );
 }
@@ -133,7 +171,14 @@ export function resolveColumnWidths(
   if (!columnWidths) return undefined;
   if (typeof columnWidths === "string" || Array.isArray(columnWidths)) return columnWidths;
   return pickResponsive(
-    columnWidths as { mobile?: ColumnWidthsValueInput; desktop?: ColumnWidthsValueInput },
+    columnWidths as {
+      base?: ColumnWidthsValueInput;
+      sm?: ColumnWidthsValueInput;
+      md?: ColumnWidthsValueInput;
+      lg?: ColumnWidthsValueInput;
+      xl?: ColumnWidthsValueInput;
+      "2xl"?: ColumnWidthsValueInput;
+    },
     isDesktop
   );
 }
@@ -146,8 +191,12 @@ export function resolveColumnStyles(
   if (Array.isArray(columnStyles)) return columnStyles;
   return pickResponsive(
     columnStyles as {
-      mobile?: ColumnStyleInput[];
-      desktop?: ColumnStyleInput[];
+      base?: ColumnStyleInput[];
+      sm?: ColumnStyleInput[];
+      md?: ColumnStyleInput[];
+      lg?: ColumnStyleInput[];
+      xl?: ColumnStyleInput[];
+      "2xl"?: ColumnStyleInput[];
     },
     isDesktop
   );
@@ -158,13 +207,20 @@ export function resolveColumnSpan(
   isDesktop: boolean
 ): ResolvedColumnSpanInput {
   if (!columnSpan) return undefined;
-  const hasResponsive =
+  const isResponsive =
     typeof columnSpan === "object" &&
     !Array.isArray(columnSpan) &&
-    ("mobile" in columnSpan || "desktop" in columnSpan);
-  if (!hasResponsive) return columnSpan as ColumnSpanValueInput;
+    isSectionColumnResponsiveObject(columnSpan);
+  if (!isResponsive) return columnSpan as ColumnSpanValueInput;
   return pickResponsive(
-    columnSpan as { mobile?: ColumnSpanValueInput; desktop?: ColumnSpanValueInput },
+    columnSpan as {
+      base?: ColumnSpanValueInput;
+      sm?: ColumnSpanValueInput;
+      md?: ColumnSpanValueInput;
+      lg?: ColumnSpanValueInput;
+      xl?: ColumnSpanValueInput;
+      "2xl"?: ColumnSpanValueInput;
+    },
     isDesktop
   );
 }
@@ -174,13 +230,20 @@ export function resolveItemStyles(
   isDesktop: boolean
 ): ResolvedItemStylesInput {
   if (!itemStyles) return undefined;
-  const hasResponsive =
+  const isResponsive =
     typeof itemStyles === "object" &&
     !Array.isArray(itemStyles) &&
-    ("mobile" in itemStyles || "desktop" in itemStyles);
-  if (!hasResponsive) return itemStyles as ItemStylesValueInput;
+    isSectionColumnResponsiveObject(itemStyles);
+  if (!isResponsive) return itemStyles as ItemStylesValueInput;
   return pickResponsive(
-    itemStyles as { mobile?: ItemStylesValueInput; desktop?: ItemStylesValueInput },
+    itemStyles as {
+      base?: ItemStylesValueInput;
+      sm?: ItemStylesValueInput;
+      md?: ItemStylesValueInput;
+      lg?: ItemStylesValueInput;
+      xl?: ItemStylesValueInput;
+      "2xl"?: ItemStylesValueInput;
+    },
     isDesktop
   );
 }
@@ -196,13 +259,20 @@ export function resolveItemLayout(
   isDesktop: boolean
 ): ResolvedItemLayoutInput {
   if (!itemLayout) return undefined;
-  const hasResponsive =
+  const isResponsive =
     typeof itemLayout === "object" &&
     !Array.isArray(itemLayout) &&
-    ("mobile" in itemLayout || "desktop" in itemLayout);
-  if (!hasResponsive) return itemLayout as ItemLayoutValueInput;
+    isSectionColumnResponsiveObject(itemLayout);
+  if (!isResponsive) return itemLayout as ItemLayoutValueInput;
   return pickResponsive(
-    itemLayout as { mobile?: ItemLayoutValueInput; desktop?: ItemLayoutValueInput },
+    itemLayout as {
+      base?: ItemLayoutValueInput;
+      sm?: ItemLayoutValueInput;
+      md?: ItemLayoutValueInput;
+      lg?: ItemLayoutValueInput;
+      xl?: ItemLayoutValueInput;
+      "2xl"?: ItemLayoutValueInput;
+    },
     isDesktop
   );
 }

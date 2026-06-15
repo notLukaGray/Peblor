@@ -4,17 +4,16 @@ import type { ElementBlock } from "@pb/contracts/types";
 import type { ThemeString } from "@pb/contracts/types";
 import { useSectionScrollTarget } from "@/peblor/section/position/SectionScrollTargetContext";
 import { SectionScrollProgressBar } from "@/peblor/integrations/framer-motion";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
-import { type PeblorThemeMode, resolveThemeString } from "@/peblor/theme/theme-string";
+import { lowerThemeStringToCss } from "@/peblor/theme/theme-string";
 
 type Props = Extract<ElementBlock, { type: "elementScrollProgressBar" }>;
 
 /** Coerce responsive or tuple value to a single string for bar style props. */
-function asString(v: unknown, themeMode: PeblorThemeMode): string | undefined {
+function asString(v: unknown): string | undefined {
   if (typeof v === "string" || (v != null && typeof v === "object" && !Array.isArray(v))) {
-    return resolveThemeString(v as ThemeString, themeMode);
+    return lowerThemeStringToCss(v as ThemeString);
   }
-  if (Array.isArray(v)) return asString(v[0], themeMode);
+  if (Array.isArray(v)) return asString(v[0]);
   return undefined;
 }
 
@@ -24,13 +23,12 @@ function asString(v: unknown, themeMode: PeblorThemeMode): string | undefined {
  * Style from element props or motion-defaults progressBar.
  */
 export function ElementScrollProgressBar(props: Props) {
-  const themeMode = usePeblorThemeMode();
   const sectionRef = useSectionScrollTarget();
   if (!sectionRef) return null;
 
-  const height = asString(props.height, themeMode);
-  const fill = asString(props.fill, themeMode);
-  const trackBackground = asString(props.trackBackground, themeMode);
+  const height = asString(props.height);
+  const fill = asString(props.fill);
+  const trackBackground = asString(props.trackBackground);
   const offset =
     Array.isArray(props.offset) && props.offset.length === 2
       ? (props.offset as [string, string])

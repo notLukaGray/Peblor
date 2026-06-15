@@ -11,7 +11,7 @@ feels_like: >
   panels containing child elements. Each tab has a label, optional icon and badge,
   and its own set of child elements rendered when active. Supports underline, pill,
   contained, and vertical variants; fade or slide content transitions; lazy loading;
-  scrollable tab overflow; mobile collapse to dropdown; and keyboard arrow-key
+  scrollable tab scroll; mobile collapse to dropdown; and keyboard arrow-key
   navigation. Use for settings panels, product detail tabs, filter groups, or any
   UI where the user switches between related content views.
 

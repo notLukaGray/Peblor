@@ -31,11 +31,14 @@ export const listFieldPaths: Tool = {
   run: async (args) => {
     const { clusterId } = args as { clusterId: string };
     const schema = (await getElementSchema.run({ clusterId })) as {
-      fields: Record<string, unknown>;
+      keyFields?: Record<string, unknown>;
+      fields?: Record<string, unknown>;
     };
+    // Support both the new keyFields shape and the legacy fields shape
+    const fieldMap = schema.keyFields ?? schema.fields ?? {};
     const paths: string[] = [];
-    for (const key of Object.keys(schema.fields).sort((a, b) => a.localeCompare(b))) {
-      collectPaths(schema.fields[key], key, paths);
+    for (const key of Object.keys(fieldMap).sort((a, b) => a.localeCompare(b))) {
+      collectPaths(fieldMap[key], key, paths);
     }
     return { clusterId, count: paths.length, paths };
   },

@@ -1,9 +1,10 @@
 import { z } from "zod";
 import { elementLayoutSchema, elementVideoObjectFitSchema } from "./element-foundation-schemas";
+import { responsiveValueSchema } from "./responsive-value-schemas";
 import {
   responsiveStringSchema,
   themeStringSchema,
-  triggerActionSchema,
+  triggerActionSchemaCore,
 } from "./schema-primitives";
 
 const lottiePlayModeSchema = z.enum(["normal", "bounce", "reverse"]).optional();
@@ -12,17 +13,16 @@ const lottieInteractivityEventSchema = z.enum([
   "complete",
   "loopComplete",
   "enterFrame",
+  "segmentEnter",
+  "segmentExit",
   "DOMLoaded",
   "destroy",
   "data_ready",
 ]);
 
-const responsiveLottieObjectFitSchema = z
-  .union([
-    elementVideoObjectFitSchema,
-    z.tuple([elementVideoObjectFitSchema, elementVideoObjectFitSchema]),
-  ])
-  .optional();
+const responsiveLottieObjectFitSchema = responsiveValueSchema(
+  elementVideoObjectFitSchema
+).optional();
 
 export const elementLottieSchema = z
   .object({
@@ -45,17 +45,25 @@ export const elementLottieSchema = z
       .array(
         z.object({
           event: lottieInteractivityEventSchema,
-          action: triggerActionSchema,
+          action: triggerActionSchemaCore,
         })
       )
       .optional(),
     themeOverrides: z.record(z.string(), themeStringSchema).optional(),
-    onPlay: triggerActionSchema.optional(),
-    onPause: triggerActionSchema.optional(),
-    onStop: triggerActionSchema.optional(),
-    onComplete: triggerActionSchema.optional(),
-    onLoop: triggerActionSchema.optional(),
-    onEnterFrame: triggerActionSchema.optional(),
+    onPlay: triggerActionSchemaCore.optional(),
+    onPause: triggerActionSchemaCore.optional(),
+    onStop: triggerActionSchemaCore.optional(),
+    onComplete: triggerActionSchemaCore.optional(),
+    onLoop: triggerActionSchemaCore.optional(),
+    onEnterFrame: triggerActionSchemaCore.optional(),
+    onEvent: z
+      .array(
+        z.object({
+          event: z.string(),
+          actions: z.array(triggerActionSchemaCore),
+        })
+      )
+      .optional(),
     ariaLabel: z.string().optional(),
   })
   .merge(elementLayoutSchema);

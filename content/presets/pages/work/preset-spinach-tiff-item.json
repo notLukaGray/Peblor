@@ -1,0 +1,97 @@
+{
+  "preset": "work-list-item",
+  "section": {
+    "elementOrder": ["item-meta", "item-arrow"],
+    "definitions": {
+      "item-meta": {
+        "preset": "work-item-meta",
+        "section": {
+          "elementOrder": ["item-title", "item-category"],
+          "definitions": {
+            "item-title": {
+              "preset": "work-item-title",
+              "text": "Spinach \u00d7 TIFF"
+            },
+            "item-category": {
+              "preset": "work-item-category",
+              "text": "Brand \u00b7 Film"
+            }
+          }
+        }
+      },
+      "item-arrow": {
+        "preset": "work-item-arrow",
+        "visibleWhen": {
+          "logic": "and",
+          "conditions": [
+            {
+              "variable": "selectedProject",
+              "operator": "notEquals",
+              "value": "brand"
+            },
+            {
+              "variable": "selectedProject",
+              "operator": "notEquals",
+              "value": "campaign"
+            },
+            {
+              "variable": "selectedProject",
+              "operator": "notEquals",
+              "value": "cinematic"
+            },
+            {
+              "variable": "selectedProject",
+              "operator": "notEquals",
+              "value": "documentary"
+            },
+            {
+              "variable": "selectedProject",
+              "operator": "notEquals",
+              "value": "editorial"
+            },
+            {
+              "variable": "selectedProject",
+              "operator": "notEquals",
+              "value": "exhibition"
+            },
+            {
+              "variable": "selectedProject",
+              "operator": "notEquals",
+              "value": "immersive"
+            },
+            {
+              "variable": "selectedProject",
+              "operator": "notEquals",
+              "value": "motion"
+            },
+            {
+              "variable": "selectedProject",
+              "operator": "notEquals",
+              "value": "photography"
+            },
+            {
+              "variable": "selectedProject",
+              "operator": "notEquals",
+              "value": "process"
+            },
+            {
+              "variable": "selectedProject",
+              "operator": "notEquals",
+              "value": "systems"
+            },
+            {
+              "variable": "selectedProject",
+              "operator": "notEquals",
+              "value": "clean-it-up"
+            },
+            {
+              "variable": "selectedProject",
+              "operator": "notEquals",
+              "value": "lenero"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

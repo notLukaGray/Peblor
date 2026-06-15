@@ -1,0 +1,19 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "bg-pattern-grid — Preset Demo",
+  "description": "CSS linear-gradient grid with entrance fade-in on mount",
+  "presets": ["demo", "bg"],
+  "sectionOrder": ["nav-header", "hero"],
+  "bgKey": "bg-pattern-grid",
+  "scroll": {
+    "smooth": false,
+    "lockBody": true,
+    "scrollX": "hidden",
+    "scrollY": "hidden"
+  },
+  "definitions": {
+    "bg-pattern-grid": {
+      "preset": "bg-pattern-grid"
+    }
+  }
+}

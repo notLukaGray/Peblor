@@ -1,0 +1,26 @@
+{
+  "preset": "demo-hero",
+  "maxWidth": "820px",
+  "padding": {
+    "base": "8rem 0 5rem",
+    "md": "10rem 0 7rem"
+  },
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Drag Physics · Reorderable Lists · Grid Snap · Snap-Zone Reorder"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Interactive Reorder"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Drag physics demos, reorderable vertical lists, grid-snap draggable cards, wrapping reorderable grids, snap-zone grid reorder, and dense draggable task controls — showcasing the full drag toolkit.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  }
+}

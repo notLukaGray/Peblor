@@ -1,0 +1,713 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "align": "stretch",
+  "gap": "0",
+  "width": "100%",
+  "height": "hug",
+  "borderRadius": "18px",
+  "scroll": "hidden",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)",
+    "bgBlur": "blur(18px)",
+    "WebkitBackdropFilter": "blur(18px)"
+  },
+  "section": {
+    "elementOrder": ["info-area", "track-list", "transport-row", "player-row"],
+    "definitions": {
+      "info-area": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "gap": "0",
+        "section": {
+          "elementOrder": ["info-none", "info-t1", "info-t2", "info-t3"],
+          "definitions": {
+            "info-none": {
+              "type": "elementGroup",
+              "display": "flex",
+              "flow": "row",
+              "align": "center",
+              "gap": "0.85rem",
+              "padding": "0.85rem 1rem",
+              "visibleWhen": {
+                "variable": "activeTrack",
+                "operator": "equals",
+                "value": "__never__"
+              },
+              "section": {
+                "elementOrder": ["art-placeholder", "info-text", "expand-btn", "close-btn"],
+                "definitions": {
+                  "art-placeholder": {
+                    "type": "elementGroup",
+                    "width": "44px",
+                    "height": "44px",
+                    "fill": "color-mix(in oklab, var(--pb-on-secondary) 14%, transparent)",
+                    "wrapperStyle": {
+                      "borderRadius": "8px",
+                      "flexShrink": "0"
+                    }
+                  },
+                  "info-text": {
+                    "type": "elementGroup",
+                    "display": "flex",
+                    "flow": "column",
+                    "gap": "0.15rem",
+                    "flex": "1",
+                    "section": {
+                      "elementOrder": ["track-title", "track-hint"],
+                      "definitions": {
+                        "track-title": {
+                          "type": "elementBody",
+                          "level": 4,
+                          "text": "No track selected",
+                          "color": "color-mix(in oklab, var(--pb-text-primary) 55%, transparent)"
+                        },
+                        "track-hint": {
+                          "type": "elementBody",
+                          "level": 5,
+                          "text": "Tap to browse",
+                          "color": "color-mix(in oklab, var(--pb-on-secondary) 38%, transparent)"
+                        }
+                      }
+                    }
+                  },
+                  "expand-btn": {
+                    "preset": "player-playlist-expand-btn"
+                  },
+                  "close-btn": {
+                    "preset": "player-playlist-close-btn"
+                  }
+                }
+              }
+            },
+            "info-t1": {
+              "type": "elementGroup",
+              "display": "flex",
+              "flow": "row",
+              "align": "center",
+              "gap": "0.85rem",
+              "padding": "0.85rem 1rem",
+              "visibleWhen": {
+                "conditions": [
+                  {
+                    "variable": "activeTrack",
+                    "operator": "notEquals",
+                    "value": "track-2"
+                  },
+                  {
+                    "variable": "activeTrack",
+                    "operator": "notEquals",
+                    "value": "track-3"
+                  }
+                ],
+                "logic": "and"
+              },
+              "section": {
+                "elementOrder": ["art-thumb", "info-text", "expand-btn", "close-btn"],
+                "definitions": {
+                  "art-thumb": {
+                    "type": "elementGroup",
+                    "width": "44px",
+                    "height": "44px",
+                    "wrapperStyle": {
+                      "borderRadius": "8px",
+                      "scroll": "hidden",
+                      "flexShrink": "0",
+                      "background": "url('https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=200&q=80&auto=format&fit=crop') center/cover"
+                    }
+                  },
+                  "info-text": {
+                    "type": "elementGroup",
+                    "display": "flex",
+                    "flow": "column",
+                    "gap": "0.15rem",
+                    "flex": "1",
+                    "section": {
+                      "elementOrder": ["track-title", "track-artist"],
+                      "definitions": {
+                        "track-title": {
+                          "type": "elementBody",
+                          "level": 4,
+                          "text": "Opening Theme",
+                          "color": "var(--pb-text-primary)"
+                        },
+                        "track-artist": {
+                          "type": "elementBody",
+                          "level": 5,
+                          "text": "Ambient Collective",
+                          "color": "var(--pb-text-secondary)"
+                        }
+                      }
+                    }
+                  },
+                  "expand-btn": {
+                    "preset": "player-playlist-expand-btn"
+                  },
+                  "close-btn": {
+                    "preset": "player-playlist-close-btn"
+                  }
+                }
+              }
+            },
+            "info-t2": {
+              "type": "elementGroup",
+              "display": "flex",
+              "flow": "row",
+              "align": "center",
+              "gap": "0.85rem",
+              "padding": "0.85rem 1rem",
+              "visibleWhen": {
+                "variable": "activeTrack",
+                "operator": "equals",
+                "value": "track-2"
+              },
+              "section": {
+                "elementOrder": ["art-thumb", "info-text", "expand-btn", "close-btn"],
+                "definitions": {
+                  "art-thumb": {
+                    "type": "elementGroup",
+                    "width": "44px",
+                    "height": "44px",
+                    "wrapperStyle": {
+                      "borderRadius": "8px",
+                      "scroll": "hidden",
+                      "flexShrink": "0",
+                      "background": "url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=200&q=80&auto=format&fit=crop') center/cover"
+                    }
+                  },
+                  "info-text": {
+                    "type": "elementGroup",
+                    "display": "flex",
+                    "flow": "column",
+                    "gap": "0.15rem",
+                    "flex": "1",
+                    "section": {
+                      "elementOrder": ["track-title", "track-artist"],
+                      "definitions": {
+                        "track-title": {
+                          "type": "elementBody",
+                          "level": 4,
+                          "text": "Interlude",
+                          "color": "var(--pb-text-primary)"
+                        },
+                        "track-artist": {
+                          "type": "elementBody",
+                          "level": 5,
+                          "text": "Ambient Collective",
+                          "color": "var(--pb-text-secondary)"
+                        }
+                      }
+                    }
+                  },
+                  "expand-btn": {
+                    "preset": "player-playlist-expand-btn"
+                  },
+                  "close-btn": {
+                    "preset": "player-playlist-close-btn"
+                  }
+                }
+              }
+            },
+            "info-t3": {
+              "type": "elementGroup",
+              "display": "flex",
+              "flow": "row",
+              "align": "center",
+              "gap": "0.85rem",
+              "padding": "0.85rem 1rem",
+              "visibleWhen": {
+                "variable": "activeTrack",
+                "operator": "equals",
+                "value": "track-3"
+              },
+              "section": {
+                "elementOrder": ["art-thumb", "info-text", "expand-btn", "close-btn"],
+                "definitions": {
+                  "art-thumb": {
+                    "type": "elementGroup",
+                    "width": "44px",
+                    "height": "44px",
+                    "wrapperStyle": {
+                      "borderRadius": "8px",
+                      "scroll": "hidden",
+                      "flexShrink": "0",
+                      "background": "url('https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=200&q=80&auto=format&fit=crop') center/cover"
+                    }
+                  },
+                  "info-text": {
+                    "type": "elementGroup",
+                    "display": "flex",
+                    "flow": "column",
+                    "gap": "0.15rem",
+                    "flex": "1",
+                    "section": {
+                      "elementOrder": ["track-title", "track-artist"],
+                      "definitions": {
+                        "track-title": {
+                          "type": "elementBody",
+                          "level": 4,
+                          "text": "Finale",
+                          "color": "var(--pb-text-primary)"
+                        },
+                        "track-artist": {
+                          "type": "elementBody",
+                          "level": 5,
+                          "text": "Ambient Collective",
+                          "color": "var(--pb-text-secondary)"
+                        }
+                      }
+                    }
+                  },
+                  "expand-btn": {
+                    "preset": "player-playlist-expand-btn"
+                  },
+                  "close-btn": {
+                    "preset": "player-playlist-close-btn"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "track-list": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "gap": "0",
+        "visibleWhen": {
+          "variable": "playlistOpen",
+          "operator": "equals",
+          "value": "open"
+        },
+        "wrapperStyle": {
+          "borderTop": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+          "borderBottom": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+          "scroll": "hidden"
+        },
+        "section": {
+          "elementOrder": ["track-1", "track-2", "track-3"],
+          "definitions": {
+            "track-1": {
+              "type": "elementButton",
+              "label": "Track 1 — Opening Theme",
+              "action": "fireMultiple",
+              "actionPayload": {
+                "actions": [
+                  {
+                    "type": "assetPause",
+                    "payload": {}
+                  },
+                  {
+                    "type": "setVariable",
+                    "payload": {
+                      "key": "activeTrack",
+                      "value": "track-1"
+                    }
+                  }
+                ]
+              },
+              "level": 5,
+              "wrapperPadding": "0.6rem 1.25rem",
+              "wrapperBorderRadius": "0",
+              "wrapperFill": "transparent",
+              "wrapperFillHover": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+              "linkDefault": "var(--pb-text-primary)"
+            },
+            "track-2": {
+              "type": "elementButton",
+              "label": "Track 2 — Interlude",
+              "action": "fireMultiple",
+              "actionPayload": {
+                "actions": [
+                  {
+                    "type": "assetPause",
+                    "payload": {}
+                  },
+                  {
+                    "type": "setVariable",
+                    "payload": {
+                      "key": "activeTrack",
+                      "value": "track-2"
+                    }
+                  }
+                ]
+              },
+              "level": 5,
+              "wrapperPadding": "0.6rem 1.25rem",
+              "wrapperBorderRadius": "0",
+              "wrapperFill": "transparent",
+              "wrapperFillHover": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+              "linkDefault": "var(--pb-text-primary)"
+            },
+            "track-3": {
+              "type": "elementButton",
+              "label": "Track 3 — Finale",
+              "action": "fireMultiple",
+              "actionPayload": {
+                "actions": [
+                  {
+                    "type": "assetPause",
+                    "payload": {}
+                  },
+                  {
+                    "type": "setVariable",
+                    "payload": {
+                      "key": "activeTrack",
+                      "value": "track-3"
+                    }
+                  }
+                ]
+              },
+              "level": 5,
+              "wrapperPadding": "0.6rem 1.25rem",
+              "wrapperBorderRadius": "0",
+              "wrapperFill": "transparent",
+              "wrapperFillHover": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+              "linkDefault": "var(--pb-text-primary)"
+            }
+          }
+        }
+      },
+      "transport-row": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "row",
+        "align": "center",
+        "distribute": "center",
+        "gap": "2.5rem",
+        "padding": "0.85rem 1.5rem",
+        "wrapperStyle": {
+          "borderTop": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+        },
+        "section": {
+          "elementOrder": ["btn-prev", "btn-play", "btn-pause", "btn-next"],
+          "definitions": {
+            "btn-prev": {
+              "type": "elementVector",
+              "viewBox": "0 0 22 18",
+              "interactions": {
+                "onClick": {
+                  "type": "conditionalAction",
+                  "payload": {
+                    "variable": "activeTrack",
+                    "operator": "equals",
+                    "value": "track-3",
+                    "then": {
+                      "type": "fireMultiple",
+                      "payload": {
+                        "actions": [
+                          {
+                            "type": "assetPause",
+                            "payload": {}
+                          },
+                          {
+                            "type": "setVariable",
+                            "payload": {
+                              "key": "activeTrack",
+                              "value": "track-2"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "elseIf": [
+                      {
+                        "conditions": [
+                          {
+                            "variable": "activeTrack",
+                            "operator": "equals",
+                            "value": "track-2"
+                          }
+                        ],
+                        "then": {
+                          "type": "fireMultiple",
+                          "payload": {
+                            "actions": [
+                              {
+                                "type": "assetPause",
+                                "payload": {}
+                              },
+                              {
+                                "type": "setVariable",
+                                "payload": {
+                                  "key": "activeTrack",
+                                  "value": "track-1"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ],
+                    "else": {
+                      "type": "fireMultiple",
+                      "payload": {
+                        "actions": [
+                          {
+                            "type": "assetPause",
+                            "payload": {}
+                          },
+                          {
+                            "type": "setVariable",
+                            "payload": {
+                              "key": "activeTrack",
+                              "value": "track-3"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "width": "18px",
+              "height": "15px",
+              "wrapperStyle": {
+                "width": "44px",
+                "height": "44px"
+              },
+              "shapes": [
+                {
+                  "type": "path",
+                  "d": "M0 2C0 0.9 0.9 0 2 0C3.1 0 4 0.9 4 2V16C4 17.1 3.1 18 2 18C0.9 18 0 17.1 0 16V2Z",
+                  "fill": "icon"
+                },
+                {
+                  "type": "path",
+                  "d": "M20.8 1.2C21.6 0.7 22.5 1.3 22.5 2.2V15.8C22.5 16.7 21.6 17.3 20.8 16.8L10 10.3C9.2 9.8 9.2 8.2 10 7.7L20.8 1.2Z",
+                  "fill": "icon"
+                },
+                {
+                  "type": "path",
+                  "d": "M15.8 1.2C16.6 0.7 17.5 1.3 17.5 2.2V15.8C17.5 16.7 16.6 17.3 15.8 16.8L5 10.3C4.2 9.8 4.2 8.2 5 7.7L15.8 1.2Z",
+                  "fill": "icon"
+                }
+              ],
+              "colors": {
+                "icon": "#FFFFFF",
+                "icon-hover": "rgba(255,255,255,0.85)"
+              },
+              "link": {
+                "hoverFill": "icon-hover",
+                "vectorTransition": "0.15s"
+              }
+            },
+            "btn-play": {
+              "preset": "video-controls-play-bar",
+              "action": "assetTogglePlay",
+              "showWhen": "assetPaused",
+              "wrapperStyle": {
+                "width": "44px",
+                "height": "44px",
+                "transform": "translateX(2px)"
+              }
+            },
+            "btn-pause": {
+              "preset": "video-controls-pause-bar",
+              "action": "assetTogglePlay",
+              "showWhen": "assetPlaying",
+              "wrapperStyle": {
+                "width": "44px",
+                "height": "44px"
+              }
+            },
+            "btn-next": {
+              "type": "elementVector",
+              "viewBox": "0 0 22 18",
+              "interactions": {
+                "onClick": {
+                  "type": "conditionalAction",
+                  "payload": {
+                    "variable": "activeTrack",
+                    "operator": "equals",
+                    "value": "track-1",
+                    "then": {
+                      "type": "fireMultiple",
+                      "payload": {
+                        "actions": [
+                          {
+                            "type": "assetPause",
+                            "payload": {}
+                          },
+                          {
+                            "type": "setVariable",
+                            "payload": {
+                              "key": "activeTrack",
+                              "value": "track-2"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "elseIf": [
+                      {
+                        "conditions": [
+                          {
+                            "variable": "activeTrack",
+                            "operator": "equals",
+                            "value": "track-2"
+                          }
+                        ],
+                        "then": {
+                          "type": "fireMultiple",
+                          "payload": {
+                            "actions": [
+                              {
+                                "type": "assetPause",
+                                "payload": {}
+                              },
+                              {
+                                "type": "setVariable",
+                                "payload": {
+                                  "key": "activeTrack",
+                                  "value": "track-3"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ],
+                    "else": {
+                      "type": "fireMultiple",
+                      "payload": {
+                        "actions": [
+                          {
+                            "type": "assetPause",
+                            "payload": {}
+                          },
+                          {
+                            "type": "setVariable",
+                            "payload": {
+                              "key": "activeTrack",
+                              "value": "track-1"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "width": "18px",
+              "height": "15px",
+              "wrapperStyle": {
+                "width": "44px",
+                "height": "44px"
+              },
+              "shapes": [
+                {
+                  "type": "path",
+                  "d": "M18 2C18 0.9 18.9 0 20 0C21.1 0 22 0.9 22 2V16C22 17.1 21.1 18 20 18C18.9 18 18 17.1 18 16V2Z",
+                  "fill": "icon"
+                },
+                {
+                  "type": "path",
+                  "d": "M1.2 1.2C0.4 0.7 -0.5 1.3 -0.5 2.2V15.8C-0.5 16.7 0.4 17.3 1.2 16.8L12 10.3C12.8 9.8 12.8 8.2 12 7.7L1.2 1.2Z",
+                  "fill": "icon"
+                },
+                {
+                  "type": "path",
+                  "d": "M6.2 1.2C5.4 0.7 4.5 1.3 4.5 2.2V15.8C4.5 16.7 5.4 17.3 6.2 16.8L17 10.3C17.8 9.8 17.8 8.2 17 7.7L6.2 1.2Z",
+                  "fill": "icon"
+                }
+              ],
+              "colors": {
+                "icon": "#FFFFFF",
+                "icon-hover": "rgba(255,255,255,0.85)"
+              },
+              "link": {
+                "hoverFill": "icon-hover",
+                "vectorTransition": "0.15s"
+              }
+            }
+          }
+        }
+      },
+      "player-row": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "gap": "0",
+        "wrapperStyle": {
+          "borderTop": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+        },
+        "section": {
+          "elementOrder": ["no-track", "audio-1", "audio-2", "audio-3"],
+          "definitions": {
+            "no-track": {
+              "type": "elementGroup",
+              "height": "60px",
+              "display": "flex",
+              "align": "center",
+              "distribute": "center",
+              "visibleWhen": {
+                "variable": "activeTrack",
+                "operator": "equals",
+                "value": "__never__"
+              },
+              "section": {
+                "elementOrder": ["hint"],
+                "definitions": {
+                  "hint": {
+                    "type": "elementBody",
+                    "level": 5,
+                    "text": "Select a track above to begin",
+                    "color": "color-mix(in oklab, var(--pb-on-secondary) 32%, transparent)"
+                  }
+                }
+              }
+            },
+            "audio-1": {
+              "type": "elementAudio",
+              "module": "audio-player-seekbar",
+              "src": "https://upload.wikimedia.org/wikipedia/commons/4/4e/BWV_543-fugue.ogg",
+              "width": "100%",
+              "visibleWhen": {
+                "conditions": [
+                  {
+                    "variable": "activeTrack",
+                    "operator": "notEquals",
+                    "value": "track-2"
+                  },
+                  {
+                    "variable": "activeTrack",
+                    "operator": "notEquals",
+                    "value": "track-3"
+                  }
+                ],
+                "logic": "and"
+              }
+            },
+            "audio-2": {
+              "type": "elementAudio",
+              "module": "audio-player-seekbar",
+              "src": "https://upload.wikimedia.org/wikipedia/commons/1/17/BWV.847_c_minor_Prelude_Bach%2C_Performer_JMC%2C_Han.ogg",
+              "width": "100%",
+              "visibleWhen": {
+                "variable": "activeTrack",
+                "operator": "equals",
+                "value": "track-2"
+              }
+            },
+            "audio-3": {
+              "type": "elementAudio",
+              "module": "audio-player-seekbar",
+              "src": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Bach_Cello_Suite_1_Prelude_%28BWV_1007%29_Played_by_Chris.ogg",
+              "width": "100%",
+              "visibleWhen": {
+                "variable": "activeTrack",
+                "operator": "equals",
+                "value": "track-3"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

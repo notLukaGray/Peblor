@@ -1,0 +1,21 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Audio Card — Preset Demo",
+  "description": "Card layout audio player. Glass bottomBar with play, volume, seek, and time — all owned by the module.",
+  "presets": [
+    "demo",
+    "type/core",
+    "ui/link",
+    "type/motion",
+    "player/surface",
+    "bg",
+    "player/section"
+  ],
+  "bgKey": "bg-players",
+  "sectionOrder": ["nav-header", "hero", "sec-player"],
+  "definitions": {
+    "bg-players": {
+      "preset": "bg-players"
+    }
+  }
+}

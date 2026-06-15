@@ -39,7 +39,9 @@ export async function listModuleTypeSummaries(): Promise<ModuleTypeSummary[]> {
             ? Object.keys(json.behavior as object).sort()
             : [],
       });
-    } catch {}
+    } catch (err) {
+      console.warn("[pb-mcp] Failed to process module definition", def.id, err);
+    }
   }
   return rows.sort((a, b) => a.id.localeCompare(b.id));
 }

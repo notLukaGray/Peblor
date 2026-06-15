@@ -1,0 +1,21 @@
+{
+  "preset": "demo-hero",
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Event → State"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Lottie Minimal"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Animation fires onComplete → peblor variable updates. The simplest canvas-to-peblor event bridge. State chip proves it's alive.",
+      "width": {
+        "base": "100%",
+        "md": "78%"
+      }
+    }
+  }
+}

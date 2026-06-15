@@ -13,11 +13,12 @@ import type {
   Model3DPostProcessingCommand,
 } from "./model3d-controls";
 import { MOTION_DEFAULTS } from "@pb/contracts/peblor/core/peblor-motion-defaults";
+import { shouldApplyMediaTarget } from "@/peblor/triggers/target-matching";
 import {
-  matchesTargetId,
   parseBoolean,
   parseCameraPreset,
   parseCameraPresetList,
+  resolveSceneCameraPreset,
   parseNumber,
   readPayloadObject,
   readTargetId,
@@ -55,6 +56,8 @@ export type Model3DTriggerDispatchContext = {
     index: number;
   } | null>;
   onBeforeLoad?: (payload: unknown, payloadObj: Record<string, unknown> | null) => void;
+  onClearGeometryCache?: () => void;
+  sceneCameraPresets?: Record<string, Model3DCameraPreset>;
 };
 
 function triggerFade(
@@ -109,7 +112,7 @@ function handleCameraPreset(
     return;
   }
 
-  const preset = parseCameraPreset(payloadObj?.preset ?? payload);
+  const preset = resolveSceneCameraPreset(payloadObj?.preset ?? payload, ctx.sceneCameraPresets);
   if (preset) ctx.setCameraCommand({ nonce: ctx.nextNonce(), type: "set", preset });
 }
 
@@ -167,11 +170,8 @@ export function dispatchModel3DTriggerAction(
 ): void {
   const payload = action.payload;
   const targetId = readTargetId(payload as unknown);
-  if (targetId) {
-    if (!matchesTargetId(ctx.id, targetId)) return;
-  } else if (!ctx.id) {
-    return;
-  }
+  if (!shouldApplyMediaTarget(ctx.id, targetId)) return;
+  if (!targetId && !ctx.id) return;
 
   const payloadObj = readPayloadObject(payload as unknown);
 
@@ -181,6 +181,7 @@ export function dispatchModel3DTriggerAction(
       ctx.setLoadedState(true, { transition: true });
       return;
     case "three.unload":
+      ctx.onClearGeometryCache?.();
       ctx.setLoadedState(false);
       return;
     case "three.toggleLoaded": {

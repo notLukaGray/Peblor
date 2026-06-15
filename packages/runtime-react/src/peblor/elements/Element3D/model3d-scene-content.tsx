@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { PerspectiveCamera } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
@@ -28,6 +28,7 @@ import type {
 } from "./model3d-controls";
 import type { Block } from "./model3d-types";
 import type { PeblorAction } from "@pb/contracts/types";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 const SceneEnvironment = dynamic(
   () => import("./optional-environment").then((mod) => mod.SceneEnvironment),
@@ -36,6 +37,21 @@ const SceneEnvironment = dynamic(
 
 const SceneOrbitControls = dynamic(
   () => import("./optional-orbit-controls").then((mod) => mod.SceneOrbitControls),
+  { loading: () => null, ssr: false }
+);
+
+const SceneFlyControls = dynamic(
+  () => import("./model3d-fly-controls").then((mod) => mod.SceneFlyControls),
+  { loading: () => null, ssr: false }
+);
+
+const SceneBackgroundSetup = dynamic(
+  () => import("./model3d-scene-background").then((mod) => mod.SceneBackgroundSetup),
+  { loading: () => null, ssr: false }
+);
+
+const SceneScrollCamera = dynamic(
+  () => import("./model3d-scroll-camera").then((mod) => mod.SceneScrollCamera),
   { loading: () => null, ssr: false }
 );
 
@@ -67,7 +83,13 @@ function CameraCommandController({
   ) => void;
 }) {
   const get = useThree((state) => state.get);
+  const invalidate = useThree((state) => state.invalidate);
   const initialPresetRef = useRef<Model3DCameraPreset | null>(null);
+  const lastCommandNonceRef = useRef(-1);
+  const onOrbitCommandRef = useRef(onOrbitCommand);
+  useEffect(() => {
+    onOrbitCommandRef.current = onOrbitCommand;
+  }, [onOrbitCommand]);
   const tweenRef = useRef<{
     startPos: Vector3;
     startLookAt: Vector3;
@@ -103,6 +125,8 @@ function CameraCommandController({
   useEffect(() => {
     const camera = get().camera;
     if (!camera || !command) return;
+    if (command.nonce === lastCommandNonceRef.current) return;
+    lastCommandNonceRef.current = command.nonce;
 
     const applyPreset = (preset: Model3DCameraPreset) => {
       if (preset.position) {
@@ -151,17 +175,17 @@ function CameraCommandController({
       return;
     }
     if (command.type === "orbitEnable") {
-      onOrbitCommand?.(true, {
+      onOrbitCommandRef.current?.(true, {
         autoRotate: command.autoRotate,
         autoRotateSpeed: command.autoRotateSpeed,
       });
       return;
     }
     if (command.type === "orbitDisable") {
-      onOrbitCommand?.(false);
+      onOrbitCommandRef.current?.(false);
       return;
     }
-  }, [command, get, onOrbitCommand]);
+  }, [command, get]);
 
   useFrame(() => {
     if (!tweenRef.current) return;
@@ -182,7 +206,11 @@ function CameraCommandController({
       camera.lookAt(lookAt);
     }
     camera.updateMatrixWorld();
-    if (progress >= 1) tweenRef.current = null;
+    if (progress >= 1) {
+      tweenRef.current = null;
+      return;
+    }
+    invalidate();
   });
 
   return null;
@@ -215,13 +243,47 @@ export function SceneContent({
 }) {
   const { scene: sceneDef, textures, materials, models } = block;
   const { textureMap, videoReady, videoElement } = useTextureMap(textures);
+  const controlMode = sceneDef.controls?.mode ?? "none";
+  const scrollDriven = sceneDef.scrollCamera != null;
   const [orbitState, setOrbitState] = useState<{
     enabled: boolean;
     autoRotate?: boolean;
     autoRotateSpeed?: number;
-  } | null>(null);
+  } | null>(() => {
+    if (controlMode !== "orbit" || scrollDriven) return null;
+    const orbit = sceneDef.controls?.orbit;
+    return {
+      enabled: true,
+      autoRotate: orbit?.autoRotate,
+      autoRotateSpeed: orbit?.autoRotateSpeed,
+    };
+  });
+
+  const handleOrbitCommand = useCallback(
+    (enabled: boolean, opts?: { autoRotate?: boolean; autoRotateSpeed?: number }) => {
+      setOrbitState((prev) => {
+        const next = enabled
+          ? {
+              enabled: true as const,
+              autoRotate: opts?.autoRotate,
+              autoRotateSpeed: opts?.autoRotateSpeed,
+            }
+          : { enabled: false as const };
+        if (
+          prev?.enabled === next.enabled &&
+          prev?.autoRotate === next.autoRotate &&
+          prev?.autoRotateSpeed === next.autoRotateSpeed
+        ) {
+          return prev;
+        }
+        return next;
+      });
+    },
+    []
+  );
 
   const threeScene = useThree((state) => state.scene);
+  const invalidate = useThree((state) => state.invalidate);
 
   useEffect(() => {
     if (!sceneCommand) return;
@@ -241,6 +303,7 @@ export function SceneContent({
         targets.forEach((l) => {
           if (l) l.intensity = sceneCommand.intensity;
         });
+        invalidate();
         return;
       }
       case "setLightColor": {
@@ -253,24 +316,30 @@ export function SceneContent({
         targets.forEach((l) => {
           if (l) l.color.set(color);
         });
+        invalidate();
         return;
       }
       default:
         return;
     }
-  }, [sceneCommand, threeScene]);
+  }, [sceneCommand, threeScene, invalidate]);
 
   useEffect(() => {
     if (!videoTextureCommand || !videoElement) return;
     switch (videoTextureCommand.type) {
       case "play":
-        videoElement.play().catch(() => {});
+        videoElement.play().catch((err) => {
+          console.warn("[pb-runtime-react] 3D scene video play failed", err);
+        });
         return;
       case "pause":
         videoElement.pause();
         return;
       case "toggle":
-        if (videoElement.paused) videoElement.play().catch(() => {});
+        if (videoElement.paused)
+          videoElement.play().catch((err) => {
+            console.warn("[pb-runtime-react] 3D scene video toggle play failed", err);
+          });
         else videoElement.pause();
         return;
       default:
@@ -289,26 +358,41 @@ export function SceneContent({
 
   const cam = sceneDef.camera;
   const isOrtho = cam.type === "orthographic";
-  const orthoSize = isOrtho ? ((cam as { size?: number }).size ?? 0.1) : 0.1;
+  const orthoSize = isOrtho
+    ? ((cam as { size?: number }).size ?? globals.threeSceneOrthoSize)
+    : globals.threeSceneOrthoSize;
   const orthoNear = isOrtho ? (cam as { near?: number }).near : undefined;
   const orthoFar = isOrtho ? (cam as { far?: number }).far : undefined;
 
   const isPerspective = cam.type === "perspective";
   const persFov = isPerspective ? ((cam as { fov?: number }).fov ?? 50) : 50;
-  const persNear = isPerspective ? ((cam as { near?: number }).near ?? 0.1) : 0.1;
+  const persNear = isPerspective
+    ? ((cam as { near?: number }).near ?? globals.threeScenePerspNear)
+    : globals.threeScenePerspNear;
   const persFar = isPerspective ? ((cam as { far?: number }).far ?? 1000) : 1000;
   const persPosition: [number, number, number] = isPerspective
     ? ((cam as { position?: [number, number, number] }).position ?? [0, 0, 5])
     : [0, 0, 5];
 
-  const hasCameraEffects = !!(
+  const scrollStartPosition: [number, number, number] | undefined =
+    scrollDriven && sceneDef.scrollCamera?.keyframes[0]?.position
+      ? (sceneDef.scrollCamera.keyframes[0].position as [number, number, number])
+      : undefined;
+
+  const hasCameraEffectsConfig = !!(
     sceneDef.cameraEffects?.bobbing || sceneDef.cameraEffects?.mouseFollow
   );
+  // Procedural camera effects overwrite position every frame and break orbit, presets, and reset.
+  const suppressCameraEffects =
+    scrollDriven || controlMode === "fly" || orbitState?.enabled === true;
+  const showCameraEffects = hasCameraEffectsConfig && !suppressCameraEffects;
 
   if (instances.length === 0 || !models || !firstModelKey) return null;
 
   return (
     <>
+      <SceneBackgroundSetup background={sceneDef.background} />
+
       {envPath && (
         <SceneEnvironment files={envPath} background={false} environmentIntensity={envIntensity} />
       )}
@@ -319,28 +403,37 @@ export function SceneContent({
       {isPerspective && (
         <PerspectiveCamera
           makeDefault
+          manual={scrollDriven}
           fov={persFov}
           near={persNear}
           far={persFar}
-          position={persPosition}
+          position={scrollStartPosition ?? persPosition}
         />
       )}
 
-      <CameraCommandController
-        command={cameraCommand}
-        sceneCamera={sceneDef.camera}
-        onOrbitCommand={(enabled, opts) =>
-          setOrbitState(enabled ? { enabled: true, ...opts } : { enabled: false })
-        }
-      />
-      {orbitState?.enabled && (
+      {!scrollDriven && (
+        <CameraCommandController
+          command={cameraCommand}
+          sceneCamera={sceneDef.camera}
+          onOrbitCommand={handleOrbitCommand}
+        />
+      )}
+      {controlMode === "fly" && !scrollDriven && sceneDef.controls?.fly && (
+        <SceneFlyControls config={sceneDef.controls.fly} />
+      )}
+
+      {orbitState?.enabled && controlMode !== "fly" && !scrollDriven && (
         <SceneOrbitControls
           autoRotate={orbitState.autoRotate}
           autoRotateSpeed={orbitState.autoRotateSpeed}
         />
       )}
 
-      {hasCameraEffects && (
+      {scrollDriven && sceneDef.scrollCamera && (
+        <SceneScrollCamera scrollCamera={sceneDef.scrollCamera} />
+      )}
+
+      {showCameraEffects && (
         <CameraEffects
           bobbing={sceneDef.cameraEffects?.bobbing}
           mouseFollow={sceneDef.cameraEffects?.mouseFollow}

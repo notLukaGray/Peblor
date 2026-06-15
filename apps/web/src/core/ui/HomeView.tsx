@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { TransitionLink } from "@/core/ui/TransitionLink";
 import Image from "next/image";
 import { ScrambledText } from "@/core/ui/scrambled-text";
 import { useProjectNavigation } from "@/core/hooks/use-project-navigation";
-import { useAfterLcp } from "@/core/hooks/use-after-lcp";
+import { useAfterLcp } from "@pb/runtime-react/core/hooks/use-after-lcp";
 import {
   wrapIndex,
   getHeroCarouselOpacity,
@@ -41,7 +41,7 @@ const CarouselLabel = React.memo(
     opacity: number;
   }) => {
     return (
-      <motion.div
+      <m.div
         className="text-sm md:text-base relative px-3 md:px-4 text-white flex items-center gap-2"
         animate={{ opacity }}
         transition={{ duration: 0.6, ease: "easeInOut" }}
@@ -57,7 +57,7 @@ const CarouselLabel = React.memo(
             `${project.title} / ${project.brand?.name ?? ""}`
           )}
         </div>
-      </motion.div>
+      </m.div>
     );
   }
 );
@@ -153,7 +153,7 @@ export const HomeHeroCarouselSlot = React.memo(
 
     return (
       <>
-        <motion.div
+        <m.div
           data-project-id={project.id}
           className="absolute left-1/2 -translate-x-1/2 group whitespace-nowrap"
           initial={{
@@ -198,7 +198,7 @@ export const HomeHeroCarouselSlot = React.memo(
               {content}
             </div>
           )}
-        </motion.div>
+        </m.div>
         {!isDisabled && tooltipMouse ? (
           <div
             key={`${project.id}-description`}
@@ -366,7 +366,7 @@ export function HomeView({ heroProjects }: HomeViewProps) {
           }}
         />
 
-        <motion.nav
+        <m.nav
           aria-label="Featured work carousel"
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -406,7 +406,7 @@ export function HomeView({ heroProjects }: HomeViewProps) {
               );
             })}
           </div>
-        </motion.nav>
+        </m.nav>
       </div>
     </div>
   );

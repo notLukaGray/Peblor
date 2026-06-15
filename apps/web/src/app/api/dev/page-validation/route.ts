@@ -2,9 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { runPeblorValidation, summarizeValidation } from "@pb/runtime-react/dev-server";
 import { devApiDisabledResponse, isDevApiEnabled } from "@/core/lib/dev-api-enabled";
 
-export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
-
 export async function GET(request: NextRequest) {
   if (!isDevApiEnabled()) {
     return devApiDisabledResponse();

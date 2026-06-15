@@ -1,17 +1,12 @@
 import type { ReactNode } from "react";
 import type { VectorGradient } from "@pb/contracts/types";
-import type { PeblorThemeMode } from "@/peblor/theme/theme-string";
 import { renderGradient } from "./element-vector-gradients";
 import { renderVectorShape } from "./element-vector-shapes";
 import type { SvgRenderContext } from "./element-vector-types";
 
-export function renderVectorDefs(
-  hasDefs: boolean,
-  gradients: VectorGradient[],
-  themeMode: PeblorThemeMode
-): ReactNode {
+export function renderVectorDefs(hasDefs: boolean, gradients: VectorGradient[]): ReactNode {
   if (!hasDefs) return null;
-  return <defs>{gradients.map((g) => renderGradient(g, themeMode))}</defs>;
+  return <defs>{gradients.map((g) => renderGradient(g))}</defs>;
 }
 
 const fillOnlyOpts = { fillOnly: true as const };

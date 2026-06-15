@@ -43,6 +43,7 @@ export type UseVideoControlsResult = {
   handleTogglePlay: () => void;
   onTimeUpdate: () => void;
   onLoadedMetadata: () => void;
+  onDurationChange: () => void;
 };
 
 export function useVideoControls({
@@ -176,7 +177,8 @@ export function useVideoControls({
     try {
       await video.play();
       return true;
-    } catch {
+    } catch (err) {
+      console.warn("[pb-runtime-react] Failed to play video", err);
       return false;
     }
   }, [startLoad, videoRef]);
@@ -204,7 +206,12 @@ export function useVideoControls({
 
   const onLoadedMetadata = useCallback(() => {
     const v = videoRef.current;
-    if (v) setDuration(v.duration);
+    if (v && Number.isFinite(v.duration)) setDuration(v.duration);
+  }, [setDuration, videoRef]);
+
+  const onDurationChange = useCallback(() => {
+    const v = videoRef.current;
+    if (v && Number.isFinite(v.duration)) setDuration(v.duration);
   }, [setDuration, videoRef]);
 
   useEffect(() => {
@@ -221,14 +228,16 @@ export function useVideoControls({
     const wasFullscreen = prevFullscreenRef.current;
     prevFullscreenRef.current = state.isFullscreen;
     let frameId: number | null = null;
+    let mounted = true;
     if (wasFullscreen && !state.isFullscreen) {
       fullscreenExitAtRef.current = Date.now();
       cancelHideControls();
       frameId = requestAnimationFrame(() => {
-        setShowControlsRef.current(true);
+        if (mounted) setShowControlsRef.current(true);
       });
     }
     return () => {
+      mounted = false;
       if (frameId !== null) cancelAnimationFrame(frameId);
     };
   }, [state.isFullscreen, cancelHideControls]);
@@ -250,5 +259,6 @@ export function useVideoControls({
     handleTogglePlay,
     onTimeUpdate,
     onLoadedMetadata,
+    onDurationChange,
   };
 }

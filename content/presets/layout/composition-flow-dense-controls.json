@@ -1,0 +1,131 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "width": "100%",
+  "maxWidth": "1000px",
+  "selfAlign": "center",
+  "align": "stretch",
+  "height": "hug",
+  "padding": {
+    "base": "1.75rem 1.25rem",
+    "md": "2.25rem 1.5rem"
+  },
+  "gap": "1.25rem",
+  "borderRadius": "18px",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+  },
+  "elementOrder": ["title-row", "helper", "controls"],
+  "definitions": {
+    "title-row": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": {
+        "base": "column",
+        "md": "row"
+      },
+      "distribute": "between",
+      "align": {
+        "base": "start",
+        "md": "center"
+      },
+      "gap": "0.85rem",
+      "padding": "0",
+      "section": {
+        "elementOrder": ["title", "status"],
+        "definitions": {
+          "title": {
+            "preset": "type-h4-card",
+            "text": "Dense control cluster"
+          },
+          "status": {
+            "preset": "type-body-fine",
+            "text": "Ready",
+            "wrapperPadding": "0.4rem 0.85rem",
+            "wrapperBorderRadius": "999px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-accent) 14%, transparent)"
+          }
+        }
+      }
+    },
+    "helper": {
+      "preset": "type-body-fine",
+      "text": "Compact controls keep labels readable and maintain 44px-ish tap comfort through generous vertical padding on mobile."
+    },
+    "controls": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "align": "center",
+      "gap": "0.75rem",
+      "padding": "0",
+      "section": {
+        "elementOrder": ["ctl-1", "ctl-2", "ctl-3", "ctl-4", "ctl-5", "ctl-6"],
+        "definitions": {
+          "ctl-1": {
+            "type": "elementButton",
+            "label": "Publish",
+            "href": "#",
+            "wrapperPadding": "0.75rem 1.25rem",
+            "wrapperBorderRadius": "11px",
+            "wrapperFill": "var(--pb-on-secondary)",
+            "linkDefault": "var(--pb-secondary)",
+            "linkHover": "var(--pb-secondary)"
+          },
+          "ctl-2": {
+            "type": "elementButton",
+            "label": "Preview",
+            "href": "#",
+            "wrapperPadding": "0.75rem 1.25rem",
+            "wrapperBorderRadius": "11px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+            "linkDefault": "var(--pb-on-secondary)",
+            "linkHover": "var(--pb-on-secondary)"
+          },
+          "ctl-3": {
+            "type": "elementButton",
+            "label": "Duplicate",
+            "href": "#",
+            "wrapperPadding": "0.75rem 1.25rem",
+            "wrapperBorderRadius": "11px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+            "linkDefault": "var(--pb-on-secondary)",
+            "linkHover": "var(--pb-on-secondary)"
+          },
+          "ctl-4": {
+            "type": "elementButton",
+            "label": "Archive",
+            "href": "#",
+            "wrapperPadding": "0.75rem 1.25rem",
+            "wrapperBorderRadius": "11px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+            "linkDefault": "var(--pb-on-secondary)",
+            "linkHover": "var(--pb-on-secondary)"
+          },
+          "ctl-5": {
+            "type": "elementButton",
+            "label": "Share",
+            "href": "#",
+            "wrapperPadding": "0.75rem 1.25rem",
+            "wrapperBorderRadius": "11px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+            "linkDefault": "var(--pb-on-secondary)",
+            "linkHover": "var(--pb-on-secondary)"
+          },
+          "ctl-6": {
+            "type": "elementButton",
+            "label": "Settings",
+            "href": "#",
+            "wrapperPadding": "0.75rem 1.25rem",
+            "wrapperBorderRadius": "11px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+            "linkDefault": "var(--pb-on-secondary)",
+            "linkHover": "var(--pb-on-secondary)"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Column · Rail · Reading Body"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Composition Column Rail Body"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Persistent utility rail alongside narrative body for long-form guided reading layouts.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  },
+  "align": "start"
+}

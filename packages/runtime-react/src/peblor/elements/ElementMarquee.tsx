@@ -16,8 +16,8 @@ import {
   getHeadingTypographyClass,
   resolveFontFamily,
 } from "@pb/core/typography";
-import { resolveThemeString } from "@/peblor/theme/theme-string";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
+import { lowerThemeStringToCss } from "@/peblor/theme/theme-string";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 import { useVariable } from "@/peblor/runtime/peblor-variable-store";
 import { ElementLayoutWrapper } from "./Shared/ElementLayoutWrapper";
 import { usePrefersReducedMotion } from "./ElementInfiniteScroll/use-prefers-reduced-motion";
@@ -81,7 +81,7 @@ export function ElementMarquee({
   variableKey,
   direction = "left",
   speed = 12,
-  gap = "48px",
+  gap = `${globals.uiMarqueeDefaultGapPx}px`,
   pauseOnHover,
   pauseOnFocus,
   gradientEdges,
@@ -103,12 +103,12 @@ export function ElementMarquee({
   flipVertical,
   width,
   height,
-  align,
+  selfAlign,
   marginTop,
   marginBottom,
   marginLeft,
   marginRight,
-  zIndex,
+  layer,
   constraints,
   effects,
   interactions,
@@ -117,10 +117,9 @@ export function ElementMarquee({
   blendMode,
   boxShadow,
   filter,
-  backdropFilter,
+  bgBlur,
   hidden,
 }: Props) {
-  const themeMode = usePeblorThemeMode();
   const variableValue = useVariable(variableKey ?? "");
   const resolvedText = variableKey !== undefined ? String(variableValue ?? "") : (text ?? "");
 
@@ -233,11 +232,34 @@ export function ElementMarquee({
       const container = containerRef.current;
       if (!pathEl) return;
 
+      let glyphPadY = 0;
+      let measuredFontSize: number | null = null;
+
       try {
         const b = pathEl.getBBox();
         const cw = container?.clientWidth ?? 0;
         const ch = container?.clientHeight ?? 0;
-        const nextViewBox = viewBoxMatchingContainerAspect(b, cw, ch);
+
+        if (textEl && cw > 0 && ch > 0) {
+          const previousFontSize = textEl.style.fontSize;
+          textEl.style.fontSize = fontSize !== undefined ? String(fontSize) : "";
+          const computedFontSize = Number.parseFloat(getComputedStyle(textEl).fontSize);
+          textEl.style.fontSize = previousFontSize;
+          if (Number.isFinite(computedFontSize) && computedFontSize > 0) {
+            measuredFontSize = computedFontSize;
+            const approxScale = Math.min(cw / b.width, ch / b.height);
+            glyphPadY = (computedFontSize * 0.6) / Math.max(approxScale, 0.01);
+          }
+        }
+
+        const expandedBBox = {
+          x: b.x,
+          y: b.y - glyphPadY,
+          width: b.width,
+          height: b.height + 2 * glyphPadY,
+        };
+
+        const nextViewBox = viewBoxMatchingContainerAspect(expandedBBox, cw, ch);
         setPathViewBox(nextViewBox);
 
         const viewBoxParts = nextViewBox.split(/\s+/).map(Number);
@@ -245,17 +267,14 @@ export function ElementMarquee({
         const vh = viewBoxParts[3];
         const scale =
           vw !== undefined && vh !== undefined ? Math.min(cw / vw, ch / vh) : Number.NaN;
-        if (textEl && Number.isFinite(scale) && scale > 0.05) {
-          const previousFontSize = textEl.style.fontSize;
-          textEl.style.fontSize = fontSize !== undefined ? String(fontSize) : "";
-          const computedFontSize = Number.parseFloat(getComputedStyle(textEl).fontSize);
-          textEl.style.fontSize = previousFontSize;
-          if (Number.isFinite(computedFontSize) && computedFontSize > 0) {
-            setPathFontSizePx(computedFontSize / scale);
-          }
+        if (measuredFontSize !== null && Number.isFinite(scale) && scale > 0.05) {
+          setPathFontSizePx(measuredFontSize / scale);
         }
-      } catch {
-        /* invalid path d */
+      } catch (err) {
+        console.warn(
+          "[pb-runtime-react] Failed to parse SVG path for marquee fontSize scaling",
+          err
+        );
       }
 
       if (tp && resolvedText) {
@@ -311,8 +330,7 @@ export function ElementMarquee({
         accum += (now - last) / 1000;
       }
       last = now;
-      const u = (accum / speed) % 1;
-      const dist = u * pathSegmentLen;
+      const dist = (accum * speed) % pathSegmentLen;
       const offset = reverse ? dist : -dist;
       textPathEl.setAttribute("startOffset", `${offset}px`);
       animState.raf = requestAnimationFrame(loop);
@@ -324,16 +342,18 @@ export function ElementMarquee({
   }, [followPath?.d, prefersReducedMotion, pathSegmentLen, speed, reverse, isAfterLcp]);
 
   const dirLabel = reverse ? "reverse" : "normal";
-  const gradientEdge = (gradientColor as string) ?? "var(--color-background, #000)";
+  const gradientEdge =
+    (gradientColor as string) ??
+    `var(--color-background, ${globals.colorMarqueeGradientEdgeFallback})`;
 
-  const resolvedTextFill = resolveThemeString(textFill?.value, themeMode);
-  const resolvedColor = resolveThemeString(color, themeMode);
+  const resolvedTextFill = lowerThemeStringToCss(textFill?.value);
+  const resolvedColor = lowerThemeStringToCss(color);
   const resolvedFontFamily = resolveFontFamily(fontFamily);
 
   const textStyle: CSSProperties = {
-    letterSpacing,
+    letterSpacing: letterSpacing as CSSProperties["letterSpacing"],
     ...(resolvedFontFamily !== undefined ? { fontFamily: resolvedFontFamily } : {}),
-    ...(fontSize !== undefined ? { fontSize } : {}),
+    ...(fontSize !== undefined ? { fontSize: fontSize as CSSProperties["fontSize"] } : {}),
     ...(fontWeight !== undefined ? { fontWeight: fontWeight as CSSProperties["fontWeight"] } : {}),
   };
 
@@ -354,12 +374,12 @@ export function ElementMarquee({
   const layout = {
     width: width as string | undefined,
     height: height as string | undefined,
-    align: align as "left" | "center" | "right" | undefined,
+    align: selfAlign as "left" | "center" | "right" | undefined,
     marginTop: marginTop as string | undefined,
     marginBottom: marginBottom as string | undefined,
     marginLeft: marginLeft as string | undefined,
     marginRight: marginRight as string | undefined,
-    zIndex,
+    zIndex: layer,
     constraints,
     effects,
     wrapperStyle,
@@ -367,7 +387,7 @@ export function ElementMarquee({
     blendMode,
     boxShadow,
     filter,
-    backdropFilter,
+    bgBlur,
     hidden,
   };
 
@@ -411,20 +431,39 @@ export function ElementMarquee({
       layout={layout}
       interactions={interactions}
       transform={{ rotate, flipHorizontal, flipVertical }}
+      overflow="visible"
     >
       {/* ElementLayoutWrapper inner flex uses align-items:center — stretch so width/max-content track can scroll */}
-      <div className="w-full min-w-0 self-stretch">
+      <div
+        className="w-full min-w-0 self-stretch"
+        style={
+          axis === "Y"
+            ? {
+                minHeight: 0,
+                alignSelf: "stretch",
+                overflow: "hidden",
+                display: "flex",
+                flexDirection: "column",
+              }
+            : undefined
+        }
+      >
         {!showAnimatedMarquee ? (
+          // SSR / pre-LCP: render the text content so crawlers and users see something
+          // instead of an empty box. The animated version replaces this after LCP.
           <div
             ref={containerRef}
-            className="w-full min-w-0 shrink-0 overflow-hidden select-none pointer-events-none"
+            className="w-full min-w-0 shrink-0 overflow-hidden select-none"
             style={
               followPath?.d
                 ? { minHeight: pathMinHeight, height: pathMinHeight }
                 : { minHeight: "2.75rem" }
             }
-            aria-hidden
-          />
+          >
+            <span className={typoClass ? `shrink-0 ${typoClass}` : "shrink-0"} style={textStyle}>
+              {resolvedText}
+            </span>
+          </div>
         ) : followPath?.d ? (
           prefersReducedMotion ? (
             <div
@@ -480,7 +519,7 @@ export function ElementMarquee({
                   {...(pathTextRotate !== undefined ? { rotate: pathTextRotate } : {})}
                   className={typoClass || undefined}
                   style={{
-                    letterSpacing,
+                    letterSpacing: letterSpacing as CSSProperties["letterSpacing"],
                     ...(resolvedFontFamily !== undefined ? { fontFamily: resolvedFontFamily } : {}),
                     ...(pathFontSizePx != null
                       ? { fontSize: `${pathFontSizePx}px` }
@@ -521,6 +560,7 @@ export function ElementMarquee({
           <div
             ref={containerRef}
             className="relative w-full overflow-hidden select-none"
+            style={axis === "Y" ? { flex: "1 1 0%", minHeight: 0 } : undefined}
             tabIndex={pauseOnFocus ? 0 : undefined}
             onFocus={
               pauseOnFocus
@@ -549,7 +589,7 @@ export function ElementMarquee({
                   ? {
                       ["--pb-marquee-period" as string]: `${periodPx}px`,
                       animationName: linearKeyframesName,
-                      animationDuration: `${speed}s`,
+                      animationDuration: `${periodPx / Math.max(speed, 0.01)}s`,
                       animationTimingFunction: "linear",
                       animationIterationCount: "infinite",
                       animationDirection: reverseOnEnd
@@ -589,14 +629,14 @@ export function ElementMarquee({
                 <div
                   className="absolute left-0 top-0 bottom-0 z-[var(--pb-z-raised)] pointer-events-none"
                   style={{
-                    width: gradientWidth ?? "48px",
+                    width: gradientWidth ?? `${globals.uiMarqueeDefaultGapPx}px`,
                     background: `linear-gradient(to right, ${gradientEdge}, transparent)`,
                   }}
                 />
                 <div
                   className="absolute right-0 top-0 bottom-0 z-[var(--pb-z-raised)] pointer-events-none"
                   style={{
-                    width: gradientWidth ?? "48px",
+                    width: gradientWidth ?? `${globals.uiMarqueeDefaultGapPx}px`,
                     background: `linear-gradient(to left, ${gradientEdge}, transparent)`,
                   }}
                 />
@@ -607,14 +647,14 @@ export function ElementMarquee({
                 <div
                   className="absolute left-0 right-0 top-0 z-[var(--pb-z-raised)] pointer-events-none"
                   style={{
-                    height: gradientWidth ?? "48px",
+                    height: gradientWidth ?? `${globals.uiMarqueeDefaultGapPx}px`,
                     background: `linear-gradient(to bottom, ${gradientEdge}, transparent)`,
                   }}
                 />
                 <div
                   className="absolute left-0 right-0 bottom-0 z-[var(--pb-z-raised)] pointer-events-none"
                   style={{
-                    height: gradientWidth ?? "48px",
+                    height: gradientWidth ?? `${globals.uiMarqueeDefaultGapPx}px`,
                     background: `linear-gradient(to top, ${gradientEdge}, transparent)`,
                   }}
                 />

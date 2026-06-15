@@ -26,6 +26,50 @@ function isSegmentSafe(segment: string): boolean {
 }
 
 /**
+ * Validate a preset reference string. Accepts:
+ *   - "category" (loads all presets from content/presets/category/)
+ *   - "category.json" (legacy flat file)
+ *   - "category/sub.json" (specific preset file or subdirectory)
+ *   - "category/sub/preset.json" (deeply nested preset)
+ * Each slash-separated segment must be a safe path segment.
+ */
+const SAFE_PRESET_REF_REGEX = /^[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*(\/[a-zA-Z0-9_-]+\.json)?$/;
+
+export function isSafePresetRef(ref: string): boolean {
+  if (typeof ref !== "string" || ref.length === 0) return false;
+  // Legacy flat .json filename (no slashes)
+  if (!ref.includes("/") && ref.endsWith(".json")) return isSafeJsonFilename(ref);
+  return SAFE_PRESET_REF_REGEX.test(ref);
+}
+
+/**
+ * Validate a preset ref and resolve it to a filesystem path under baseDir.
+ * If the ref ends with .json, it resolves to that exact file.
+ * If the ref has no .json extension, it resolves to a directory to be walked.
+ */
+export function resolvePresetPath(
+  baseDir: string,
+  ref: string
+): { kind: "file" | "dir"; path: string } | null {
+  if (!isSafePresetRef(ref)) return null;
+  const resolved = path.resolve(baseDir, ref);
+  const baseResolved = path.resolve(baseDir);
+  const relative = path.relative(baseResolved, resolved);
+  if (relative.startsWith("..") || path.isAbsolute(relative)) return null;
+
+  if (ref.endsWith(".json")) return { kind: "file", path: resolved };
+
+  // Check if legacy flat file exists
+  const legacyFile = path.resolve(baseDir, `${ref}.json`);
+  const legacyRelative = path.relative(baseResolved, legacyFile);
+  if (!legacyRelative.startsWith("..") && !path.isAbsolute(legacyRelative)) {
+    // Caller should stat to decide
+  }
+
+  return { kind: "dir", path: resolved };
+}
+
+/**
  * Join segments under baseDir and return the resolved path only if it stays under baseDir.
  * Segments are validated: allowlist (alphanumeric, hyphen, underscore); last segment may be "basename.json".
  * Returns null if any segment is invalid or path escapes.

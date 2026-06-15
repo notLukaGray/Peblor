@@ -1,0 +1,14 @@
+{
+  "type": "elementGroup",
+  "width": "100%",
+  "height": {
+    "base": "0.2rem",
+    "md": "0.5rem"
+  },
+  "padding": "0",
+  "scroll": "hidden",
+  "section": {
+    "elementOrder": [],
+    "definitions": {}
+  }
+}

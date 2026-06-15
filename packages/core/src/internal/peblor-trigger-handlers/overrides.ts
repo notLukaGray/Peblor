@@ -4,7 +4,7 @@ import type {
   ContentOverrideAction,
   bgBlock,
 } from "@pb/contracts/peblor/core/peblor-schemas";
-import { OVERRIDE_KEY_BG } from "@pb/contracts/peblor/core/peblor-schemas";
+import { OVERRIDE_KEY_BG } from "@pb/contracts/peblor/core/trigger-action-types";
 import { isBgBlockPayload, type OverridesMap } from "../peblor-overrides";
 import { computeBgProgressOverrides } from "./context-and-bg-progress";
 

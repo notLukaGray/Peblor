@@ -1,0 +1,49 @@
+id: trigger.scrollThreshold
+kind: trigger
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  Fire an action when the page scroll position crosses a fixed px or percentage
+  threshold. Supports both directions — onCrossDown fires when scrolling past the
+  threshold, onCrossUp fires when scrolling back above it. Use for sticky CTAs that
+  appear after a fixed scroll depth, progress-gated content, or scroll-position-aware
+  UI state.
+
+not_this_if:
+  - "you need element-level intersection (use trigger.onVisible or trigger.onViewportProgress)"
+  - "you need scroll direction regardless of position (use trigger.scrollDirection)"
+  - "the threshold is a fraction of media playback (use trigger.mediaProgress)"
+
+axes:
+  - name: config
+    fields: [scrollThresholdTriggers]
+    note: "array of { threshold (px or '50%'), onCrossDown?, onCrossUp? } on baseSectionPropsSchema"
+
+covers:
+  - description: "Show a sticky CTA after scrolling past 800px, hide when scrolling back above"
+    example: content/validator-fragments/trigger-scroll-threshold.json
+
+does_not_cover:
+  - what: "Element enters viewport"
+    use_instead: trigger.onVisible
+  - what: "Scroll direction trigger"
+    use_instead: trigger.scrollDirection
+  - what: "Scroll-driven progress value"
+    use_instead: trigger.onViewportProgress
+
+composes_with:
+  parents: [section.*]
+  siblings_typical: [trigger.onVisible, trigger.scrollDirection]
+  motion: "N/A — fires actions; receiving element handles animation"
+
+known_limitations:
+  - "Threshold percentage is resolved against document.body.scrollHeight at scroll time"
+  - "Tracks window.scrollY — does not work inside scroll:scroll containers"
+  - "Each threshold fires once per crossing direction; no debounce"
+
+proposal_hints:
+  new_variant_value: "N/A — trigger, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

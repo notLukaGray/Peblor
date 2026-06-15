@@ -1,0 +1,13 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Cards Stats — Preset Demo",
+  "description": "Stat cards, metric rows, and proof blocks that combine counters, labels, explanatory copy, and testimonial framing.",
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "card", "bg"],
+  "sectionOrder": ["nav-header", "hero", "sec-stat-cards", "sec-stat-row", "sec-proof"],
+  "bgKey": "bg-cards",
+  "definitions": {
+    "bg-cards": {
+      "preset": "bg-cards"
+    }
+  }
+}

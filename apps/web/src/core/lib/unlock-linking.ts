@@ -1,6 +1,7 @@
 import type { SectionBlock } from "@pb/contracts";
 import { PROTECTED_PAGE_PATHS } from "@/core/lib/protected-slugs.generated";
 import { getModalProps } from "@pb/core/resolve";
+import { cdnBase } from "@/core/lib/globals";
 
 export function isUnlockEnabled(): boolean {
   return typeof process.env.SITE_PASSWORD === "string" && process.env.SITE_PASSWORD.length > 0;
@@ -19,7 +20,7 @@ export function getSingleQueryValue(value: string | string[] | undefined): strin
 export function getSafeUnlockPreviewUrl(value: string | undefined): string | null {
   if (!value) return null;
   if (value.startsWith("/") && !value.startsWith("//")) return value;
-  if (value.startsWith("https://media.example.com/")) return value;
+  if (cdnBase && value.startsWith(cdnBase.endsWith("/") ? cdnBase : cdnBase + "/")) return value;
   return null;
 }
 

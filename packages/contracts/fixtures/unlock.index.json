@@ -8,6 +8,21 @@
     "bg": {
       "type": "backgroundVariable",
       "layers": [{ "fill": "#0a0a0a" }]
+    },
+    "unlock_intro": {
+      "type": "contentBlock",
+      "elementOrder": [],
+      "definitions": {}
+    },
+    "unlock_form": {
+      "type": "contentBlock",
+      "elementOrder": [],
+      "definitions": {}
+    },
+    "unlock_footer": {
+      "type": "contentBlock",
+      "elementOrder": [],
+      "definitions": {}
     }
   }
 }

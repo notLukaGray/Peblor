@@ -1,0 +1,22 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "900px",
+  "selfAlign": "center",
+  "align": "start",
+  "height": "hug",
+  "padding": {
+    "base": "10rem 0 6rem",
+    "md": "12rem 0 8rem"
+  },
+  "gap": "1rem",
+  "motionTiming": {
+    "staggerChildren": 0.1,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"]
+}

@@ -1,0 +1,48 @@
+{
+  "preset": "composition-column-nested-hybrid",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "1060px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "0 0 8rem",
+    "md": "0 0 12rem"
+  },
+  "definitions": {
+    "left-stack": {
+      "section": {
+        "definitions": {
+          "a": {
+            "section": {
+              "definitions": {
+                "body": {
+                  "text": "Long internal note to stress the nested stack and verify spacing continuity when one child card grows significantly taller than its sibling.",
+                  "preset": "type-body-fine"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "right-stack": {
+      "section": {
+        "definitions": {
+          "quote": {
+            "section": {
+              "definitions": {
+                "quote": {
+                  "text": "Utility-dense compositions can stay multi-region on desktop while gracefully collapsing to one track on mobile for tap comfort and reading flow.",
+                  "preset": "type-body-fine"
+                }
+              }
+            },
+            "type": "elementGroup"
+          }
+        }
+      }
+    }
+  }
+}

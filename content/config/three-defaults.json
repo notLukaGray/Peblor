@@ -1,0 +1,30 @@
+{
+  "three": {
+    "lights": {
+      "ambientIntensity": 0.5,
+      "spotAngle": 0.1,
+      "spotPenumbra": 0.5
+    },
+    "cameraEffects": {
+      "bobbingAmount": 0.3,
+      "bobbingSpeed": 0.8,
+      "mouseSensitivity": -0.2,
+      "mouseSmoothness": 0.1
+    },
+    "scene": {
+      "orthoSize": 0.1,
+      "perspNear": 0.1
+    },
+    "postProcessing": {
+      "noiseOpacity": 0.5,
+      "bloomLuminanceThreshold": 0.9,
+      "bloomLuminanceSmoothing": 0.025,
+      "bloomRadius": 0.85,
+      "ssaoLuminanceInfluence": 0.9,
+      "ssaoBias": 0.025,
+      "ssaoFade": 0.01,
+      "ssaoRangeThreshold": 0.5,
+      "ssaoRangeFalloff": 0.1
+    }
+  }
+}

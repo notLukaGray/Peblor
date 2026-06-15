@@ -26,15 +26,17 @@ describe("section-column-layout", () => {
       expect(resolveColumnCount(2, true)).toBe(2);
       expect(resolveColumnCount(1, false)).toBe(1);
     });
-    it("returns desktop when isDesktop and object has desktop", () => {
-      expect(resolveColumnCount({ desktop: 3, mobile: 1 }, true)).toBe(3);
+    it("returns md when isDesktop and tier map has md", () => {
+      expect(resolveColumnCount({ base: 1, md: 3 }, true)).toBe(3);
     });
-    it("returns mobile when !isDesktop and object has mobile", () => {
-      expect(resolveColumnCount({ desktop: 3, mobile: 1 }, false)).toBe(1);
+    it("returns base when !isDesktop and tier map has base", () => {
+      expect(resolveColumnCount({ base: 1, md: 3 }, false)).toBe(1);
     });
-    it("falls back to other breakpoint when one missing", () => {
-      expect(resolveColumnCount({ mobile: 2 }, true)).toBe(2);
-      expect(resolveColumnCount({ desktop: 4 }, false)).toBe(4);
+    it("cascades base to desktop when md is missing", () => {
+      expect(resolveColumnCount({ base: 2 }, true)).toBe(2);
+    });
+    it("returns default 1 when only md is set and isDesktop is false", () => {
+      expect(resolveColumnCount({ md: 4 }, false)).toBe(1);
     });
     it("returns 1 when columns undefined", () => {
       expect(resolveColumnCount(undefined, true)).toBe(1);
@@ -53,15 +55,17 @@ describe("section-column-layout", () => {
     it("returns array as-is when elementOrder is array", () => {
       expect(resolveElementOrder(["c", "a", "b"], elements, true)).toEqual(["c", "a", "b"]);
     });
-    it("returns desktop order when isDesktop and object", () => {
-      expect(
-        resolveElementOrder({ desktop: ["b", "a"], mobile: ["a", "b"] }, elements, true)
-      ).toEqual(["b", "a"]);
+    it("returns md order when isDesktop and tier map", () => {
+      expect(resolveElementOrder({ base: ["a", "b"], md: ["b", "a"] }, elements, true)).toEqual([
+        "b",
+        "a",
+      ]);
     });
-    it("returns mobile order when !isDesktop and object", () => {
-      expect(
-        resolveElementOrder({ desktop: ["b", "a"], mobile: ["a", "b"] }, elements, false)
-      ).toEqual(["a", "b"]);
+    it("returns base order when !isDesktop and tier map", () => {
+      expect(resolveElementOrder({ base: ["a", "b"], md: ["b", "a"] }, elements, false)).toEqual([
+        "a",
+        "b",
+      ]);
     });
   });
 
@@ -69,16 +73,17 @@ describe("section-column-layout", () => {
     it("returns empty object when undefined", () => {
       expect(resolveColumnAssignments(undefined, true)).toEqual({});
     });
-    it("returns object as-is when no mobile/desktop keys", () => {
+    it("returns object as-is when no tier keys", () => {
       expect(resolveColumnAssignments({ el1: 0, el2: 1 }, true)).toEqual({ el1: 0, el2: 1 });
     });
-    it("returns desktop map when isDesktop", () => {
-      expect(resolveColumnAssignments({ mobile: { a: 0 }, desktop: { a: 1, b: 0 } }, true)).toEqual(
-        { a: 1, b: 0 }
-      );
+    it("returns md map when isDesktop", () => {
+      expect(resolveColumnAssignments({ base: { a: 0 }, md: { a: 1, b: 0 } }, true)).toEqual({
+        a: 1,
+        b: 0,
+      });
     });
-    it("returns mobile map when !isDesktop", () => {
-      expect(resolveColumnAssignments({ mobile: { a: 0 }, desktop: { a: 1 } }, false)).toEqual({
+    it("returns base map when !isDesktop", () => {
+      expect(resolveColumnAssignments({ base: { a: 0 }, md: { a: 1 } }, false)).toEqual({
         a: 0,
       });
     });
@@ -94,8 +99,8 @@ describe("section-column-layout", () => {
     it("returns array as-is", () => {
       expect(resolveColumnGaps(["0.5rem", "1rem"], true)).toEqual(["0.5rem", "1rem"]);
     });
-    it("returns desktop value when isDesktop and object", () => {
-      expect(resolveColumnGaps({ mobile: "0.5rem", desktop: "1rem" }, true)).toBe("1rem");
+    it("returns md value when isDesktop and tier map", () => {
+      expect(resolveColumnGaps({ base: "0.5rem", md: "1rem" }, true)).toBe("1rem");
     });
   });
 
@@ -103,9 +108,9 @@ describe("section-column-layout", () => {
     it("returns array as-is", () => {
       expect(resolveColumnWidths([1, 2], true)).toEqual([1, 2]);
     });
-    it("resolves responsive object", () => {
-      expect(resolveColumnWidths({ mobile: [1], desktop: [1, 2] }, true)).toEqual([1, 2]);
-      expect(resolveColumnWidths({ mobile: [1], desktop: [1, 2] }, false)).toEqual([1]);
+    it("resolves responsive tier map", () => {
+      expect(resolveColumnWidths({ base: [1], md: [1, 2] }, true)).toEqual([1, 2]);
+      expect(resolveColumnWidths({ base: [1], md: [1, 2] }, false)).toEqual([1]);
     });
   });
 
@@ -113,9 +118,9 @@ describe("section-column-layout", () => {
     it("returns array as-is", () => {
       expect(resolveColumnStyles([{ fill: "#000" }], true)).toEqual([{ fill: "#000" }]);
     });
-    it("resolves responsive object", () => {
+    it("resolves responsive tier map", () => {
       expect(
-        resolveColumnStyles({ mobile: [{ fill: "#111" }], desktop: [{ fill: "#222" }] }, true)
+        resolveColumnStyles({ base: [{ fill: "#111" }], md: [{ fill: "#222" }] }, true)
       ).toEqual([{ fill: "#222" }]);
     });
   });
@@ -125,10 +130,10 @@ describe("section-column-layout", () => {
       expect(resolveColumnSpan({ hero: "all" }, true)).toEqual({ hero: "all" });
     });
     it("resolves responsive span map by breakpoint", () => {
-      expect(resolveColumnSpan({ mobile: { hero: 1 }, desktop: { hero: 2 } }, true)).toEqual({
+      expect(resolveColumnSpan({ base: { hero: 1 }, md: { hero: 2 } }, true)).toEqual({
         hero: 2,
       });
-      expect(resolveColumnSpan({ mobile: { hero: 1 }, desktop: { hero: 2 } }, false)).toEqual({
+      expect(resolveColumnSpan({ base: { hero: 1 }, md: { hero: 2 } }, false)).toEqual({
         hero: 1,
       });
     });
@@ -140,10 +145,7 @@ describe("section-column-layout", () => {
     });
     it("resolves responsive itemStyles by breakpoint", () => {
       expect(
-        resolveItemStyles(
-          { mobile: { a: { fill: "#111" } }, desktop: { a: { fill: "#222" } } },
-          true
-        )
+        resolveItemStyles({ base: { a: { fill: "#111" } }, md: { a: { fill: "#222" } } }, true)
       ).toEqual({ a: { fill: "#222" } });
     });
   });
@@ -153,8 +155,8 @@ describe("section-column-layout", () => {
       expect(resolveGridMode(undefined, true)).toBe("columns");
     });
     it("resolves responsive mode", () => {
-      expect(resolveGridMode({ mobile: "columns", desktop: "grid" }, true)).toBe("grid");
-      expect(resolveGridMode({ mobile: "columns", desktop: "grid" }, false)).toBe("columns");
+      expect(resolveGridMode({ base: "columns", md: "grid" }, true)).toBe("grid");
+      expect(resolveGridMode({ base: "columns", md: "grid" }, false)).toBe("columns");
     });
   });
 
@@ -164,8 +166,141 @@ describe("section-column-layout", () => {
     });
     it("resolves responsive itemLayout map by breakpoint", () => {
       expect(
-        resolveItemLayout({ mobile: { a: { column: 0 } }, desktop: { a: { column: 2 } } }, true)
+        resolveItemLayout({ base: { a: { column: 0 } }, md: { a: { column: 2 } } }, true)
       ).toEqual({ a: { column: 2 } });
+    });
+  });
+
+  // ── Tier-map resolution semantics ───────────────────────────────────────
+  // These assert that tier-map inputs `{ base, md }` resolve correctly
+  // with mobile-first cascade semantics.
+
+  describe("tier-map resolution semantics", () => {
+    it("resolveColumnCount: {base,md} resolves correctly", () => {
+      expect(resolveColumnCount({ base: 1, md: 3 }, true)).toBe(3);
+      expect(resolveColumnCount({ base: 1, md: 3 }, false)).toBe(1);
+    });
+
+    it("resolveElementOrder: {base,md} resolves correctly", () => {
+      const elements = [{ id: "a" }, { id: "b" }];
+      expect(resolveElementOrder({ base: ["b", "a"], md: ["a", "b"] }, elements, true)).toEqual([
+        "a",
+        "b",
+      ]);
+      expect(resolveElementOrder({ base: ["b", "a"], md: ["a", "b"] }, elements, false)).toEqual([
+        "b",
+        "a",
+      ]);
+    });
+
+    it("resolveColumnAssignments: {base,md} resolves correctly", () => {
+      expect(resolveColumnAssignments({ base: { a: 0 }, md: { a: 1, b: 0 } }, true)).toEqual({
+        a: 1,
+        b: 0,
+      });
+      expect(resolveColumnAssignments({ base: { a: 0 }, md: { a: 1, b: 0 } }, false)).toEqual({
+        a: 0,
+      });
+    });
+
+    it("resolveColumnGaps: {base,md} resolves correctly", () => {
+      expect(resolveColumnGaps({ base: "0.5rem", md: "1rem" }, true)).toBe("1rem");
+      expect(resolveColumnGaps({ base: "0.5rem", md: "1rem" }, false)).toBe("0.5rem");
+    });
+
+    it("resolveColumnWidths: {base,md} resolves correctly", () => {
+      expect(resolveColumnWidths({ base: [1], md: [1, 2] }, true)).toEqual([1, 2]);
+      expect(resolveColumnWidths({ base: [1], md: [1, 2] }, false)).toEqual([1]);
+    });
+
+    it("resolveColumnStyles: {base,md} resolves correctly", () => {
+      expect(
+        resolveColumnStyles({ base: [{ fill: "#111" }], md: [{ fill: "#222" }] }, true)
+      ).toEqual([{ fill: "#222" }]);
+      expect(
+        resolveColumnStyles({ base: [{ fill: "#111" }], md: [{ fill: "#222" }] }, false)
+      ).toEqual([{ fill: "#111" }]);
+    });
+
+    it("resolveColumnSpan: {base,md} resolves correctly", () => {
+      expect(resolveColumnSpan({ base: { hero: 1 }, md: { hero: 2 } }, true)).toEqual({ hero: 2 });
+      expect(resolveColumnSpan({ base: { hero: 1 }, md: { hero: 2 } }, false)).toEqual({ hero: 1 });
+    });
+
+    it("resolveItemStyles: {base,md} resolves correctly", () => {
+      expect(
+        resolveItemStyles({ base: { a: { fill: "#111" } }, md: { a: { fill: "#222" } } }, true)
+      ).toEqual({ a: { fill: "#222" } });
+      expect(
+        resolveItemStyles({ base: { a: { fill: "#111" } }, md: { a: { fill: "#222" } } }, false)
+      ).toEqual({ a: { fill: "#111" } });
+    });
+
+    it("resolveGridMode: {base,md} resolves correctly", () => {
+      expect(resolveGridMode({ base: "columns", md: "grid" }, true)).toBe("grid");
+      expect(resolveGridMode({ base: "columns", md: "grid" }, false)).toBe("columns");
+    });
+
+    it("resolveItemLayout: {base,md} resolves correctly", () => {
+      expect(
+        resolveItemLayout({ base: { a: { column: 0 } }, md: { a: { column: 2 } } }, true)
+      ).toEqual({ a: { column: 2 } });
+      expect(
+        resolveItemLayout({ base: { a: { column: 0 } }, md: { a: { column: 2 } } }, false)
+      ).toEqual({ a: { column: 0 } });
+    });
+
+    it("base-only tier cascades to desktop (mobile-first)", () => {
+      expect(resolveColumnCount({ base: 2 }, true)).toBe(2);
+      expect(resolveColumnCount({ base: 2 }, false)).toBe(2);
+    });
+
+    it("higher tiers (lg, xl) are ignored in JS resolution", () => {
+      // lg/xl only affect CSS @media; JS resolution falls back to the highest
+      // defined tier at the representative width (0 for mobile, 768 for desktop).
+      expect(resolveColumnCount({ base: 1, lg: 4 }, true)).toBe(1);
+      expect(resolveColumnCount({ base: 1, lg: 4 }, false)).toBe(1);
+    });
+
+    it("{base:X} cascades to desktop — both breakpoints get X", () => {
+      expect(resolveColumnCount({ base: 3 }, true)).toBe(3);
+      expect(resolveColumnCount({ base: 3 }, false)).toBe(3);
+    });
+
+    it("{md:X} yields undefined on mobile for resolvers without default fallback", () => {
+      // Mobile-first cascade: md (768px) is above mobile representative width (0px)
+      // so {md:X} has no defined value for mobile. resolveColumnCount has a ?? 1
+      // fallback, but other resolvers return undefined.
+      expect(resolveColumnCount({ md: 3 }, false)).toBe(1);
+      expect(resolveColumnCount({ md: 3 }, true)).toBe(3);
+      expect(resolveColumnWidths({ md: ["1fr", "2fr"] }, false)).toBeUndefined();
+      expect(resolveColumnGaps({ md: "1.5rem" }, false)).toBeUndefined();
+    });
+
+    it("{base:X} cascades to desktop for columnWidths", () => {
+      expect(resolveColumnWidths({ base: ["1fr", "1fr"] }, true)).toEqual(["1fr", "1fr"]);
+      expect(resolveColumnWidths({ base: ["1fr", "1fr"] }, false)).toEqual(["1fr", "1fr"]);
+      expect(resolveColumnWidths({ md: ["1fr", "1fr"] }, false)).toBeUndefined();
+    });
+
+    it("{base:X} cascades to desktop for columnGaps", () => {
+      expect(resolveColumnGaps({ base: "1.5rem" }, true)).toBe("1.5rem");
+      expect(resolveColumnGaps({ base: "1.5rem" }, false)).toBe("1.5rem");
+      expect(resolveColumnGaps({ md: "1.5rem" }, false)).toBeUndefined();
+    });
+
+    it("{base:X} cascades to desktop for columnSpan", () => {
+      const span = { hero: "all" as const };
+      expect(resolveColumnSpan({ base: span }, true)).toEqual(span);
+      expect(resolveColumnSpan({ base: span }, false)).toEqual(span);
+      expect(resolveColumnSpan({ md: span }, false)).toBeUndefined();
+    });
+
+    it("{base:X} cascades to desktop for itemLayout", () => {
+      const layout = { a: { column: 0, row: 0 } };
+      expect(resolveItemLayout({ base: layout }, true)).toEqual(layout);
+      expect(resolveItemLayout({ base: layout }, false)).toEqual(layout);
+      expect(resolveItemLayout({ md: layout }, false)).toBeUndefined();
     });
   });
 

@@ -1,0 +1,44 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "align": "start",
+  "gap": "0.9rem",
+  "width": "100%",
+  "padding": "1.25rem",
+  "borderRadius": "18px",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+  },
+  "motion": {
+    "onHover": {
+      "y": -4
+    },
+    "transition": {
+      "duration": 0.18
+    }
+  },
+  "section": {
+    "elementOrder": ["kicker", "title", "body", "link"],
+    "definitions": {
+      "kicker": {
+        "preset": "type-kicker-badge",
+        "text": "Feature"
+      },
+      "title": {
+        "preset": "type-h4-card",
+        "text": "Feature card title"
+      },
+      "body": {
+        "preset": "type-body-standard",
+        "text": "Short supporting copy for the feature card."
+      },
+      "link": {
+        "preset": "type-link-nav",
+        "label": "Explore →",
+        "href": "#"
+      }
+    }
+  }
+}

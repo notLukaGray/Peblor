@@ -1,0 +1,19 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "bg-project-icy — Preset Demo",
+  "description": "Icy cerulean fade with entrance animation on the upper glow",
+  "presets": ["demo", "bg"],
+  "sectionOrder": ["nav-header", "hero"],
+  "bgKey": "bg-project-icy",
+  "scroll": {
+    "smooth": false,
+    "lockBody": true,
+    "scrollX": "hidden",
+    "scrollY": "hidden"
+  },
+  "definitions": {
+    "bg-project-icy": {
+      "preset": "bg-project-icy"
+    }
+  }
+}

@@ -29,19 +29,18 @@ axes:
         fontSize,
         fontWeight,
         lineHeight,
-        lineSpacing,
         letterSpacing,
         fontFeatureSettings,
       ]
   - name: color
     fields: [color, textFill]
-  - name: overflow
+  - name: scroll
     fields: [textOverflow, textStroke, verticalAlign, paragraphSpacing, maxLines]
 
 covers:
   - description: "Lead-size intro paragraph with accent color and refined letter spacing"
     example: content/validator-fragments/body-lead.json
-  - description: "Fine-print caption with secondary color and text-overflow ellipsis"
+  - description: "Fine-print caption with secondary color and text-scroll ellipsis"
     example: content/validator-fragments/body-fine.json
 
 does_not_cover:
@@ -59,7 +58,6 @@ composes_with:
 
 known_limitations:
   - "variableKey replaces the full text field — static text is ignored when set"
-  - "lineSpacing is legacy shorthand; prefer lineHeight for new content"
 
 proposal_hints:
   new_variant_value: extend_cluster

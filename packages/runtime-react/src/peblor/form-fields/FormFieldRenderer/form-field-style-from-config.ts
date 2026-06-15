@@ -1,21 +1,13 @@
 import type { CSSProperties } from "react";
 import type { FormFieldBlock } from "@pb/contracts/types";
-import { resolveResponsiveValue } from "@pb/runtime-react/core/lib/responsive-value";
-import {
-  type PeblorThemeMode,
-  resolveThemeString,
-  resolveThemeStyleObject,
-} from "@/peblor/theme/theme-string";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
+import { lowerThemeStringToCss, lowerThemeStyleObject } from "@/peblor/theme/theme-string";
 
 /**
  * Builds CSS style object from form field block Style modifiers.
  * Used by FormFieldRenderer to apply width, padding, fill, stroke, margins, etc.
  */
-export function formFieldStyleFromConfig(
-  field: FormFieldBlock,
-  isMobile: boolean,
-  themeMode: PeblorThemeMode
-): CSSProperties {
+export function formFieldStyleFromConfig(field: FormFieldBlock, isMobile: boolean): CSSProperties {
   const width = resolveResponsiveValue(field.width, isMobile);
   const marginTop = resolveResponsiveValue(field.marginTop, isMobile);
   const marginBottom = resolveResponsiveValue(field.marginBottom, isMobile);
@@ -35,8 +27,8 @@ export function formFieldStyleFromConfig(
   if (marginLeft !== undefined) style.marginLeft = marginLeft;
   if (marginRight !== undefined) style.marginRight = marginRight;
   if (padding !== undefined) style.padding = padding;
-  const resolvedFill = resolveThemeString(fill, themeMode);
-  const resolvedStroke = resolveThemeString(stroke, themeMode);
+  const resolvedFill = lowerThemeStringToCss(fill);
+  const resolvedStroke = lowerThemeStringToCss(stroke);
   if (resolvedFill !== undefined) style.background = resolvedFill;
   if (resolvedStroke !== undefined) style.borderColor = resolvedStroke;
   if (borderRadius !== undefined) style.borderRadius = borderRadius;
@@ -44,7 +36,7 @@ export function formFieldStyleFromConfig(
   if (textAlign !== undefined) style.textAlign = textAlign as CSSProperties["textAlign"];
 
   if (field.wrapperStyle && typeof field.wrapperStyle === "object") {
-    Object.assign(style, resolveThemeStyleObject(field.wrapperStyle, themeMode));
+    Object.assign(style, lowerThemeStyleObject(field.wrapperStyle));
   }
   return style;
 }

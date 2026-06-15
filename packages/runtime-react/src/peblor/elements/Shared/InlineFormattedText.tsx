@@ -1,4 +1,4 @@
-import { Suspense, lazy, type ReactNode } from "react";
+import { Suspense, lazy } from "react";
 
 const LazyMarkdown = lazy(async () => {
   const [{ default: ReactMarkdown }, { default: remarkGfm }] = await Promise.all([
@@ -44,78 +44,24 @@ const LazyMarkdown = lazy(async () => {
   return { default: MarkdownInline };
 });
 
-function normalizeInlineText(text: string): string {
-  return text.replace(/\r\n?/g, "\n").replace(/\\n/g, "\n");
-}
-
 function isExternalUrl(href: string | undefined): boolean {
   if (!href) return false;
   return href.startsWith("http") || href.startsWith("//");
 }
 
-function hasMarkdownSyntax(text: string): boolean {
+import { renderInlineMarkdown } from "./InlineMarkdownTokens";
+
+/** Quick check: does the string look like it contains inline markdown syntax? */
+function hasInlineMarkdown(text: string): boolean {
   return /[`*_~\[]/.test(text) || text.includes("\n");
 }
 
-type InlineToken =
-  | { type: "text"; value: string }
-  | { type: "strong"; value: string }
-  | { type: "em"; value: string }
-  | { type: "del"; value: string }
-  | { type: "code"; value: string };
-
-function tokenizeInlineMarkdown(text: string): InlineToken[] {
-  const tokens: InlineToken[] = [];
-  const pattern = /(\*\*[^*\n]+\*\*|\*[^*\n]+\*|~~[^~\n]+~~|`[^`\n]+`)/g;
-  let lastIndex = 0;
-
-  for (const match of text.matchAll(pattern)) {
-    const matchIndex = match.index ?? 0;
-    if (matchIndex > lastIndex) {
-      tokens.push({ type: "text", value: text.slice(lastIndex, matchIndex) });
-    }
-
-    const raw = match[0];
-    if (raw.startsWith("**") && raw.endsWith("**")) {
-      tokens.push({ type: "strong", value: raw.slice(2, -2) });
-    } else if (raw.startsWith("~~") && raw.endsWith("~~")) {
-      tokens.push({ type: "del", value: raw.slice(2, -2) });
-    } else if (raw.startsWith("`") && raw.endsWith("`")) {
-      tokens.push({ type: "code", value: raw.slice(1, -1) });
-    } else if (raw.startsWith("*") && raw.endsWith("*")) {
-      tokens.push({ type: "em", value: raw.slice(1, -1) });
-    } else {
-      tokens.push({ type: "text", value: raw });
-    }
-
-    lastIndex = matchIndex + raw.length;
-  }
-
-  if (lastIndex < text.length) {
-    tokens.push({ type: "text", value: text.slice(lastIndex) });
-  }
-
-  return tokens;
-}
-
-function renderSimpleInlineFallback(text: string): ReactNode {
-  const tokens = tokenizeInlineMarkdown(text);
-  return tokens.map((token, index) => {
-    const key = `${token.type}-${index}`;
-    if (token.type === "strong") return <strong key={key}>{token.value}</strong>;
-    if (token.type === "em") return <em key={key}>{token.value}</em>;
-    if (token.type === "del") return <del key={key}>{token.value}</del>;
-    if (token.type === "code") return <code key={key}>{token.value}</code>;
-    return <span key={key}>{token.value}</span>;
-  });
-}
-
 export function InlineFormattedText({ text }: { text: string }) {
-  const normalized = normalizeInlineText(text);
-  if (!hasMarkdownSyntax(normalized)) return <>{normalized}</>;
+  const normalized = text.replace(/\r\n?/g, "\n").replace(/\\n/g, "\n");
+  if (!hasInlineMarkdown(normalized)) return <>{normalized}</>;
 
   return (
-    <Suspense fallback={<>{renderSimpleInlineFallback(normalized)}</>}>
+    <Suspense fallback={<>{renderInlineMarkdown(normalized)}</>}>
       <LazyMarkdown text={normalized} />
     </Suspense>
   );

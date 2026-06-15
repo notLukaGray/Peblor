@@ -3,11 +3,12 @@ import { responsiveElementBodyVariantSchema } from "./element-foundation-schemas
 import { sectionEffectSchema } from "./section-effect-schemas";
 import {
   cssInlineStyleSchema,
+  jsonNullishOptional,
   responsiveElementAlignSchema,
   responsiveStringSchema,
   responsiveThemeStringSchema,
   responsiveTextAlignSchema,
-  triggerActionSchema,
+  triggerActionSchemaCore,
 } from "./schema-primitives";
 import { analyticsConfigSchema } from "../../../analytics/schemas";
 
@@ -66,8 +67,6 @@ export const formFieldTypeSchema = z.enum([
   "hidden",
   "button",
   "row",
-  // Legacy alias accepted so existing JSON still parses; new content should use fieldType "button".
-  "submit",
 ]);
 
 export const formButtonTypeSchema = z.enum(["submit", "reset", "button"]);
@@ -106,12 +105,43 @@ const formFieldContentSchema = z.object({
   spellCheck: z.boolean().optional(),
   buttonType: formButtonTypeSchema.optional(),
   loadingText: z.string().optional(),
-  action: triggerActionSchema.optional(),
+  action: triggerActionSchemaCore.optional(),
   href: z.string().optional(),
   gap: responsiveStringSchema.optional(),
   columns: z.number().int().min(1).optional(),
   /** Analytics config scoped to this form field. */
-  analytics: analyticsConfigSchema,
+  analytics: jsonNullishOptional(analyticsConfigSchema),
+  /**
+   * Custom validation error messages keyed by ValidityState constraint name.
+   * Each key is used when the corresponding HTML validity check fails. The runtime
+   * maps these directly to ValidityState properties (see MDN ValidityState API).
+   *
+   * Mapping:
+   *   valueMissing    — field is required and empty (`required` constraint)
+   *   typeMismatch    — value doesn't match the expected type (e.g. invalid email/url)
+   *   patternMismatch — value doesn't match `pattern`
+   *   tooShort        — value is shorter than `minLength`
+   *   tooLong         — value is longer than `maxLength`
+   *   rangeUnderflow  — numeric value is below `min`
+   *   rangeOverflow   — numeric value is above `max`
+   *   stepMismatch    — numeric value doesn't match `step`
+   *
+   * When a constraint fires and the matching key is present, the custom string
+   * replaces the browser-default error message. Keys that are absent fall back
+   * to the built-in default message for that constraint.
+   */
+  validationMessages: z
+    .strictObject({
+      valueMissing: z.string().optional(),
+      typeMismatch: z.string().optional(),
+      patternMismatch: z.string().optional(),
+      tooShort: z.string().optional(),
+      tooLong: z.string().optional(),
+      rangeUnderflow: z.string().optional(),
+      rangeOverflow: z.string().optional(),
+      stepMismatch: z.string().optional(),
+    })
+    .optional(),
 });
 
 export type FormFieldOption = z.infer<typeof formFieldOptionSchema>;
@@ -143,7 +173,7 @@ export const formFieldBlockSchema: z.ZodType<FormFieldBlock> = z.lazy(() =>
         });
       }
 
-      if (field.fieldType === "button" || field.fieldType === "submit") {
+      if (field.fieldType === "button") {
         const label = typeof field.label === "string" ? field.label.trim() : "";
         if (!label) {
           ctx.addIssue({
@@ -170,11 +200,7 @@ export const formFieldBlockSchema: z.ZodType<FormFieldBlock> = z.lazy(() =>
         });
       }
 
-      if (
-        field.buttonType !== undefined &&
-        field.fieldType !== "button" &&
-        field.fieldType !== "submit"
-      ) {
+      if (field.buttonType !== undefined && field.fieldType !== "button") {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["buttonType"],

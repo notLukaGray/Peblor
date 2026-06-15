@@ -2,11 +2,10 @@
 
 import type { CSSProperties } from "react";
 import type { ElementBlock } from "@pb/contracts/types";
-import { resolveResponsiveValue } from "@pb/runtime-react/core/lib/responsive-value";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
 import { useDeviceType } from "@pb/runtime-react/core/providers/device-type-provider";
 import { ElementLayoutWrapper } from "./Shared/ElementLayoutWrapper";
-import { resolveThemeString } from "@/peblor/theme/theme-string";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
+import { lowerThemeStringToCss } from "@/peblor/theme/theme-string";
 
 type Props = Extract<ElementBlock, { type: "elementDivider" }>;
 
@@ -23,10 +22,9 @@ export function ElementDivider({
   ...layout
 }: Props) {
   const { isMobile } = useDeviceType();
-  const themeMode = usePeblorThemeMode();
   const isHorizontal = orientation !== "vertical";
   const resolvedLength = resolveResponsiveValue(length, isMobile) ?? "100%";
-  const resolvedColor = resolveThemeString(color, themeMode) ?? "currentColor";
+  const resolvedColor = lowerThemeStringToCss(color) ?? "currentColor";
 
   const lineStyle: CSSProperties = isHorizontal
     ? style === "solid"

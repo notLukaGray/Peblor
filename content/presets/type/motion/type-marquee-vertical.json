@@ -1,0 +1,11 @@
+{
+  "type": "elementMarquee",
+  "level": 3,
+  "speed": 15,
+  "direction": "up",
+  "gap": "2.5rem",
+  "pauseOnHover": true,
+  "height": "280px",
+  "width": "hug",
+  "color": "var(--pb-on-secondary)"
+}

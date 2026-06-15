@@ -1,0 +1,59 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "align": "center",
+  "gap": "0.75rem",
+  "width": {
+    "base": "100%",
+    "md": "82%"
+  },
+  "selfAlign": "center",
+  "motionTiming": {
+    "entrancePreset": "blurIn",
+    "trigger": "onFirstVisible"
+  },
+  "section": {
+    "elementOrder": ["quote-mark", "quote-text", "quote-mark-close", "quote-attr"],
+    "definitions": {
+      "quote-mark": {
+        "type": "elementHeading",
+        "level": 1,
+        "text": "“",
+        "color": "color-mix(in oklab, var(--pb-accent) 70%, transparent)",
+        "textAlign": "left",
+        "width": "100%",
+        "lineHeight": "0.6",
+        "marginBottom": "-0.5rem"
+      },
+      "quote-text": {
+        "type": "elementHeading",
+        "level": 2,
+        "wordWrap": true,
+        "textAlign": "center",
+        "color": "var(--pb-on-secondary)",
+        "text": "Quote text goes here."
+      },
+      "quote-mark-close": {
+        "type": "elementHeading",
+        "level": 1,
+        "text": "”",
+        "color": "color-mix(in oklab, var(--pb-accent) 70%, transparent)",
+        "textAlign": "right",
+        "lineHeight": "0.6",
+        "marginTop": "20px",
+        "width": "100%",
+        "selfAlign": "left"
+      },
+      "quote-attr": {
+        "type": "elementBody",
+        "level": 5,
+        "textAlign": "center",
+        "textTransform": "uppercase",
+        "letterSpacing": "0.08em",
+        "color": "color-mix(in oklab, var(--pb-on-secondary) 45%, transparent)",
+        "text": "— Attribution"
+      }
+    }
+  }
+}

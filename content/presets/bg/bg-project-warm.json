@@ -1,0 +1,22 @@
+{
+  "type": "backgroundVariable",
+  "layers": [
+    {
+      "fill": "linear-gradient(180deg, color-mix(in oklab, var(--pb-accent) 13%, var(--pb-secondary)) 0%, var(--pb-secondary) 50%, color-mix(in oklab, var(--pb-primary) 7%, var(--pb-secondary)) 100%)"
+    },
+    {
+      "fill": "radial-gradient(ellipse 80% 45% at 16% 6%, color-mix(in oklab, var(--pb-accent) 20%, transparent) 0%, transparent 100%)",
+      "backgroundSize": "120% 120%",
+      "motion": [
+        {
+          "type": "parallax",
+          "speed": 0.28,
+          "axis": "y"
+        }
+      ]
+    },
+    {
+      "fill": "radial-gradient(ellipse 70% 55% at 88% 26%, color-mix(in oklab, var(--pb-primary) 11%, transparent) 0%, transparent 100%)"
+    }
+  ]
+}

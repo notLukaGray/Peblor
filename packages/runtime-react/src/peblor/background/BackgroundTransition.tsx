@@ -6,6 +6,7 @@ import type { bgBlock } from "@pb/contracts/types";
 import { BG_COMPONENTS, isKnownBgType } from "./index";
 import { useScrollContainerRef } from "@/peblor/section/position/use-scroll-container";
 import { useScroll, useMotionValueEvent } from "@/peblor/integrations/framer-motion";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 type BgBlockTransition = Extract<bgBlock, { type: "backgroundTransition" }>;
 
@@ -67,7 +68,7 @@ export function BackgroundTransitionPure({ from, to, progress, transitionStyle }
         style={{
           position: "fixed",
           inset: 0,
-          zIndex: 0,
+          zIndex: globals.zIndexBase,
           pointerEvents: "none",
           opacity: fromOpacity,
           ...transitionStyle,
@@ -80,7 +81,7 @@ export function BackgroundTransitionPure({ from, to, progress, transitionStyle }
         style={{
           position: "fixed",
           inset: 0,
-          zIndex: 0,
+          zIndex: globals.zIndexBase,
           pointerEvents: "none",
           opacity: toOpacity,
           ...transitionStyle,

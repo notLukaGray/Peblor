@@ -1,0 +1,19 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "bg-image-soft — Preset Demo",
+  "description": "Full-bleed photo with tinted overlay, parallax image, and breathing vignette",
+  "presets": ["demo", "bg"],
+  "sectionOrder": ["nav-header", "hero", "scroll-body"],
+  "bgKey": "bg-image-soft",
+  "scroll": {
+    "smooth": true,
+    "lockBody": false,
+    "scrollX": "hidden",
+    "scrollY": "auto"
+  },
+  "definitions": {
+    "bg-image-soft": {
+      "preset": "bg-image-soft"
+    }
+  }
+}

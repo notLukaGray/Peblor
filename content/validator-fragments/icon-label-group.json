@@ -1,8 +1,8 @@
 {
   "type": "elementGroup",
   "display": "flex",
-  "flexDirection": "row",
-  "alignItems": "center",
+  "flow": "row",
+  "align": "center",
   "gap": "0.5rem",
   "section": {
     "elementOrder": ["icon", "label"],
@@ -10,7 +10,7 @@
       "icon": {
         "type": "elementBody",
         "id": "icon",
-        "text": "\u25cf",
+        "text": "●",
         "level": 6,
         "marginRight": "0.25rem"
       },

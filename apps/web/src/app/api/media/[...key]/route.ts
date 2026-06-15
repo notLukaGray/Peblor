@@ -123,7 +123,8 @@ function rewriteHlsPlaylist(playlist: string, assetKey: string): string | null {
     const rewritten = playlist.split(/\r?\n/).map((line) => rewriteHlsUri(line, baseKey));
     if (rewritten.some((line) => line === null)) return null;
     return rewritten.join("\n");
-  } catch {
+  } catch (err) {
+    console.warn("[web] Failed to rewrite HLS playlist", err);
     return null;
   }
 }
@@ -250,6 +251,17 @@ export async function GET(
           "Content-Type": "application/vnd.apple.mpegurl; charset=utf-8",
         },
       });
+    }
+
+    // Before redirecting, check if the asset exists on the CDN to avoid CORB.
+    // Missing assets on Bunny CDN return 404 text/html which triggers Cross-Origin
+    // Read Blocking when the browser follows the redirect expecting an image.
+    const head = await fetch(cdnUrl, { method: "HEAD" });
+    if (!head.ok) {
+      return NextResponse.json(
+        { error: `Asset not found on CDN (${head.status}).` },
+        { status: head.status }
+      );
     }
 
     // Redirect all asset types to the signed CDN URL — browser/Three.js fetches

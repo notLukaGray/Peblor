@@ -1,0 +1,60 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "gap": "0.85rem",
+  "width": "100%",
+  "padding": "1.25rem",
+  "borderRadius": "18px",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)",
+    "position": "relative"
+  },
+  "motion": {
+    "onHover": {
+      "y": -4
+    },
+    "transition": {
+      "duration": 0.18
+    }
+  },
+  "section": {
+    "elementOrder": ["kicker", "title", "body", "action-badge"],
+    "definitions": {
+      "kicker": {
+        "preset": "type-kicker-badge",
+        "text": "Category"
+      },
+      "title": {
+        "preset": "type-h4-card",
+        "text": "Overlay action card"
+      },
+      "body": {
+        "preset": "type-body-fine",
+        "text": "The whole card surface can be linked. An action badge at the end makes the affordance explicit."
+      },
+      "action-badge": {
+        "type": "elementLink",
+        "label": "→",
+        "href": "#",
+        "external": false,
+        "copyType": "body",
+        "level": 3,
+        "linkDefault": "var(--pb-on-secondary)",
+        "linkHover": "var(--pb-accent)",
+        "linkTransition": ".2s",
+        "wrapperStyle": {
+          "display": "inline-flex",
+          "align": "center",
+          "distribute": "center",
+          "width": "2.2rem",
+          "height": "2.2rem",
+          "borderRadius": "999px",
+          "background": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+          "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 16%, transparent)"
+        }
+      }
+    }
+  }
+}

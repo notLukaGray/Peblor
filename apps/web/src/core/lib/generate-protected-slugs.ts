@@ -11,7 +11,8 @@ function isPasswordProtected(contentPath: string): boolean {
     const raw = fs.readFileSync(contentPath, "utf-8");
     const data = JSON.parse(raw) as { passwordProtected?: boolean; visibility?: string };
     return isPageProtected(data);
-  } catch {
+  } catch (err) {
+    console.warn("[web-core] Failed to read page for password protection check", contentPath, err);
     return false;
   }
 }

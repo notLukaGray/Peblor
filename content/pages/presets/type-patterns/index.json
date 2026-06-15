@@ -1,0 +1,22 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Type Patterns — Preset Demo",
+  "description": "Typography compositional patterns — pull quote, numbered list, tag row, copy block, hero copy, and reveal.",
+  "presets": ["demo", "type/core", "ui/link", "type/patterns", "bg"],
+  "sectionOrder": [
+    "nav-header",
+    "hero",
+    "sec-statement",
+    "sec-blocks",
+    "sec-quote",
+    "sec-list",
+    "sec-reveal-intro",
+    "sec-reveal"
+  ],
+  "bgKey": "bg-type",
+  "definitions": {
+    "bg-type": {
+      "preset": "bg-type"
+    }
+  }
+}

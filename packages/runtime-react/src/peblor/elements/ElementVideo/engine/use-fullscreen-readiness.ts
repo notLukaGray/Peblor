@@ -60,11 +60,17 @@ function primeForIosFullscreen(video: VideoWithWebkit, enterFullscreen: () => vo
 
   try {
     video.load();
-  } catch {}
+  } catch (err) {
+    console.warn("[peblor] Video load failed:", err);
+  }
 
   try {
-    void video.play().catch(() => {});
-  } catch {}
+    void video.play().catch((err) => {
+      console.warn("[pb-runtime-react] Fullscreen video play failed", err);
+    });
+  } catch (err) {
+    console.warn("[peblor] Video play failed:", err);
+  }
 
   if (video.readyState >= HTMLMediaElement.HAVE_METADATA) {
     onReady();
@@ -103,7 +109,9 @@ export function useFullscreenReadiness({
 
     if (!video.webkitEnterFullscreen) {
       if (container) {
-        void container.requestFullscreen().catch(() => {});
+        void container.requestFullscreen().catch((err) => {
+          console.warn("[pb-runtime-react] Fullscreen request failed", err);
+        });
       }
       return;
     }

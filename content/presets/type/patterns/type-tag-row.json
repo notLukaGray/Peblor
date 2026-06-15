@@ -1,0 +1,34 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "row",
+  "wrap": "wrap",
+  "align": "center",
+  "gap": "0.4rem",
+  "width": "100%",
+  "section": {
+    "elementOrder": ["tag-1", "tag-2", "tag-3", "tag-4", "tag-5"],
+    "definitions": {
+      "tag-1": {
+        "preset": "type-kicker-badge",
+        "text": "Design System"
+      },
+      "tag-2": {
+        "preset": "type-kicker-badge",
+        "text": "Typography"
+      },
+      "tag-3": {
+        "preset": "type-kicker-badge",
+        "text": "Motion"
+      },
+      "tag-4": {
+        "preset": "type-kicker-badge",
+        "text": "Components"
+      },
+      "tag-5": {
+        "preset": "type-kicker-badge",
+        "text": "Patterns"
+      }
+    }
+  }
+}

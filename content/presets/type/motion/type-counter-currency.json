@@ -1,0 +1,16 @@
+{
+  "type": "elementCounter",
+  "level": 1,
+  "target": 2.4,
+  "prefix": "$",
+  "suffix": "M",
+  "decimals": 1,
+  "trigger": "onVisible",
+  "tween": {
+    "duration": 2800,
+    "easing": "easeOut"
+  },
+  "color": "var(--pb-on-secondary)",
+  "textAlign": "center",
+  "width": "100%"
+}

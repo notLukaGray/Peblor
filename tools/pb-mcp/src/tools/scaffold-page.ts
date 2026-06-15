@@ -34,7 +34,10 @@ export const scaffoldPage: Tool = {
     if (force) extra.push("--force");
     await runCli(["scaffold", route, ...extra]);
     const scaffolded = JSON.parse(await readFile(outputPath, "utf-8"));
-    if (!out) await unlink(tmp).catch(() => {});
+    if (!out)
+      await unlink(tmp).catch((err) =>
+        console.warn("[pb-mcp] Failed to clean up temp file", tmp, err)
+      );
     return out ? { path: outputPath, scaffolded } : { scaffolded };
   },
 };

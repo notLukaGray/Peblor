@@ -20,7 +20,7 @@ axes:
   - name: variant
     fields: [variant]
   - name: range
-    fields: [min, max, step, defaultValue]
+    fields: [min, max, step]
   - name: action
     fields: [action, actionPayload]
     note: '"volume" and "seek" delegate to VideoControlContext; others fire firePageBuilderProgressTrigger'

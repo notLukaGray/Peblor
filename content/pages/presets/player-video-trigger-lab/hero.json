@@ -1,0 +1,21 @@
+{
+  "preset": "demo-hero",
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Action Matrix · Trigger Testing"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Video Trigger Lab"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Every video trigger action in one sealed card: play, pause, toggle, seek ±5s, seek to position, mute, fullscreen.",
+      "width": {
+        "base": "100%",
+        "md": "78%"
+      }
+    }
+  }
+}

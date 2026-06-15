@@ -5,9 +5,9 @@ import type { ElementBodyVariant } from "@pb/contracts/types";
 import { firePeblorAction } from "@/peblor/triggers";
 import { FormFieldShell } from "./FormFieldShell";
 import { getFormFieldInputClass, STRUCTURAL_SUBMIT_BUTTON } from "./form-field-typography";
-import { resolveThemeStyleObject } from "@/peblor/theme/theme-string";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
+import { lowerThemeStyleObject } from "@/peblor/theme/theme-string";
 import { resolveAuthoredUrl } from "@pb/runtime-react/core/lib/url-policy";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 type Props = {
   field: FormFieldBlock;
@@ -27,10 +27,9 @@ export function FormFieldButton({
   style,
   resolvedLevel,
 }: Props) {
-  const themeMode = usePeblorThemeMode();
-  if (field.fieldType !== "button" && field.fieldType !== "submit") return null;
+  if (field.fieldType !== "button") return null;
 
-  const label = field.label ?? "Submit";
+  const label = field.label ?? globals.stringsLabelSubmitButton;
   const buttonType = field.buttonType ?? "submit";
   const fieldDisabled = disabled || field.disabled === true || isSubmitting;
   const displayLabel =
@@ -60,9 +59,7 @@ export function FormFieldButton({
         disabled={fieldDisabled}
         onClick={handleClick}
         className={buttonClass}
-        style={
-          resolveThemeStyleObject(field.inputStyle, themeMode) as React.CSSProperties | undefined
-        }
+        style={lowerThemeStyleObject(field.inputStyle) as React.CSSProperties | undefined}
       >
         {displayLabel}
       </button>

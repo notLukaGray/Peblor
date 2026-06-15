@@ -1,0 +1,66 @@
+{
+  "type": "elementGroup",
+  "width": "32px",
+  "height": "32px",
+  "display": "flex",
+  "align": "center",
+  "distribute": "center",
+  "wrapperStyle": {
+    "width": "32px",
+    "height": "32px",
+    "borderRadius": "8px",
+    "flexShrink": "0"
+  },
+  "visibleWhen": {
+    "variable": "playlistOpen",
+    "operator": "notEquals",
+    "value": "open"
+  },
+  "interactions": {
+    "onClick": {
+      "type": "setVariable",
+      "payload": {
+        "key": "playlistOpen",
+        "value": "open"
+      }
+    },
+    "cursor": "pointer"
+  },
+  "motion": {
+    "hoverExitDelayMs": 0,
+    "onHover": {
+      "backgroundColor": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+    }
+  },
+  "section": {
+    "elementOrder": ["icon"],
+    "definitions": {
+      "icon": {
+        "type": "elementVector",
+        "viewBox": "0 0 12 8",
+        "shapes": [
+          {
+            "type": "path",
+            "d": "M1 1L6 7L11 1",
+            "fill": "none",
+            "stroke": "icon",
+            "strokeWidth": 1.75,
+            "strokeLinecap": "round",
+            "strokeLinejoin": "round"
+          }
+        ],
+        "colors": {
+          "icon": "color-mix(in oklab, var(--pb-on-secondary) 40%, transparent)",
+          "icon-hover": "color-mix(in oklab, var(--pb-on-secondary) 75%, transparent)"
+        },
+        "link": {
+          "hoverFill": "icon-hover",
+          "vectorTransition": "0.15s"
+        },
+        "width": "12px",
+        "height": "8px",
+        "ariaLabel": "Show playlist"
+      }
+    }
+  }
+}

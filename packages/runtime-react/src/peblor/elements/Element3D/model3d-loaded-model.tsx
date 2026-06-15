@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useEffect, useCallback, useRef } from "react";
-import { useGLTF } from "@react-three/drei";
+import { useModel3DGLTF } from "./model3d-use-gltf";
 import { useFrame } from "@react-three/fiber";
 import { useModelAnimation } from "./animation";
 import { applyMaterialsToScene } from "./model3d-materials";
@@ -22,6 +22,8 @@ import {
   Group,
   Mesh,
   MeshStandardMaterial,
+  type BufferGeometry,
+  type Material,
   type Object3D,
   type Texture,
   Vector3,
@@ -152,6 +154,65 @@ function resolveEasing(easing?: string | number[] | number[][]): EasingFn {
   return easeInOutCubic;
 }
 
+/** Texture property keys on a Three.js Material that may reference Texture objects. */
+const MATERIAL_TEXTURE_KEYS = [
+  "map",
+  "alphaMap",
+  "bumpMap",
+  "displacementMap",
+  "emissiveMap",
+  "envMap",
+  "lightMap",
+  "metalnessMap",
+  "roughnessMap",
+  "aoMap",
+  "normalMap",
+] as const satisfies readonly string[];
+
+/** Deep-clone a material and all its referenced textures so the result is fully independent. */
+function deepCloneMaterial<T extends Material>(material: T): T {
+  const cloned = material.clone();
+  for (const key of MATERIAL_TEXTURE_KEYS) {
+    const tex = (cloned as unknown as Record<string, unknown>)[key] as Texture | undefined;
+    if (tex) {
+      (cloned as unknown as Record<string, unknown>)[key] = tex.clone();
+    }
+  }
+  return cloned;
+}
+
+/** Dispose a material and all textures it references. */
+function disposeMaterialWithTextures(material: Material): void {
+  for (const key of MATERIAL_TEXTURE_KEYS) {
+    const tex = (material as unknown as Record<string, unknown>)[key] as Texture | undefined;
+    if (tex) tex.dispose();
+  }
+  material.dispose();
+}
+
+/** Traverse a cloned scene's meshes, making geometries, materials, and textures unique. */
+function uniqueCloneResources(
+  root: Object3D
+): Array<{ geometry: BufferGeometry; materials: Material[] }> {
+  const disposables: Array<{ geometry: BufferGeometry; materials: Material[] }> = [];
+  root.traverse((child) => {
+    if (!(child instanceof Mesh)) return;
+    // Clone geometry so it's safe to dispose independently of the cached GLTF
+    child.geometry = child.geometry.clone();
+    // Clone materials (and their textures) for independent ownership
+    if (Array.isArray(child.material)) {
+      const cloned = child.material.map((m) => deepCloneMaterial(m));
+      child.material = cloned;
+      disposables.push({ geometry: child.geometry, materials: cloned });
+    } else {
+      const cloned = deepCloneMaterial(child.material);
+      child.material = cloned;
+      disposables.push({ geometry: child.geometry, materials: [cloned] });
+    }
+  });
+  return disposables;
+}
+
 export type LoadedModelProps = {
   geometryUrl: string;
   materialBindings: Record<string, string> | undefined;
@@ -209,13 +270,15 @@ export function LoadedModel({
   onNavigate,
   onReady,
 }: LoadedModelProps) {
-  const { scene, animations } = useGLTF(geometryUrl);
+  const { scene, animations } = useModel3DGLTF(geometryUrl);
 
-  // Clone and optionally filter to a named mesh
+  // Clone the scene and optionally filter to a named mesh.
+  // scene.clone(true) creates a deep object hierarchy but shares geometry,
+  // material, and texture references with the cached GLTF. This is fine for the
+  // brief window between render and the useEffect that makes them unique.
   const clonedScene = useMemo(() => {
     const clone = scene.clone(true);
     if (meshName) {
-      // Hide everything except the named mesh (and its parents stay visible for hierarchy)
       clone.traverse((obj) => {
         if (obj.name && obj.name !== meshName && obj !== clone) {
           (obj as Object3D).visible = false;
@@ -226,6 +289,50 @@ export function LoadedModel({
     }
     return clone;
   }, [scene, meshName]);
+
+  // Track clone-owned GPU resources for deterministic cleanup.
+  // Must be stored in a ref and disposed from an effect, not from useMemo
+  // (React ESLint rules prohibit ref access during render).
+  const disposablesRef = useRef<Array<{ geometry: BufferGeometry; materials: Material[] }>>([]);
+
+  // Make geometries, materials, and textures unique to this clone so dispose()
+  // doesn't corrupt the cached GLTF. Cleanup on re-render or unmount.
+  useEffect(() => {
+    // Save original resources before making them unique so we can restore
+    // them after cleanup. This ensures the memoized clonedScene is reusable
+    // when React StrictMode unmounts and remounts the component — without
+    // this, the second mount would find meshes pointing at disposed GPU
+    // resources.
+    const originals: Array<{
+      mesh: Mesh;
+      geometry: BufferGeometry;
+      material: Material | Material[];
+    }> = [];
+    clonedScene.traverse((child) => {
+      if (!(child instanceof Mesh)) return;
+      originals.push({ mesh: child, geometry: child.geometry, material: child.material });
+    });
+
+    const newDisposables = uniqueCloneResources(clonedScene);
+    disposablesRef.current = newDisposables;
+
+    return () => {
+      for (const d of disposablesRef.current) {
+        d.geometry.dispose();
+        for (const m of d.materials) {
+          disposeMaterialWithTextures(m);
+        }
+      }
+      disposablesRef.current = [];
+
+      // Restore original resources so clonedScene meshes don't hold
+      // disposed geometry/material references across StrictMode mount cycles.
+      for (const orig of originals) {
+        orig.mesh.geometry = orig.geometry;
+        orig.mesh.material = orig.material;
+      }
+    };
+  }, [clonedScene]);
 
   useEffect(() => {
     applyMaterialsToScene(clonedScene, materialBindings, materials, textures, textureMap);

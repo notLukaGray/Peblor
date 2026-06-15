@@ -1,0 +1,59 @@
+{
+  "preset": "player-section",
+  "elementOrder": ["player-label", "player-surface"],
+  "definitions": {
+    "player-label": {
+      "preset": "type-h3-label",
+      "text": "Audio Card Player"
+    },
+    "player-surface": {
+      "preset": "player-audio-surface-fullscreen",
+      "section": {
+        "elementOrder": ["audio-el", "meta-strip"],
+        "definitions": {
+          "audio-el": {
+            "type": "elementAudio",
+            "module": "audio-player",
+            "containerAspectRatio": "3 / 2",
+            "src": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Bach_Cello_Suite_1_Prelude_%28BWV_1007%29_Played_by_Chris.ogg",
+            "poster": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=900&q=80&auto=format&fit=crop",
+            "width": "100%"
+          },
+          "meta-strip": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.2rem",
+            "padding": "0 1.25rem 1.25rem",
+            "wrapperStyle": {
+              "position": "absolute",
+              "bottom": "62px",
+              "left": "0",
+              "right": "0",
+              "layer": "6"
+            },
+            "section": {
+              "elementOrder": ["track-title", "track-artist"],
+              "definitions": {
+                "track-title": {
+                  "type": "elementBody",
+                  "level": 2,
+                  "text": "Resonance",
+                  "color": "#FFFFFF",
+                  "textShadow": "0 2px 40px rgba(0,0,0,0.95), 0 1px 12px rgba(0,0,0,0.85), 0 0 2px rgba(0,0,0,0.6)"
+                },
+                "track-artist": {
+                  "type": "elementBody",
+                  "level": 4,
+                  "text": "Spatial Audio Lab",
+                  "color": "rgba(255,255,255,0.72)",
+                  "textShadow": "0 2px 32px rgba(0,0,0,0.9), 0 1px 10px rgba(0,0,0,0.75)"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

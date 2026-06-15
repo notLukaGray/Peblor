@@ -1,4 +1,13 @@
-import { findPagesDir, findPageFile, walkPages, readPageJson, isRecord } from "../lib/pages.js";
+import fs from "node:fs";
+import path from "node:path";
+import {
+  findPagesDir,
+  findPageFile,
+  walkPages,
+  readPageJson,
+  isRecord,
+  findPresetsDir,
+} from "../lib/pages.js";
 import type { CommandIo } from "./types.js";
 
 type LintArgs = {
@@ -26,7 +35,7 @@ function parseArgs(args: string[]): LintArgs {
   return { route: positional[0], all, asJson, help };
 }
 
-function lintPage(data: Record<string, unknown>): LintWarning[] {
+function lintPage(data: Record<string, unknown>, presetsDir?: string): LintWarning[] {
   const warnings: LintWarning[] = [];
   const defs = isRecord(data.definitions) ? data.definitions : {};
   const sectionOrder = Array.isArray(data.sectionOrder) ? (data.sectionOrder as string[]) : [];
@@ -45,9 +54,9 @@ function lintPage(data: Record<string, unknown>): LintWarning[] {
     });
   }
 
-  function lintNode(node: unknown, pathSegments: string[]): void {
+  function lintNode(node: unknown, pathSegments: string[], isPreset = false): void {
     if (Array.isArray(node)) {
-      node.forEach((item, i) => lintNode(item, [...pathSegments, String(i)]));
+      node.forEach((item, i) => lintNode(item, [...pathSegments, String(i)], isPreset));
       return;
     }
     if (!isRecord(node)) return;
@@ -65,7 +74,10 @@ function lintPage(data: Record<string, unknown>): LintWarning[] {
     }
 
     // Warn: elementHeading or elementText with empty text
+    // Skip for preset definitions — their text fields are intentionally empty
+    // template placeholders meant to be overridden at the page level.
     if (
+      !isPreset &&
       (nodeType === "elementHeading" || nodeType === "elementText") &&
       (!node.text || node.text === "")
     ) {
@@ -90,13 +102,39 @@ function lintPage(data: Record<string, unknown>): LintWarning[] {
     }
 
     for (const [key, value] of Object.entries(node)) {
-      lintNode(value, [...pathSegments, key]);
+      lintNode(value, [...pathSegments, key], isPreset);
     }
   }
 
   // Walk all definitions
   for (const [key, def] of Object.entries(defs)) {
     lintNode(def, ["definitions", key]);
+  }
+
+  // Also walk preset files the page imports — element types defined there
+  // won't appear in the page's own definitions.
+  if (presetsDir) {
+    const presets = Array.isArray(data.presets)
+      ? (data.presets as unknown[]).filter(
+          (p): p is string => typeof p === "string" && p.endsWith(".json")
+        )
+      : [];
+    for (const presetFilename of presets) {
+      const presetPath = path.join(presetsDir, presetFilename);
+      try {
+        const presetData = JSON.parse(fs.readFileSync(presetPath, "utf8")) as Record<
+          string,
+          unknown
+        >;
+        for (const [defKey, def] of Object.entries(presetData)) {
+          if (isRecord(def)) {
+            lintNode(def, ["presets", presetFilename, defKey]);
+          }
+        }
+      } catch (err) {
+        console.warn("[pb-cli] Failed to load preset for lint", presetFilename, err);
+      }
+    }
   }
 
   // Warn: forcedTheme on a section that doesn't need it
@@ -143,6 +181,8 @@ export async function runLint(args: string[], io: CommandIo): Promise<number> {
     return 2;
   }
 
+  const presetsDir = findPresetsDir() ?? undefined;
+
   type PageResult = { route: string; file: string; warnings: LintWarning[] };
   const results: PageResult[] = [];
 
@@ -150,7 +190,7 @@ export async function runLint(args: string[], io: CommandIo): Promise<number> {
     for (const { route: r, file } of walkPages(pagesDir)) {
       const read = readPageJson(file);
       if (!read.ok) continue;
-      results.push({ route: r, file, warnings: lintPage(read.data) });
+      results.push({ route: r, file, warnings: lintPage(read.data, presetsDir) });
     }
   } else {
     const file = findPageFile(pagesDir, route!);
@@ -166,7 +206,7 @@ export async function runLint(args: string[], io: CommandIo): Promise<number> {
       else io.printErrorText(`Error: ${read.error}`);
       return 1;
     }
-    results.push({ route: route!, file, warnings: lintPage(read.data) });
+    results.push({ route: route!, file, warnings: lintPage(read.data, presetsDir) });
   }
 
   const totalWarnings = results.reduce((n, r) => n + r.warnings.length, 0);

@@ -1,0 +1,15 @@
+{
+  "type": "elementVideoTime",
+  "level": {
+    "base": 4,
+    "md": 5
+  },
+  "width": "hug",
+  "paddingLeft": "10px",
+  "paddingRight": "10px",
+  "wordWrap": false,
+  "textAlign": "center",
+  "style": {
+    "color": "#FFFFFF"
+  }
+}

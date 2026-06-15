@@ -25,6 +25,8 @@
     ],
     "paths": {
       "@/peblor/*": ["../../packages/runtime-react/src/peblor/*"],
+      "@pb/core": ["../../packages/core/src/root.ts"],
+      "@pb/core/*": ["../../packages/core/src/*"],
       "@pb/runtime-react/*": ["../../packages/runtime-react/src/*"],
       "@/*": ["./src/*"],
       "@content/*": ["../../content/*"]

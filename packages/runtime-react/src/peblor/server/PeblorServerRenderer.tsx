@@ -1,11 +1,13 @@
 import type { CSSProperties } from "react";
 import type { BackgroundTransitionEffect, SectionBlock, bgBlock } from "@pb/contracts/types";
 import type { BlockCapabilityNode } from "../analyze/block-capabilities";
-import { resolveThemeString } from "../theme/theme-string";
+import { generateSectionKey } from "@pb/core/keys";
+import { lowerThemeStringOrGradientToCss } from "../theme/theme-string";
 import { bgVariableNeedsClient } from "../background/background-variable-client-capability";
 import { ClientBackgroundIsland } from "../client-islands/ClientBackgroundIsland";
 import { ClientBackgroundTransitionIsland } from "../client-islands/ClientBackgroundTransitionIsland";
 import { ServerSectionRenderer } from "./ServerSectionRenderer";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 export type PeblorServerRendererProps = {
   resolvedBg: bgBlock | null;
@@ -45,11 +47,11 @@ function renderServerBackground(
   const baseStyle: CSSProperties = {
     position: "fixed",
     inset: 0,
-    zIndex: 0,
+    zIndex: globals.zIndexBase,
     pointerEvents: "none",
   };
 
-  if (bg.type === "backgroundVideo") {
+  if (bg.type === "backgroundVideo" || bg.type === "backgroundTransition") {
     return <ClientBackgroundIsland bg={bg} priority />;
   }
 
@@ -86,14 +88,14 @@ function renderServerBackground(
       return <ClientBackgroundIsland bg={bg} priority />;
     }
     return (
-      <div aria-hidden style={baseStyle}>
+      <div aria-hidden className="[color-scheme:light] dark:[color-scheme:dark]" style={baseStyle}>
         {bg.layers.map((layer, index) => (
           <div
             key={index}
             style={{
               position: "absolute",
               inset: 0,
-              background: resolveThemeString(layer.fill, "light"),
+              background: lowerThemeStringOrGradientToCss(layer.fill),
               backgroundSize: layer.backgroundSize,
               backgroundPosition: layer.backgroundPosition,
               mixBlendMode: layer.blendMode as CSSProperties["mixBlendMode"],
@@ -128,10 +130,10 @@ export function PeblorServerRenderer({
       data-pb-server-renderer="static"
     >
       {renderServerBackground(resolvedBg, bgDefinitions, transitions)}
-      <div style={{ position: "relative", zIndex: 2 }}>
+      <div style={{ position: "relative", zIndex: globals.zIndexContent }}>
         {resolvedSections.map((section, index) => (
           <ServerSectionRenderer
-            key={(section as SectionBlock & { id?: string }).id ?? `${section.type}-${index}`}
+            key={generateSectionKey(section, index)}
             section={section}
             serverIsMobile={serverIsMobile}
             analysisNode={sectionAnalysis?.[index]}

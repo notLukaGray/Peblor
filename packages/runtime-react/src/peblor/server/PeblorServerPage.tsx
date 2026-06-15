@@ -1,11 +1,19 @@
 import type { SectionBlock } from "@pb/contracts/peblor/core/peblor-schemas";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 import type { BackgroundTransitionEffect } from "@pb/contracts/types";
 import { buildPageDensityCssVars } from "@pb/contracts/peblor/core/page-density";
 import type { PeblorPageWrapperProps } from "../PeblorPage";
-import { analyzeBlockCapabilities, type BlockCapabilityNode } from "../analyze/block-capabilities";
+import {
+  analyzeBlockCapabilities,
+  assignSectionHydrationPriorities,
+  type BlockCapabilityNode,
+} from "../analyze/block-capabilities";
+import { analyzeSectionOnlyCapabilities } from "../analyze/section-only-capabilities";
 import { pageForcedThemeInlineScript } from "../page-forced-theme-inline-script";
 import { PeblorServerRenderer } from "./PeblorServerRenderer";
 import { ClientPageRuntimeIsland } from "../client-islands/ClientPageRuntimeIsland";
+import { ClientBackgroundIsland } from "../client-islands/ClientBackgroundIsland";
+import { PageModalsIsland } from "../client-islands/PageModalsIsland";
 
 function stripFixedFields(section: SectionBlock): SectionBlock {
   const {
@@ -28,10 +36,12 @@ export async function PeblorServerPage({
   bgDefinitions,
   serverIsMobile,
   overlaySections,
+  resolvedModals,
+  nonce,
   mainClassName = "relative w-full min-h-screen",
   mainStyle = {
-    paddingTop: "calc(var(--nav-height, 64px) + env(safe-area-inset-top, 0px))",
-    paddingBottom: "48px",
+    paddingTop: `calc(var(--nav-height, ${globals.uiNavHeightFallbackPx}px) + env(safe-area-inset-top, 0px))`,
+    paddingBottom: `${globals.uiPageBottomPaddingPx}px`,
     paddingLeft: "env(safe-area-inset-left, 0px)",
     paddingRight: "env(safe-area-inset-right, 0px)",
     backgroundColor: "var(--pb-secondary)",
@@ -48,6 +58,19 @@ export async function PeblorServerPage({
       | undefined,
     scroll: page.scroll,
   });
+
+  const renderMode = (page as Record<string, unknown>).renderMode as string | undefined;
+  const isBackgroundIslandMode = renderMode === "background-island";
+
+  // In background-island mode, re-analyze sections without background propagation.
+  // This prevents the background from forcing all sections to client classification.
+  const sectionAnalysis = isBackgroundIslandMode
+    ? analyzeSectionOnlyCapabilities({
+        resolvedBg: null,
+        resolvedSections,
+        overlaySections,
+      })
+    : analysis;
 
   const density = page.density ?? "balanced";
   const forcedTheme =
@@ -71,12 +94,11 @@ export async function PeblorServerPage({
     : [];
   const strippedOverlaySections = sortedOverlays.map((section) => stripFixedFields(section));
   const inner = (
-    <main className={mainClassName} style={mergedMainStyle} data-pb-density={density}>
-      <article className={articleClassName} aria-label={page.title} data-liquid-snapshot-root="">
-        <h1 className="sr-only">{page.title}</h1>
-        <PeblorServerRenderer
-          resolvedBg={resolvedBg}
-          resolvedSections={resolvedSections}
+    <div className={mainClassName} style={mergedMainStyle} data-pb-density={density}>
+      {/* Background island — mounts independently, covers full page */}
+      {isBackgroundIslandMode && resolvedBg ? (
+        <ClientBackgroundIsland
+          bg={resolvedBg}
           bgDefinitions={bgDefinitions}
           transitions={
             page.transitions as
@@ -84,19 +106,42 @@ export async function PeblorServerPage({
               | BackgroundTransitionEffect[]
               | undefined
           }
+        />
+      ) : null}
+      <article className={articleClassName} aria-label={page.title} data-liquid-snapshot-root="">
+        <h1 className="sr-only">{page.title}</h1>
+        <PeblorServerRenderer
+          // In background-island mode pass null bg — sections don't own the background
+          resolvedBg={isBackgroundIslandMode ? null : resolvedBg}
+          resolvedSections={resolvedSections}
+          bgDefinitions={bgDefinitions}
+          transitions={
+            isBackgroundIslandMode
+              ? undefined
+              : (page.transitions as
+                  | BackgroundTransitionEffect
+                  | BackgroundTransitionEffect[]
+                  | undefined)
+          }
           serverIsMobile={serverIsMobile}
-          sectionAnalysis={analysis.tree.children.filter(
-            (c): c is BlockCapabilityNode => c.kind === "section"
+          sectionAnalysis={assignSectionHydrationPriorities(
+            sectionAnalysis.tree.children.filter(
+              (c): c is BlockCapabilityNode => c.kind === "section"
+            )
           )}
         />
       </article>
-    </main>
+    </div>
   );
   const common = (
     <>
       {forcedTheme ? (
         <>
-          <script dangerouslySetInnerHTML={{ __html: pageForcedThemeInlineScript(forcedTheme) }} />
+          <script
+            nonce={nonce}
+            suppressHydrationWarning
+            dangerouslySetInnerHTML={{ __html: pageForcedThemeInlineScript(forcedTheme) }}
+          />
         </>
       ) : null}
       {FigmaExportDiagnosticsBridge ? (
@@ -146,22 +191,52 @@ export async function PeblorServerPage({
       </>
     );
 
+  const modalsEl =
+    resolvedModals && resolvedModals.length > 0 ? (
+      <PageModalsIsland modals={resolvedModals} serverIsMobile={serverIsMobile} />
+    ) : null;
+
+  // In background-island mode, the wrap decision is based on section analysis alone
+  // (the background is independently isolated in its own island).
+  const effectiveAnalysis = isBackgroundIslandMode ? sectionAnalysis : analysis;
+
+  // Pure static page: no client blocks, no mixed blocks, no page runtime, no
+  // forced theme. Render entirely as server components — zero client JS.
   if (
-    analysis.usesPageRuntime ||
-    analysis.hasClientBlocks ||
-    analysis.hasMixedBlocks ||
-    forcedTheme
+    !effectiveAnalysis.usesPageRuntime &&
+    !effectiveAnalysis.hasClientBlocks &&
+    !effectiveAnalysis.hasMixedBlocks &&
+    !forcedTheme
   ) {
-    return (
-      <ClientPageRuntimeIsland
-        forcedTheme={forcedTheme}
-        serverIsMobile={serverIsMobile}
-        scroll={page.scroll}
-      >
-        {output}
-      </ClientPageRuntimeIsland>
-    );
+    if (modalsEl) {
+      return (
+        <>
+          {output}
+          {modalsEl}
+        </>
+      );
+    }
+    return output;
   }
 
-  return output;
+  // Page has client/mixed/runtime content. Wrap in ClientPageRuntimeIsland to
+  // provide ServerBreakpointProvider, PageScrollProvider (scroll only), and
+  // PeblorRuntimeEffects (triggers/actions only). Static sections remain
+  // server-rendered — they're passed as children through the client boundary
+  // but are not hydrated (React preserves server HTML for static children).
+  return (
+    <ClientPageRuntimeIsland
+      forcedTheme={forcedTheme}
+      serverIsMobile={serverIsMobile}
+      scroll={page.scroll}
+      needsRuntimeEffects={effectiveAnalysis.hasClientBlocks || effectiveAnalysis.usesPageRuntime}
+      needsBreakpointProvider={
+        serverIsMobile !== undefined &&
+        (effectiveAnalysis.hasClientBlocks || effectiveAnalysis.hasMixedBlocks)
+      }
+    >
+      {output}
+      {modalsEl}
+    </ClientPageRuntimeIsland>
+  );
 }

@@ -1,0 +1,180 @@
+{
+  "type": "sectionColumn",
+  "columns": {
+    "base": 1,
+    "md": 4
+  },
+  "columnWidths": {
+    "base": [1],
+    "md": [1, 1, 1, 1]
+  },
+  "columnGaps": {
+    "base": "1.25rem",
+    "md": "1.5rem"
+  },
+  "columnAssignments": {
+    "card-a": 0,
+    "card-b": 1,
+    "card-c": 2,
+    "card-d": 3
+  },
+  "contentWidth": "100%",
+  "contentHeight": "hug",
+  "elementOrder": ["card-a", "card-b", "card-c", "card-d"],
+  "gridMode": "grid",
+  "gridAutoRows": "auto",
+  "definitions": {
+    "card-a": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "height": "hug",
+      "gap": "0.85rem",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+      "padding": {
+        "base": "1.5rem",
+        "md": "1.75rem"
+      },
+      "borderRadius": "16px",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["kicker", "title", "body", "link"],
+        "definitions": {
+          "kicker": {
+            "preset": "type-body-mono",
+            "text": "Category"
+          },
+          "title": {
+            "preset": "type-h4-card",
+            "text": "Card title"
+          },
+          "body": {
+            "preset": "type-body-fine",
+            "text": "Short description of the card content."
+          },
+          "link": {
+            "preset": "type-link-nav",
+            "label": "Open ->",
+            "href": "#"
+          }
+        }
+      }
+    },
+    "card-b": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "height": "hug",
+      "gap": "0.85rem",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+      "padding": {
+        "base": "1.5rem",
+        "md": "1.75rem"
+      },
+      "borderRadius": "16px",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["kicker", "title", "body", "link"],
+        "definitions": {
+          "kicker": {
+            "preset": "type-body-mono",
+            "text": "Category"
+          },
+          "title": {
+            "preset": "type-h4-card",
+            "text": "Card title"
+          },
+          "body": {
+            "preset": "type-body-fine",
+            "text": "Short description."
+          },
+          "link": {
+            "preset": "type-link-nav",
+            "label": "Open ->",
+            "href": "#"
+          }
+        }
+      }
+    },
+    "card-c": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "height": "hug",
+      "gap": "0.85rem",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+      "padding": {
+        "base": "1.5rem",
+        "md": "1.75rem"
+      },
+      "borderRadius": "16px",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["kicker", "title", "body", "link"],
+        "definitions": {
+          "kicker": {
+            "preset": "type-body-mono",
+            "text": "Category"
+          },
+          "title": {
+            "preset": "type-h4-card",
+            "text": "Card title"
+          },
+          "body": {
+            "preset": "type-body-fine",
+            "text": "Short description."
+          },
+          "link": {
+            "preset": "type-link-nav",
+            "label": "Open ->",
+            "href": "#"
+          }
+        }
+      }
+    },
+    "card-d": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "height": "hug",
+      "gap": "0.85rem",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+      "padding": {
+        "base": "1.5rem",
+        "md": "1.75rem"
+      },
+      "borderRadius": "16px",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["kicker", "title", "body", "link"],
+        "definitions": {
+          "kicker": {
+            "preset": "type-body-mono",
+            "text": "Category"
+          },
+          "title": {
+            "preset": "type-h4-card",
+            "text": "Card title"
+          },
+          "body": {
+            "preset": "type-body-fine",
+            "text": "Short description."
+          },
+          "link": {
+            "preset": "type-link-nav",
+            "label": "Open ->",
+            "href": "#"
+          }
+        }
+      }
+    }
+  }
+}

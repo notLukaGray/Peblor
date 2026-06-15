@@ -10,6 +10,8 @@ export type { PbContentGuidelines } from "@/app/theme/pb-content-guidelines-conf
 export {
   pbContentGuidelines,
   pbContentGuidelinesCssInline,
+  pbBuilderDefaults,
+  pbContentGuidelinesConfigFileExport,
 } from "@/app/theme/pb-content-guidelines-config";
 export {
   serializePbContentGuidelinesToCss,
@@ -21,10 +23,10 @@ export {
 /** Apply default copy alignment when `textAlign` and `align` are both unset. */
 export function applyPbDefaultTextAlign(
   blockStyle: CSSProperties,
-  align: ElementLayout["align"],
+  selfAlign: ElementLayout["selfAlign"],
   textAlign: ElementLayout["textAlign"]
 ): void {
-  const alignFirst = Array.isArray(align) ? align[0] : align;
+  const alignFirst = Array.isArray(selfAlign) ? selfAlign[0] : selfAlign;
   const textFirst = Array.isArray(textAlign) ? textAlign[0] : textAlign;
   const multilineAlign = textFirst ?? alignFirst;
   if (multilineAlign) {

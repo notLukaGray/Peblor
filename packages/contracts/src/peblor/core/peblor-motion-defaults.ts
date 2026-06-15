@@ -113,29 +113,23 @@ const GESTURE_LAYOUT_STRIP_KEYS = new Set([
   "gridRow",
 ]);
 
-export function stripLayoutKeysFromKeyframes(
-  keyframes: Record<string, unknown> | null | undefined
+function stripKeysFromKeyframes(
+  keyframes: Record<string, unknown> | null | undefined,
+  keys: ReadonlySet<string>
 ): Record<string, unknown> {
   if (!keyframes || typeof keyframes !== "object" || Array.isArray(keyframes))
     return keyframes ?? {};
   const out: Record<string, unknown> = {};
   for (const [k, v] of Object.entries(keyframes)) {
-    if (!LAYOUT_KEYFRAME_KEYS.has(k)) out[k] = v;
+    if (!keys.has(k)) out[k] = v;
   }
   return out;
 }
 
-/** Like stripLayoutKeysFromKeyframes but allows width/height so gesture dimension tweens work. */
-function stripGestureLayoutKeys(
+export function stripLayoutKeysFromKeyframes(
   keyframes: Record<string, unknown> | null | undefined
 ): Record<string, unknown> {
-  if (!keyframes || typeof keyframes !== "object" || Array.isArray(keyframes))
-    return keyframes ?? {};
-  const out: Record<string, unknown> = {};
-  for (const [k, v] of Object.entries(keyframes)) {
-    if (!GESTURE_LAYOUT_STRIP_KEYS.has(k)) out[k] = v;
-  }
-  return out;
+  return stripKeysFromKeyframes(keyframes, LAYOUT_KEYFRAME_KEYS);
 }
 
 const mc = motionDefaultsJson.motionComponent as Json["motionComponent"];
@@ -212,23 +206,32 @@ const exitPresetsBuilt: Record<string, ExitPreset> = (() => {
   return out;
 })();
 
-/** Valid entrance preset names for schema validation. Non-empty for z.enum(). */
-export const ENTRANCE_PRESET_NAMES: readonly [string, ...string[]] =
-  Object.keys(entrancePresetsBuilt).length > 0
-    ? (Object.keys(entrancePresetsBuilt) as [string, ...string[]])
-    : (["fade"] as const);
+/** Valid entrance preset names for schema validation. Fails loudly if preset JSON is empty (C-10). */
+export const ENTRANCE_PRESET_NAMES: readonly [string, ...string[]] = (() => {
+  const keys = Object.keys(entrancePresetsBuilt);
+  if (keys.length === 0) {
+    throw new Error(
+      "ENTRANCE_PRESET_NAMES: No entrance presets found in framer-motion-presets.json. " +
+        "Ensure the JSON file contains at least one valid entrance preset entry."
+    );
+  }
+  return keys as [string, ...string[]];
+})();
 
-/** Valid exit preset names for schema validation. Non-empty for z.enum(). */
-export const EXIT_PRESET_NAMES: readonly [string, ...string[]] =
-  Object.keys(exitPresetsBuilt).length > 0
-    ? (Object.keys(exitPresetsBuilt) as [string, ...string[]])
-    : (["fade"] as const);
+/** Valid exit preset names for schema validation. Fails loudly if preset JSON is empty (C-10). */
+export const EXIT_PRESET_NAMES: readonly [string, ...string[]] = (() => {
+  const keys = Object.keys(exitPresetsBuilt);
+  if (keys.length === 0) {
+    throw new Error(
+      "EXIT_PRESET_NAMES: No exit presets found in framer-motion-presets.json. " +
+        "Ensure the JSON file contains at least one valid exit preset entry."
+    );
+  }
+  return keys as [string, ...string[]];
+})();
 
 /** Valid reveal preset names for schema validation (same source as entrance presets). */
-export const REVEAL_PRESET_NAMES: readonly [string, ...string[]] =
-  Object.keys(entrancePresetsBuilt).length > 0
-    ? (Object.keys(entrancePresetsBuilt) as [string, ...string[]])
-    : (["fade"] as const);
+export const REVEAL_PRESET_NAMES: readonly [string, ...string[]] = ENTRANCE_PRESET_NAMES;
 
 export type MotionDefaults = {
   transition: typeof transitionFromJson;
@@ -240,6 +243,44 @@ export type MotionDefaults = {
   progressBar: Json["progressBar"];
   easeTuple: [number, number, number, number];
 
+  /** Tooltip enter/exit animation durations and show delay. */
+  tooltipEnterDurationSec: number;
+  tooltipExitDurationSec: number;
+  tooltipShowDelayMs: number;
+
+  /** Default snap animation duration for infinite-scroll elements (ms). */
+  snapDurationMs: number;
+
+  /** Lerp factor for background-layer pointer tracking (0–1, lower = smoother). */
+  bgLayerPointerLerpFactor: number;
+  /** Default duration for background-layer trigger animations (seconds). */
+  bgLayerTriggerDurationSec: number;
+
+  /** Default entrance animation duration for staggered element groups (seconds). */
+  groupEntranceDurationSec: number;
+
+  /** Lerp factor for scroll-container trigger scrolling (0–1, lower = smoother). */
+  scrollContainerLerpFactor: number;
+
+  /** Lerp factor for button pointer-tracking gradient (0–1, lower = smoother). */
+  buttonPointerLerpFactor: number;
+
+  /**
+   * Smooth-scroll lerp formula constants.
+   * The effective lerp factor is: `smoothScrollBaseFactor - smoothness * smoothScrollRangeFactor`
+   * where `smoothness` is a 0–1 user preference (default 0.5).
+   * At smoothness=0  → factor = 0.25 (fast)
+   * At smoothness=1  → factor = 0.05 (slow)
+   */
+  smoothScrollBaseFactor: number;
+  smoothScrollRangeFactor: number;
+
+  /** Default duration for reveal-section item animations (ms). */
+  revealItemDurationMs: number;
+
+  /** Default duration for drag snap-back animations (ms). */
+  snapBackDurationMs: number;
+
   defaultEntrancePreset: string | undefined;
 
   defaultExitPreset: string | undefined;
@@ -249,19 +290,19 @@ export type MotionDefaults = {
   exitPresets: Record<string, ExitPreset>;
 
   motionComponent: {
-    initial: Record<string, unknown>;
-    animate: Record<string, unknown>;
-    exit: Record<string, unknown>;
-    variants: Record<string, unknown>;
+    from: Record<string, unknown>;
+    to: Record<string, unknown>;
+    leave: Record<string, unknown>;
+    states: Record<string, unknown>;
     inherit: boolean;
   };
 
   gestures: {
-    whileHover: Record<string, unknown>;
-    whileTap: Record<string, unknown>;
-    whileFocus: Record<string, unknown>;
-    whileDrag: Record<string, unknown>;
-    whileInView: Record<string, unknown>;
+    onHover: Record<string, unknown>;
+    onPress: Record<string, unknown>;
+    onFocus: Record<string, unknown>;
+    onDrag: Record<string, unknown>;
+    onVisible: Record<string, unknown>;
   };
 };
 
@@ -285,6 +326,19 @@ export function getMotionDefaults(): MotionDefaults {
     layout: stripCommentKeys(layoutJson ?? {}) as LayoutPreset,
     defaultSlideDistancePx: motionDefaultsJson.defaultSlideDistancePx ?? 24,
     defaultFeedbackDurationMs: motionDefaultsJson.defaultFeedbackDurationMs ?? 400,
+    tooltipEnterDurationSec: motionDefaultsJson.tooltipEnterDurationSec ?? 0.35,
+    tooltipExitDurationSec: motionDefaultsJson.tooltipExitDurationSec ?? 0.2,
+    tooltipShowDelayMs: motionDefaultsJson.tooltipShowDelayMs ?? 200,
+    snapDurationMs: motionDefaultsJson.snapDurationMs ?? 420,
+    bgLayerPointerLerpFactor: motionDefaultsJson.bgLayerPointerLerpFactor ?? 0.08,
+    bgLayerTriggerDurationSec: motionDefaultsJson.bgLayerTriggerDurationSec ?? 0.8,
+    groupEntranceDurationSec: motionDefaultsJson.groupEntranceDurationSec ?? 0.8,
+    scrollContainerLerpFactor: motionDefaultsJson.scrollContainerLerpFactor ?? 0.06,
+    buttonPointerLerpFactor: motionDefaultsJson.buttonPointerLerpFactor ?? 0.08,
+    smoothScrollBaseFactor: motionDefaultsJson.smoothScrollBaseFactor ?? 0.25,
+    smoothScrollRangeFactor: motionDefaultsJson.smoothScrollRangeFactor ?? 0.2,
+    revealItemDurationMs: motionDefaultsJson.revealItemDurationMs ?? 300,
+    snapBackDurationMs: motionDefaultsJson.snapBackDurationMs ?? 300,
     progressBar: motionDefaultsJson.progressBar ?? {
       height: "4px",
       fill: "rgba(255,255,255,0.4)",
@@ -307,18 +361,18 @@ export function getMotionDefaults(): MotionDefaults {
       return typeof v === "string" && v.trim() ? v.trim() : Object.keys(exitPresetsBuilt)[0];
     })(),
     motionComponent: {
-      initial: stripCommentKeys(mc?.initial ?? { opacity: 0 }) as Record<string, unknown>,
-      animate: stripCommentKeys(mc?.animate ?? { opacity: 1 }) as Record<string, unknown>,
-      exit: stripCommentKeys(mc?.exit ?? { opacity: 0 }) as Record<string, unknown>,
-      variants: stripCommentKeys(mc?.variants ?? {}) as Record<string, unknown>,
+      from: stripCommentKeys(mc?.initial ?? { opacity: 0 }) as Record<string, unknown>,
+      to: stripCommentKeys(mc?.animate ?? { opacity: 1 }) as Record<string, unknown>,
+      leave: stripCommentKeys(mc?.exit ?? { opacity: 0 }) as Record<string, unknown>,
+      states: stripCommentKeys(mc?.variants ?? {}) as Record<string, unknown>,
       inherit: inheritDefault,
     },
     gestures: {
-      whileHover: stripCommentKeys(gestures?.whileHover ?? {}) as Record<string, unknown>,
-      whileTap: stripCommentKeys(gestures?.whileTap ?? {}) as Record<string, unknown>,
-      whileFocus: stripCommentKeys(gestures?.whileFocus ?? {}) as Record<string, unknown>,
-      whileDrag: stripCommentKeys(gestures?.whileDrag ?? {}) as Record<string, unknown>,
-      whileInView: stripCommentKeys(gestures?.whileInView ?? {}) as Record<string, unknown>,
+      onHover: stripCommentKeys(gestures?.whileHover ?? {}) as Record<string, unknown>,
+      onPress: stripCommentKeys(gestures?.whileTap ?? {}) as Record<string, unknown>,
+      onFocus: stripCommentKeys(gestures?.whileFocus ?? {}) as Record<string, unknown>,
+      onDrag: stripCommentKeys(gestures?.whileDrag ?? {}) as Record<string, unknown>,
+      onVisible: stripCommentKeys(gestures?.whileInView ?? {}) as Record<string, unknown>,
     },
   };
 
@@ -356,6 +410,39 @@ function deepMerge(
   return out;
 }
 
+/**
+ * If `target[key]` is undefined or null, set it to `defaultValue` (if provided).
+ * Otherwise no-op.
+ */
+function mergeIfMissing<T>(target: Record<string, T>, key: string, defaultValue?: T): void {
+  const val = target[key];
+  if ((val === undefined || val === null) && defaultValue !== undefined) {
+    target[key] = defaultValue;
+  }
+}
+
+/**
+ * Merge a gesture block (whileHover, whileTap, whileFocus, whileDrag).
+ * If the raw value is undefined, null, or an empty object, assign the default
+ * gesture (or undefined if the default is empty). Otherwise keep the spread value.
+ */
+function mergeGestureConfig(
+  merged: Record<string, unknown>,
+  key: string,
+  rawValue: unknown,
+  defaultGestures: Record<string, unknown>
+): void {
+  const isEmptyGesture = (o: unknown) =>
+    o != null &&
+    typeof o === "object" &&
+    !Array.isArray(o) &&
+    Object.keys(o as object).length === 0;
+  if (rawValue === undefined || rawValue === null || isEmptyGesture(rawValue)) {
+    merged[key] = Object.keys(defaultGestures).length > 0 ? { ...defaultGestures } : undefined;
+  }
+  // else: merged[key] is already set from the { ...config } spread
+}
+
 export function mergeMotionDefaults(
   config: MotionPropsFromJson | null | undefined
 ): MotionPropsFromJson {
@@ -365,17 +452,16 @@ export function mergeMotionDefaults(
   const d = getMotionDefaults();
   const merged = { ...config } as Record<string, unknown>;
 
-  if (merged.initial === undefined || merged.initial === null)
-    merged.initial = { ...d.motionComponent.initial };
-  if (merged.animate === undefined || merged.animate === null)
-    merged.animate = { ...d.motionComponent.animate };
-  if (merged.exit === undefined || merged.exit === null)
-    merged.exit = { ...d.motionComponent.exit };
+  if (merged.from === undefined || merged.from === null)
+    merged.from = { ...d.motionComponent.from };
+  if (merged.to === undefined || merged.to === null) merged.to = { ...d.motionComponent.to };
+  if (merged.leave === undefined || merged.leave === null)
+    merged.leave = { ...d.motionComponent.leave };
   if (
-    Object.keys(d.motionComponent.variants).length > 0 &&
-    (merged.variants === undefined || merged.variants === null)
+    Object.keys(d.motionComponent.states).length > 0 &&
+    (merged.states === undefined || merged.states === null)
   )
-    merged.variants = { ...d.motionComponent.variants };
+    merged.states = { ...d.motionComponent.states };
 
   if (merged.transition === undefined || merged.transition === null) {
     merged.transition = { ...d.transition } as Record<string, unknown>;
@@ -397,93 +483,67 @@ export function mergeMotionDefaults(
     );
   }
 
-  const isEmptyGesture = (o: unknown) =>
-    o != null &&
-    typeof o === "object" &&
-    !Array.isArray(o) &&
-    Object.keys(o as object).length === 0;
-  if (
-    config.whileHover === undefined ||
-    config.whileHover === null ||
-    isEmptyGesture(config.whileHover)
-  )
-    merged.whileHover =
-      Object.keys(d.gestures.whileHover).length > 0 ? { ...d.gestures.whileHover } : undefined;
-  else merged.whileHover = config.whileHover as Record<string, unknown>;
-  if (config.whileTap === undefined || config.whileTap === null || isEmptyGesture(config.whileTap))
-    merged.whileTap =
-      Object.keys(d.gestures.whileTap).length > 0 ? { ...d.gestures.whileTap } : undefined;
-  else merged.whileTap = config.whileTap as Record<string, unknown>;
-  if (
-    config.whileFocus === undefined ||
-    config.whileFocus === null ||
-    isEmptyGesture(config.whileFocus)
-  )
-    merged.whileFocus =
-      Object.keys(d.gestures.whileFocus).length > 0 ? { ...d.gestures.whileFocus } : undefined;
-  else merged.whileFocus = config.whileFocus as Record<string, unknown>;
-  if (
-    config.whileDrag === undefined ||
-    config.whileDrag === null ||
-    isEmptyGesture(config.whileDrag)
-  )
-    merged.whileDrag =
-      Object.keys(d.gestures.whileDrag).length > 0 ? { ...d.gestures.whileDrag } : undefined;
-  else merged.whileDrag = config.whileDrag as Record<string, unknown>;
-  if (merged.whileInView === undefined && Object.keys(d.gestures.whileInView).length > 0)
-    merged.whileInView = { ...d.gestures.whileInView };
+  mergeGestureConfig(merged, "onHover", config.onHover, d.gestures.onHover);
+  mergeGestureConfig(merged, "onPress", config.onPress, d.gestures.onPress);
+  mergeGestureConfig(merged, "onFocus", config.onFocus, d.gestures.onFocus);
+  mergeGestureConfig(merged, "onDrag", config.onDrag, d.gestures.onDrag);
+  if (merged.onVisible === undefined && Object.keys(d.gestures.onVisible).length > 0)
+    merged.onVisible = { ...d.gestures.onVisible };
 
   const dragPreset = d.drag;
-  if (
-    merged.drag === undefined &&
-    (typeof dragPreset.drag === "boolean" || dragPreset.drag === "x" || dragPreset.drag === "y")
-  )
-    merged.drag = dragPreset.drag;
-  if (
-    merged.dragConstraints === undefined &&
-    (dragPreset.dragConstraints === "parent" ||
-      (dragPreset.dragConstraints != null && typeof dragPreset.dragConstraints === "object"))
-  )
-    merged.dragConstraints = dragPreset.dragConstraints;
-  if (merged.dragElastic === undefined && typeof dragPreset.dragElastic === "number")
-    merged.dragElastic = dragPreset.dragElastic;
-  if (merged.dragMomentum === undefined && typeof dragPreset.dragMomentum === "boolean")
-    merged.dragMomentum = dragPreset.dragMomentum;
-  if (
-    merged.dragTransition === undefined &&
-    dragPreset.dragTransition != null &&
-    typeof dragPreset.dragTransition === "object"
-  )
-    merged.dragTransition = dragPreset.dragTransition;
-  if (merged.dragSnapToOrigin === undefined && typeof dragPreset.dragSnapToOrigin === "boolean")
-    merged.dragSnapToOrigin = dragPreset.dragSnapToOrigin;
-  if (merged.dragDirectionLock === undefined && typeof dragPreset.dragDirectionLock === "boolean")
-    merged.dragDirectionLock = dragPreset.dragDirectionLock;
-  if (merged.dragPropagation === undefined && typeof dragPreset.dragPropagation === "boolean")
-    merged.dragPropagation = dragPreset.dragPropagation;
+  mergeIfMissing(
+    merged,
+    "drag",
+    typeof dragPreset.drag === "boolean" || dragPreset.drag === "x" || dragPreset.drag === "y"
+      ? dragPreset.drag
+      : undefined
+  );
+  mergeIfMissing(
+    merged,
+    "dragConstraints",
+    dragPreset.dragConstraints === "parent" ||
+      (dragPreset.dragConstraints != null && typeof dragPreset.dragConstraints === "object")
+      ? dragPreset.dragConstraints
+      : undefined
+  );
+  mergeIfMissing(
+    merged,
+    "dragElastic",
+    typeof dragPreset.dragElastic === "number" ? dragPreset.dragElastic : undefined
+  );
+  mergeIfMissing(
+    merged,
+    "dragMomentum",
+    typeof dragPreset.dragMomentum === "boolean" ? dragPreset.dragMomentum : undefined
+  );
+  mergeIfMissing(
+    merged,
+    "dragTransition",
+    dragPreset.dragTransition != null && typeof dragPreset.dragTransition === "object"
+      ? dragPreset.dragTransition
+      : undefined
+  );
+  mergeIfMissing(
+    merged,
+    "dragSnapToOrigin",
+    typeof dragPreset.dragSnapToOrigin === "boolean" ? dragPreset.dragSnapToOrigin : undefined
+  );
+  mergeIfMissing(
+    merged,
+    "dragDirectionLock",
+    typeof dragPreset.dragDirectionLock === "boolean" ? dragPreset.dragDirectionLock : undefined
+  );
+  mergeIfMissing(
+    merged,
+    "dragPropagation",
+    typeof dragPreset.dragPropagation === "boolean" ? dragPreset.dragPropagation : undefined
+  );
 
-  const layoutPreset = d.layout;
-  if (merged.layout === undefined && typeof layoutPreset.layout === "boolean")
-    merged.layout = layoutPreset.layout;
-  if (
-    merged.layoutId === undefined &&
-    (typeof layoutPreset.layoutId === "string" || layoutPreset.layoutId === null)
-  )
-    merged.layoutId = layoutPreset.layoutId;
-  if (
-    merged.layoutDependency === undefined &&
-    (typeof layoutPreset.layoutDependency === "string" ||
-      typeof layoutPreset.layoutDependency === "number" ||
-      layoutPreset.layoutDependency === null)
-  )
-    merged.layoutDependency = layoutPreset.layoutDependency as string | number;
-  if (merged.layoutScroll === undefined && typeof layoutPreset.layoutScroll === "boolean")
-    merged.layoutScroll = layoutPreset.layoutScroll;
-  if (merged.layoutRoot === undefined && typeof layoutPreset.layoutRoot === "boolean")
-    merged.layoutRoot = layoutPreset.layoutRoot;
-
-  if (merged.inherit === undefined && typeof d.motionComponent.inherit === "boolean")
-    merged.inherit = d.motionComponent.inherit;
+  mergeIfMissing(
+    merged,
+    "inherit",
+    typeof d.motionComponent.inherit === "boolean" ? d.motionComponent.inherit : undefined
+  );
 
   // Resolve inheritMode -> inherit: isolate = false, inherit = true, auto = use default
   const inheritMode = (config as Record<string, unknown>).inheritMode as
@@ -497,61 +557,48 @@ export function mergeMotionDefaults(
     merged.inherit = merged.inherit ?? d.motionComponent.inherit;
 
   // Strip layout-owned keys from keyframes so motion doesn't fight peblor layout
-  if (
-    merged.initial != null &&
-    typeof merged.initial === "object" &&
-    !Array.isArray(merged.initial)
-  )
-    merged.initial = stripLayoutKeysFromKeyframes(merged.initial as Record<string, unknown>);
-  if (
-    merged.animate != null &&
-    typeof merged.animate === "object" &&
-    !Array.isArray(merged.animate)
-  )
-    merged.animate = stripLayoutKeysFromKeyframes(merged.animate as Record<string, unknown>);
-  if (merged.exit != null && typeof merged.exit === "object" && !Array.isArray(merged.exit))
-    merged.exit = stripLayoutKeysFromKeyframes(merged.exit as Record<string, unknown>);
-  if (merged.variants != null && typeof merged.variants === "object") {
-    const variants = merged.variants as Record<
+  if (merged.from != null && typeof merged.from === "object" && !Array.isArray(merged.from))
+    merged.from = stripLayoutKeysFromKeyframes(merged.from as Record<string, unknown>);
+  if (merged.to != null && typeof merged.to === "object" && !Array.isArray(merged.to))
+    merged.to = stripLayoutKeysFromKeyframes(merged.to as Record<string, unknown>);
+  if (merged.leave != null && typeof merged.leave === "object" && !Array.isArray(merged.leave))
+    merged.leave = stripLayoutKeysFromKeyframes(merged.leave as Record<string, unknown>);
+  if (merged.states != null && typeof merged.states === "object") {
+    const states = merged.states as Record<
       string,
       {
-        initial?: Record<string, unknown>;
-        animate?: Record<string, unknown>;
-        exit?: Record<string, unknown>;
+        from?: Record<string, unknown>;
+        to?: Record<string, unknown>;
+        leave?: Record<string, unknown>;
         [k: string]: unknown;
       }
     >;
     const stripped: Record<string, unknown> = {};
-    for (const key of Object.keys(variants)) {
-      const v = variants[key];
+    for (const key of Object.keys(states)) {
+      const v = states[key];
       if (!v || typeof v !== "object") {
         stripped[key] = v;
         continue;
       }
       stripped[key] = {
         ...v,
-        ...(v.initial != null && { initial: stripLayoutKeysFromKeyframes(v.initial) }),
-        ...(v.animate != null && { animate: stripLayoutKeysFromKeyframes(v.animate) }),
-        ...(v.exit != null && { exit: stripLayoutKeysFromKeyframes(v.exit) }),
+        ...(v.from != null && { from: stripLayoutKeysFromKeyframes(v.from) }),
+        ...(v.to != null && { to: stripLayoutKeysFromKeyframes(v.to) }),
+        ...(v.leave != null && { leave: stripLayoutKeysFromKeyframes(v.leave) }),
       };
     }
-    merged.variants = stripped;
+    merged.states = stripped;
   }
 
   // Strip incompatible layout keys from gesture keyframes.
   // Uses the narrower GESTURE_LAYOUT_STRIP_KEYS so width/height survive — they're
   // valid Framer Motion gesture targets and the ElementRenderer handles them correctly.
-  for (const gestureKey of [
-    "whileHover",
-    "whileTap",
-    "whileFocus",
-    "whileDrag",
-    "whileInView",
-  ] as const) {
+  for (const gestureKey of ["onHover", "onPress", "onFocus", "onDrag", "onVisible"] as const) {
     const val = merged[gestureKey];
     if (val != null && typeof val === "object" && !Array.isArray(val))
-      (merged as Record<string, unknown>)[gestureKey] = stripGestureLayoutKeys(
-        val as Record<string, unknown>
+      (merged as Record<string, unknown>)[gestureKey] = stripKeysFromKeyframes(
+        val as Record<string, unknown>,
+        GESTURE_LAYOUT_STRIP_KEYS
       );
   }
 
@@ -579,10 +626,10 @@ export function getEntranceMotionFromPreset(
   const mc = defaults.motionComponent;
   const initial = preset
     ? (preset.initial as Record<string, unknown>)
-    : (mc.initial as Record<string, unknown>);
+    : (mc.from as Record<string, unknown>);
   const animate = preset
     ? (preset.animate as Record<string, unknown>)
-    : (mc.animate as Record<string, unknown>);
+    : (mc.to as Record<string, unknown>);
   const d = Math.max(0, options.distancePx);
 
   const applyDistance = (keyframes: Record<string, unknown>): Record<string, unknown> => {
@@ -593,10 +640,10 @@ export function getEntranceMotionFromPreset(
   };
 
   return {
-    initial: applyDistance(initial) as Record<string, number>,
-    animate: applyDistance(animate) as Record<string, number>,
+    from: applyDistance(initial) as Record<string, number>,
+    to: applyDistance(animate) as Record<string, number>,
     transition: {
-      type: "tween",
+      type: "ease",
       duration: options.duration,
       delay: options.delay,
       ease: options.ease,
@@ -607,20 +654,20 @@ export function getEntranceMotionFromPreset(
 export function getExitMotionFromPreset(
   presetName: string,
   options?: { duration?: number; delay?: number; ease?: string | [number, number, number, number] }
-): { exit: Record<string, unknown>; transition?: Record<string, unknown> } {
+): { leave: Record<string, unknown>; transition?: Record<string, unknown> } {
   const defaults = getMotionDefaults();
   const presets = defaults.exitPresets;
   const preset =
     presets[presetName] ??
     (defaults.defaultExitPreset ? presets[defaults.defaultExitPreset] : undefined);
   const mc = defaults.motionComponent;
-  const exit = (preset?.exit ?? mc.exit) as Record<string, unknown>;
+  const leave = (preset?.exit ?? mc.leave) as Record<string, unknown>;
   const duration =
     options?.duration ?? defaults.transition.exitDuration ?? defaults.transition.duration;
   const delay = options?.delay ?? 0;
   const ease = options?.ease ?? defaults.transition.ease;
   return {
-    exit,
-    transition: { type: "tween" as const, duration, delay, ease },
+    leave,
+    transition: { type: "ease" as const, duration, delay, ease },
   };
 }

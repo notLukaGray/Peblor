@@ -1,0 +1,23 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Flow · Asymmetry · Offset"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Composition Flow Asymmetric Stack"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Offset flow with varied alignment and width emphasis, still strictly single-container composition.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  },
+  "align": "start"
+}

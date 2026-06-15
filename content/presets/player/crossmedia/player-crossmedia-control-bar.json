@@ -1,0 +1,87 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "row",
+  "align": "center",
+  "gap": "0.75rem",
+  "padding": "0.75rem 1.25rem",
+  "borderRadius": "16px",
+  "fill": "color-mix(in oklab, var(--pb-secondary) 88%, transparent)",
+  "bgBlur": "blur(20px)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+  },
+  "section": {
+    "elementOrder": ["target-selector", "transport", "seek-cluster", "volume", "state-chips"],
+    "definitions": {
+      "target-selector": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "row",
+        "align": "center",
+        "gap": "0.3rem",
+        "section": {
+          "elementOrder": ["btn-video", "btn-audio"],
+          "definitions": {
+            "btn-video": {
+              "type": "elementButton",
+              "label": "Video",
+              "action": "setVariable",
+              "actionPayload": {
+                "key": "playerTarget",
+                "value": "video"
+              },
+              "level": 5,
+              "wrapperPadding": "0.3rem 0.65rem",
+              "wrapperBorderRadius": "999px",
+              "wrapperFill": "color-mix(in oklab, var(--pb-primary) 20%, transparent)",
+              "linkDefault": "var(--pb-on-secondary)",
+              "motion": {
+                "onHover": {
+                  "scale": 1.05
+                },
+                "transition": {
+                  "duration": 0.15
+                }
+              }
+            },
+            "btn-audio": {
+              "type": "elementButton",
+              "label": "Audio",
+              "action": "setVariable",
+              "actionPayload": {
+                "key": "playerTarget",
+                "value": "audio"
+              },
+              "level": 5,
+              "wrapperPadding": "0.3rem 0.65rem",
+              "wrapperBorderRadius": "999px",
+              "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+              "linkDefault": "var(--pb-on-secondary)",
+              "motion": {
+                "onHover": {
+                  "scale": 1.05
+                },
+                "transition": {
+                  "duration": 0.15
+                }
+              }
+            }
+          }
+        }
+      },
+      "transport": {
+        "preset": "player-controls-transport-full"
+      },
+      "seek-cluster": {
+        "preset": "player-controls-seek-cluster"
+      },
+      "volume": {
+        "preset": "player-controls-volume-hover"
+      },
+      "state-chips": {
+        "preset": "player-controls-state-chip"
+      }
+    }
+  }
+}

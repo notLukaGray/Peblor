@@ -72,7 +72,8 @@ function extractAssetKeyFromAllowedCdnUrl(value: string): string | null {
       key = key.slice("website/".length);
     }
     return needsProxyUrl(key) ? key : null;
-  } catch {
+  } catch (err) {
+    console.warn("[web-core] Failed to resolve homepage media URL", err);
     return null;
   }
 }

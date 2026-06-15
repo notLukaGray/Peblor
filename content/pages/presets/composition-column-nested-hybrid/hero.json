@@ -1,0 +1,23 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Column · Hybrid · Nested Composition"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Composition Column Nested Hybrid"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Multi-region system containing nested flow regions to demonstrate advanced composition depth.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  },
+  "align": "start"
+}

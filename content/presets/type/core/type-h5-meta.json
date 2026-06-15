@@ -1,0 +1,7 @@
+{
+  "type": "elementHeading",
+  "level": 5,
+  "color": "color-mix(in oklab, var(--pb-on-secondary) 48%, transparent)",
+  "wordWrap": false,
+  "text": ""
+}

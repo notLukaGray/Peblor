@@ -1,0 +1,32 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "row",
+  "wrap": "wrap",
+  "align": "center",
+  "gap": "0.75rem",
+  "section": {
+    "elementOrder": ["primary", "secondary"],
+    "definitions": {
+      "primary": {
+        "type": "elementButton",
+        "label": "Get started",
+        "href": "#",
+        "external": false,
+        "copyType": "body",
+        "level": 4,
+        "wrapperPadding": "0.65rem 1.1rem",
+        "wrapperBorderRadius": "999px",
+        "wrapperFill": "var(--pb-on-secondary)",
+        "linkDefault": "var(--pb-secondary)",
+        "linkHover": "var(--pb-secondary)",
+        "wrapperScaleHover": 1.03
+      },
+      "secondary": {
+        "preset": "type-link-nav",
+        "label": "Learn more →",
+        "href": "#"
+      }
+    }
+  }
+}

@@ -47,7 +47,7 @@ export type ComposedMotionDivProps = {
 
 function buildLoopTransitionEntry(loop: BgLoopMotion): Record<string, unknown> {
   const entry: Record<string, unknown> = {};
-  for (const prop of Object.keys(loop.animate)) {
+  for (const prop of Object.keys(loop.to)) {
     entry[prop] = {
       duration: loop.transition.duration,
       ease: loop.transition.ease ?? "linear",
@@ -64,7 +64,7 @@ function buildEntranceTransitionEntry(
   loopTransition: Record<string, unknown>
 ): Record<string, unknown> {
   const entry: Record<string, unknown> = {};
-  for (const prop of Object.keys(entrance.animate)) {
+  for (const prop of Object.keys(entrance.to)) {
     // Preserve loop transitions — they already have repeat:Infinity.
     // Entrance for that same prop just means it starts from `initial` on mount; loop keeps running.
     if (prop in loopTransition) continue;
@@ -116,7 +116,7 @@ export function composeMotionDivProps(motions: BgLayerMotion[]): ComposedMotionD
   const loopTransition: Record<string, unknown> = {};
 
   for (const loop of loops) {
-    Object.assign(loopAnimate, loop.animate);
+    Object.assign(loopAnimate, loop.to);
     Object.assign(loopTransition, buildLoopTransitionEntry(loop));
   }
 
@@ -132,8 +132,8 @@ export function composeMotionDivProps(motions: BgLayerMotion[]): ComposedMotionD
   const entranceTransition: Record<string, unknown> = {};
 
   for (const entrance of entrances) {
-    Object.assign(entranceAnimate, entrance.animate);
-    Object.assign(entranceInitial, entrance.initial);
+    Object.assign(entranceAnimate, entrance.to);
+    Object.assign(entranceInitial, entrance.from);
     Object.assign(entranceTransition, buildEntranceTransitionEntry(entrance, loopTransition));
   }
 

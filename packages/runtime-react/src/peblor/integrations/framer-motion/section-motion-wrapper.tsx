@@ -1,17 +1,18 @@
 "use client";
 
-import { forwardRef, useLayoutEffect, useRef, useState, type RefObject } from "react";
+import { forwardRef, useCallback, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import { MotionFromJson } from "./motion-from-json";
-import { motion } from "./animations";
+import { m } from "./animations";
 import { useShouldReduceMotion } from "./reduced-motion";
 import { resolveFoundationMotionControls } from "./foundation-motion-policy";
 import type { MotionPropsFromJson, MotionTiming } from "@pb/contracts/peblor/core/peblor-schemas";
+import type { MotionValue } from "./types";
 
 type SectionElementProps = React.ComponentPropsWithoutRef<"section"> & {
   ref?: RefObject<HTMLElement>;
 };
 
-type MotionSectionProps = React.ComponentProps<typeof motion.section>;
+type MotionSectionProps = React.ComponentProps<typeof m.section>;
 
 export type SectionMotionWrapperProps = {
   sectionRef: RefObject<HTMLElement | null>;
@@ -20,6 +21,8 @@ export type SectionMotionWrapperProps = {
   motionTiming?: MotionTiming;
   /** When true (default), respect the user's OS reduced-motion preference. Set false to always animate. */
   reduceMotion?: boolean;
+  /** Direct section parallax binding that bypasses React renders on scroll. */
+  parallaxY?: MotionValue<number>;
   children: React.ReactNode;
 } & Omit<SectionElementProps, "ref">;
 
@@ -33,28 +36,61 @@ function toOpacity(value: unknown, fallback: number): number {
 }
 
 type SectionResolvedMotion = {
-  initial?: unknown;
-  animate?: unknown;
-  whileHover?: unknown;
-  whileTap?: unknown;
+  from?: unknown;
+  to?: unknown;
+  onHover?: unknown;
+  onPress?: unknown;
 } & Record<string, unknown>;
 
 function toFadeOnlySectionMotion<T extends SectionResolvedMotion>(resolved: T): T {
-  const animate =
-    resolved.animate && typeof resolved.animate === "object" && !Array.isArray(resolved.animate)
-      ? (resolved.animate as Record<string, unknown>)
+  const to =
+    resolved.to && typeof resolved.to === "object" && !Array.isArray(resolved.to)
+      ? (resolved.to as Record<string, unknown>)
       : {};
-  const initial =
-    resolved.initial && typeof resolved.initial === "object" && !Array.isArray(resolved.initial)
-      ? (resolved.initial as Record<string, unknown>)
+  const from =
+    resolved.from && typeof resolved.from === "object" && !Array.isArray(resolved.from)
+      ? (resolved.from as Record<string, unknown>)
       : {};
   return {
     ...resolved,
-    initial: { opacity: toOpacity(initial.opacity, 0) },
-    animate: { opacity: toOpacity(animate.opacity, 1) },
-    whileHover: undefined,
-    whileTap: undefined,
+    from: { opacity: toOpacity(from.opacity, 0) },
+    to: { opacity: toOpacity(to.opacity, 1) },
+    onHover: undefined,
+    onPress: undefined,
   } as T;
+}
+
+export function buildMotionSectionStyle(
+  style: SectionElementProps["style"],
+  parallaxY?: MotionValue<number>
+): Pick<MotionSectionProps, "style" | "transformTemplate"> {
+  if (!parallaxY) {
+    return { style };
+  }
+
+  if (!style || typeof style !== "object") {
+    return {
+      style: { y: parallaxY } as MotionSectionProps["style"],
+    };
+  }
+
+  const { transform, ...restStyle } = style;
+  const motionStyle = {
+    ...(restStyle as React.CSSProperties),
+    y: parallaxY,
+  } as MotionSectionProps["style"];
+
+  if (typeof transform !== "string" || transform.trim().length === 0) {
+    return { style: motionStyle };
+  }
+
+  return {
+    style: motionStyle,
+    transformTemplate: (_latest, generatedTransform) =>
+      [transform, generatedTransform]
+        .filter((value): value is string => !!value && value.trim().length > 0)
+        .join(" "),
+  };
 }
 
 /**
@@ -63,19 +99,32 @@ function toFadeOnlySectionMotion<T extends SectionResolvedMotion>(resolved: T): 
  *
  * When motionTiming is present it takes precedence over `motion` for entrance behaviour.
  * SSR renders a plain <section> so the element is visible in static HTML; useLayoutEffect
- * swaps to motion.section before the first browser paint, exactly as ElementEntranceWrapper does.
+ * swaps to m.section before the first browser paint, exactly as ElementEntranceWrapper does.
  *
  * sectionRef is always forwarded to the DOM node so viewport triggers and scroll-driven
  * features continue to work regardless of which rendering path is taken.
  */
 export const SectionMotionWrapper = forwardRef<HTMLElement, SectionMotionWrapperProps>(
   (
-    { sectionRef, motion: motionFromJson, motionTiming, reduceMotion, children, ...sectionProps },
+    {
+      sectionRef,
+      motion: motionFromJson,
+      motionTiming,
+      reduceMotion,
+      parallaxY,
+      children,
+      ...sectionProps
+    },
     _forwardedRef
   ) => {
     const { ref: _omitRef, ...restSectionProps } = sectionProps as SectionElementProps & {
       ref?: RefObject<HTMLElement>;
     };
+    const motionStyleProps = buildMotionSectionStyle(restSectionProps.style, parallaxY);
+    const sharedMotionSectionProps = {
+      ...restSectionProps,
+      ...motionStyleProps,
+    } as MotionSectionProps;
 
     const motionControls = resolveFoundationMotionControls(reduceMotion);
 
@@ -86,21 +135,26 @@ export const SectionMotionWrapper = forwardRef<HTMLElement, SectionMotionWrapper
     // null = pre-hydration (SSR) | false = hydrated, below fold | true = hydrated, in viewport
     const [viewOnMount, setViewOnMount] = useState<boolean | null>(null);
 
-    // Fix 2: window.innerHeight is already inside useLayoutEffect (client-only), so SSR is safe.
-    // The existing guard is correct; adding an explicit typeof check for clarity.
-    useLayoutEffect(() => {
-      if (!resolved) return;
-      const el = sectionRef.current;
-      const inView =
-        !!el &&
-        typeof window !== "undefined" &&
-        el.getBoundingClientRect().top < window.innerHeight &&
-        el.getBoundingClientRect().bottom > 0;
-      queueMicrotask(() => {
+    // Ref callback fires synchronously during the commit phase — React processes the
+    // setState before yielding to the browser, so the swap from <section> to
+    // <m.section> happens before the first paint. Same pattern as
+    // ElementEntranceWrapper (element-entrance-wrapper.tsx).
+    const setMountRef = useCallback(
+      (el: HTMLElement | null) => {
+        (sectionRef as React.MutableRefObject<HTMLElement | null>).current = el;
+        if (!el || viewOnMount !== null || !resolved) return;
+        const rect = el.getBoundingClientRect();
+        const inView = rect.top < window.innerHeight && rect.bottom > 0;
         setViewOnMount(inView);
-      });
-    }, [resolved, sectionRef]);
+      },
+      [viewOnMount, resolved, sectionRef]
+    );
 
+    // Sections don't support "onTrigger" trigger mode — there's no per-section
+    // animateOverrideFromTrigger prop (it's only available on per-element entrance
+    // wrappers). If onTrigger is set on a section, fall back to whileInView and
+    // warn in development. The entrance API would need a section-level trigger
+    // mechanism to support this (e.g., via a sectionRef-based imperative animate).
     const onTriggerUnsupportedWarnedRef = useRef(false);
     useLayoutEffect(() => {
       if (process.env.NODE_ENV !== "development" || !resolved || !motionTiming) return;
@@ -116,22 +170,20 @@ export const SectionMotionWrapper = forwardRef<HTMLElement, SectionMotionWrapper
       const effectiveResolved = motionControls.replaceWithFade
         ? toFadeOnlySectionMotion(resolved)
         : resolved;
-      const { initial, animate, transition, viewportAmount, viewportOnce, whileHover, whileTap } =
+      const { from, to, transition, viewportAmount, viewportOnce, onHover, onPress } =
         effectiveResolved;
       const trigger = motionTiming?.trigger ?? "onFirstVisible";
 
-      const effectiveInitial = skip || viewOnMount === true ? animate : initial;
+      const effectiveInitial = skip || viewOnMount === true ? to : from;
       const effectiveTransition = skip || viewOnMount === true ? { duration: 0 } : transition;
 
-      const sharedProps = {
-        ...restSectionProps,
-        ref: sectionRef as RefObject<HTMLElement>,
-      } as Partial<MotionSectionProps>;
-
-      // SSR + pre-hydration: plain section so content is visible in static HTML.
+      // SSR + pre-hydration: plain <section> so content is visible in static HTML.
+      // No opacity:0 in SSR output — LCP is recorded immediately. Same pattern as
+      // ElementEntranceWrapper (R-09). setMountRef callback determines viewport
+      // visibility during the commit phase and swaps to m.section before paint.
       if (viewOnMount === null) {
         return (
-          <section ref={sectionRef} {...restSectionProps}>
+          <section ref={setMountRef} {...restSectionProps}>
             {children}
           </section>
         );
@@ -139,16 +191,17 @@ export const SectionMotionWrapper = forwardRef<HTMLElement, SectionMotionWrapper
 
       if (trigger === "onMount") {
         return (
-          <motion.section
-            {...sharedProps}
+          <m.section
+            {...sharedMotionSectionProps}
+            ref={setMountRef}
             initial={effectiveInitial as MotionSectionProps["initial"]}
-            animate={animate as MotionSectionProps["animate"]}
+            animate={to as MotionSectionProps["animate"]}
             transition={effectiveTransition as MotionSectionProps["transition"]}
-            whileHover={whileHover as MotionSectionProps["whileHover"]}
-            whileTap={whileTap as MotionSectionProps["whileTap"]}
+            whileHover={onHover as MotionSectionProps["whileHover"]}
+            whileTap={onPress as MotionSectionProps["whileTap"]}
           >
             {children}
-          </motion.section>
+          </m.section>
         );
       }
 
@@ -156,17 +209,18 @@ export const SectionMotionWrapper = forwardRef<HTMLElement, SectionMotionWrapper
       // onTrigger is not applicable to sections (warn once in dev via useLayoutEffect); falls through to whileInView.
 
       return (
-        <motion.section
-          {...sharedProps}
+        <m.section
+          {...sharedMotionSectionProps}
+          ref={setMountRef}
           initial={effectiveInitial as MotionSectionProps["initial"]}
-          whileInView={animate as MotionSectionProps["whileInView"]}
+          whileInView={to as MotionSectionProps["whileInView"]}
           viewport={{ once: viewportOnce, amount: viewportAmount }}
           transition={effectiveTransition as MotionSectionProps["transition"]}
-          whileHover={whileHover as MotionSectionProps["whileHover"]}
-          whileTap={whileTap as MotionSectionProps["whileTap"]}
+          whileHover={onHover as MotionSectionProps["whileHover"]}
+          whileTap={onPress as MotionSectionProps["whileTap"]}
         >
           {children}
-        </motion.section>
+        </m.section>
       );
     }
 
@@ -176,16 +230,25 @@ export const SectionMotionWrapper = forwardRef<HTMLElement, SectionMotionWrapper
         <MotionFromJson
           as="section"
           motion={motionFromJson}
-          ref={sectionRef as RefObject<HTMLElement>}
+          ref={setMountRef}
           {...restSectionProps}
+          {...motionStyleProps}
         >
           {children}
         </MotionFromJson>
       );
     }
 
+    if (parallaxY) {
+      return (
+        <m.section {...sharedMotionSectionProps} ref={setMountRef}>
+          {children}
+        </m.section>
+      );
+    }
+
     return (
-      <section ref={sectionRef} {...restSectionProps}>
+      <section ref={setMountRef} {...restSectionProps}>
         {children}
       </section>
     );

@@ -46,6 +46,7 @@ export type PbContentGuidelines = {
   buttonNakedPaddingY: string | null;
   buttonNakedPaddingX: string | null;
   buttonNakedBorderRadius: string;
+  sectionGap?: string | null;
 };
 
 /** `block` is one length (all axes) or two lengths (top/bottom). Optional `top`/`bottom` win when non-empty. */
@@ -139,6 +140,7 @@ export function expandGuidelinesToCssVars(g: PbContentGuidelines): Record<string
     "--pb-button-naked-pad-y": btn.py,
     "--pb-button-naked-pad-x": btn.px,
     "--pb-button-naked-radius": scaleRadiusForDensity(g.buttonNakedBorderRadius),
+    "--pb-section-gap": g.sectionGap ?? "0",
   };
 }
 

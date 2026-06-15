@@ -11,64 +11,74 @@ export const analyticsCommonPayloadSchema = z.object({
   ts: z.number().int().nonnegative(),
 });
 
-const pageViewPayloadSchema = analyticsCommonPayloadSchema.extend({
-  event: z.literal("page_view"),
-  title: z.string().optional(),
-});
+// ---------------------------------------------------------------------------
+// Event payload configuration
+// ---------------------------------------------------------------------------
+// Each key is an event name. The value is an object whose keys are the extra
+// fields (beyond the common payload and the event literal) that the event
+// carries.  An empty object means no extra fields.
+const EVENT_PAYLOAD_CONFIG = {
+  page_view: { title: z.string().optional() },
+  protected_page_redirected: {},
+  unlock_modal_opened: {},
+  unlock_submit_attempt: {},
+  unlock_success: {},
+  unlock_failure: {},
+  form_submit_attempt: { handlerKey: z.string() },
+  form_submit_success: { handlerKey: z.string() },
+  form_submit_error: { handlerKey: z.string(), errorType: z.string() },
+  content_cta_clicked: { props: z.record(z.string(), z.unknown()).optional() },
+} as const satisfies Record<string, Record<string, z.ZodTypeAny>>;
 
-const protectedPageRedirectedPayloadSchema = analyticsCommonPayloadSchema.extend({
-  event: z.literal("protected_page_redirected"),
-});
+// ---------------------------------------------------------------------------
+// Generate the discriminated union from the config
+// ---------------------------------------------------------------------------
+// Tuple literal (not .map()) so each element retains its precise ZodObject
+// type, satisfying Zod v4's $ZodTypeDiscriminable constraint.
+const _eventPayloadSchemas = [
+  analyticsCommonPayloadSchema.extend({
+    event: z.literal("page_view"),
+    ...EVENT_PAYLOAD_CONFIG.page_view,
+  }),
+  analyticsCommonPayloadSchema.extend({
+    event: z.literal("protected_page_redirected"),
+    ...EVENT_PAYLOAD_CONFIG.protected_page_redirected,
+  }),
+  analyticsCommonPayloadSchema.extend({
+    event: z.literal("unlock_modal_opened"),
+    ...EVENT_PAYLOAD_CONFIG.unlock_modal_opened,
+  }),
+  analyticsCommonPayloadSchema.extend({
+    event: z.literal("unlock_submit_attempt"),
+    ...EVENT_PAYLOAD_CONFIG.unlock_submit_attempt,
+  }),
+  analyticsCommonPayloadSchema.extend({
+    event: z.literal("unlock_success"),
+    ...EVENT_PAYLOAD_CONFIG.unlock_success,
+  }),
+  analyticsCommonPayloadSchema.extend({
+    event: z.literal("unlock_failure"),
+    ...EVENT_PAYLOAD_CONFIG.unlock_failure,
+  }),
+  analyticsCommonPayloadSchema.extend({
+    event: z.literal("form_submit_attempt"),
+    ...EVENT_PAYLOAD_CONFIG.form_submit_attempt,
+  }),
+  analyticsCommonPayloadSchema.extend({
+    event: z.literal("form_submit_success"),
+    ...EVENT_PAYLOAD_CONFIG.form_submit_success,
+  }),
+  analyticsCommonPayloadSchema.extend({
+    event: z.literal("form_submit_error"),
+    ...EVENT_PAYLOAD_CONFIG.form_submit_error,
+  }),
+  analyticsCommonPayloadSchema.extend({
+    event: z.literal("content_cta_clicked"),
+    ...EVENT_PAYLOAD_CONFIG.content_cta_clicked,
+  }),
+] as const;
 
-const unlockModalOpenedPayloadSchema = analyticsCommonPayloadSchema.extend({
-  event: z.literal("unlock_modal_opened"),
-});
-
-const unlockSubmitAttemptPayloadSchema = analyticsCommonPayloadSchema.extend({
-  event: z.literal("unlock_submit_attempt"),
-});
-
-const unlockSuccessPayloadSchema = analyticsCommonPayloadSchema.extend({
-  event: z.literal("unlock_success"),
-});
-
-const unlockFailurePayloadSchema = analyticsCommonPayloadSchema.extend({
-  event: z.literal("unlock_failure"),
-});
-
-const formSubmitAttemptPayloadSchema = analyticsCommonPayloadSchema.extend({
-  event: z.literal("form_submit_attempt"),
-  handlerKey: z.string(),
-});
-
-const formSubmitSuccessPayloadSchema = analyticsCommonPayloadSchema.extend({
-  event: z.literal("form_submit_success"),
-  handlerKey: z.string(),
-});
-
-const formSubmitErrorPayloadSchema = analyticsCommonPayloadSchema.extend({
-  event: z.literal("form_submit_error"),
-  handlerKey: z.string(),
-  errorType: z.string(),
-});
-
-const contentCtaClickedPayloadSchema = analyticsCommonPayloadSchema.extend({
-  event: z.literal("content_cta_clicked"),
-  props: z.record(z.string(), z.unknown()).optional(),
-});
-
-export const analyticsEventPayloadSchema = z.discriminatedUnion("event", [
-  pageViewPayloadSchema,
-  protectedPageRedirectedPayloadSchema,
-  unlockModalOpenedPayloadSchema,
-  unlockSubmitAttemptPayloadSchema,
-  unlockSuccessPayloadSchema,
-  unlockFailurePayloadSchema,
-  formSubmitAttemptPayloadSchema,
-  formSubmitSuccessPayloadSchema,
-  formSubmitErrorPayloadSchema,
-  contentCtaClickedPayloadSchema,
-]);
+export const analyticsEventPayloadSchema = z.discriminatedUnion("event", _eventPayloadSchemas);
 
 export type AnalyticsEventPayload = z.infer<typeof analyticsEventPayloadSchema>;
 

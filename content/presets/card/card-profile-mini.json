@@ -1,0 +1,57 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "align": "start",
+  "gap": "0.75rem",
+  "width": "100%",
+  "padding": "1.25rem",
+  "borderRadius": "18px",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+  },
+  "section": {
+    "elementOrder": ["avatar", "name", "role", "links"],
+    "definitions": {
+      "avatar": {
+        "type": "elementImage",
+        "src": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80&auto=format&fit=crop&crop=face",
+        "alt": "Profile portrait",
+        "width": "64px",
+        "height": "64px",
+        "objectFit": "cover",
+        "borderRadius": "999px"
+      },
+      "name": {
+        "preset": "type-h4-card",
+        "text": "Person Name"
+      },
+      "role": {
+        "preset": "type-body-fine",
+        "text": "Role or short descriptor"
+      },
+      "links": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "row",
+        "gap": "0.75rem",
+        "section": {
+          "elementOrder": ["link-one", "link-two"],
+          "definitions": {
+            "link-one": {
+              "preset": "type-link-inline",
+              "label": "Profile",
+              "href": "#"
+            },
+            "link-two": {
+              "preset": "type-link-inline",
+              "label": "Contact",
+              "href": "#"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 export type BgLoopMotion = {
   type: "loop";
-  animate: Record<string, unknown>;
+  to: Record<string, unknown>;
   transition: {
     duration: number;
     ease?: string | [number, number, number, number];
@@ -11,8 +11,8 @@ export type BgLoopMotion = {
 
 export type BgEntranceMotion = {
   type: "entrance";
-  initial: Record<string, unknown>;
-  animate: Record<string, unknown>;
+  from: Record<string, unknown>;
+  to: Record<string, unknown>;
   transition: {
     duration: number;
     ease?: string | [number, number, number, number];

@@ -14,12 +14,9 @@ export type ServerSectionRendererProps = {
 
 type SectionColumnExtended = Extract<SectionBlock, { type: "sectionColumn" }> & {
   gridMode?: unknown;
-  columnWidths?: unknown;
-  columnStyles?: unknown;
   itemStyles?: unknown;
   contentWidth?: unknown;
   contentHeight?: unknown;
-  gridAutoRows?: unknown;
   itemLayout?: unknown;
 };
 
@@ -49,25 +46,28 @@ export function ServerSectionRenderer({
         <MixedServerSectionContentBlock
           {...(section as Extract<SectionBlock, { type: "contentBlock" }>)}
           serverIsMobile={serverIsMobile}
+          hydrationPriority={analysisNode?.priority ?? "idle"}
         />
       );
     }
     if (section.type === "sectionColumn") {
       const col = section as SectionColumnExtended;
+      // columnStyles and gridAutoRows are handled by MixedServerSectionColumn via ...rest →
+      // ClientMixedSectionColumnShell. Only props that require useColumnLayout / useDeviceType
+      // at render time (gridMode, itemStyles, itemLayout, contentWidth, contentHeight) are
+      // genuinely incompatible with the mixed server path.
       const hasComplexFeatures =
         col.gridMode != null ||
-        col.columnWidths != null ||
-        col.columnStyles != null ||
         col.itemStyles != null ||
         col.contentWidth != null ||
         col.contentHeight != null ||
-        col.gridAutoRows != null ||
         col.itemLayout != null;
       if (!hasComplexFeatures) {
         return (
           <MixedServerSectionColumn
             {...(col as Extract<SectionBlock, { type: "sectionColumn" }>)}
             serverIsMobile={serverIsMobile}
+            hydrationPriority={analysisNode?.priority ?? "idle"}
           />
         );
       }

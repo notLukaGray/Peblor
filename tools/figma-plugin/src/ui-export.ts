@@ -126,7 +126,13 @@ export function mergedPageClipboardPayload(result: ExportResult): string {
   }
   const parity = result.trace?.counts?.parity;
   const category = result.trace?.counts?.category ?? {};
-  const envelope: Record<string, unknown> = { pages: result.pages, presets: result.presets };
+  const envelope: Record<string, unknown> = {
+    pages: result.pages,
+    presets: result.presets,
+    modals: result.modals,
+    modules: result.modules,
+    globals: result.globals,
+  };
   if (parity !== undefined) {
     envelope["figmaExportDiagnostics"] = buildFigmaExportDiagnostics(parity, category);
   }
@@ -145,8 +151,7 @@ export async function handleResult(
   infoCount: number,
   mode: "copy" | "copy-merged" | "zip" = "zip",
   artifact: ExportArtifact = "full",
-  sectionArtifact?: SectionExportArtifact,
-  force = false
+  sectionArtifact?: SectionExportArtifact
 ): Promise<void> {
   if (errors.length > 0) {
     const errDiv = document.createElement("div");
@@ -155,10 +160,10 @@ export async function handleResult(
     els.warningsEl.prepend(errDiv);
   }
 
-  if (errors.length > 0 && !force) {
+  if (errors.length > 0) {
     setStatus(
       els.statusEl,
-      `Export blocked: ${errors.length} error${errors.length !== 1 ? "s" : ""} present. Use --force to override.`,
+      `Export blocked: ${errors.length} error${errors.length !== 1 ? "s" : ""} present. Fix errors and re-export.`,
       "error"
     );
     setSummary(els.summaryEl, result);

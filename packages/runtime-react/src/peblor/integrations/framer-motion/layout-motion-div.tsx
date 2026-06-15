@@ -1,10 +1,10 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 /**
- * A `motion.div` with `layout` always enabled.
+ * A `m.div` with `layout` always enabled.
  * Use inside containers (e.g. ElementModuleGroup) so that sibling elements
  * smoothly reflow when one of them changes dimensions via a gesture animation.
  * Kept inside the FM integration boundary — nothing outside this folder
@@ -20,8 +20,8 @@ export function LayoutMotionDiv({
   style?: CSSProperties;
 }) {
   return (
-    <motion.div layout className={className} style={{ overflow: "visible", ...style }}>
+    <m.div layout className={className} style={{ overflow: "visible", ...style }}>
       {children}
-    </motion.div>
+    </m.div>
   );
 }

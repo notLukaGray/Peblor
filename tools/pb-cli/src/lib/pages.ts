@@ -1,5 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
+import { isRecord } from "@pb/core";
+export { isRecord };
 
 export function findPagesDir(): string | null {
   const candidate = path.join(process.cwd(), "content/pages");
@@ -27,15 +29,17 @@ export function walkPages(dir: string): Array<{ route: string; file: string }> {
     let entries: fs.Dirent[];
     try {
       entries = fs.readdirSync(current, { withFileTypes: true });
-    } catch {
+    } catch (err) {
+      console.warn("[pb-cli] Failed to read page directory during walk", current, err);
       return;
     }
     for (const entry of entries) {
       if (entry.isDirectory()) {
         walk(path.join(current, entry.name), `${routePrefix}/${entry.name}`);
-      } else if (entry.isFile() && entry.name.endsWith(".json")) {
-        const name = entry.name.replace(/\.json$/, "");
-        const route = name === "index" ? routePrefix || "/" : `${routePrefix}/${name}`;
+      } else if (entry.isFile() && entry.name === "index.json") {
+        // Only treat index.json files as routable pages. Other JSON files in a page
+        // directory are sidecar section fragments, not standalone routes.
+        const route = routePrefix || "/";
         results.push({ route, file: path.join(current, entry.name) });
       }
     }
@@ -86,8 +90,4 @@ export function walkAllPages(
     if (r.ok) result.push({ route, file, data: r.data });
   }
   return result;
-}
-
-export function isRecord(v: unknown): v is Record<string, unknown> {
-  return v != null && typeof v === "object" && !Array.isArray(v);
 }

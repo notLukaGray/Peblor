@@ -1,4 +1,4 @@
-import React, { act } from "react";
+import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { elementLottieSchema } from "@pb/contracts/peblor/core/peblor-schemas";
@@ -47,6 +47,7 @@ vi.mock("next/image", () => ({
 }));
 
 vi.mock("@/peblor/triggers", () => ({
+  PEBLOR_TRIGGER_EVENT: "peblor-trigger",
   firePeblorAction: (...args: unknown[]) => fireMock(...args),
 }));
 
@@ -112,7 +113,8 @@ describe("ElementLottie", () => {
     expect(fireMock).toHaveBeenCalledTimes(1);
     expect(fireMock).toHaveBeenCalledWith(
       { type: "navigate", payload: { href: "/second" } },
-      "system"
+      "system",
+      { event: "complete" }
     );
   });
 });

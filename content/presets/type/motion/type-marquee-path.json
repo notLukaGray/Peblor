@@ -1,0 +1,12 @@
+{
+  "type": "elementMarquee",
+  "level": 2,
+  "speed": 15,
+  "width": "100%",
+  "height": "120px",
+  "color": "var(--pb-on-secondary)",
+  "followPath": {
+    "d": "M0,80 C150,0 300,160 450,80 S750,0 900,80",
+    "offsetRotate": "auto"
+  }
+}

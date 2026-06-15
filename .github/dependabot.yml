@@ -1,0 +1,31 @@
+# Dependabot auto-update configuration
+# See https://docs.github.com/en/code-security/dependabot
+
+version: 2
+updates:
+  # npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/London"
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
+      include: "scope"
+    labels:
+      - "dependencies"
+    open-pull-requests-limit: 10
+    versioning-strategy: increase
+    groups:
+      # Group patch-level updates into single PRs to reduce noise
+      production-patch:
+        dependency-type: "production"
+        update-types:
+          - "patch"
+      development-patch:
+        dependency-type: "development"
+        update-types:
+          - "patch"

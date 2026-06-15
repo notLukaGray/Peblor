@@ -1,0 +1,98 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Composition Column 2 Col Editorial — Preset Demo",
+  "description": "Classic two-column editorial composition collapsing to single column on mobile.",
+  "sectionOrder": ["nav-header", "hero", "demo-primary", "demo-stress"],
+  "definitions": {
+    "bg-composition": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "radial-gradient(120% 110% at 92% 2%, color-mix(in oklab, var(--pb-accent) 16%, transparent) 0%, transparent 54%), linear-gradient(160deg, color-mix(in oklab, var(--pb-primary) 11%, var(--pb-secondary)) 0%, var(--pb-secondary) 66%, color-mix(in oklab, var(--pb-accent) 6%, var(--pb-secondary)) 100%)"
+        }
+      ],
+      "preset": "bg-composition"
+    },
+    "nav-header": {
+      "preset": "preset-demo-nav-header"
+    },
+    "hero": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "align": "start",
+      "height": "hug",
+      "padding": {
+        "base": "10rem 0 6rem",
+        "md": "12rem 0 8rem"
+      },
+      "gap": "1rem",
+      "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+      "definitions": {
+        "hero-eyebrow": {
+          "preset": "type-kicker-badge",
+          "text": "Column · Editorial · Balanced"
+        },
+        "hero-title": {
+          "preset": "type-h1-display",
+          "text": "Composition Column 2 Col Editorial"
+        },
+        "hero-description": {
+          "preset": "type-body-standard",
+          "text": "Classic two-column editorial composition collapsing to single column on mobile.",
+          "width": {
+            "base": "100%",
+            "md": "72%"
+          }
+        }
+      }
+    },
+    "demo-primary": {
+      "preset": "composition-column-2col-editorial",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "1040px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "2rem 0 3rem",
+        "md": "2rem 0 4rem"
+      }
+    },
+    "demo-stress": {
+      "preset": "composition-column-2col-editorial",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "1040px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 0 8rem",
+        "md": "0 0 12rem"
+      },
+      "definitions": {
+        "headline": {
+          "text": "Stress variant: long-form narrative keeps hierarchy intact"
+        },
+        "body": {
+          "text": "This extended paragraph intentionally pushes line length and sentence complexity to verify that the two-column editorial system remains readable across narrow phones, medium tablets, and wider desktop widths without clipped copy, awkward balancing, or loss of narrative order when the layout collapses."
+        },
+        "pull-quote": {
+          "text": "\"When collapsed, story still reads first, context second.\""
+        },
+        "support": {
+          "text": "Footnotes, legal caveats, and references remain visible but secondary, preserving scan rhythm and editorial intent."
+        }
+      }
+    }
+  },
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "layout", "card", "bg"],
+  "bgKey": "bg-composition"
+}

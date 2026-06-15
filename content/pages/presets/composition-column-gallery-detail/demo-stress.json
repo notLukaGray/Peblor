@@ -1,0 +1,69 @@
+{
+  "preset": "composition-column-gallery-detail",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "1100px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "0 0 8rem",
+    "md": "0 0 12rem"
+  },
+  "definitions": {
+    "gallery": {
+      "section": {
+        "definitions": {
+          "card-a": {
+            "section": {
+              "definitions": {
+                "title": {
+                  "text": "Extreme Panorama"
+                },
+                "body": {
+                  "text": "Very wide media crops still align to grid cadence."
+                }
+              }
+            }
+          },
+          "card-b": {
+            "section": {
+              "definitions": {
+                "title": {
+                  "text": "Portrait Cut"
+                },
+                "body": {
+                  "text": "Tall subject framing with concise metadata."
+                }
+              }
+            }
+          },
+          "card-c": {
+            "section": {
+              "definitions": {
+                "title": {
+                  "text": "Micro Detail"
+                },
+                "body": {
+                  "text": "Close crop proving fine texture handling."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "detail": {
+      "section": {
+        "definitions": {
+          "panel-title": {
+            "text": "Stress Detail Copy"
+          },
+          "panel-desc": {
+            "text": "Longer detail copy intentionally wraps across multiple lines to verify the 8/4 split preserves hierarchy and avoids clipping even when both gallery metadata and detail annotation are verbose."
+          }
+        }
+      }
+    }
+  }
+}

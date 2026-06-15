@@ -4,6 +4,8 @@ import { useEffect, useRef } from "react";
 import type { PageScrollConfig } from "@pb/contracts/types";
 import { useSmoothScroll } from "@pb/runtime-react/core/hooks/use-smooth-scroll";
 import { ScrollContainerProvider, useScrollContainerRef } from "./use-scroll-container";
+import { SharedScrollListenerProvider } from "./shared-scroll-listener";
+import { SmoothScrollToProvider } from "./smooth-scroll-to-context";
 
 /**
  * Applies page-level scroll behavior from the page schema's `scroll` field.
@@ -22,8 +24,8 @@ export function PageScrollProvider({
 }) {
   const smooth = scroll.smooth ?? false;
   const lockBody = scroll.lockBody ?? false;
-  const overflowX = scroll.overflowX ?? "hidden";
-  const overflowY = scroll.overflowY ?? "auto";
+  const overflowX = scroll.scrollX ?? "hidden";
+  const overflowY = scroll.scrollY ?? "auto";
   const snapType = scroll.snapType;
 
   const inheritedScrollRef =
@@ -49,8 +51,10 @@ export function PageScrollProvider({
   // Smooth scroll: useSmoothScroll intercepts wheel events and must only be
   // active when smooth is true. We always call it but pass a ref that points
   // at null when disabled so the effect finds no element and exits immediately.
+  // The returned scrollTo drives the lerp rAF — surfaced via SmoothScrollToProvider
+  // so action runners can use it instead of scrollIntoView (which conflicts with the rAF).
   const noopRef = useRef<HTMLDivElement>(null);
-  useSmoothScroll(smooth ? activeScrollRef : noopRef);
+  const smoothScrollTo = useSmoothScroll(smooth ? activeScrollRef : noopRef);
 
   // Apply configured overflow semantics even when using an inherited container.
   useEffect(() => {
@@ -88,17 +92,33 @@ export function PageScrollProvider({
         : "overflow-y-hidden";
 
   if (inheritedScrollRef) {
-    return <>{children}</>;
+    const inner = (
+      <SharedScrollListenerProvider scrollContainerRef={activeScrollRef}>
+        {children}
+      </SharedScrollListenerProvider>
+    );
+    return smooth ? (
+      <SmoothScrollToProvider scrollTo={smoothScrollTo}>{inner}</SmoothScrollToProvider>
+    ) : (
+      inner
+    );
   }
 
-  return (
+  const inner = (
     <ScrollContainerProvider containerRef={scrollRef}>
-      <div
-        ref={scrollRef}
-        className={`work-scroll relative h-dvh w-full min-w-0 ${overflowYClass} ${overflowXClass}`}
-      >
-        {children}
-      </div>
+      <SharedScrollListenerProvider scrollContainerRef={scrollRef}>
+        <div
+          ref={scrollRef}
+          className={`work-scroll relative h-dvh w-full min-w-0 ${overflowYClass} ${overflowXClass}`}
+        >
+          {children}
+        </div>
+      </SharedScrollListenerProvider>
     </ScrollContainerProvider>
+  );
+  return smooth ? (
+    <SmoothScrollToProvider scrollTo={smoothScrollTo}>{inner}</SmoothScrollToProvider>
+  ) : (
+    inner
   );
 }

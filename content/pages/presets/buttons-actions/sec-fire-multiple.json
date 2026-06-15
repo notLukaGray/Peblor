@@ -1,0 +1,94 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "entrancePreset": "slideUp",
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "fire-multi-row"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "fireMultiple"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "A single button that fires multiple actions in sequence or parallel. This button toggles the theme AND scrolls to a section AND copies text — all from one click."
+    },
+    "fire-multi-row": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "align": "center",
+      "distribute": "center",
+      "gap": "1rem",
+      "section": {
+        "elementOrder": ["fire-sequence", "fire-parallel"],
+        "definitions": {
+          "fire-sequence": {
+            "preset": "btn-primary",
+            "label": "Fire Sequence (3 actions)",
+            "action": "fireMultiple",
+            "actionPayload": {
+              "mode": "sequence",
+              "delayBetween": 300,
+              "actions": [
+                {
+                  "type": "setTheme",
+                  "payload": {
+                    "mode": "toggle"
+                  }
+                },
+                {
+                  "type": "scrollTo",
+                  "payload": {
+                    "id": "sec-set-variable",
+                    "behavior": "smooth",
+                    "block": "start",
+                    "offset": 0
+                  }
+                },
+                {
+                  "type": "copyToClipboard",
+                  "payload": {
+                    "text": "Fired from a fireMultiple sequence!"
+                  }
+                }
+              ]
+            },
+            "wrapperBorderRadius": "10px"
+          },
+          "fire-parallel": {
+            "preset": "btn-squircle",
+            "label": "Fire Parallel (2 actions)",
+            "action": "fireMultiple",
+            "actionPayload": {
+              "mode": "parallel",
+              "actions": [
+                {
+                  "type": "setVariable",
+                  "payload": {
+                    "key": "demoStatus",
+                    "value": "active"
+                  }
+                },
+                {
+                  "type": "scrollTo",
+                  "payload": {
+                    "id": "sec-set-variable",
+                    "behavior": "smooth",
+                    "block": "start",
+                    "offset": 0
+                  }
+                }
+              ]
+            },
+            "wrapperBorderRadius": "10px",
+            "wrapperPadding": "0.7rem 1.5rem"
+          }
+        }
+      }
+    }
+  },
+  "id": "sec-fire-multiple"
+}

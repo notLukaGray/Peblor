@@ -2,8 +2,8 @@ import type {
   TriggerAction,
   StartTransitionAction,
   StopTransitionAction,
-} from "@pb/contracts/peblor/core/peblor-schemas";
-import { OVERRIDE_KEY_BG } from "@pb/contracts/peblor/core/peblor-schemas";
+} from "@pb/contracts/peblor/core/trigger-action-types";
+import { OVERRIDE_KEY_BG } from "@pb/contracts/peblor/core/trigger-action-types";
 
 export function getTransitionId(
   action: StartTransitionAction | StopTransitionAction

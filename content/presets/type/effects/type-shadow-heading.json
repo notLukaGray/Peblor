@@ -1,0 +1,13 @@
+{
+  "type": "elementHeading",
+  "level": 2,
+  "color": "var(--pb-on-secondary)",
+  "textShadow": "0 0 40px color-mix(in oklab, var(--pb-accent) 60%, transparent), 0 2px 8px rgba(0,0,0,0.4)",
+  "wordWrap": true,
+  "width": "100%",
+  "motionTiming": {
+    "entrancePreset": "blurIn",
+    "trigger": "onFirstVisible"
+  },
+  "text": ""
+}

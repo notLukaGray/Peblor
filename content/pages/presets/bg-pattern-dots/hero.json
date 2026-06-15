@@ -1,0 +1,22 @@
+{
+  "elementOrder": ["hero-badge", "hero-title", "hero-desc", "hero-hint"],
+  "definitions": {
+    "hero-badge": {
+      "preset": "demo-hero-badge",
+      "text": "backgroundVariable · parallax pattern"
+    },
+    "hero-title": {
+      "preset": "demo-hero-title",
+      "text": "bg-pattern-dots"
+    },
+    "hero-desc": {
+      "preset": "demo-hero-description",
+      "text": "Pure CSS 1px dot grid via radial-gradient at 20px tile. Fully theme-aware — the dot colour is a semi-transparent mix of on-secondary. The pattern layer parallaxes at 0.22× on scroll."
+    },
+    "hero-hint": {
+      "preset": "demo-scroll-hint",
+      "text": "↓ Scroll to see the dots drift ↓"
+    }
+  },
+  "preset": "demo-hero-100vh"
+}

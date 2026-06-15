@@ -1,0 +1,214 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "width": {
+    "base": "92%",
+    "md": "86%"
+  },
+  "maxWidth": "1200px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "6rem 0 3rem",
+    "md": "8rem 0 4rem"
+  },
+  "gap": "3rem",
+  "height": "hug",
+  "motionTiming": {
+    "staggerChildren": 0.08,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["gallery-heading", "gallery-grid"],
+  "definitions": {
+    "gallery-heading": {
+      "type": "elementHeading",
+      "level": 2,
+      "variant": "section",
+      "text": "Browse the preset kit",
+      "color": "var(--pb-on-secondary)",
+      "width": "100%",
+      "motionTiming": {
+        "entrancePreset": "slideUp",
+        "trigger": "onFirstVisible"
+      }
+    },
+    "gallery-grid": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": {
+        "base": "column",
+        "md": "row"
+      },
+      "wrap": "wrap",
+      "distribute": "center",
+      "gap": "1rem",
+      "section": {
+        "elementOrder": [
+          "cat-bg",
+          "cat-type",
+          "cat-buttons",
+          "cat-cards",
+          "cat-interactive",
+          "cat-effects",
+          "cat-actions",
+          "cat-players",
+          "cat-composition"
+        ],
+        "definitions": {
+          "cat-bg": {
+            "preset": "preset-demo-cat-card",
+            "section": {
+              "definitions": {
+                "cat-title": {
+                  "text": "Backgrounds"
+                },
+                "cat-desc": {
+                  "text": "Solid, gradient, video, image, pattern, and transition backgrounds with per-layer motion."
+                },
+                "cat-link": {
+                  "label": "Browse backgrounds →",
+                  "href": "/presets/bg-solid"
+                }
+              }
+            }
+          },
+          "cat-type": {
+            "preset": "preset-demo-cat-card",
+            "section": {
+              "definitions": {
+                "cat-title": {
+                  "text": "Typography"
+                },
+                "cat-desc": {
+                  "text": "Type scale, motion typography, effects, special treatments, and pattern systems."
+                },
+                "cat-link": {
+                  "label": "Browse typography →",
+                  "href": "/presets/type-scale"
+                }
+              }
+            }
+          },
+          "cat-buttons": {
+            "preset": "preset-demo-cat-card",
+            "section": {
+              "definitions": {
+                "cat-title": {
+                  "text": "Buttons"
+                },
+                "cat-desc": {
+                  "text": "Visual variants, grouped CTAs, action wiring with setVariable, modals, themes, and multi-action chains."
+                },
+                "cat-link": {
+                  "label": "Explore buttons →",
+                  "href": "/presets/buttons-system"
+                }
+              }
+            }
+          },
+          "cat-cards": {
+            "preset": "preset-demo-cat-card",
+            "section": {
+              "definitions": {
+                "cat-title": {
+                  "text": "Cards"
+                },
+                "cat-desc": {
+                  "text": "Basic shells, media cards, stat counters, collection grids, carousels, bento, and selector preview systems."
+                },
+                "cat-link": {
+                  "label": "Browse cards →",
+                  "href": "/presets/cards-basic"
+                }
+              }
+            }
+          },
+          "cat-interactive": {
+            "preset": "preset-demo-cat-card",
+            "section": {
+              "definitions": {
+                "cat-title": {
+                  "text": "Interactive"
+                },
+                "cat-desc": {
+                  "text": "Tabs, tooltips, image compare, infinite scroll, form inputs, range sliders, drag and reorder."
+                },
+                "cat-link": {
+                  "label": "Explore interactive →",
+                  "href": "/presets/interactive-selection"
+                }
+              }
+            }
+          },
+          "cat-effects": {
+            "preset": "preset-demo-cat-card",
+            "section": {
+              "definitions": {
+                "cat-title": {
+                  "text": "Effects"
+                },
+                "cat-desc": {
+                  "text": "Glassmorphism, glow, blur, parallax, scroll-reactive depth, and layered atmospheric treatments."
+                },
+                "cat-link": {
+                  "label": "View effects →",
+                  "href": "/presets/effects-surfaces"
+                }
+              }
+            }
+          },
+          "cat-actions": {
+            "preset": "preset-demo-cat-card",
+            "section": {
+              "definitions": {
+                "cat-title": {
+                  "text": "Actions & Logic"
+                },
+                "cat-desc": {
+                  "text": "Sandbox for setVariable, conditional actions, theme switching, scroll-to, clipboard, modals, and multi-action sequences."
+                },
+                "cat-link": {
+                  "label": "Open sandbox →",
+                  "href": "/presets/actions-sandbox"
+                }
+              }
+            }
+          },
+          "cat-players": {
+            "preset": "preset-demo-cat-card",
+            "section": {
+              "definitions": {
+                "cat-title": {
+                  "text": "Players"
+                },
+                "cat-desc": {
+                  "text": "Video, audio, Lottie, Rive, 3D — standalone and cross-media orchestration with shared variables."
+                },
+                "cat-link": {
+                  "label": "Browse players →",
+                  "href": "/presets/player-video-standard"
+                }
+              }
+            }
+          },
+          "cat-composition": {
+            "preset": "preset-demo-cat-card",
+            "section": {
+              "definitions": {
+                "cat-title": {
+                  "text": "Composition"
+                },
+                "cat-desc": {
+                  "text": "Column layouts, flow layouts, nested hybrids, mixed spans, editorial grids, and control surfaces."
+                },
+                "cat-link": {
+                  "label": "Explore composition →",
+                  "href": "/presets/composition-flow-hero-stack"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

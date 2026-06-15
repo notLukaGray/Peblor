@@ -5,6 +5,7 @@
  * resolve at request time from User-Agent (or explicit isMobile).
  */
 
+import { BREAKPOINT_TIER_NAMES } from "@pb/contracts/peblor/core/breakpoint-tiers";
 import { resolveResponsiveValue } from "../lib/responsive-value";
 import { resolveElementBlockForBreakpoint } from "./element-layout-utils/breakpoint-resolution";
 import {
@@ -42,32 +43,25 @@ import {
   resolveResponsiveBooleanProp,
   resolveResponsiveStringProp,
 } from "./section-column-prop-normalizers";
-import { MOBILE_UA_REGEX } from "../lib/shared-utils";
+import { isMobileFromUserAgent } from "../lib/shared-utils";
 
-/**
- * Derive isMobile from User-Agent string. Use when resolving breakpoint on the server
- * (e.g. from headers().get("user-agent")). Matches device-type-provider UA logic.
- */
-export function isMobileFromUserAgent(userAgent: string): boolean {
-  return MOBILE_UA_REGEX.test(userAgent);
-}
+export { isMobileFromUserAgent };
 
-/** Resolve responsive value that may be tuple [mobile, desktop] or object { mobile?, desktop? }. */
+/** Resolve responsive value that may be scalar, tier map, or container map. */
 function resolveForBreakpoint<T>(value: unknown, isMobile: boolean): T | undefined {
-  if (value === undefined) return undefined;
-  if (Array.isArray(value)) return (isMobile ? value[0] : value[1]) as T;
-  if (value !== null && typeof value === "object" && ("mobile" in value || "desktop" in value)) {
-    const r = value as { mobile?: T; desktop?: T };
-    return (isMobile ? (r.mobile ?? r.desktop) : (r.desktop ?? r.mobile)) as T;
-  }
-  return value as T;
+  return resolveResponsiveValue(value as T, isMobile);
 }
 
-/** True if value is responsive (array or { mobile?, desktop? }), so we must copy to resolve. */
+/** True if value is responsive (tier map or @container map). */
 function valueNeedsBreakpointResolution(value: unknown): boolean {
   if (value === undefined) return false;
-  if (Array.isArray(value)) return value.length === 2;
-  if (value !== null && typeof value === "object") return "mobile" in value || "desktop" in value;
+  if (value !== null && typeof value === "object") {
+    const obj = value as Record<string, unknown>;
+    if ("@container" in obj) return true;
+    for (const tier of BREAKPOINT_TIER_NAMES) {
+      if (tier in obj) return true;
+    }
+  }
   return false;
 }
 
@@ -180,20 +174,18 @@ function resolveFormFieldBlock(field: FormFieldBlock, isMobile: boolean): FormFi
   return out as FormFieldBlock;
 }
 
-function resolveSectionBlock(block: SectionBlock, isMobile: boolean): SectionBlock {
-  const type = block.type;
-  const base = resolveBaseSectionProps(block as Record<string, unknown>, isMobile) as SectionBlock;
-  if (
-    base === (block as Record<string, unknown>) &&
-    (type === "divider" || type === "sectionTrigger")
-  ) {
-    return block;
-  }
-  if (type === "divider" || type === "sectionTrigger") {
-    return base;
-  }
+/** Resolve elements in a section for the given breakpoint. */
+function resolveSectionElements(
+  elements: ElementBlock[] | undefined,
+  isMobile: boolean
+): ElementBlock[] {
+  return (elements ?? []).map((el) => resolveElementBlock(el, isMobile));
+}
 
-  if (type === "sectionColumn") {
+type SectionResolver = (block: SectionBlock, isMobile: boolean, base: SectionBlock) => SectionBlock;
+
+const SECTION_RESOLVERS: Record<string, SectionResolver> = {
+  sectionColumn: (block, isMobile, base) => {
     const col = block as SectionBlock & {
       elements?: ElementWithId[];
       columns?: ColumnCountInput;
@@ -204,8 +196,8 @@ function resolveSectionBlock(block: SectionBlock, isMobile: boolean): SectionBlo
       columnSpan?: ColumnSpanInput;
       itemStyles?: ItemStylesInput;
       gridMode?: GridModeInput;
-      gridDebug?: boolean | { mobile?: boolean; desktop?: boolean };
-      gridAutoRows?: string | [string, string] | { mobile?: string; desktop?: string };
+      gridDebug?: boolean | { base?: boolean; md?: boolean };
+      gridAutoRows?: string | { base?: string; md?: string };
       elementOrder?: ElementOrderInput;
       itemLayout?: ItemLayoutInput;
       contentWidth?: unknown;
@@ -232,49 +224,47 @@ function resolveSectionBlock(block: SectionBlock, isMobile: boolean): SectionBlo
       contentWidth: resolveForBreakpoint(col.contentWidth, isMobile),
       contentHeight: resolveForBreakpoint(col.contentHeight, isMobile),
     } as SectionBlock;
-  }
+  },
 
-  if (type === "contentBlock") {
+  contentBlock: (block, isMobile, base) => {
     const content = block as SectionBlock & {
       elements?: ElementBlock[];
       contentWidth?: unknown;
       contentHeight?: unknown;
-      flexDirection?: unknown;
-      alignItems?: unknown;
-      justifyContent?: unknown;
-      flexWrap?: unknown;
+      flow?: unknown;
+      align?: unknown;
+      distribute?: unknown;
+      wrap?: unknown;
       gap?: unknown;
       rowGap?: unknown;
       columnGap?: unknown;
     };
-    const elements = content.elements ?? [];
     return {
       ...base,
       type: "contentBlock",
-      elements: elements.map((el) => resolveElementBlock(el, isMobile)),
+      elements: resolveSectionElements(content.elements, isMobile),
       contentWidth: resolveForBreakpoint(content.contentWidth, isMobile),
       contentHeight: resolveForBreakpoint(content.contentHeight, isMobile),
-      flexDirection: resolveForBreakpoint(content.flexDirection, isMobile),
-      alignItems: resolveForBreakpoint(content.alignItems, isMobile),
-      justifyContent: resolveForBreakpoint(content.justifyContent, isMobile),
-      flexWrap: resolveForBreakpoint(content.flexWrap, isMobile),
+      flow: resolveForBreakpoint(content.flow, isMobile),
+      align: resolveForBreakpoint(content.align, isMobile),
+      distribute: resolveForBreakpoint(content.distribute, isMobile),
+      wrap: resolveForBreakpoint(content.wrap, isMobile),
       gap: resolveForBreakpoint(content.gap, isMobile),
       rowGap: resolveForBreakpoint(content.rowGap, isMobile),
       columnGap: resolveForBreakpoint(content.columnGap, isMobile),
     } as SectionBlock;
-  }
+  },
 
-  if (type === "scrollContainer") {
+  scrollContainer: (block, isMobile, base) => {
     const scroll = block as SectionBlock & { elements?: ElementBlock[] };
-    const elements = scroll.elements ?? [];
     return {
       ...base,
       type: "scrollContainer",
-      elements: elements.map((el) => resolveElementBlock(el, isMobile)),
+      elements: resolveSectionElements(scroll.elements, isMobile),
     } as SectionBlock;
-  }
+  },
 
-  if (type === "formBlock") {
+  formBlock: (block, isMobile, base) => {
     const form = block as SectionBlock & {
       fields?: FormFieldBlock[];
       contentWidth?: unknown;
@@ -288,9 +278,9 @@ function resolveSectionBlock(block: SectionBlock, isMobile: boolean): SectionBlo
       contentWidth: resolveForBreakpoint(form.contentWidth, isMobile),
       contentHeight: resolveForBreakpoint(form.contentHeight, isMobile),
     } as SectionBlock;
-  }
+  },
 
-  if (type === "revealSection") {
+  revealSection: (block, isMobile, base) => {
     const reveal = block as SectionBlock & {
       collapsedElements?: ElementBlock[];
       revealedElements?: ElementBlock[];
@@ -303,12 +293,20 @@ function resolveSectionBlock(block: SectionBlock, isMobile: boolean): SectionBlo
       collapsedElements: collapsed.map((el) => resolveElementBlock(el, isMobile)),
       revealedElements: revealed.map((el) => resolveElementBlock(el, isMobile)),
     } as SectionBlock;
-  }
+  },
+};
 
-  if (type === "divider" || type === "sectionTrigger") {
-    return base;
+function resolveSectionBlock(block: SectionBlock, isMobile: boolean): SectionBlock {
+  const type = block.type;
+  const base = resolveBaseSectionProps(block as Record<string, unknown>, isMobile) as SectionBlock;
+  if (
+    base === (block as Record<string, unknown>) &&
+    (type === "divider" || type === "sectionTrigger" || type === "pageTrigger")
+  ) {
+    return block;
   }
-
+  const resolver = SECTION_RESOLVERS[type];
+  if (resolver) return resolver(block, isMobile, base);
   return base;
 }
 

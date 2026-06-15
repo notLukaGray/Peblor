@@ -29,6 +29,11 @@ import { elementTabsSchema } from "./element-tabs-schemas";
 import { elementTooltipSchema } from "./element-tooltip-schemas";
 import { elementLottieSchema } from "./element-lottie-schemas";
 import { elementDragSchema } from "./element-drag-schemas";
+import { elementEmbedSchema } from "./element-embed-schemas";
+import { elementListSchema } from "./element-list-schemas";
+import { elementBlockquoteSchema } from "./element-blockquote-schemas";
+import { elementTableSchema } from "./element-table-schemas";
+import { elementCodeSchema } from "./element-code-schemas";
 import { sectionEffectSchema } from "./section-effect-schemas";
 import {
   cssInlineStyleSchema,
@@ -37,37 +42,86 @@ import {
   responsiveStringSchema,
   themeStringSchema,
 } from "./schema-primitives";
-
-// z.lazy breaks the circular init (TS7022) by deferring evaluation until parse time.
-// z.ZodType<unknown> annotation prevents TypeScript from trying to infer the recursive type.
-const lazyElementBlock: z.ZodType<unknown> = z.lazy(() => elementBlockSchema);
-const responsiveNumberSchema = z.union([z.number(), z.tuple([z.number(), z.number()])]).optional();
+import { reorderablePropsSchema } from "./schema-shared-primitives";
+// Shared lazy element reference — populated after elementBlockSchema is defined below.
+// Imported by leaf element schemas (tabs, drag, image-compare) that cannot import
+// from this file directly due to the circular dependency (B-4 / C-15).
+import { lazyElementBlock, registerElementSchema } from "./lazy-element-ref";
+export { lazyElementBlock };
+const responsiveTierNumberSchema = z
+  .strictObject({
+    base: z.number().optional(),
+    sm: z.number().optional(),
+    md: z.number().optional(),
+    lg: z.number().optional(),
+    xl: z.number().optional(),
+    "2xl": z.number().optional(),
+  })
+  .refine((obj) => Object.values(obj).some((v) => v !== undefined), {
+    message: "Responsive tier map must define at least one tier (base/sm/md/lg/xl/2xl).",
+  });
+const responsiveNumberSchema = z.union([z.number(), responsiveTierNumberSchema]).optional();
 const responsiveElementOrderSchema = z.union([
   z.array(z.string()),
-  z.object({
-    mobile: z.array(z.string()),
-    desktop: z.array(z.string()),
-  }),
+  z
+    .strictObject({
+      base: z.array(z.string()).optional(),
+      sm: z.array(z.string()).optional(),
+      md: z.array(z.string()).optional(),
+      lg: z.array(z.string()).optional(),
+      xl: z.array(z.string()).optional(),
+      "2xl": z.array(z.string()).optional(),
+    })
+    .refine((obj) => Object.values(obj).some((v) => v !== undefined), {
+      message: "Responsive tier map must define at least one tier (base/sm/md/lg/xl/2xl).",
+    }),
 ]);
 
-const nestedElementSectionSchema = z
-  .object({
-    elementOrder: jsonNullishOptional(responsiveElementOrderSchema),
-    definitions: z.record(z.string(), lazyElementBlock),
-  })
-  .passthrough();
+/**
+ * Preset reference with per-key override fields.
+ * Uses catchall for forward-compatible override keys (C-21).
+ */
+export const presetReferenceSchema = z.object({ preset: z.string() }).catchall(z.unknown());
+
+const lazyDefinitionBlock = z.union([presetReferenceSchema, lazyElementBlock]);
+
+const nestedElementSectionSchema = z.object({
+  elementOrder: jsonNullishOptional(responsiveElementOrderSchema),
+  definitions: z.record(z.string(), lazyDefinitionBlock).optional(),
+});
 
 const elementGroupSchema = z
   .object({
     type: z.literal("elementGroup"),
-    section: nestedElementSectionSchema,
-    display: z.string().optional(),
-    flexDirection: responsiveStringSchema.optional(),
-    alignItems: responsiveStringSchema.optional(),
-    justifyContent: responsiveStringSchema.optional(),
+    section: nestedElementSectionSchema.optional(),
+    disclosure: z
+      .object({
+        mode: z.enum(["tap", "hover", "tapOrHover"]).optional(),
+        anchor: z.enum(["left", "center", "right"]).optional(),
+        collapsedWidth: z.union([z.string(), z.number()]).optional(),
+        expandedWidth: z.union([z.string(), z.number()]).optional(),
+        collapsedHeight: z.union([z.string(), z.number()]).optional(),
+        expandedHeight: z.union([z.string(), z.number()]).optional(),
+        durationMs: z.number().min(0).max(5000).optional(),
+        closeDelayMs: z.number().min(0).max(10000).optional(),
+        initiallyOpen: z.boolean().optional(),
+        storageKey: z.string().optional(),
+        panelKeys: z.array(z.string()).optional(),
+        triggerKeys: z.array(z.string()).optional(),
+        collapsedStyle: cssInlineStyleSchema.optional(),
+        expandedStyle: cssInlineStyleSchema.optional(),
+      })
+      .optional(),
+    /** When set, the element's scrollTop is persisted to localStorage under this key
+     *  and restored on mount — useful for navigation sidebars that stay open across pages. */
+    scrollStorageKey: z.string().optional(),
+    display: responsiveStringSchema.optional(),
+    flow: responsiveStringSchema.optional(),
+    align: responsiveStringSchema.optional(),
+    distribute: responsiveStringSchema.optional(),
     /** Spacing between items; theme fallback when unset — `pbContentGuidelines.frameGapWhenUnset`. */
     gap: responsiveStringSchema.optional(),
-    flexWrap: z.enum(["nowrap", "wrap", "wrap-reverse"]).optional(),
+    wrap: z.enum(["nowrap", "wrap", "wrap-reverse"]).optional(),
     /** Theme fallback when unset — `pbContentGuidelines.frameRowGapWhenUnset`. */
     rowGap: z.union([z.string(), z.number()]).optional(),
     padding: responsiveStringSchema.optional(),
@@ -84,9 +138,10 @@ const elementGroupSchema = z
     /** Theme fallback when unset — `pbContentGuidelines.frameColumnGapWhenUnset`. */
     columnGap: z.union([z.string(), z.number()]).optional(),
     effects: z.array(sectionEffectSchema).optional(),
+    glassLayer: z.enum(["background", "foreground"]).optional(),
   })
-  .merge(elementLayoutSchema)
-  .passthrough();
+  .merge(reorderablePropsSchema)
+  .merge(elementLayoutSchema);
 
 const elementInfiniteScrollSchema = z
   .object({
@@ -109,8 +164,8 @@ const elementInfiniteScrollSchema = z
     inactiveOpacity: responsiveNumberSchema,
     activeItemStyle: cssInlineStyleSchema.optional(),
     inactiveItemStyle: cssInlineStyleSchema.optional(),
-    alignItems: responsiveStringSchema.optional(),
-    justifyContent: responsiveStringSchema.optional(),
+    align: responsiveStringSchema.optional(),
+    distribute: responsiveStringSchema.optional(),
     gap: responsiveStringSchema.optional(),
     rowGap: z.union([z.string(), z.number()]).optional(),
     columnGap: z.union([z.string(), z.number()]).optional(),
@@ -120,9 +175,22 @@ const elementInfiniteScrollSchema = z
     paddingBottom: z.union([z.string(), z.number()]).optional(),
     paddingLeft: z.union([z.string(), z.number()]).optional(),
     effects: z.array(sectionEffectSchema).optional(),
+    /** Accessible label for the carousel listbox (P0.1 follow-up — read from rest in component). */
+    ariaLabel: z.string().optional(),
+    /** CSS display value for the carousel track container (e.g. "flex"). */
+    display: responsiveStringSchema.optional(),
+    /** CSS flex-direction for the carousel track (e.g. "column"). */
+    flow: responsiveStringSchema.optional(),
+    /** Minimum height constraint passed directly to getElementLayoutStyle. */
+    minHeight: jsonNullishOptional(responsiveStringSchema),
+    /** Minimum width constraint passed directly to getElementLayoutStyle. */
+    minWidth: jsonNullishOptional(responsiveStringSchema),
+    /** Maximum height constraint passed directly to getElementLayoutStyle. */
+    maxHeight: jsonNullishOptional(responsiveStringSchema),
+    /** Maximum width constraint passed directly to getElementLayoutStyle. */
+    maxWidth: jsonNullishOptional(responsiveStringSchema),
   })
-  .merge(elementLayoutSchema)
-  .passthrough();
+  .merge(elementLayoutSchema);
 
 export const elementBlockSchema = z.discriminatedUnion("type", [
   elementHeadingSchema,
@@ -154,7 +222,19 @@ export const elementBlockSchema = z.discriminatedUnion("type", [
   elementTooltipSchema,
   elementLottieSchema,
   elementDragSchema,
+  elementEmbedSchema,
+  elementListSchema,
+  elementBlockquoteSchema,
+  elementTableSchema,
+  elementCodeSchema,
 ]);
+
+/** Element types whose schema includes a `section` field with nested elementOrder + definitions. */
+export const NESTED_SECTION_ELEMENT_TYPES = ["elementGroup", "elementInfiniteScroll"] as const;
+
+// Populate the shared lazy ref so leaf schemas (tabs, drag, image-compare) can validate
+// nested element types fully at parse time without a circular static import (B-4).
+registerElementSchema(elementBlockSchema);
 
 export const cssGradientDefinitionSchema = z.object({
   type: z.literal("cssGradient"),
@@ -162,6 +242,7 @@ export const cssGradientDefinitionSchema = z.object({
 });
 
 export const sectionDefinitionBlockSchema = z.union([
+  presetReferenceSchema,
   elementBlockSchema,
   cssGradientDefinitionSchema,
 ]);

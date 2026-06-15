@@ -64,7 +64,8 @@ async function postHandler(request: NextRequest) {
           rateLimit
         );
       }
-    } catch {
+    } catch (err) {
+      console.warn("[web] Failed to send newsletter form email", err);
       return withFormRateLimitCookie(
         formErrorResponse("Subscription failed. Try again later.", 502),
         rateLimit

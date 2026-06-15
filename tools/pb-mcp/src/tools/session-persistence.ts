@@ -9,6 +9,7 @@ import type { Tool } from "../types.js";
 type SessionCheckpoint = {
   sessionId: string;
   route: string;
+  filePath: string;
   current: unknown;
   history: unknown[];
   savedAt: string;
@@ -38,7 +39,7 @@ export const exportSession: Tool = {
     const { getSession } = (await import("./page-session.js")) as {
       getSession?: (
         id: string
-      ) => { route: string; current: unknown; history: unknown[] } | undefined;
+      ) => { route: string; filePath: string; current: unknown; history: unknown[] } | undefined;
     };
 
     if (!getSession) {
@@ -53,6 +54,7 @@ export const exportSession: Tool = {
     const checkpoint: SessionCheckpoint = {
       sessionId,
       route: session.route,
+      filePath: session.filePath,
       current: session.current,
       history: session.history,
       savedAt: new Date().toISOString(),
@@ -97,7 +99,13 @@ export const importSession: Tool = {
     }
 
     const { restoreSession } = (await import("./page-session.js")) as {
-      restoreSession?: (id: string, route: string, current: unknown, history: unknown[]) => void;
+      restoreSession?: (
+        id: string,
+        route: string,
+        filePath: string,
+        current: unknown,
+        history: unknown[]
+      ) => void;
     };
 
     if (!restoreSession) {
@@ -106,7 +114,13 @@ export const importSession: Tool = {
       );
     }
 
-    restoreSession(checkpoint.sessionId, checkpoint.route, checkpoint.current, checkpoint.history);
+    restoreSession(
+      checkpoint.sessionId,
+      checkpoint.route,
+      checkpoint.filePath ?? "",
+      checkpoint.current,
+      checkpoint.history
+    );
 
     return {
       status: "ok",

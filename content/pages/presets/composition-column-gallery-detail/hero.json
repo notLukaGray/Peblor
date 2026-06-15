@@ -1,0 +1,23 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Column · Gallery · Detail Pane"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Composition Column Gallery Detail"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Selector gallery + detail pane structure for preview-oriented storytelling.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  },
+  "align": "start"
+}

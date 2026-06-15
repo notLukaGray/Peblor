@@ -1,0 +1,54 @@
+id: section.pageTrigger
+kind: cluster
+package: "@pb/contracts"
+stability: stable
+schema_version: 1
+
+feels_like: >
+  A headless section that fires actions on page lifecycle events and hosts all
+  section-level custom trigger types without any visual output. Use it when you need
+  onMount/onUnmount actions (page-load animations, analytics hits, variable
+  initialisation) or want a dedicated trigger container that keeps trigger logic
+  separate from visual sections. Any section can host custom triggers via
+  baseSectionPropsSchema, but pageTrigger makes them first-class and explicit.
+
+not_this_if:
+  - "you need a viewport intersection trigger (use section.trigger)"
+  - "you need the triggers on a visual section — add them directly to that section's props"
+  - "you just need a timer — use timerTriggers on any existing section"
+
+axes:
+  - name: lifecycle
+    fields: [onMount, onUnmount]
+    note: "actions fired when the section mounts/unmounts; deps array is intentionally empty — fires once only"
+  - name: custom_triggers
+    fields: [customEventTriggers, elementEventTriggers, scrollThresholdTriggers, mediaProgressTriggers, timerTriggers, keyboardTriggers, variableTriggers, tabVisibilityTriggers, mediaEndTriggers]
+    note: "full baseSectionPropsSchema trigger surface — all trigger arrays are available"
+
+covers:
+  - description: "Initialise a variable on page mount and clean up on unmount"
+    example: content/validator-fragments/section-page-trigger.json
+    minimal: true
+
+does_not_cover:
+  - what: "Intersection-observer trigger"
+    use_instead: section.trigger
+  - what: "Scroll-driven opacity"
+    use_instead: section.scrollOpacity
+  - what: "Visual content rendering"
+    use_instead: "any visual section (contentBlock, sectionColumn, etc.)"
+
+composes_with:
+  parents: [page]
+  siblings_typical: [trigger.timer, trigger.keyboard, trigger.customEvent]
+  motion: "N/A — headless, renders null"
+
+known_limitations:
+  - "Returns null — produces no DOM output"
+  - "onMount/onUnmount deps array is intentionally empty — fires once on mount/unmount, not on prop changes"
+  - "Multiple pageTrigger sections on one page are supported — each fires independently"
+
+proposal_hints:
+  new_variant_value: "N/A — section type, no variant"
+  new_field_in_existing_axis: extend_cluster
+  new_axis: "usually new_cluster — justify before adding"

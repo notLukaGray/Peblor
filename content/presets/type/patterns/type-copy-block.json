@@ -1,0 +1,26 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "align": "start",
+  "gap": "1.25rem",
+  "width": "100%",
+  "section": {
+    "elementOrder": ["cb-kicker", "cb-heading", "cb-body"],
+    "definitions": {
+      "cb-kicker": {
+        "preset": "type-kicker-badge",
+        "text": "Kicker"
+      },
+      "cb-heading": {
+        "preset": "type-h2-section",
+        "text": "Section heading copy",
+        "marginTop": "0.35rem"
+      },
+      "cb-body": {
+        "preset": "type-body-lead",
+        "text": "Lead body copy that introduces the section."
+      }
+    }
+  }
+}

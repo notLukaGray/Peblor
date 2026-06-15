@@ -1,0 +1,33 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "align": "start",
+  "gap": "1rem",
+  "width": "100%",
+  "padding": {
+    "base": "1.25rem",
+    "md": "1.75rem"
+  },
+  "borderRadius": "22px",
+  "fill": "color-mix(in oklab, var(--pb-accent) 16%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-accent) 26%, transparent)"
+  },
+  "section": {
+    "elementOrder": ["title", "body", "actions"],
+    "definitions": {
+      "title": {
+        "preset": "type-h4-card",
+        "text": "Ready to build faster?"
+      },
+      "body": {
+        "preset": "type-body-standard",
+        "text": "A compact CTA card with a primary action and secondary text link."
+      },
+      "actions": {
+        "preset": "card-action-row"
+      }
+    }
+  }
+}

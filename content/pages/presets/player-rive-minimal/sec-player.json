@@ -1,0 +1,250 @@
+{
+  "preset": "player-section",
+  "elementOrder": ["player-label", "player-surface", "state-bridge"],
+  "definitions": {
+    "player-label": {
+      "preset": "type-h3-label",
+      "text": "Rive Minimal — Hover to Drive · State Reads Back"
+    },
+    "player-surface": {
+      "preset": "player-rive-surface-minimal",
+      "section": {
+        "elementOrder": ["rive-canvas"],
+        "definitions": {
+          "rive-canvas": {
+            "type": "elementRive",
+            "src": "https://cdn.rive.app/animations/vehicles.riv",
+            "autoplay": true,
+            "loop": true,
+            "aspectRatio": "1 / 1",
+            "width": "100%",
+            "interactivity": [
+              {
+                "event": "hoverEnter",
+                "input": "hover",
+                "value": true
+              },
+              {
+                "event": "hoverLeave",
+                "input": "hover",
+                "value": false
+              }
+            ],
+            "onStateChange": {
+              "type": "setVariable",
+              "payload": {
+                "key": "riveState",
+                "value": "$event.stateName"
+              }
+            },
+            "onPlay": {
+              "type": "setVariable",
+              "payload": {
+                "key": "riveStatus",
+                "value": "playing"
+              }
+            },
+            "onPause": {
+              "type": "setVariable",
+              "payload": {
+                "key": "riveStatus",
+                "value": "paused"
+              }
+            }
+          }
+        }
+      }
+    },
+    "state-bridge": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "0.75rem",
+      "width": "100%",
+      "section": {
+        "elementOrder": ["bridge-label", "panel-idle", "panel-hover", "panel-other", "status-chip"],
+        "definitions": {
+          "bridge-label": {
+            "preset": "type-h5-meta",
+            "text": "Rive → Peblor state bridge — hover the animation to fire events"
+          },
+          "panel-idle": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "1rem",
+            "padding": "2.5rem 2.75rem",
+            "borderRadius": "20px",
+            "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+            "wrapperStyle": {
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 16%, transparent)",
+              "minHeight": "11rem"
+            },
+            "visibleWhen": {
+              "variable": "riveState",
+              "operator": "equals",
+              "value": "Idle"
+            },
+            "motion": {
+              "from": {
+                "opacity": 0,
+                "y": 20,
+                "scale": 0.97
+              },
+              "to": {
+                "opacity": 1,
+                "y": 0,
+                "scale": 1
+              },
+              "transition": {
+                "duration": 0.4,
+                "ease": "easeOut"
+              }
+            },
+            "section": {
+              "elementOrder": ["s-eyebrow", "s-title", "s-body"],
+              "definitions": {
+                "s-eyebrow": {
+                  "preset": "type-kicker-badge",
+                  "text": "Rive → Peblor"
+                },
+                "s-title": {
+                  "preset": "type-h2-section",
+                  "text": "State: Idle"
+                },
+                "s-body": {
+                  "preset": "type-body-standard",
+                  "text": "Character is at rest. Move your cursor over the animation — Rive will fire onStateChange and this entire panel will be replaced."
+                }
+              }
+            }
+          },
+          "panel-hover": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "1rem",
+            "padding": "2.5rem 2.75rem",
+            "borderRadius": "20px",
+            "fill": "color-mix(in oklab, var(--pb-accent) 14%, transparent)",
+            "wrapperStyle": {
+              "border": "2px solid color-mix(in oklab, var(--pb-accent) 40%, transparent)",
+              "minHeight": "11rem"
+            },
+            "visibleWhen": {
+              "variable": "riveState",
+              "operator": "equals",
+              "value": "Hover"
+            },
+            "motion": {
+              "from": {
+                "opacity": 0,
+                "y": 20,
+                "scale": 0.97
+              },
+              "to": {
+                "opacity": 1,
+                "y": 0,
+                "scale": 1
+              },
+              "transition": {
+                "duration": 0.4,
+                "ease": "easeOut"
+              }
+            },
+            "section": {
+              "elementOrder": ["s-eyebrow", "s-title", "s-body"],
+              "definitions": {
+                "s-eyebrow": {
+                  "preset": "type-kicker-badge",
+                  "text": "Rive fired onStateChange"
+                },
+                "s-title": {
+                  "preset": "type-h2-section",
+                  "text": "State: Hover"
+                },
+                "s-body": {
+                  "preset": "type-body-standard",
+                  "text": "Rive's state machine just emitted stateName=Hover. Peblor caught it, wrote it to riveState, and swapped this entire block into view. No JavaScript written."
+                }
+              }
+            }
+          },
+          "panel-other": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "1rem",
+            "padding": "2.5rem 2.75rem",
+            "borderRadius": "20px",
+            "fill": "color-mix(in oklab, var(--pb-primary) 14%, transparent)",
+            "wrapperStyle": {
+              "border": "2px solid color-mix(in oklab, var(--pb-primary) 40%, transparent)",
+              "minHeight": "11rem"
+            },
+            "visibleWhen": {
+              "variable": "riveState",
+              "operator": "equals",
+              "value": "Moving"
+            },
+            "motion": {
+              "from": {
+                "opacity": 0,
+                "y": 20,
+                "scale": 0.97
+              },
+              "to": {
+                "opacity": 1,
+                "y": 0,
+                "scale": 1
+              },
+              "transition": {
+                "duration": 0.4,
+                "ease": "easeOut"
+              }
+            },
+            "section": {
+              "elementOrder": ["s-eyebrow", "s-title", "s-body"],
+              "definitions": {
+                "s-eyebrow": {
+                  "preset": "type-kicker-badge",
+                  "text": "Rive fired onStateChange"
+                },
+                "s-title": {
+                  "preset": "type-h2-section",
+                  "text": "State: Active"
+                },
+                "s-body": {
+                  "preset": "type-body-standard",
+                  "text": "Animation is running. The state name from Rive's machine drove this entire section — any content block can be conditionally rendered this way."
+                }
+              }
+            }
+          },
+          "status-chip": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "row",
+            "align": "center",
+            "gap": "0.5rem",
+            "padding": "0.6rem 1rem",
+            "borderRadius": "999px",
+            "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+            "wrapperStyle": {
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+            },
+            "section": {
+              "elementOrder": ["chip-label"],
+              "definitions": {
+                "chip-label": {
+                  "preset": "type-h5-meta",
+                  "text": "riveState variable — hover the canvas to see the full panel swap"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

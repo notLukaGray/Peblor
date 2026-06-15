@@ -1,0 +1,96 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "align": "start",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "820px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "0 0 5rem",
+    "md": "0 0 8rem"
+  },
+  "gap": "3.5rem",
+  "height": "hug",
+  "motionTiming": {
+    "staggerChildren": 0.15,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["inline-group", "nav-group", "eyebrow-group"],
+  "definitions": {
+    "inline-group": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "gap": "0.75rem",
+      "section": {
+        "elementOrder": ["l-label", "l-link", "l-desc"],
+        "definitions": {
+          "l-label": {
+            "preset": "type-h3-label",
+            "text": "Inline Link"
+          },
+          "l-link": {
+            "preset": "type-link-inline",
+            "label": "Read the documentation"
+          },
+          "l-desc": {
+            "preset": "type-body-standard",
+            "text": "Underline link with colour transition on hover. Use for inline references and body-copy CTAs."
+          }
+        }
+      }
+    },
+    "nav-group": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "gap": "0.75rem",
+      "section": {
+        "elementOrder": ["l-label", "l-link", "l-desc"],
+        "definitions": {
+          "l-label": {
+            "preset": "type-h3-label",
+            "text": "Nav Link"
+          },
+          "l-link": {
+            "preset": "type-link-nav",
+            "label": "View all examples →"
+          },
+          "l-desc": {
+            "preset": "type-body-standard",
+            "text": "Muted nav link that brightens on hover with a subtle x-offset. Use for secondary navigation and 'see more' patterns."
+          }
+        }
+      }
+    },
+    "eyebrow-group": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "gap": "0.75rem",
+      "section": {
+        "elementOrder": ["l-label", "l-link", "l-desc"],
+        "definitions": {
+          "l-label": {
+            "preset": "type-h3-label",
+            "text": "Eyebrow Link"
+          },
+          "l-link": {
+            "preset": "type-link-eyebrow",
+            "label": "Design System"
+          },
+          "l-desc": {
+            "preset": "type-body-standard",
+            "text": "Pill-shaped uppercase badge link. Doubles as a category tag or section kicker when a destination is needed."
+          }
+        }
+      }
+    }
+  }
+}

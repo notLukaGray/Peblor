@@ -21,7 +21,7 @@ axes:
   - name: scroll
     fields: [scrollDirection, scrollProgressTrigger, scrollProgressTriggerId]
   - name: appearance
-    fields: [fill, effects, width, height, overflow]
+    fields: [fill, effects, width, height, scroll]
     responsive: true
   - name: motion
     fields: [motionTiming, sticky, stickyOffset]
@@ -49,8 +49,8 @@ composes_with:
 
 known_limitations:
   - "scrollProgressTrigger.id names the context consumed by element.scrollProgressBar and other progress listeners"
-  - "overflow: hidden on the section is required for axis-constrained scroll containment"
-  - "Both axes ('both') is rarely used — usually pair with overflow: auto"
+  - "scroll: hidden on the section is required for axis-constrained scroll containment"
+  - "Both axes ('both') is rarely used — usually pair with scroll: auto"
 
 proposal_hints:
   new_variant_value: "N/A — no variant field on section.scrollContainer"

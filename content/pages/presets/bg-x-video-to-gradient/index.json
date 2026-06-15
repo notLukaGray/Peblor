@@ -1,0 +1,19 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "bg-x-video-to-gradient — Preset Demo",
+  "description": "Scroll-triggered transition from full-bleed video to gradient",
+  "presets": ["demo", "bg"],
+  "sectionOrder": ["nav-header", "hero", "demo-content"],
+  "bgKey": "bg-x-video-to-gradient",
+  "scroll": {
+    "smooth": true,
+    "lockBody": false,
+    "scrollX": "hidden",
+    "scrollY": "auto"
+  },
+  "definitions": {
+    "bg-x-video-to-gradient": {
+      "preset": "bg-x-video-to-gradient"
+    }
+  }
+}

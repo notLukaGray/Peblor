@@ -1,15 +1,15 @@
 {
-  "initial": {
+  "from": {
     "opacity": 0
   },
-  "animate": {
+  "to": {
     "opacity": 1
   },
   "transition": {
     "staggerChildren": 0.08,
     "delayChildren": 0.05
   },
-  "variants": {
+  "states": {
     "hidden": {
       "opacity": 0
     },

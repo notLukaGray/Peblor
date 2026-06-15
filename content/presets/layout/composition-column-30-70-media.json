@@ -1,0 +1,58 @@
+{
+  "type": "sectionColumn",
+  "columns": {
+    "base": 1,
+    "md": 2
+  },
+  "columnWidths": {
+    "base": [1],
+    "md": [2.2, 1]
+  },
+  "columnGaps": {
+    "base": "1.5rem",
+    "md": "3rem"
+  },
+  "columnAssignments": {
+    "media": 0,
+    "title": 1,
+    "description": 1,
+    "detail": 1,
+    "cta": 1
+  },
+  "contentWidth": "100%",
+  "contentHeight": "hug",
+  "elementOrder": ["media", "title", "description", "detail", "cta"],
+  "gridMode": "grid",
+  "gridAutoRows": "auto",
+  "definitions": {
+    "media": {
+      "type": "elementImage",
+      "src": "https://images.unsplash.com/photo-1518773553398-650c184e0bb3?w=900&q=80&auto=format&fit=crop",
+      "alt": "Production still",
+      "width": "100%",
+      "height": {
+        "base": "13rem",
+        "md": "100%"
+      },
+      "objectFit": "cover",
+      "borderRadius": "16px"
+    },
+    "title": {
+      "preset": "type-h3-label",
+      "text": "Media-led detail section"
+    },
+    "description": {
+      "preset": "type-body-standard",
+      "text": "Use a compact visual on the left and expansive explanation on the right. At mobile sizes the media sits first, preserving narrative context before deeper copy."
+    },
+    "detail": {
+      "preset": "type-body-fine",
+      "text": "Supports mixed content: release notes, technical rationale, and rollout guidance with enough room for long-form sentences."
+    },
+    "cta": {
+      "preset": "type-link-nav",
+      "label": "Read case study ->",
+      "href": "#"
+    }
+  }
+}

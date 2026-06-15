@@ -1,0 +1,16 @@
+{
+  "themeFallbacks": {
+    "defaultTheme": "dark",
+    "colors": {
+      "tooltipBg": "rgb(15 15 18 / 0.94)",
+      "inputText": "rgba(255, 255, 255, 0.85)",
+      "imageCompareHandle": "#fff",
+      "lightColor3d": "#ffffff",
+      "videoPlaceholderBg": "rgba(255,255,255,0.06)",
+      "videoErrorText": "rgba(255,255,255,0.85)",
+      "videoErrorBg": "rgba(0,0,0,0.55)",
+      "videoErrorBlur": "blur(8px)",
+      "marqueeGradientEdgeFallback": "#000"
+    }
+  }
+}

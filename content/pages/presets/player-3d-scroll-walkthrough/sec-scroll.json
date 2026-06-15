@@ -1,0 +1,34 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "920px",
+  "selfAlign": "center",
+  "scroll": "visible",
+  "padding": {
+    "base": "3rem 0",
+    "md": "5rem 0 8rem"
+  },
+  "elementOrder": ["player-sticky", "scroll-spacer"],
+  "definitions": {
+    "player-sticky": {
+      "preset": "player-3d-surface-scroll",
+      "scroll": "visible",
+      "wrapperStyle": {
+        "position": "sticky",
+        "top": "5.5rem",
+        "width": "100%"
+      }
+    },
+    "scroll-spacer": {
+      "type": "elementSpacer",
+      "height": {
+        "base": "200vh",
+        "md": "180vh"
+      }
+    }
+  }
+}

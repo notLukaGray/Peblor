@@ -33,7 +33,7 @@ axes:
   - name: drag-transition
     fields: [dragTransition]
   - name: gesture
-    fields: [whileDrag]
+    fields: [onDrag]
     note: "keyframes applied during drag"
 
 does_not_cover:
@@ -44,7 +44,7 @@ does_not_cover:
   - what: "Range slider with action dispatch"
     use_instead: element.range
   - what: "Tap/press gesture"
-    use_instead: motion.whileTap
+    use_instead: motion.onPress
 
 covers:
   - description: "Draggable card with x-axis lock, parent constraints, and elastic snap"
@@ -52,8 +52,8 @@ covers:
 
 composes_with:
   parents: [section.*, element.*]
-  siblings_typical: [motion.whileHover, motion.whileDrag]
-  motion: "drag and drag sub-properties on motionProps; whileDrag for gesture keyframes"
+  siblings_typical: [motion.onHover, motion.onDrag]
+  motion: "drag and drag sub-properties on motionProps; onDrag for gesture keyframes"
 
 known_limitations:
   - "drag: true enables both axes — use 'x' or 'y' to lock"

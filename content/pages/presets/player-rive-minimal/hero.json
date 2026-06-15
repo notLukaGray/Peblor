@@ -1,0 +1,21 @@
+{
+  "preset": "demo-hero",
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Interactivity · State Bridge"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Rive Minimal"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Hovering the canvas sets a Rive input. When Rive's state machine changes state, onStateChange fires back to Peblor — different content panels appear. Both directions, live.",
+      "width": {
+        "base": "100%",
+        "md": "78%"
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "bg-image-texture — Preset Demo",
+  "description": "Textured photo with entrance zoom-in and brand overlay",
+  "presets": ["demo", "bg"],
+  "sectionOrder": ["nav-header", "hero"],
+  "bgKey": "bg-image-texture",
+  "scroll": {
+    "smooth": false,
+    "lockBody": true,
+    "scrollX": "hidden",
+    "scrollY": "hidden"
+  },
+  "definitions": {
+    "bg-image-texture": {
+      "preset": "bg-image-texture"
+    }
+  }
+}

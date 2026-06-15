@@ -1,0 +1,25 @@
+{
+  "preset": "demo-hero",
+  "padding": {
+    "base": "10rem 0 4rem",
+    "md": "12rem 0 6rem"
+  },
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Track Select · Expandable List · Transport · Seek"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Audio Playlist"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Spotify-style card layout. Tap ▼ to open the track list, select a track, then use the transport bar. Glass pill seek bar at the bottom.",
+      "width": {
+        "base": "100%",
+        "md": "78%"
+      }
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import type { VideoErrorKind } from "./use-element-video-source";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 const MESSAGES: Record<VideoErrorKind, { headline: string; detail: string }> = {
   unsupported: {
@@ -17,17 +18,17 @@ export function ElementVideoErrorOverlay({ errorKind }: { errorKind: VideoErrorK
   return (
     <span
       className="pointer-events-none absolute inset-0 flex items-start justify-start"
-      style={{ zIndex: 2 }}
+      style={{ zIndex: globals.zIndexContent }}
       role="alert"
       aria-live="polite"
     >
       <span
         className="m-3 px-3 py-2 rounded-lg text-xs leading-snug max-w-[260px]"
         style={{
-          color: "rgba(255,255,255,0.85)",
-          background: "rgba(0,0,0,0.55)",
-          backdropFilter: "blur(8px)",
-          WebkitBackdropFilter: "blur(8px)",
+          color: globals.colorVideoErrorText,
+          background: globals.colorVideoErrorBg,
+          backdropFilter: globals.colorVideoErrorBlur,
+          WebkitBackdropFilter: globals.colorVideoErrorBlur,
         }}
       >
         <span className="block font-medium">{headline}</span>

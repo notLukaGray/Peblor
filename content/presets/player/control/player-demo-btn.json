@@ -1,0 +1,15 @@
+{
+  "type": "elementButton",
+  "level": 5,
+  "wrapperPadding": "0.45rem 0.9rem",
+  "wrapperBorderRadius": "10px",
+  "linkDefault": "var(--pb-on-secondary)",
+  "motion": {
+    "onHover": {
+      "scale": 1.04
+    },
+    "transition": {
+      "duration": 0.15
+    }
+  }
+}

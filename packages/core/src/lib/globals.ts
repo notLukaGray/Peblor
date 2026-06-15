@@ -1,3 +1,5 @@
+import { CDN_ALLOWED_EXTENSIONS } from "./asset-types";
+
 export type CoreGlobals = {
   assetBaseUrl: string;
   cdnBase: string;
@@ -21,25 +23,7 @@ const DEFAULT_CORE_GLOBALS: CoreGlobals = {
   assetBaseUrl: "",
   cdnBase: "",
   cdnTokenExpiryDays: 7,
-  cdnAllowedExtensions: [
-    ".webm",
-    ".mp4",
-    ".webp",
-    ".jpg",
-    ".jpeg",
-    ".png",
-    ".avif",
-    ".glb",
-    ".gltf",
-    ".exr",
-    ".hdr",
-    ".mpd",
-    ".m3u8",
-    ".ts",
-    ".m4s",
-    ".m4a",
-    ".aac",
-  ],
+  cdnAllowedExtensions: [...CDN_ALLOWED_EXTENSIONS],
   imageDefaultWidth: 1200,
   imageDefaultPosterWidth: 1920,
   imagePosterWidth: 1280,

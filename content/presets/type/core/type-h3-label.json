@@ -1,0 +1,14 @@
+{
+  "type": "elementHeading",
+  "level": 3,
+  "textTransform": "uppercase",
+  "letterSpacing": "0.12em",
+  "color": "color-mix(in oklab, var(--pb-on-secondary) 58%, transparent)",
+  "wordWrap": true,
+  "width": "100%",
+  "motionTiming": {
+    "entrancePreset": "fade",
+    "trigger": "onFirstVisible"
+  },
+  "text": ""
+}

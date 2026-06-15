@@ -56,13 +56,27 @@ export function Model3DScene({
   isHomepagePriority?: boolean;
 }) {
   const { isMobile } = useDeviceType();
+  const opaqueBackground = block.scene.background?.type === "color";
   const renderProfile = useMemo(
-    () => resolveModel3DRenderProfile({ canvas: block.canvas, isMobile, isHomepagePriority }),
-    [block.canvas, isHomepagePriority, isMobile]
+    () =>
+      resolveModel3DRenderProfile({
+        canvas: block.canvas,
+        opaqueBackground,
+        isMobile,
+        isHomepagePriority,
+      }),
+    [block.canvas, isHomepagePriority, isMobile, opaqueBackground]
   );
 
   return (
-    <Canvas dpr={renderProfile.dpr} gl={renderProfile.gl} camera={{ position: [0, 0, 1], fov: 50 }}>
+    <Canvas
+      className="block h-full w-full"
+      style={{ width: "100%", height: "100%" }}
+      dpr={renderProfile.dpr}
+      gl={renderProfile.gl}
+      frameloop="demand"
+      camera={{ position: [0, 0, 1], fov: 50 }}
+    >
       <Suspense fallback={null}>
         <SceneContent
           block={block}

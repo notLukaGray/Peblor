@@ -1,23 +1,31 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "ignoreDependencies": ["patch-package", "tailwindcss"],
-  "include": [
-    "files",
-    "dependencies",
-    "unlisted",
-    "unresolved",
-    "duplicates",
-    "binaries",
-    "catalog"
+  "ignoreDependencies": ["tailwindcss"],
+  "ignoreBinaries": ["wait-on", "ffmpeg"],
+  "ignore": [
+    "apps/studio/src/**",
+    "apps/web/src/core/hooks/use-device-type.ts",
+    "apps/web/src/core/lib/asset-url.ts",
+    "apps/web/src/core/lib/json-value.ts",
+    "apps/web/src/core/ui/PageTransition.tsx",
+    "packages/runtime-react/src/peblor/integrations/framer-motion/layout.ts",
+    "packages/runtime-react/src/peblor/triggers/core/use-stable-value.ts",
+    "scripts/migrate-responsive-tiers.ts",
+    "scripts/migrate-section-column-tiers.ts",
+    "scripts/sidecar-pages.mjs",
+    "scripts/stamp-contract-version.ts"
   ],
+  "include": ["files", "dependencies", "unlisted", "unresolved", "binaries", "catalog"],
   "workspaces": {
     ".": {
       "entry": ["package.json"],
-      "project": ["*.{ts,tsx,js,mjs}", "scripts/**/*.{ts,tsx,js,mjs}"]
+      "project": ["*.{ts,tsx,js,mjs}", "scripts/**/*.{ts,tsx,js,mjs}"],
+      "ignoreDependencies": ["tailwindcss"]
     },
     "apps/web": {
-      "entry": ["src/app/**/*.{ts,tsx}", "src/core/**/*.{ts,tsx}", "src/devtools/**/*.{ts,tsx}"],
+      "entry": ["src/app/**/*.{ts,tsx}"],
       "project": ["src/**/*.{ts,tsx}"],
+      "ignoreDependencies": ["hls.js", "three"],
       "paths": {
         "@/peblor/*": ["../../packages/runtime-react/src/peblor/*"],
         "@pb/runtime-react/*": ["../../packages/runtime-react/src/*"],
@@ -25,6 +33,9 @@
         "@/content/*": ["../../content/*"],
         "@/*": ["./src/*"]
       }
+    },
+    "apps/studio": {
+      "ignoreDependencies": ["framer-motion", "tsx"]
     },
     "packages/contracts": {
       "project": ["src/**/*.ts", "scripts/**/*.ts"],
@@ -49,10 +60,8 @@
     "packages/runtime-react": {
       "entry": ["src/**/*.test.ts", "src/**/*.test.tsx"],
       "project": ["src/**/*.{ts,tsx}"],
-      "ignore": [
-        "src/peblor/background/motion/bg-layer-motion-schema.ts",
-        "src/peblor/client-islands/ClientPageRuntimeIsland.tsx"
-      ],
+      "ignoreDependencies": [],
+      "ignore": ["src/peblor/background/motion/bg-layer-motion-schema.ts"],
       "paths": {
         "@pb/runtime-react/*": ["./src/*"],
         "@/peblor/*": ["./src/peblor/*"],
@@ -80,6 +89,7 @@
     },
     "tools/pb-cli": {
       "project": ["src/**/*.ts"]
-    }
+    },
+    "tools/dev-hls-server": {}
   }
 }

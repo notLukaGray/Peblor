@@ -1,0 +1,34 @@
+{
+  "type": "elementGroup",
+  "selfAlign": "center",
+  "width": {
+    "base": "calc(100% - 1.5rem)",
+    "md": "min(1400px, calc(100vw - 6rem))"
+  },
+  "height": "100%",
+  "flex": "1 1 0",
+  "display": "flex",
+  "flow": {
+    "base": "column-reverse",
+    "md": "row"
+  },
+  "align": "stretch",
+  "distribute": {
+    "base": "start",
+    "md": "center"
+  },
+  "gap": {
+    "base": "0.45rem",
+    "md": "clamp(1.5rem, 3vw, 3rem)"
+  },
+  "padding": {
+    "base": "0",
+    "md": "0"
+  },
+  "scroll": "hidden",
+  "layer": 1,
+  "section": {
+    "elementOrder": [],
+    "definitions": {}
+  }
+}

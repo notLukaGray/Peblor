@@ -1,16 +1,16 @@
 "use client";
 
 import { forwardRef } from "react";
-import { motion } from "@/peblor/integrations/framer-motion";
+import { m } from "@/peblor/integrations/framer-motion";
 import { mergeMotionDefaults } from "@pb/contracts/peblor/core/peblor-motion-defaults";
 import type { MotionPropsFromJson } from "@pb/contracts/types";
 
 /** Motion div props type; we cast JSON-derived props to this for the motion component. */
-type MotionDivProps = React.ComponentProps<typeof motion.div>;
+type MotionDivProps = React.ComponentProps<typeof m.div>;
 
 const MOTION_TAGS = ["div", "span", "section", "article", "main", "header", "footer"] as const;
 
-type MotionFromJsonProps = {
+export type MotionFromJsonProps = {
   /** Motion config from JSON (element, section, or modal). Merged with preset, then passed to motion component. */
   motion: MotionPropsFromJson;
   /** Optional override for animate (e.g. trigger-driven opacity). Merged over the resolved animate from config. */
@@ -20,9 +20,10 @@ type MotionFromJsonProps = {
   /** HTML element type; default "div". */
   as?: (typeof MOTION_TAGS)[number];
   children: React.ReactNode;
-  style?: React.CSSProperties;
+  style?: MotionDivProps["style"];
+  transformTemplate?: MotionDivProps["transformTemplate"];
   className?: string;
-} & Omit<React.ComponentPropsWithoutRef<"div">, "children">;
+} & Omit<React.HTMLAttributes<HTMLElement>, "children" | "style" | "className">;
 
 /**
  * Renders a motion component with props from JSON. All schema keys from the merged config
@@ -38,22 +39,25 @@ export const MotionFromJson = forwardRef<HTMLElement, MotionFromJsonProps>(
       as: tag = "div",
       children,
       style,
+      transformTemplate,
       className,
       ...rest
     },
     ref
   ) => {
+    /** Shared ref-forwarding helper consolidating callback and object ref patterns. */
+    const setRef = (el: HTMLElement | null): void => {
+      if (typeof ref === "function") (ref as React.RefCallback<HTMLElement>)(el);
+      else if (ref && "current" in ref)
+        (ref as React.MutableRefObject<HTMLElement | null>).current = el;
+    };
+
     if (!motionConfig || typeof motionConfig !== "object") {
       const Tag = MOTION_TAGS.includes(tag) ? tag : "div";
-      const setRef = (el: HTMLElement | null): void => {
-        if (typeof ref === "function") (ref as React.RefCallback<HTMLElement>)(el);
-        else if (ref && "current" in ref)
-          (ref as React.MutableRefObject<HTMLElement | null>).current = el;
-      };
       return (
         <Tag
           ref={setRef as React.Ref<HTMLDivElement>}
-          style={style}
+          style={style as React.CSSProperties | undefined}
           className={className}
           {...rest}
         >
@@ -67,15 +71,10 @@ export const MotionFromJson = forwardRef<HTMLElement, MotionFromJsonProps>(
       : mergeMotionDefaults(motionConfig);
     if (!merged || typeof merged !== "object") {
       const Tag = MOTION_TAGS.includes(tag) ? tag : "div";
-      const setRef = (el: HTMLElement | null): void => {
-        if (typeof ref === "function") (ref as React.RefCallback<HTMLElement>)(el);
-        else if (ref && "current" in ref)
-          (ref as React.MutableRefObject<HTMLElement | null>).current = el;
-      };
       return (
         <Tag
           ref={setRef as React.Ref<HTMLDivElement>}
-          style={style}
+          style={style as React.CSSProperties | undefined}
           className={className}
           {...rest}
         >
@@ -84,9 +83,22 @@ export const MotionFromJson = forwardRef<HTMLElement, MotionFromJsonProps>(
       );
     }
 
-    const { initialVariant, animateVariant, exitVariant, ...motionOnly } = merged;
+    const {
+      initialVariant,
+      animateVariant,
+      exitVariant,
+      // Peblor gesture keys — translate to framer-motion while* props so they
+      // don't leak to the DOM as unknown event handlers (onHover, onPress) or
+      // collide with React's real onFocus handler.
+      onHover,
+      onPress,
+      onFocus,
+      onDrag,
+      onVisible,
+      ...motionOnly
+    } = merged;
 
-    const resolvedAnimate = animateVariant ?? motionOnly.animate;
+    const resolvedAnimate = animateVariant ?? motionOnly.to;
     const animateWithOverride =
       animateOverride && Object.keys(animateOverride).length > 0
         ? {
@@ -99,16 +111,23 @@ export const MotionFromJson = forwardRef<HTMLElement, MotionFromJsonProps>(
 
     const motionProps: Record<string, unknown> = {
       ...motionOnly,
-      initial: initialVariant ?? motionOnly.initial,
+      initial: initialVariant ?? motionOnly.from,
       animate: animateWithOverride,
-      exit: exitVariant ?? motionOnly.exit,
+      exit: exitVariant ?? motionOnly.leave,
+      // Translate peblor gesture keys to framer-motion while* props
+      whileHover: onHover,
+      whileTap: onPress,
+      whileFocus: onFocus,
+      whileDrag: onDrag,
+      whileInView: onVisible,
       style,
+      transformTemplate,
       className,
       ref,
       ...rest,
     };
 
-    const MotionComponent = MOTION_TAGS.includes(tag) && motion[tag] ? motion[tag] : motion.div;
+    const MotionComponent = MOTION_TAGS.includes(tag) && m[tag] ? m[tag] : m.div;
 
     return <MotionComponent {...(motionProps as MotionDivProps)}>{children}</MotionComponent>;
   }

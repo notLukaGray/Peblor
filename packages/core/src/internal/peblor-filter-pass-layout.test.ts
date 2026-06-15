@@ -18,16 +18,16 @@ describe("filterPageByActiveTags layout cleanup", () => {
       ],
       columnAssignments: { "section_a:el-a": 1, "section_a:el-b": 2 },
       columnSpan: {
-        mobile: { "section_a:el-a": 6, "section_a:el-b": 6 },
-        desktop: { "section_a:el-a": 4, "section_a:el-b": 8 },
+        base: { "section_a:el-a": 6, "section_a:el-b": 6 },
+        md: { "section_a:el-a": 4, "section_a:el-b": 8 },
       },
       itemStyles: {
         "section_a:el-a": { alignSelf: "start" },
         "section_a:el-b": { alignSelf: "end" },
       },
       itemLayout: {
-        mobile: { "section_a:el-a": { row: 1 }, "section_a:el-b": { row: 2 } },
-        desktop: { "section_a:el-a": { row: 1 }, "section_a:el-b": { row: 2 } },
+        base: { "section_a:el-a": { row: 1 }, "section_a:el-b": { row: 2 } },
+        md: { "section_a:el-a": { row: 1 }, "section_a:el-b": { row: 2 } },
       },
     } as unknown as SectionBlock;
 
@@ -42,13 +42,88 @@ describe("filterPageByActiveTags layout cleanup", () => {
     expect((next.elements as Array<{ id: string }>).map((el) => el.id)).toEqual(["section_a:el-a"]);
     expect(next.columnAssignments).toEqual({ "section_a:el-a": 1 });
     expect(next.columnSpan).toEqual({
-      mobile: { "section_a:el-a": 6 },
-      desktop: { "section_a:el-a": 4 },
+      base: { "section_a:el-a": 6 },
+      md: { "section_a:el-a": 4 },
     });
     expect(next.itemStyles).toEqual({ "section_a:el-a": { alignSelf: "start" } });
     expect(next.itemLayout).toEqual({
-      mobile: { "section_a:el-a": { row: 1 } },
-      desktop: { "section_a:el-a": { row: 1 } },
+      base: { "section_a:el-a": { row: 1 } },
+      md: { "section_a:el-a": { row: 1 } },
+    });
+  });
+
+  it("removes ids from tier-map keyed layout maps (base, md, etc.)", () => {
+    const section = {
+      type: "sectionColumn",
+      elementOrder: ["section_a:keep-id", "section_a:drop-id"],
+      elements: [
+        { type: "elementBody", id: "section_a:keep-id" },
+        { type: "elementBody", id: "section_a:drop-id" },
+      ],
+      itemLayout: {
+        base: {
+          "section_a:keep-id": { row: 1 },
+          "section_a:drop-id": { row: 2 },
+        },
+        md: {
+          "section_a:keep-id": { row: 1, col: 1 },
+          "section_a:drop-id": { row: 2, col: 2 },
+        },
+      },
+    } as unknown as SectionBlock;
+
+    const result = filterPageByActiveTags({
+      sections: [section],
+      projectGroups: { removeB: { projectSlug: "work/project-brand", elements: ["drop-id"] } },
+      activeFilters: { brand: ["alpha"] },
+      getProjectTags,
+    });
+    const next = result.sections[0] as unknown as Record<string, unknown>;
+    expect(next.elementOrder).toEqual(["section_a:keep-id"]);
+    expect((next.elements as Array<{ id: string }>).map((el) => el.id)).toEqual([
+      "section_a:keep-id",
+    ]);
+    expect(next.itemLayout).toEqual({
+      base: { "section_a:keep-id": { row: 1 } },
+      md: { "section_a:keep-id": { row: 1, col: 1 } },
+    });
+  });
+
+  it("removes ids from @container nested tier-maps within layout maps", () => {
+    const section = {
+      type: "sectionColumn",
+      elementOrder: ["section_a:keep-id", "section_a:drop-id"],
+      elements: [
+        { type: "elementBody", id: "section_a:keep-id" },
+        { type: "elementBody", id: "section_a:drop-id" },
+      ],
+      columnSpan: {
+        "@container": {
+          base: {
+            "section_a:keep-id": 6,
+            "section_a:drop-id": 6,
+          },
+          md: {
+            "section_a:keep-id": 4,
+            "section_a:drop-id": 8,
+          },
+        },
+      },
+    } as unknown as SectionBlock;
+
+    const result = filterPageByActiveTags({
+      sections: [section],
+      projectGroups: { removeB: { projectSlug: "work/project-brand", elements: ["drop-id"] } },
+      activeFilters: { brand: ["alpha"] },
+      getProjectTags,
+    });
+    const next = result.sections[0] as unknown as Record<string, unknown>;
+    expect(next.elementOrder).toEqual(["section_a:keep-id"]);
+    expect(next.columnSpan).toEqual({
+      "@container": {
+        base: { "section_a:keep-id": 6 },
+        md: { "section_a:keep-id": 4 },
+      },
     });
   });
 });

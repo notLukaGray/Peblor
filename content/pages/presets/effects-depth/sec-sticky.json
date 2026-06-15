@@ -1,0 +1,273 @@
+{
+  "type": "contentBlock",
+  "flow": {
+    "base": "column",
+    "md": "row"
+  },
+  "wrap": "wrap",
+  "width": {
+    "base": "92%",
+    "md": "88%"
+  },
+  "maxWidth": "1000px",
+  "selfAlign": "center",
+  "align": "start",
+  "distribute": "between",
+  "padding": {
+    "base": "4rem 0 5rem",
+    "md": "7rem 0 9rem"
+  },
+  "gap": "2.5rem",
+  "height": "hug",
+  "scroll": "visible",
+  "elementOrder": ["label", "desc", "content-group", "sidebar"],
+  "definitions": {
+    "label": {
+      "preset": "type-h3-label",
+      "text": "Sticky Composition",
+      "width": "100%"
+    },
+    "desc": {
+      "preset": "type-body-fine",
+      "text": "A pinned reference sidebar beside flowing content cards. The panel holds position at top: 2rem while six content cards scroll past — a pattern for navigation, filters, or contextual metadata.",
+      "width": "100%"
+    },
+    "sidebar": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "padding": "1.75rem",
+      "gap": "1.25rem",
+      "width": {
+        "base": "100%",
+        "md": "30%"
+      },
+      "borderRadius": "18px",
+      "scroll": "visible",
+      "wrapperStyle": {
+        "position": "sticky",
+        "top": "calc(20vh + 2rem)",
+        "alignSelf": "flex-start",
+        "layer": 10,
+        "backgroundColor": "color-mix(in oklab, var(--pb-accent) 10%, transparent)",
+        "bgBlur": "blur(20px)",
+        "WebkitBackdropFilter": "blur(20px)",
+        "boxShadow": "0 4px 28px color-mix(in oklab, var(--pb-accent) 16%, transparent)",
+        "border": "1px solid color-mix(in oklab, var(--pb-accent) 16%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["sk", "st", "sl"],
+        "definitions": {
+          "sk": {
+            "preset": "type-kicker-badge",
+            "text": "On this page"
+          },
+          "st": {
+            "preset": "type-h4-card",
+            "text": "Contents"
+          },
+          "sl": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.6rem",
+            "padding": "0",
+            "section": {
+              "elementOrder": ["a", "b", "c", "d", "e", "f"],
+              "definitions": {
+                "a": {
+                  "preset": "type-body-fine",
+                  "text": "Project overview"
+                },
+                "b": {
+                  "preset": "type-body-fine",
+                  "text": "Technical specifications"
+                },
+                "c": {
+                  "preset": "type-body-fine",
+                  "text": "Design decisions"
+                },
+                "d": {
+                  "preset": "type-body-fine",
+                  "text": "Implementation notes"
+                },
+                "e": {
+                  "preset": "type-body-fine",
+                  "text": "Performance metrics"
+                },
+                "f": {
+                  "preset": "type-body-fine",
+                  "text": "Next steps"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "content-group": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "0.85rem",
+      "flex": "1 1 0px",
+      "padding": "0",
+      "scroll": "visible",
+      "section": {
+        "elementOrder": ["c1", "c2", "c3", "c4", "c5", "c6"],
+        "definitions": {
+          "c1": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "padding": "1.5rem",
+            "gap": "0.45rem",
+            "borderRadius": "15px",
+            "wrapperStyle": {
+              "backgroundColor": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 9%, transparent)"
+            },
+            "section": {
+              "elementOrder": ["t", "b"],
+              "definitions": {
+                "t": {
+                  "preset": "type-h4-card",
+                  "text": "Project overview"
+                },
+                "b": {
+                  "preset": "type-body-fine",
+                  "text": "Executive summary covering scope, timeline, and key deliverables. The sticky sidebar provides persistent orientation as readers navigate the full document."
+                }
+              }
+            }
+          },
+          "c2": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "padding": "1.5rem",
+            "gap": "0.45rem",
+            "borderRadius": "15px",
+            "wrapperStyle": {
+              "backgroundColor": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 9%, transparent)"
+            },
+            "section": {
+              "elementOrder": ["t", "b"],
+              "definitions": {
+                "t": {
+                  "preset": "type-h4-card",
+                  "text": "Technical specifications"
+                },
+                "b": {
+                  "preset": "type-body-fine",
+                  "text": "Architecture, stack choices, API surface, and infrastructure requirements. The reference panel keeps key context accessible while the reader scrolls through dense technical detail."
+                }
+              }
+            }
+          },
+          "c3": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "padding": "1.5rem",
+            "gap": "0.45rem",
+            "borderRadius": "15px",
+            "wrapperStyle": {
+              "backgroundColor": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 9%, transparent)"
+            },
+            "section": {
+              "elementOrder": ["t", "b"],
+              "definitions": {
+                "t": {
+                  "preset": "type-h4-card",
+                  "text": "Design decisions"
+                },
+                "b": {
+                  "preset": "type-body-fine",
+                  "text": "Rationale behind interaction patterns, visual language choices, and accessibility considerations. Sticky reference keeps the design system vocabulary visible."
+                }
+              }
+            }
+          },
+          "c4": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "padding": "1.5rem",
+            "gap": "0.45rem",
+            "borderRadius": "15px",
+            "wrapperStyle": {
+              "backgroundColor": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 9%, transparent)"
+            },
+            "section": {
+              "elementOrder": ["t", "b"],
+              "definitions": {
+                "t": {
+                  "preset": "type-h4-card",
+                  "text": "Implementation notes"
+                },
+                "b": {
+                  "preset": "type-body-fine",
+                  "text": "Build pipeline, testing strategy, deployment flow, and monitoring setup. Sidebar navigation persists as engineers work through implementation details."
+                }
+              }
+            }
+          },
+          "c5": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "padding": "1.5rem",
+            "gap": "0.45rem",
+            "borderRadius": "15px",
+            "wrapperStyle": {
+              "backgroundColor": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 9%, transparent)"
+            },
+            "section": {
+              "elementOrder": ["t", "b"],
+              "definitions": {
+                "t": {
+                  "preset": "type-h4-card",
+                  "text": "Performance metrics"
+                },
+                "b": {
+                  "preset": "type-body-fine",
+                  "text": "Lighthouse scores, bundle analysis, Core Web Vitals, and runtime benchmarks. The pinned panel serves as a persistent dashboard legend."
+                }
+              }
+            }
+          },
+          "c6": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "padding": "1.5rem",
+            "gap": "0.45rem",
+            "borderRadius": "15px",
+            "wrapperStyle": {
+              "backgroundColor": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 9%, transparent)"
+            },
+            "section": {
+              "elementOrder": ["t", "b"],
+              "definitions": {
+                "t": {
+                  "preset": "type-h4-card",
+                  "text": "Next steps"
+                },
+                "b": {
+                  "preset": "type-body-fine",
+                  "text": "Roadmap priorities, upcoming milestones, and open questions. The sticky sidebar remains visible as stakeholders review the full plan."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

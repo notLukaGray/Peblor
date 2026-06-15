@@ -1,0 +1,39 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "align": "start",
+  "gap": "0.65rem",
+  "width": "100%",
+  "padding": {
+    "base": "1rem",
+    "md": "1.25rem"
+  },
+  "borderRadius": "18px",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+  },
+  "section": {
+    "elementOrder": ["kicker", "title", "body", "link"],
+    "definitions": {
+      "kicker": {
+        "preset": "type-kicker-badge",
+        "text": "Copy"
+      },
+      "title": {
+        "preset": "type-h4-card",
+        "text": "Text-forward card"
+      },
+      "body": {
+        "preset": "type-body-standard",
+        "text": "A text-only card surface. No image, no icon — just kicker, title, body, and link."
+      },
+      "link": {
+        "preset": "type-link-nav",
+        "label": "Read more →",
+        "href": "#"
+      }
+    }
+  }
+}

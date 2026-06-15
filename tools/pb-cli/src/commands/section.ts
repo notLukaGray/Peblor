@@ -72,7 +72,8 @@ function parseSectionArgs(args: string[]): {
   if (defRaw) {
     try {
       definition = JSON.parse(defRaw);
-    } catch {
+    } catch (err) {
+      console.warn("[pb-cli] Failed to parse section definition as JSON, using raw string", err);
       definition = defRaw;
     }
   }

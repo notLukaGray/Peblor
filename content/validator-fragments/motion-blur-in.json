@@ -1,9 +1,9 @@
 {
-  "initial": {
+  "from": {
     "opacity": 0,
     "filter": "blur(6px)"
   },
-  "animate": {
+  "to": {
     "opacity": 1,
     "filter": "blur(0px)"
   },

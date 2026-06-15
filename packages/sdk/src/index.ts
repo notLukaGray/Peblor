@@ -1,7 +1,12 @@
 import { CONTRACT_VERSION } from "@pb/contracts";
-import { loadPage } from "@pb/core/load";
+import { isRecord } from "@pb/core";
+import { loadPage, type LoadPageResult } from "@pb/core/load";
 import { migratePage, type MigrationResult } from "@pb/core/migrate";
-import { validatePage, type PeblorDiagnostic, type ValidatePageResult } from "@pb/core/validate";
+import {
+  validatePageAsync,
+  type PeblorDiagnostic,
+  type ValidatePageResult,
+} from "@pb/core/validate";
 
 export type DiffChange = {
   path: string;
@@ -25,30 +30,32 @@ export type PbMigrateOptions = {
   to: string;
 };
 
+export type PbLoadResult = {
+  page: unknown;
+  diagnostics: PeblorDiagnostic[];
+  filePath: string;
+};
+
 export type PbClient = {
   validate: (page: unknown) => Promise<ValidatePageResult>;
   diff: (pageA: unknown, pageB: unknown) => Promise<DiffResult>;
   migrate: (page: unknown, options: PbMigrateOptions | string) => Promise<MigrationResult>;
-  load: (source: string) => Promise<unknown>;
+  load: (source: string) => Promise<PbLoadResult>;
 };
 
 const MAX_INPUT_SIZE_BYTES = 2 * 1024 * 1024;
 const MAX_DIFF_DEPTH = 32;
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return value != null && typeof value === "object" && !Array.isArray(value);
-}
-
 function toPath(base: string, key: string | number): string {
   if (typeof key === "number") return `${base}[${key}]`;
-  if (base === "$") return `${base}.${key}`;
   return `${base}.${key}`;
 }
 
 function estimateInputSize(value: unknown): number {
   try {
     return JSON.stringify(value).length;
-  } catch {
+  } catch (err) {
+    console.warn("[pb-sdk] Failed to estimate input size via JSON.stringify", err);
     return Number.POSITIVE_INFINITY;
   }
 }
@@ -119,7 +126,7 @@ export function createPbClient(options: PbClientOptions = {}): PbClient {
   return {
     async validate(page: unknown): Promise<ValidatePageResult> {
       assertInputSize(page, "validate(page)");
-      const result = validatePage(page);
+      const result = await validatePageAsync(page);
       return {
         ...result,
         diagnostics: withContractVersion(contractVersion, result.diagnostics),
@@ -148,11 +155,17 @@ export function createPbClient(options: PbClientOptions = {}): PbClient {
       };
     },
 
-    async load(source: string): Promise<unknown> {
-      const loaded = await loadPage(source);
-      return loaded.validate?.page ?? loaded.raw;
+    async load(source: string): Promise<PbLoadResult> {
+      assertInputSize(source, "load(source)");
+      const loaded: LoadPageResult = await loadPage(source);
+      const validate = loaded.validate;
+      return {
+        page: validate?.page ?? loaded.raw,
+        diagnostics: withContractVersion(contractVersion, validate?.diagnostics ?? []),
+        filePath: loaded.filePath,
+      };
     },
   };
 }
 
-export type { MigrationResult, PeblorDiagnostic, ValidatePageResult };
+export type { LoadPageResult, MigrationResult, PeblorDiagnostic, ValidatePageResult };

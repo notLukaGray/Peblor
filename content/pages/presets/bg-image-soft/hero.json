@@ -1,0 +1,22 @@
+{
+  "elementOrder": ["hero-badge", "hero-title", "hero-desc", "hero-hint"],
+  "definitions": {
+    "hero-badge": {
+      "preset": "demo-hero-badge",
+      "text": "backgroundVariable · parallax + loop"
+    },
+    "hero-title": {
+      "preset": "demo-hero-title",
+      "text": "bg-image-soft"
+    },
+    "hero-desc": {
+      "preset": "demo-hero-description",
+      "text": "Landscape photo with a soft accent tint overlay that breathes in a slow loop, while the image itself parallaxes on scroll — two independent motion layers."
+    },
+    "hero-hint": {
+      "preset": "demo-scroll-hint",
+      "text": "↓ Scroll to feel the parallax ↓"
+    }
+  },
+  "preset": "demo-hero-100vh"
+}

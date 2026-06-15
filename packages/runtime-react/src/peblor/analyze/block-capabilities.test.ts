@@ -33,7 +33,7 @@ describe("analyzeBlockCapabilities", () => {
   it("forces descendants under client sections to client", () => {
     const result = analyzeBlockCapabilities({
       resolvedBg: null,
-      resolvedSections: [section({ motion: { animate: { opacity: 1 } }, elements: [heading()] })],
+      resolvedSections: [section({ motion: { to: { opacity: 1 } }, elements: [heading()] })],
     });
 
     const sectionNode = result.tree.children[0];
@@ -127,5 +127,97 @@ describe("analyzeBlockCapabilities", () => {
     expect(result.classification).toBe("client");
     expect(result.usesPageRuntime).toBe(true);
     expect(result.tree.reasons).toContain("page-runtime");
+  });
+
+  // Phase 4 — redundant CLIENT_PROP_KEYS cleanup
+  // The keys below only appear on types already in ALWAYS_CLIENT_ELEMENT_TYPES, so they
+  // never change classification. They should NOT appear in `reasons` as "client-prop" —
+  // the only driver should be "client-only-type".
+  it("elementAudio with showWaveform: reason is client-only-type, not client-prop", () => {
+    const result = analyzeBlockCapabilities({
+      resolvedBg: null,
+      resolvedSections: [
+        section({
+          elements: [
+            { type: "elementAudio", src: "/audio.mp3", showWaveform: true } as ElementBlock,
+          ],
+        }),
+      ],
+    });
+    const el = result.tree.children[0]?.children[0];
+    expect(el?.classification).toBe("client");
+    expect(el?.reasons).toContain("client-only-type");
+    expect(el?.reasons).not.toContain("client-prop");
+  });
+
+  it("elementMarquee with pauseOnHover/pauseOnFocus: reason is client-only-type, not client-prop", () => {
+    const result = analyzeBlockCapabilities({
+      resolvedBg: null,
+      resolvedSections: [
+        section({
+          elements: [
+            {
+              type: "elementMarquee",
+              text: "Tick",
+              direction: "left",
+              speed: 20,
+              pauseOnHover: true,
+              pauseOnFocus: true,
+            } as ElementBlock,
+          ],
+        }),
+      ],
+    });
+    const el = result.tree.children[0]?.children[0];
+    expect(el?.classification).toBe("client");
+    expect(el?.reasons).toContain("client-only-type");
+    expect(el?.reasons).not.toContain("client-prop");
+  });
+
+  it("elementImageCompare with hoverActivate: reason is client-only-type, not client-prop", () => {
+    const result = analyzeBlockCapabilities({
+      resolvedBg: null,
+      resolvedSections: [
+        section({
+          elements: [{ type: "elementImageCompare", hoverActivate: true } as ElementBlock],
+        }),
+      ],
+    });
+    const el = result.tree.children[0]?.children[0];
+    expect(el?.classification).toBe("client");
+    expect(el?.reasons).toContain("client-only-type");
+    expect(el?.reasons).not.toContain("client-prop");
+  });
+
+  it("elementTooltip with followCursor: reason is client-only-type, not client-prop", () => {
+    const result = analyzeBlockCapabilities({
+      resolvedBg: null,
+      resolvedSections: [
+        section({
+          elements: [{ type: "elementTooltip", followCursor: true } as ElementBlock],
+        }),
+      ],
+    });
+    const el = result.tree.children[0]?.children[0];
+    expect(el?.classification).toBe("client");
+    expect(el?.reasons).toContain("client-only-type");
+    expect(el?.reasons).not.toContain("client-prop");
+  });
+
+  it("elementLottie with interactivity: reason is client-only-type, not client-prop", () => {
+    const result = analyzeBlockCapabilities({
+      resolvedBg: null,
+      resolvedSections: [
+        section({
+          elements: [
+            { type: "elementLottie", src: "/anim.lottie", interactivity: [] } as ElementBlock,
+          ],
+        }),
+      ],
+    });
+    const el = result.tree.children[0]?.children[0];
+    expect(el?.classification).toBe("client");
+    expect(el?.reasons).toContain("client-only-type");
+    expect(el?.reasons).not.toContain("client-prop");
   });
 });

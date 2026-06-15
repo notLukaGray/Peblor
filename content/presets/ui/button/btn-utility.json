@@ -1,0 +1,15 @@
+{
+  "type": "elementButton",
+  "label": "",
+  "level": 5,
+  "wrapperPadding": "0.35rem 0.7rem",
+  "wrapperBorderRadius": "6px",
+  "linkDefault": "var(--pb-on-secondary)",
+  "selfAlign": "center",
+  "fontSize": "0.8rem",
+  "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+  "wrapperFillHover": "color-mix(in oklab, var(--pb-on-secondary) 18%, transparent)",
+  "wrapperFillActive": "color-mix(in oklab, var(--pb-on-secondary) 28%, transparent)",
+  "wrapperScaleHover": 1.05,
+  "wrapperScaleActive": 0.96
+}

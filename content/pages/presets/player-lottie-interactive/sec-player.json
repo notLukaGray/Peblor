@@ -1,0 +1,244 @@
+{
+  "preset": "player-section",
+  "elementOrder": ["player-label", "player-surface"],
+  "definitions": {
+    "player-label": {
+      "preset": "type-h3-label",
+      "text": "Lottie Interactive — Load + Control"
+    },
+    "player-surface": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "stretch",
+      "gap": "0",
+      "width": "100%",
+      "borderRadius": "18px",
+      "scroll": "hidden",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["load-area", "lottie-canvas", "control-bar", "state-readout"],
+        "definitions": {
+          "load-area": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "align": "center",
+            "distribute": "center",
+            "padding": "3rem 1.5rem",
+            "gap": "1rem",
+            "visibleWhen": {
+              "variable": "lottieLoaded",
+              "operator": "notEquals",
+              "value": true
+            },
+            "section": {
+              "elementOrder": ["load-hint", "load-btn"],
+              "definitions": {
+                "load-hint": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "Animation not loaded",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 45%, transparent)",
+                  "textAlign": "center"
+                },
+                "load-btn": {
+                  "preset": "player-load-btn",
+                  "label": "Load Animation",
+                  "action": "setVariable",
+                  "actionPayload": {
+                    "key": "lottieLoaded",
+                    "value": true
+                  }
+                }
+              }
+            }
+          },
+          "lottie-canvas": {
+            "type": "elementLottie",
+            "id": "lottie-player-interactive",
+            "src": "https://assets6.lottiefiles.com/packages/lf20_iwmd6pyr.json",
+            "autoplay": true,
+            "loop": false,
+            "width": "100%",
+            "aspectRatio": "1 / 1",
+            "visibleWhen": {
+              "variable": "lottieLoaded",
+              "operator": "equals",
+              "value": true
+            },
+            "onComplete": {
+              "type": "setVariable",
+              "payload": {
+                "key": "lottieStatus",
+                "value": "complete"
+              }
+            },
+            "onLoop": {
+              "type": "setVariable",
+              "payload": {
+                "key": "lottieStatus",
+                "value": "looping"
+              }
+            }
+          },
+          "control-bar": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "row",
+            "align": "center",
+            "wrap": "wrap",
+            "gap": "0.5rem",
+            "padding": "0.75rem 1.25rem",
+            "visibleWhen": {
+              "variable": "lottieLoaded",
+              "operator": "equals",
+              "value": true
+            },
+            "wrapperStyle": {
+              "borderTop": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+            },
+            "section": {
+              "elementOrder": ["btn-play", "btn-pause", "btn-toggle", "btn-start", "btn-unload"],
+              "definitions": {
+                "btn-play": {
+                  "type": "elementButton",
+                  "label": "Play",
+                  "action": "assetPlay",
+                  "actionPayload": {
+                    "id": "lottie-player-interactive"
+                  },
+                  "level": 5,
+                  "wrapperPadding": "0.5rem 0.9rem",
+                  "wrapperBorderRadius": "10px",
+                  "wrapperFill": "color-mix(in oklab, var(--pb-accent) 18%, transparent)",
+                  "linkDefault": "var(--pb-on-secondary)",
+                  "motion": {
+                    "onHover": {
+                      "scale": 1.04
+                    },
+                    "transition": {
+                      "duration": 0.15
+                    }
+                  }
+                },
+                "btn-pause": {
+                  "type": "elementButton",
+                  "label": "Pause",
+                  "action": "assetPause",
+                  "actionPayload": {
+                    "id": "lottie-player-interactive"
+                  },
+                  "level": 5,
+                  "wrapperPadding": "0.5rem 0.9rem",
+                  "wrapperBorderRadius": "10px",
+                  "wrapperFill": "color-mix(in oklab, var(--pb-accent) 18%, transparent)",
+                  "linkDefault": "var(--pb-on-secondary)",
+                  "motion": {
+                    "onHover": {
+                      "scale": 1.04
+                    },
+                    "transition": {
+                      "duration": 0.15
+                    }
+                  }
+                },
+                "btn-toggle": {
+                  "type": "elementButton",
+                  "label": "Toggle",
+                  "action": "assetTogglePlay",
+                  "actionPayload": {
+                    "id": "lottie-player-interactive"
+                  },
+                  "level": 5,
+                  "wrapperPadding": "0.5rem 0.9rem",
+                  "wrapperBorderRadius": "10px",
+                  "wrapperFill": "color-mix(in oklab, var(--pb-accent) 18%, transparent)",
+                  "linkDefault": "var(--pb-on-secondary)",
+                  "motion": {
+                    "onHover": {
+                      "scale": 1.04
+                    },
+                    "transition": {
+                      "duration": 0.15
+                    }
+                  }
+                },
+                "btn-start": {
+                  "type": "elementButton",
+                  "label": "Frame 0",
+                  "action": "assetSeek",
+                  "actionPayload": {
+                    "id": "lottie-player-interactive",
+                    "time": 0
+                  },
+                  "level": 5,
+                  "wrapperPadding": "0.5rem 0.9rem",
+                  "wrapperBorderRadius": "10px",
+                  "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+                  "linkDefault": "var(--pb-on-secondary)",
+                  "motion": {
+                    "onHover": {
+                      "scale": 1.04
+                    },
+                    "transition": {
+                      "duration": 0.15
+                    }
+                  }
+                },
+                "btn-unload": {
+                  "type": "elementButton",
+                  "label": "Unload",
+                  "action": "fireMultiple",
+                  "actionPayload": {
+                    "actions": [
+                      {
+                        "type": "assetPause",
+                        "payload": {
+                          "id": "lottie-player-interactive"
+                        }
+                      },
+                      {
+                        "type": "setVariable",
+                        "payload": {
+                          "key": "lottieLoaded",
+                          "value": false
+                        }
+                      },
+                      {
+                        "type": "setVariable",
+                        "payload": {
+                          "key": "lottieStatus",
+                          "value": ""
+                        }
+                      }
+                    ]
+                  },
+                  "level": 5,
+                  "wrapperPadding": "0.5rem 0.9rem",
+                  "wrapperBorderRadius": "10px",
+                  "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+                  "linkDefault": "color-mix(in oklab, var(--pb-on-secondary) 55%, transparent)",
+                  "motion": {
+                    "onHover": {
+                      "scale": 1.04
+                    },
+                    "transition": {
+                      "duration": 0.15
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "state-readout": {
+            "preset": "player-variable-panel"
+          }
+        }
+      }
+    }
+  }
+}

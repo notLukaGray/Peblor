@@ -1,0 +1,74 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "width": "100%",
+  "maxWidth": "1000px",
+  "selfAlign": "center",
+  "align": "stretch",
+  "height": "hug",
+  "padding": {
+    "base": "2.5rem 1.5rem",
+    "md": "4rem 2rem"
+  },
+  "gap": "2rem",
+  "borderRadius": "20px",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 11%, transparent)"
+  },
+  "elementOrder": ["eyebrow", "title", "lead", "actions"],
+  "definitions": {
+    "eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Flow Hero"
+    },
+    "title": {
+      "preset": "type-h4-card",
+      "text": "Hero stack with layered flow"
+    },
+    "lead": {
+      "preset": "type-body-standard",
+      "text": "Single-lane layout combining kicker, heading, lead, and actions in one vertical container with responsive spacing."
+    },
+    "actions": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": {
+        "base": "column",
+        "md": "row"
+      },
+      "align": {
+        "base": "stretch",
+        "md": "center"
+      },
+      "gap": "0.85rem",
+      "padding": "0",
+      "width": {
+        "base": "100%",
+        "md": "fit-content"
+      },
+      "section": {
+        "elementOrder": ["primary", "secondary"],
+        "definitions": {
+          "primary": {
+            "type": "elementButton",
+            "label": "Get started",
+            "href": "#",
+            "wrapperPadding": "0.9rem 1.75rem",
+            "wrapperBorderRadius": "12px",
+            "wrapperFill": "var(--pb-on-secondary)",
+            "linkDefault": "var(--pb-secondary)",
+            "linkHover": "var(--pb-secondary)"
+          },
+          "secondary": {
+            "type": "elementLink",
+            "label": "Learn more",
+            "href": "#",
+            "copyType": "body",
+            "level": 3
+          }
+        }
+      }
+    }
+  }
+}

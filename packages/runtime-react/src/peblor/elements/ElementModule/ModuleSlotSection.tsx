@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef, type KeyboardEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import type { CSSProperties } from "react";
 import type {
   ElementBlock,
@@ -20,8 +20,7 @@ import { ModuleSlotFeedback } from "./ModuleSlotFeedback";
 import { ModuleSlotContent } from "./ModuleSlotContent";
 import type { ModuleSlotConfig } from "./types";
 import { SectionGlassEffect } from "@/peblor/section/stack/SectionGlassEffect";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
-import { resolveThemeStyleObject, resolveThemeValueDeep } from "@/peblor/theme/theme-string";
+import { lowerThemeStyleObject, lowerThemeValueDeep } from "@/peblor/theme/theme-string";
 
 export { useSlotDefaultWrapperStyle } from "./ModuleSlotContext";
 
@@ -58,9 +57,9 @@ export function ModuleSlotSection({
   pointerEventsWhenVisible,
   slotStyleOverride,
 }: ModuleSlotSectionProps) {
-  const themeMode = usePeblorThemeMode();
   const slotRef = useRef<HTMLElement | null>(null);
-  const rawElements = useMemo(() => resolveSlotElements(slot), [slot]);
+  const slotSection = slot.section;
+  const rawElements = useMemo(() => resolveSlotElements({ section: slotSection }), [slotSection]);
   const elements = useMemo(
     () =>
       rawElements.filter((el) =>
@@ -117,27 +116,62 @@ export function ModuleSlotSection({
       expandDurationMs,
       hasLayoutTransition: useHugLayout || !!slot.layoutMode,
     });
-    const themedBase = resolveThemeStyleObject(
-      base as Record<string, unknown>,
-      themeMode
-    ) as CSSProperties;
-    const themedOverride = resolveThemeStyleObject(
-      slotStyleOverride as Record<string, unknown> | undefined,
-      themeMode
+    const themedBase = lowerThemeStyleObject(base as Record<string, unknown>) as CSSProperties;
+    const themedOverride = lowerThemeStyleObject(
+      slotStyleOverride as Record<string, unknown> | undefined
     ) as CSSProperties | undefined;
     return themedOverride ? { ...themedBase, ...themedOverride } : themedBase;
-  }, [slot, useHugLayout, durationMs, easing, expandDurationMs, slotStyleOverride, themeMode]);
+  }, [slot, useHugLayout, durationMs, easing, expandDurationMs, slotStyleOverride]);
 
+  const wm = slot.wrapperMotion;
+  const hoverExitDelayMs =
+    wm && typeof wm === "object"
+      ? ((wm as Record<string, unknown>).hoverExitDelayMs as number | undefined)
+      : undefined;
+
+  const resolvedWhileHover = useMemo(() => {
+    if (hoverExitDelayMs === undefined || !wm || typeof wm !== "object") return undefined;
+    return wm.whileHover !== undefined ? lowerThemeValueDeep(wm.whileHover) : undefined;
+  }, [hoverExitDelayMs, wm]);
+
+  const [isHovering, setIsHovering] = useState(false);
+  const hoverExitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handlePointerEnter = useCallback(() => {
+    if (hoverExitTimerRef.current) {
+      clearTimeout(hoverExitTimerRef.current);
+      hoverExitTimerRef.current = null;
+    }
+    setIsHovering(true);
+  }, []);
+
+  const handlePointerLeave = useCallback(() => {
+    if (hoverExitDelayMs && hoverExitDelayMs > 0) {
+      hoverExitTimerRef.current = setTimeout(() => {
+        setIsHovering(false);
+      }, hoverExitDelayMs);
+    } else {
+      setIsHovering(false);
+    }
+  }, [hoverExitDelayMs]);
+
+  useEffect(() => {
+    return () => {
+      if (hoverExitTimerRef.current) clearTimeout(hoverExitTimerRef.current);
+    };
+  }, []);
+
+  const slotMotionProp = slot.motion;
+  const slotVisibilityPreset = slot.visibilityPreset;
   const slotMotion = useMemo((): MotionPropsFromJson => {
-    const slotMotionFromJson = resolveThemeValueDeep(slot.motion, themeMode) as typeof slot.motion;
-    const visibilityPreset = slot.visibilityPreset;
+    const motionFromJson = lowerThemeValueDeep(slotMotionProp) as typeof slotMotionProp;
     let out: MotionPropsFromJson;
     if (
-      slotMotionFromJson &&
-      typeof slotMotionFromJson === "object" &&
-      (slotMotionFromJson.initial != null || slotMotionFromJson.animate != null)
+      motionFromJson &&
+      typeof motionFromJson === "object" &&
+      (motionFromJson.from != null || motionFromJson.to != null)
     ) {
-      const merged = mergeMotionDefaults(slotMotionFromJson) ?? {};
+      const merged = mergeMotionDefaults(motionFromJson) ?? {};
       out = {
         ...merged,
         transition: {
@@ -146,8 +180,8 @@ export function ModuleSlotSection({
           ease: easing,
         },
       };
-    } else if (visibilityPreset && typeof visibilityPreset === "string") {
-      const fromPreset = getEntranceMotionFromPreset(visibilityPreset, {
+    } else if (slotVisibilityPreset && typeof slotVisibilityPreset === "string") {
+      const fromPreset = getEntranceMotionFromPreset(slotVisibilityPreset, {
         distancePx: 0,
         duration: durationMs / 1000,
         delay: 0,
@@ -158,26 +192,25 @@ export function ModuleSlotSection({
       const mc = MOTION_DEFAULTS.motionComponent;
       const fallback =
         mergeMotionDefaults({
-          initial: mc.initial as Record<string, string | number | number[]>,
-          animate: mc.animate as Record<string, string | number | number[]>,
+          from: mc.from as Record<string, string | number | number[]>,
+          to: mc.to as Record<string, string | number | number[]>,
           transition: { duration: durationMs / 1000, ease: easing },
         }) ?? {};
       out = fallback as MotionPropsFromJson;
     }
 
-    const wm = slot.wrapperMotion;
     if (wm != null && typeof wm === "object") {
       out = { ...out };
       const o = out as Record<string, unknown>;
-      if (wm.whileHover !== undefined)
-        o.whileHover = resolveThemeValueDeep(wm.whileHover, themeMode);
-      if (wm.whileTap !== undefined) o.whileTap = resolveThemeValueDeep(wm.whileTap, themeMode);
-      if (wm.whileFocus !== undefined)
-        o.whileFocus = resolveThemeValueDeep(wm.whileFocus, themeMode);
+      if (wm.whileHover !== undefined && hoverExitDelayMs === undefined) {
+        o.whileHover = lowerThemeValueDeep(wm.whileHover);
+      }
+      if (wm.whileTap !== undefined) o.whileTap = lowerThemeValueDeep(wm.whileTap);
+      if (wm.whileFocus !== undefined) o.whileFocus = lowerThemeValueDeep(wm.whileFocus);
     }
 
     return out;
-  }, [slot, durationMs, easing, themeMode]);
+  }, [slotMotionProp, slotVisibilityPreset, wm, durationMs, easing, hoverExitDelayMs]);
 
   if (feedbackSlot) {
     if (!feedback || !feedbackMap) return null;
@@ -203,10 +236,10 @@ export function ModuleSlotSection({
       }
     : {};
   const isHidden = !isSlotVisible;
-  const slotEffects = resolveThemeValueDeep(slot.effects, themeMode) as SectionEffect[] | undefined;
+  const slotEffects = lowerThemeValueDeep(slot.effects) as SectionEffect[] | undefined;
   const hasGlassEffect = (slotEffects ?? []).some((effect) => effect.type === "glass");
 
-  const defaultWrapperStyle = resolveThemeStyleObject(slot.defaultWrapperStyle ?? {}, themeMode);
+  const defaultWrapperStyle = lowerThemeStyleObject(slot.defaultWrapperStyle ?? {});
   const slotDefinitions = slot.section?.definitions ?? null;
 
   return (
@@ -223,6 +256,9 @@ export function ModuleSlotSection({
       onPointerDown={hasTapHandler ? handlePointerDown : undefined}
       onPointerUp={hasTapHandler ? handlePointerUp : undefined}
       onPointerCancel={hasTapHandler ? handlePointerUp : undefined}
+      onPointerEnter={hoverExitDelayMs !== undefined ? handlePointerEnter : undefined}
+      onPointerLeave={hoverExitDelayMs !== undefined ? handlePointerLeave : undefined}
+      {...(isHovering && resolvedWhileHover ? { whileHover: resolvedWhileHover } : {})}
       role={slotActionHandler ? "button" : undefined}
       tabIndex={slotActionHandler ? 0 : undefined}
       aria-label={slotActionHandler ? slot.action : undefined}

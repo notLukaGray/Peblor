@@ -33,10 +33,11 @@ import {
   recomputeOutputParityFromExportResult,
   recordUpstreamDropOnParity,
 } from "./export-parity";
+import type { ParityTraceSnapshot } from "./export-parity-types";
 import { buildSectionExportArtifact } from "./main-section-export-artifact";
 import {
   peblorSchema,
-  sectionBlockSchema,
+  peblorDefinitionBlockSchema,
   modalBuilderSchema,
   moduleBlockSchema,
   bgBlockSchema,
@@ -294,31 +295,54 @@ function hasGlassEffectInResult(result: ExportResult): boolean {
   );
 }
 
+export function buildExportQualityDiagnostics(parity?: ParityTraceSnapshot): string[] {
+  if (!parity) return [];
+  const diagnostics: string[] = [];
+  if (parity.dropped > 0) {
+    diagnostics.push(
+      `[error] [quality] Export dropped ${parity.dropped} node(s). Review dropReasons in export trace before importing.`
+    );
+  }
+  const total = parity.converted + parity.fallback;
+  if (total > 0) {
+    const fallbackRatio = parity.fallback / total;
+    if (fallbackRatio >= 0.35) {
+      diagnostics.push(
+        `[warn] [quality] High fallback ratio (${parity.fallback}/${total}, ${(fallbackRatio * 100).toFixed(1)}%). Export may need manual cleanup.`
+      );
+    }
+  }
+  return diagnostics;
+}
+
 function appendContractsValidationDiagnostics(
   result: ExportResult,
   warnings: string[],
   errors: string[]
 ): void {
+  const formatIssuePath = (path: PropertyKey[]): string =>
+    path.length > 0 ? path.map((segment) => String(segment)).join(".") : "$";
+
   for (const [slug, page] of Object.entries(result.pages)) {
     const parsed = peblorSchema.safeParse(page);
     if (parsed.success) continue;
     errors.push(`[error] [contracts] Page "${slug}" failed @pb/contracts validation.`);
     const firstIssue = parsed.error.issues[0];
     if (firstIssue) {
-      const issuePath =
-        firstIssue.path.length > 0
-          ? firstIssue.path.map((segment) => String(segment)).join(".")
-          : "$";
-      warnings.push(`[warn] [contracts] ${slug} ${issuePath}: ${firstIssue.message}`);
+      warnings.push(
+        `[warn] [contracts] ${slug} ${formatIssuePath(firstIssue.path)}: ${firstIssue.message}`
+      );
     }
   }
   for (const [key, preset] of Object.entries(result.presets)) {
-    const parsed = sectionBlockSchema.safeParse(preset);
+    const parsed = peblorDefinitionBlockSchema.safeParse(preset);
     if (parsed.success) continue;
     errors.push(`[error] [contracts] Preset "${key}" failed @pb/contracts section validation.`);
     const firstIssue = parsed.error.issues[0];
     if (firstIssue) {
-      warnings.push(`[warn] [contracts] preset ${key}: ${firstIssue.message}`);
+      warnings.push(
+        `[warn] [contracts] preset ${key} ${formatIssuePath(firstIssue.path)}: ${firstIssue.message}`
+      );
     }
   }
   for (const [key, modal] of Object.entries(result.modals)) {
@@ -327,7 +351,9 @@ function appendContractsValidationDiagnostics(
     errors.push(`[error] [contracts] Modal "${key}" failed @pb/contracts validation.`);
     const firstIssue = parsed.error.issues[0];
     if (firstIssue) {
-      warnings.push(`[warn] [contracts] modal ${key}: ${firstIssue.message}`);
+      warnings.push(
+        `[warn] [contracts] modal ${key} ${formatIssuePath(firstIssue.path)}: ${firstIssue.message}`
+      );
     }
   }
   for (const [key, module] of Object.entries(result.modules)) {
@@ -336,7 +362,9 @@ function appendContractsValidationDiagnostics(
     errors.push(`[error] [contracts] Module "${key}" failed @pb/contracts validation.`);
     const firstIssue = parsed.error.issues[0];
     if (firstIssue) {
-      warnings.push(`[warn] [contracts] module ${key}: ${firstIssue.message}`);
+      warnings.push(
+        `[warn] [contracts] module ${key} ${formatIssuePath(firstIssue.path)}: ${firstIssue.message}`
+      );
     }
   }
   if (result.globals.backgrounds) {
@@ -348,7 +376,9 @@ function appendContractsValidationDiagnostics(
       );
       const firstIssue = parsed.error.issues[0];
       if (firstIssue) {
-        warnings.push(`[warn] [contracts] global bg ${key}: ${firstIssue.message}`);
+        warnings.push(
+          `[warn] [contracts] global bg ${key} ${formatIssuePath(firstIssue.path)}: ${firstIssue.message}`
+        );
       }
     }
   }
@@ -467,6 +497,9 @@ export async function runExport(
 
   result.elementCount = countElementsInResult(result);
   recomputeOutputParityFromExportResult(exportParity, result);
+  const paritySnapshot =
+    ctx.exportParity !== undefined ? buildParityTraceSnapshot(ctx.exportParity) : undefined;
+  ctx.warnings.push(...buildExportQualityDiagnostics(paritySnapshot));
   ctx.warnings.push(...collectContentSplitWarnings(result));
 
   // One-time info note when any glass effect is present — glass renders differently
@@ -487,7 +520,7 @@ export async function runExport(
   result.trace = buildExportTrace(
     state.previewItems.map((item) => ({ id: item.id, name: item.name, issues: item.issues })),
     ctx.warnings,
-    ctx.exportParity !== undefined ? buildParityTraceSnapshot(ctx.exportParity) : undefined
+    paritySnapshot
   );
 
   const sectionArtifact =

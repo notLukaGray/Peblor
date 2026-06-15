@@ -1,0 +1,8 @@
+{
+  "type": "backgroundVariable",
+  "layers": [
+    {
+      "fill": "linear-gradient(155deg, color-mix(in oklab, var(--pb-primary) 10%, var(--pb-secondary)) 0%, var(--pb-secondary) 62%, color-mix(in oklab, var(--pb-accent) 8%, var(--pb-secondary)) 100%)"
+    }
+  ]
+}

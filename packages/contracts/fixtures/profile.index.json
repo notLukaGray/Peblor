@@ -13,11 +13,11 @@
       "type": "contentBlock",
       "id": "profile_intro",
       "ariaLabel": "Profile intro",
-      "width": ["100%", "72%"],
+      "width": { "base": "100%", "md": "72%" },
       "height": "hug",
       "align": "center",
       "fill": "#00000000",
-      "padding": ["2rem 1rem", "4rem 2rem"],
+      "padding": { "base": "2rem 1rem", "md": "4rem 2rem" },
       "gap": "1rem",
       "elementOrder": ["heading", "body"],
       "definitions": {

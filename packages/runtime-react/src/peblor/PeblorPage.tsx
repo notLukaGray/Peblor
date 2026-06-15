@@ -1,4 +1,5 @@
 import type { TriggerAction, SectionBlock } from "@pb/contracts/peblor/core/peblor-schemas";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 import type { BackgroundTransitionEffect } from "@pb/contracts/types";
 import type { PeblorPageProps } from "@pb/core/resolve";
 import { buildPageDensityCssVars } from "@pb/contracts/peblor/core/page-density";
@@ -19,6 +20,7 @@ const FigmaExportDiagnosticsBridge =
 import { PageForcedTheme, pageForcedThemeInlineScript } from "./PageForcedTheme";
 
 export type PeblorPageWrapperProps = PeblorPageProps & {
+  nonce?: string;
   mainClassName?: string;
 
   mainStyle?: React.CSSProperties;
@@ -47,10 +49,11 @@ export function PeblorPage({
   bgDefinitions,
   serverIsMobile,
   overlaySections,
+  nonce,
   mainClassName = "relative w-full min-h-screen",
   mainStyle = {
-    paddingTop: "calc(var(--nav-height, 64px) + env(safe-area-inset-top, 0px))",
-    paddingBottom: "48px",
+    paddingTop: `calc(var(--nav-height, ${globals.uiNavHeightFallbackPx}px) + env(safe-area-inset-top, 0px))`,
+    paddingBottom: `${globals.uiPageBottomPaddingPx}px`,
     paddingLeft: "env(safe-area-inset-left, 0px)",
     paddingRight: "env(safe-area-inset-right, 0px)",
     backgroundColor: "var(--pb-secondary)",
@@ -85,7 +88,7 @@ export function PeblorPage({
   );
 
   const inner = (
-    <main className={mainClassName} style={mergedMainStyle} data-pb-density={density}>
+    <div className={mainClassName} style={mergedMainStyle} data-pb-density={density}>
       <article className={articleClassName} aria-label={page.title} data-liquid-snapshot-root="">
         <h1 className="sr-only">{page.title}</h1>
         <PeblorRenderer
@@ -102,7 +105,7 @@ export function PeblorPage({
           serverIsMobile={serverIsMobile}
         />
       </article>
-    </main>
+    </div>
   );
 
   const pageContent =
@@ -116,7 +119,11 @@ export function PeblorPage({
     <>
       {forcedTheme ? (
         <>
-          <script dangerouslySetInnerHTML={{ __html: pageForcedThemeInlineScript(forcedTheme) }} />
+          <script
+            nonce={nonce}
+            suppressHydrationWarning
+            dangerouslySetInnerHTML={{ __html: pageForcedThemeInlineScript(forcedTheme) }}
+          />
           <PageForcedTheme theme={forcedTheme} />
         </>
       ) : null}

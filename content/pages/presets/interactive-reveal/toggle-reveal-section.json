@@ -1,0 +1,143 @@
+{
+  "type": "revealSection",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "1000px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "0 0 8rem",
+    "md": "0 0 12rem"
+  },
+  "height": "hug",
+  "motionTiming": {
+    "staggerChildren": 0.15,
+    "trigger": "onFirstVisible"
+  },
+  "toggleOnClick": true,
+  "collapsedElements": [
+    {
+      "type": "elementHeading",
+      "level": 3,
+      "textTransform": "uppercase",
+      "letterSpacing": "0.12em",
+      "color": "color-mix(in oklab, var(--pb-on-secondary) 58%, transparent)",
+      "wordWrap": false,
+      "text": "Expandable Reveal"
+    },
+    {
+      "type": "elementBody",
+      "level": 5,
+      "color": "color-mix(in oklab, var(--pb-on-secondary) 44%, transparent)",
+      "wordWrap": true,
+      "width": "100%",
+      "text": "A revealSection that toggles between collapsed and expanded states. Click the header to reveal additional content with a smooth height animation."
+    },
+    {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "gap": "1rem",
+      "align": "center",
+      "width": "100%",
+      "padding": "1rem 1.5rem",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+      "borderRadius": "12px",
+      "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+      "section": {
+        "elementOrder": ["icon", "text", "chevron"],
+        "definitions": {
+          "icon": {
+            "type": "elementBody",
+            "level": 1,
+            "text": "▶",
+            "wordWrap": false,
+            "width": "auto",
+            "color": "var(--pb-accent)"
+          },
+          "text": {
+            "type": "elementHeading",
+            "level": 3,
+            "variant": "section",
+            "text": "Design System Architecture",
+            "width": "auto",
+            "color": "var(--pb-on-secondary)"
+          },
+          "chevron": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "▼",
+            "wordWrap": false,
+            "width": "auto",
+            "color": "color-mix(in oklab, var(--pb-on-secondary) 45%, transparent)"
+          }
+        }
+      }
+    }
+  ],
+  "revealedElements": [
+    {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "1rem",
+      "width": "100%",
+      "padding": "1.5rem",
+      "section": {
+        "elementOrder": ["c-label", "c-body", "c-list"],
+        "definitions": {
+          "c-label": {
+            "type": "elementBody",
+            "level": 5,
+            "text": "TOKEN HIERARCHY",
+            "textTransform": "uppercase",
+            "letterSpacing": "0.08em",
+            "color": "color-mix(in oklab, var(--pb-accent) 75%, transparent)",
+            "width": "auto"
+          },
+          "c-body": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "The design system organises tokens into three tiers: global primitives, semantic aliases, and component-specific overrides. Each tier cascades downward with explicit overrides at the component level.",
+            "color": "color-mix(in oklab, var(--pb-on-secondary) 68%, transparent)"
+          },
+          "c-list": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.5rem",
+            "padding": "1rem 0",
+            "width": "100%",
+            "section": {
+              "elementOrder": ["item-1", "item-2", "item-3"],
+              "definitions": {
+                "item-1": {
+                  "type": "elementBody",
+                  "level": 4,
+                  "text": "1. Global tokens — raw colour, spacing, and type values",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 60%, transparent)",
+                  "width": "auto"
+                },
+                "item-2": {
+                  "type": "elementBody",
+                  "level": 4,
+                  "text": "2. Semantic tokens — named roles like primary, accent, surface",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 60%, transparent)",
+                  "width": "auto"
+                },
+                "item-3": {
+                  "type": "elementBody",
+                  "level": 4,
+                  "text": "3. Component tokens — contextual overrides per component",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 60%, transparent)",
+                  "width": "auto"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

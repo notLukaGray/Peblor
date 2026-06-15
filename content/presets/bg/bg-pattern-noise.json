@@ -1,0 +1,27 @@
+{
+  "type": "backgroundVariable",
+  "layers": [
+    {
+      "fill": "var(--pb-secondary)"
+    },
+    {
+      "fill": "url('data:image/svg+xml,%3Csvg viewBox%3D%220 0 200 200%22 xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cfilter id%3D%22noise%22%3E%3CfeTurbulence type%3D%22fractalNoise%22 baseFrequency%3D%220.9%22 numOctaves%3D%224%22 stitchTiles%3D%22stitch%22%2F%3E%3C%2Ffilter%3E%3Crect width%3D%22100%2525%22 height%3D%22100%2525%22 filter%3D%22url(%2523noise)%22 opacity%3D%221%22%2F%3E%3C%2Fsvg%3E')",
+      "backgroundSize": "200px 200px",
+      "blendMode": "overlay",
+      "opacity": 0.08,
+      "motion": [
+        {
+          "type": "loop",
+          "to": {
+            "opacity": [0.06, 0.13, 0.06]
+          },
+          "transition": {
+            "duration": 6.5,
+            "ease": "easeInOut",
+            "repeatType": "mirror"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["sec-label", "sec-desc", "selector"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Selector + Preview"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Vertical scroll selector linked to a preview panel via a shared variable. Click any row to switch the active preview. Generalised from the /work page pattern."
+    },
+    "selector": {
+      "preset": "card-selector-preview-system"
+    }
+  }
+}

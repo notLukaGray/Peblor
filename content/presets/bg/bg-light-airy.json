@@ -1,0 +1,31 @@
+{
+  "type": "backgroundVariable",
+  "layers": [
+    {
+      "fill": {
+        "light": "linear-gradient(160deg, oklch(0.985 0.004 285) 0%, oklch(0.965 0.007 270) 100%)",
+        "dark": "linear-gradient(160deg, oklch(0.14 0.012 280) 0%, oklch(0.11 0.01 268) 100%)"
+      }
+    },
+    {
+      "fill": "radial-gradient(ellipse 65% 42% at 18% 10%, color-mix(in oklab, var(--pb-accent) 9%, transparent) 0%, transparent 100%)",
+      "backgroundSize": "220% 220%",
+      "motion": [
+        {
+          "type": "loop",
+          "to": {
+            "backgroundPosition": ["0% 0%", "100% 100%", "0% 0%"]
+          },
+          "transition": {
+            "duration": 16,
+            "ease": "easeInOut",
+            "repeatType": "mirror"
+          }
+        }
+      ]
+    },
+    {
+      "fill": "radial-gradient(ellipse 45% 32% at 80% 80%, color-mix(in oklab, var(--pb-primary) 6%, transparent) 0%, transparent 100%)"
+    }
+  ]
+}

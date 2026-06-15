@@ -124,8 +124,8 @@ export async function runRenameRoute(args: string[], io: CommandIo): Promise<num
     const parentDir = path.dirname(sourceFile);
     const remaining = fs.readdirSync(parentDir);
     if (remaining.length === 0) fs.rmdirSync(parentDir);
-  } catch {
-    // ignore
+  } catch (err) {
+    console.warn("[pb-cli] Failed to remove parent directory after rename", err);
   }
 
   if (asJson) {

@@ -1,0 +1,14 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "row",
+  "wrap": "wrap",
+  "align": "center",
+  "distribute": "center",
+  "gap": "0.5rem",
+  "selfAlign": "center",
+  "width": {
+    "base": "88%",
+    "md": "60%"
+  }
+}

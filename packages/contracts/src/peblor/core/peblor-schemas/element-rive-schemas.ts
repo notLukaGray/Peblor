@@ -1,9 +1,10 @@
 import { z } from "zod";
 import { elementLayoutSchema, elementVideoObjectFitSchema } from "./element-foundation-schemas";
+import { responsiveValueSchema } from "./responsive-value-schemas";
 import {
   responsiveStringSchema,
   themeStringSchema,
-  triggerActionSchema,
+  triggerActionSchemaCore,
 } from "./schema-primitives";
 
 const rivePlayModeSchema = z.enum(["normal", "bounce", "reverse"]).optional();
@@ -17,12 +18,7 @@ const riveInteractivityEventSchema = z.enum([
   "pointerUp",
 ]);
 
-const responsiveRiveObjectFitSchema = z
-  .union([
-    elementVideoObjectFitSchema,
-    z.tuple([elementVideoObjectFitSchema, elementVideoObjectFitSchema]),
-  ])
-  .optional();
+const responsiveRiveObjectFitSchema = responsiveValueSchema(elementVideoObjectFitSchema).optional();
 
 export const elementRiveSchema = z
   .object({
@@ -49,12 +45,20 @@ export const elementRiveSchema = z
         })
       )
       .optional(),
-    onStateChange: triggerActionSchema.optional(),
-    onPlay: triggerActionSchema.optional(),
-    onPause: triggerActionSchema.optional(),
-    onComplete: triggerActionSchema.optional(),
-    onLoop: triggerActionSchema.optional(),
-    onStop: triggerActionSchema.optional(),
+    onStateChange: triggerActionSchemaCore.optional(),
+    onPlay: triggerActionSchemaCore.optional(),
+    onPause: triggerActionSchemaCore.optional(),
+    onComplete: triggerActionSchemaCore.optional(),
+    onLoop: triggerActionSchemaCore.optional(),
+    onStop: triggerActionSchemaCore.optional(),
+    onEvent: z
+      .array(
+        z.object({
+          event: z.string(),
+          actions: z.array(triggerActionSchemaCore),
+        })
+      )
+      .optional(),
     ariaLabel: z.string().optional(),
   })
   .merge(elementLayoutSchema);

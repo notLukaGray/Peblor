@@ -61,6 +61,11 @@ export function resolveEffectiveTransitionProgress(args: {
   return isForward ? 1 : 0;
 }
 
+/**
+ * Clamp a value to the [0, 1] unit range with finite guard.
+ * NOTE: If you only need the basic clamp(value, 0, 1) pattern without the
+ * finite guard, consider using `clamp` from Shared/css-declaration-utils instead.
+ */
 export function clampUnitProgress(value: number): number {
   const n = Number(value);
   if (!Number.isFinite(n)) return 0;

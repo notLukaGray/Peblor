@@ -2,10 +2,14 @@
   "type": "elementTooltip",
   "id": "tooltip_example",
   "content": "Click to learn more about this feature",
-  "position": "top",
+  "placement": "top",
   "trigger": "hover",
   "showDelay": 300,
   "arrow": true,
   "interactive": false,
-  "animation": "fade"
+  "motion": {
+    "from": { "opacity": 0 },
+    "to": { "opacity": 1, "transition": { "duration": 0.35, "ease": "easeOut" } },
+    "leave": { "opacity": 0, "transition": { "duration": 0.2, "ease": "easeIn" } }
+  }
 }

@@ -1,0 +1,22 @@
+{
+  "elementOrder": ["hero-badge", "hero-title", "hero-desc", "hero-hint"],
+  "definitions": {
+    "hero-badge": {
+      "preset": "demo-hero-badge",
+      "text": "backgroundTransition · scroll"
+    },
+    "hero-title": {
+      "preset": "demo-hero-title",
+      "text": "bg-x-dark-to-light"
+    },
+    "hero-desc": {
+      "preset": "demo-hero-description",
+      "text": "Page background interpolates from 70% primary blend to pure secondary as the user scrolls through 10–60% of page height. Works in both light and dark mode."
+    },
+    "hero-hint": {
+      "preset": "demo-scroll-hint",
+      "text": "↓ Scroll to see the transition ↓"
+    }
+  },
+  "preset": "demo-hero-100vh"
+}

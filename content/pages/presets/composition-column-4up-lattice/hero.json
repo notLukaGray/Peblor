@@ -1,0 +1,23 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Column · Lattice · Cards"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Composition Column 4 Up Lattice"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Four-up to two-up to one-up adaptive lattice for scalable card collections.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  },
+  "align": "start"
+}

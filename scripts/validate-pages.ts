@@ -99,9 +99,23 @@ function loadSectionWaivers(): SectionWaiverConfig {
 }
 
 function isSectionWaived(waivers: SectionWaiverConfig, slug: string, sectionKey: string): boolean {
-  const pageWaivers = waivers.pages?.[slug];
-  if (!pageWaivers || pageWaivers.length === 0) return false;
-  return pageWaivers.includes("*") || pageWaivers.includes(sectionKey);
+  const pages = waivers.pages ?? {};
+
+  const direct = pages[slug];
+  if (direct && (direct.includes("*") || direct.includes(sectionKey))) return true;
+
+  const global = pages["*"];
+  if (global && (global.includes("*") || global.includes(sectionKey))) return true;
+
+  for (const [pattern, allowed] of Object.entries(pages)) {
+    if (!pattern.endsWith("/*")) continue;
+    const base = pattern.slice(0, -2);
+    if (slug === base || slug.startsWith(`${base}/`)) {
+      if (allowed.includes("*") || allowed.includes(sectionKey)) return true;
+    }
+  }
+
+  return false;
 }
 
 function loadKnownTagsConfig(): { config?: KnownPageTagsConfig; errors: string[] } {

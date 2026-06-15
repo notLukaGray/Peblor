@@ -76,6 +76,11 @@ export function useVideoEngine({
   }, [streamingConfig]);
 
   const resetEngineState = useCallback(() => {
+    // queueMicrotask defers React state updates past the current effect commit
+    // phase. The ref (engineRef.current) is checked synchronously first; if a
+    // new engine was already attached by a concurrent effect run, skip the reset.
+    // This prevents race conditions between engine attach/detach in rapid
+    // re-renders (e.g., source URL changing mid-load).
     queueMicrotask(() => {
       if (engineRef.current) return;
       setEngineKind(null);
@@ -97,6 +102,9 @@ export function useVideoEngine({
     const kind = selectVideoEngineKind(video, src);
     const engine = createVideoEngine(kind);
     engineRef.current = engine;
+    // queueMicrotask defers the React state update so that engineRef is fully
+    // settled before setEngineKind triggers a re-render. The ref check after
+    // the microtask ensures we don't set state for a stale engine instance.
     queueMicrotask(() => {
       if (engineRef.current !== engine) return;
       setEngineKind(kind);

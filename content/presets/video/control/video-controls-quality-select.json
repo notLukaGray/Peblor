@@ -1,0 +1,65 @@
+{
+  "type": "elementVideoQualitySelect",
+  "width": "28px",
+  "height": "28px",
+  "paddingLeft": "4px",
+  "paddingRight": "4px",
+  "icon": {
+    "type": "elementVector",
+    "viewBox": "0 0 18 18",
+    "ariaLabel": "Video quality",
+    "shapes": [
+      {
+        "type": "line",
+        "x1": 3,
+        "y1": 6,
+        "x2": 15,
+        "y2": 6,
+        "stroke": "icon",
+        "strokeWidth": 1.5,
+        "strokeLinecap": "round"
+      },
+      {
+        "type": "line",
+        "x1": 3,
+        "y1": 12,
+        "x2": 15,
+        "y2": 12,
+        "stroke": "icon",
+        "strokeWidth": 1.5,
+        "strokeLinecap": "round"
+      },
+      {
+        "type": "circle",
+        "cx": 7,
+        "cy": 6,
+        "r": 2,
+        "fill": "icon"
+      },
+      {
+        "type": "circle",
+        "cx": 11,
+        "cy": 12,
+        "r": 2,
+        "fill": "icon"
+      }
+    ],
+    "colors": {
+      "icon": "#FFFFFF",
+      "icon-hover": "rgba(255,255,255,0.85)"
+    },
+    "link": {
+      "hoverFill": "icon-hover",
+      "vectorTransition": "0.15s"
+    },
+    "width": "18px",
+    "height": "18px"
+  },
+  "style": {
+    "background": "rgba(0,0,0,0)",
+    "borderRadius": "4px",
+    "color": "#FFFFFF",
+    "padding": "0",
+    "WebkitBackdropFilter": "blur(4px)"
+  }
+}

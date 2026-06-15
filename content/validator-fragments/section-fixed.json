@@ -4,7 +4,7 @@
   "fixed": true,
   "fixedPosition": "bottom",
   "fixedOffset": "16px",
-  "zIndex": 50,
+  "layer": 50,
   "elements": [
     {
       "type": "elementButton",

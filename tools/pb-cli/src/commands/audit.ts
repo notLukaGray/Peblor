@@ -1,8 +1,14 @@
+import fs from "node:fs";
 import path from "node:path";
-import { findPagesDir, findPageFile, walkPages, readPageJson, isRecord } from "../lib/pages.js";
-import { readJsonFile } from "../lib/json-file.js";
-import { validateSectionValue } from "../lib/section-validate.js";
+import { loadPeblorByPathAsync, discoverAllPages, PAGE_DATA_DIR } from "@pb/core/loader";
+import { PageContentValidationError } from "@pb/core";
+import type { ZodIssue } from "zod";
+import { findPagesDir, findPageFile } from "../lib/pages.js";
 import type { CommandIo } from "./types.js";
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
 
 type AuditArgs = {
   route?: string;
@@ -15,8 +21,21 @@ type AuditIssue = {
   severity: "error" | "warning";
   code: string;
   message: string;
-  path?: string;
+  file: string;
+  line: number;
+  path: string;
 };
+
+type PageAuditResult = {
+  route: string;
+  file: string;
+  valid: boolean;
+  issues: AuditIssue[];
+};
+
+// ---------------------------------------------------------------------------
+// Argument parsing
+// ---------------------------------------------------------------------------
 
 function parseAuditArgs(args: string[]): AuditArgs {
   const asJson = args.includes("--json");
@@ -30,172 +49,232 @@ function parseAuditArgs(args: string[]): AuditArgs {
   return { route: positional[0], all, asJson, help };
 }
 
-function collectInternalHrefs(node: unknown, results: string[]): void {
-  if (Array.isArray(node)) {
-    node.forEach((item) => collectInternalHrefs(item, results));
-    return;
+// ---------------------------------------------------------------------------
+// Source location resolution
+//
+// The pipeline merges sidecar section files into the flat definitions dict.
+// After the merge, Zod validates the composed object and issues paths like:
+//   ["definitions", "hero", "elements", 0, "type"]
+//
+// We resolve back to the source file as follows:
+//   1. If the path starts with ["definitions", <key>, ...] and a sidecar file
+//      exists at <page-dir>/<key>.json, report that sidecar file.
+//   2. Otherwise report the page index.json.
+//
+// For line numbers we do a targeted string search in the raw file text:
+//   - Take the LAST meaningful key from the path (the deepest property name)
+//   - Find its first occurrence in the file as a JSON key `"keyName":`
+//   - Return the line number at that position
+//
+// This is O(n) per diagnostic on file size, but perfectly acceptable for
+// authoring-time audit runs on files that rarely exceed a few thousand lines.
+//
+// NOTE: The pipeline (loadPeblorByPathAsync / PageContentValidationError) does
+// not carry file-path or line-number information in its ZodIssue list — it
+// only provides JSON property paths. The attributions below are best-effort:
+//   - Sidecar file detection is exact (file exists check).
+//   - Line numbers are approximate: we find the first occurrence of the
+//     deepest key name in the file, which points to the right neighborhood
+//     but may be off by a few lines for repeated key names.
+// ---------------------------------------------------------------------------
+
+/**
+ * Find the 1-based line number of the first occurrence of a JSON key in raw text.
+ * Searches for `"keyName"` to avoid matching value strings that happen to equal
+ * the key name.
+ *
+ * Returns 1 if the key is not found (safe fallback).
+ */
+function findKeyLine(rawText: string, keyName: string): number {
+  const pattern = `"${keyName}"`;
+  const idx = rawText.indexOf(pattern);
+  if (idx === -1) return 1;
+  // Count newlines before this position
+  let line = 1;
+  for (let i = 0; i < idx; i++) {
+    if (rawText[i] === "\n") line++;
   }
-  if (!isRecord(node)) return;
-  for (const [key, value] of Object.entries(node)) {
-    if (key === "href" && typeof value === "string" && value.startsWith("/")) {
-      results.push(value);
+  return line;
+}
+
+/**
+ * Derive the most useful key to search for from a Zod issue path.
+ * Strategy: walk from the deepest part of the path upward, take the first
+ * string segment (skipping array indices and "$" sentinel). Returns null if
+ * nothing useful is found.
+ */
+function extractSearchKey(pathParts: readonly (string | number)[]): string | null {
+  for (let i = pathParts.length - 1; i >= 0; i--) {
+    const part = pathParts[i];
+    if (typeof part === "string" && part !== "$" && part.length > 0) return part;
+  }
+  return null;
+}
+
+/**
+ * Format a ZodIssue path as a JSON-path string: $.definitions.hero.elements[0].type
+ */
+function formatZodPath(pathParts: readonly (string | number)[]): string {
+  if (pathParts.length === 0) return "$";
+  let result = "$";
+  for (const part of pathParts) {
+    if (typeof part === "number") {
+      result += `[${part}]`;
+    } else {
+      result += `.${part}`;
     }
-    if (
-      key === "payload" &&
-      isRecord(node) &&
-      typeof (node as Record<string, unknown>).type === "string" &&
-      (node as Record<string, unknown>).type === "navigate" &&
-      isRecord(value) &&
-      typeof (value as Record<string, unknown>).href === "string"
-    ) {
-      const href = (value as Record<string, unknown>).href as string;
-      if (href.startsWith("/")) results.push(href);
+  }
+  return result;
+}
+
+type SourceLocation = {
+  /** Absolute path to the file that contains the issue. */
+  absoluteFile: string;
+  /** Path relative to repo root (for display). */
+  relativeFile: string;
+  /** 1-based line number; 1 if we couldn't locate it precisely. */
+  line: number;
+};
+
+/**
+ * Map a ZodIssue path to its source file and line number.
+ *
+ * The path for a definition error looks like: ["definitions", sectionKey, ...rest]
+ * If a sidecar file for sectionKey exists alongside index.json, the error
+ * originated there. Otherwise it's in index.json itself.
+ */
+function resolveSourceLocation(
+  issue: ZodIssue,
+  indexJsonPath: string,
+  slugSegments: string[]
+): SourceLocation {
+  const repoRoot = process.cwd();
+  const pathParts = issue.path as readonly (string | number)[];
+
+  // Determine which file to attribute the error to.
+  let targetFile = indexJsonPath;
+
+  const isDefinitionPath =
+    pathParts.length >= 2 && pathParts[0] === "definitions" && typeof pathParts[1] === "string";
+
+  if (isDefinitionPath) {
+    const sectionKey = pathParts[1] as string;
+    // Check if a sidecar file exists for this section key
+    const pageDir = path.join(PAGE_DATA_DIR, ...slugSegments);
+    const sidecarPath = path.join(pageDir, `${sectionKey}.json`);
+    if (fs.existsSync(sidecarPath)) {
+      targetFile = sidecarPath;
     }
-    collectInternalHrefs(value, results);
+  }
+
+  // Now find the line number
+  let line = 1;
+  const searchKey = extractSearchKey(pathParts);
+  if (searchKey !== null) {
+    try {
+      const rawText = fs.readFileSync(targetFile, "utf8");
+      line = findKeyLine(rawText, searchKey);
+    } catch {
+      // If we can't read the file, line stays at 1
+    }
+  }
+
+  const relativeFile = path.relative(repoRoot, targetFile);
+
+  return { absoluteFile: targetFile, relativeFile, line };
+}
+
+// ---------------------------------------------------------------------------
+// Single-page audit
+// ---------------------------------------------------------------------------
+
+/**
+ * Audit a single page by slug segments.
+ *
+ * Uses `loadPeblorByPathAsync` — the same hydrate→expand→validate cycle the
+ * runtime uses. No false positives from validating pre-expand shapes.
+ *
+ * On success: returns empty issues array (valid: true).
+ * On failure: maps PageContentValidationError.issues to AuditIssue[] with
+ * source file + line number attribution.
+ */
+async function auditPageBySlug(
+  slugSegments: string[],
+  indexJsonPath: string
+): Promise<{ valid: boolean; issues: AuditIssue[] }> {
+  try {
+    await loadPeblorByPathAsync(slugSegments);
+    return { valid: true, issues: [] };
+  } catch (err) {
+    if (err instanceof PageContentValidationError) {
+      const issues: AuditIssue[] = err.issues.map((zodIssue) => {
+        const loc = resolveSourceLocation(zodIssue, indexJsonPath, slugSegments);
+        const jsonPath = formatZodPath(zodIssue.path as readonly (string | number)[]);
+        return {
+          severity: "error" as const,
+          code:
+            typeof (zodIssue as { code?: unknown }).code === "string"
+              ? (zodIssue as { code: string }).code
+              : "PB_SCHEMA_ISSUE",
+          message: zodIssue.message,
+          file: loc.relativeFile,
+          line: loc.line,
+          path: jsonPath,
+        };
+      });
+      return { valid: false, issues };
+    }
+
+    // Non-validation error (IO error, missing preset, etc.) — surface as a single issue
+    const message = err instanceof Error ? err.message : String(err);
+    const relFile = path.relative(process.cwd(), indexJsonPath);
+    return {
+      valid: false,
+      issues: [
+        {
+          severity: "error",
+          code: "PB_LOAD_ERROR",
+          message,
+          file: relFile,
+          line: 1,
+          path: "$",
+        },
+      ],
+    };
   }
 }
 
-function auditPage(
-  data: Record<string, unknown>,
-  knownRoutes: Set<string>,
-  pageFile: string
-): AuditIssue[] {
-  const issues: AuditIssue[] = [];
-  const definitions = isRecord(data.definitions) ? data.definitions : {};
-  const sectionOrder = Array.isArray(data.sectionOrder) ? (data.sectionOrder as string[]) : [];
-
-  // Check 1: definitions declared but not in sectionOrder (orphaned)
-  const referencedKeys = new Set<string>(sectionOrder);
-  // Also collect element keys referenced within sections
-  for (const def of Object.values(definitions)) {
-    if (!isRecord(def)) continue;
-    if (Array.isArray(def.elementOrder)) {
-      for (const k of def.elementOrder as string[]) referencedKeys.add(k);
-    }
-    if (isRecord(def.definitions)) {
-      for (const k of Object.keys(def.definitions)) referencedKeys.add(k);
-    }
-  }
-
-  for (const key of Object.keys(definitions)) {
-    if (!referencedKeys.has(key)) {
-      issues.push({
-        severity: "warning",
-        code: "orphaned-definition",
-        message: `Definition "${key}" is not referenced in sectionOrder or any elementOrder.`,
-        path: `definitions.${key}`,
-      });
-    }
-  }
-
-  // Check 2: elements in a section but not in elementOrder
-  for (const [secKey, sec] of Object.entries(definitions)) {
-    if (!isRecord(sec)) continue;
-    const sectType = typeof sec.type === "string" ? sec.type : "";
-    const isSectionBlock = [
-      "contentBlock",
-      "sectionColumn",
-      "scrollContainer",
-      "revealSection",
-      "divider",
-      "formBlock",
-      "sectionTrigger",
-    ].includes(sectType);
-    if (!isSectionBlock) continue;
-
-    const elementOrder = Array.isArray(sec.elementOrder) ? (sec.elementOrder as string[]) : [];
-    const innerDefs = isRecord(sec.definitions) ? sec.definitions : {};
-    for (const elemKey of Object.keys(innerDefs)) {
-      if (!elementOrder.includes(elemKey)) {
-        issues.push({
-          severity: "warning",
-          code: "element-not-in-order",
-          message: `Element "${elemKey}" in section "${secKey}" is not listed in elementOrder.`,
-          path: `definitions.${secKey}.definitions.${elemKey}`,
-        });
-      }
-    }
-  }
-
-  // Check 3: button/trigger actions pointing to non-existent routes
-  const hrefs: string[] = [];
-  collectInternalHrefs(data, hrefs);
-  for (const href of hrefs) {
-    const normalized = href.replace(/\/$/, "") || "/";
-    if (!knownRoutes.has(normalized)) {
-      issues.push({
-        severity: "warning",
-        code: "broken-internal-link",
-        message: `Internal link "${href}" does not match any known page route.`,
-      });
-    }
-  }
-
-  // Check 4: overlays always disabled
-  if (Array.isArray(data.disableOverlays)) {
-    for (const id of data.disableOverlays as string[]) {
-      issues.push({
-        severity: "warning",
-        code: "overlay-disabled",
-        message: `Overlay "${id}" is permanently disabled on this page.`,
-      });
-    }
-  }
-
-  // Check 5: sections always invisible (filterConfig present but definition has no matching projectGroup)
-  if (isRecord(data.filterConfig) && isRecord(data.projectGroups)) {
-    const projectGroups = data.projectGroups as Record<string, { elements?: string[] }>;
-    const allGroupedElements = new Set<string>();
-    for (const group of Object.values(projectGroups)) {
-      if (Array.isArray(group.elements)) {
-        for (const el of group.elements) allGroupedElements.add(el as string);
-      }
-    }
-    // Check top-level elements in any section that aren't in any projectGroup
-    for (const [secKey, sec] of Object.entries(definitions)) {
-      if (!isRecord(sec)) continue;
-      const elementOrder = Array.isArray(sec.elementOrder) ? (sec.elementOrder as string[]) : [];
-      for (const elemKey of elementOrder) {
-        if (!allGroupedElements.has(elemKey)) {
-          issues.push({
-            severity: "warning",
-            code: "element-not-in-project-group",
-            message: `Element "${elemKey}" in section "${secKey}" is not in any projectGroup — it may be permanently hidden when filters are active.`,
-            path: `definitions.${secKey}`,
-          });
-        }
-      }
-    }
-  }
-
-  // Check 6: validate each loaded section file referenced by sectionOrder.
-  const pageDir = path.dirname(pageFile);
-  for (const key of sectionOrder) {
-    if (typeof key !== "string") continue;
-    const sectionPath = path.join(pageDir, `${key}.json`);
-    const read = readJsonFile(sectionPath);
-    if (!read.ok) {
-      issues.push({
-        severity: "error",
-        code: "section-load-failed",
-        message: "error" in read ? read.error : "Failed to read section file",
-        path: `definitions.${key}`,
-      });
-      continue;
-    }
-    const validated = validateSectionValue(read.value);
-    for (const diagnostic of validated.diagnostics) {
-      issues.push({
-        severity: diagnostic.severity,
-        code: diagnostic.code,
-        message: diagnostic.message,
-        path: `definitions.${key}${diagnostic.path === "$" ? "" : diagnostic.path.slice(1)}`,
-      });
-    }
-  }
-
-  return issues;
+/**
+ * Derive slug segments from an absolute path to index.json.
+ * E.g. /abs/path/content/pages/work/project/index.json → ["work", "project"]
+ */
+function slugSegmentsFromIndexPath(indexJsonPath: string): string[] | null {
+  const absPath = path.resolve(indexJsonPath);
+  const absPageDir = path.resolve(PAGE_DATA_DIR);
+  if (!absPath.startsWith(absPageDir + path.sep)) return null;
+  const rel = absPath.slice(absPageDir.length + 1).replace(/\\/g, "/");
+  if (!rel.endsWith("/index.json")) return null;
+  const segments = rel
+    .replace(/\/index\.json$/, "")
+    .split("/")
+    .filter(Boolean);
+  return segments.length > 0 ? segments : null;
 }
+
+// ---------------------------------------------------------------------------
+// Output formatting
+// ---------------------------------------------------------------------------
+
+function formatIssueHuman(issue: AuditIssue): string {
+  return (
+    `    ${issue.file}:${issue.line} [${issue.severity.toUpperCase()}] ${issue.code}: ${issue.message}\n` +
+    `      at ${issue.path}`
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Main command handler
+// ---------------------------------------------------------------------------
 
 export async function runAudit(args: string[], io: CommandIo): Promise<number> {
   const { route, all, asJson, help } = parseAuditArgs(args);
@@ -204,8 +283,12 @@ export async function runAudit(args: string[], io: CommandIo): Promise<number> {
     io.printText("Usage: pb-cli audit <route|--all> [--json]");
     io.printText("");
     io.printText(
-      "Soft audit: orphaned definitions, broken internal links, invisible sections, etc."
+      "Validates pages through the full pipeline (presets, modules, section hydration, schema checks)."
     );
+    io.printText("Reports errors down to specific file paths and line numbers.");
+    io.printText("");
+    io.printText("  --all    Audit every page in content/pages/");
+    io.printText("  --json   Machine-readable JSON output");
     return 0;
   }
 
@@ -215,28 +298,31 @@ export async function runAudit(args: string[], io: CommandIo): Promise<number> {
     return 2;
   }
 
-  const pagesDir = findPagesDir();
-  if (!pagesDir) {
-    const msg = "content/pages not found. Run from the project root.";
-    if (asJson) io.printErrorJson({ command: "audit", status: "error", message: msg });
-    else io.printErrorText(`Error: ${msg}`);
-    return 2;
-  }
-
-  const allPages = walkPages(pagesDir);
-  const knownRoutes = new Set(allPages.map((p) => p.route.replace(/\/$/, "") || "/"));
-
-  type PageResult = { route: string; file: string; issues: AuditIssue[] };
-  const results: PageResult[] = [];
+  const results: PageAuditResult[] = [];
 
   if (all) {
-    for (const { route: r, file } of allPages) {
-      const read = readPageJson(file);
-      if (!read.ok) continue;
-      const issues = auditPage(read.data, knownRoutes, file);
-      results.push({ route: r, file, issues });
+    // Use discoverAllPages from core/loader — same discovery as the runtime.
+    const allPages = await discoverAllPages();
+    for (const page of allPages) {
+      const r = await auditPageBySlug(page.slugSegments, page.contentPath);
+      const routeStr = "/" + page.slugSegments.join("/");
+      results.push({
+        route: routeStr,
+        file: path.relative(process.cwd(), page.contentPath),
+        valid: r.valid,
+        issues: r.issues,
+      });
     }
   } else {
+    // Single page lookup
+    const pagesDir = findPagesDir();
+    if (!pagesDir) {
+      const msg = "content/pages not found. Run from the project root.";
+      if (asJson) io.printErrorJson({ command: "audit", status: "error", message: msg });
+      else io.printErrorText(`Error: ${msg}`);
+      return 2;
+    }
+
     const file = findPageFile(pagesDir, route!);
     if (!file) {
       const msg = `Page not found: ${route}`;
@@ -244,40 +330,59 @@ export async function runAudit(args: string[], io: CommandIo): Promise<number> {
       else io.printErrorText(`Error: ${msg}`);
       return 1;
     }
-    const read = readPageJson(file);
-    if (!read.ok) {
-      if (asJson) io.printErrorJson({ command: "audit", status: "error", message: read.error });
-      else io.printErrorText(`Error: ${read.error}`);
+
+    const slugSegments = slugSegmentsFromIndexPath(file);
+    if (!slugSegments) {
+      const msg = `Cannot derive slug segments from path: ${file}`;
+      if (asJson) io.printErrorJson({ command: "audit", status: "error", message: msg });
+      else io.printErrorText(`Error: ${msg}`);
       return 1;
     }
-    results.push({ route: route!, file, issues: auditPage(read.data, knownRoutes, file) });
+
+    const r = await auditPageBySlug(slugSegments, file);
+    results.push({
+      route: route!,
+      file: path.relative(process.cwd(), file),
+      valid: r.valid,
+      issues: r.issues,
+    });
   }
 
   const totalIssues = results.reduce((n, r) => n + r.issues.length, 0);
-  const hasErrors = results.some((r) => r.issues.some((i) => i.severity === "error"));
+  const validCount = results.filter((r) => r.valid).length;
 
   if (asJson) {
     const payload = {
       command: "audit",
+      mode: "strict-load",
+      total: results.length,
+      valid: validCount,
+      failed: results.length - validCount,
       totalIssues,
       pages: Object.fromEntries(
         results.map((r) => [
           r.route,
-          { file: r.file, issueCount: r.issues.length, issues: r.issues },
+          {
+            file: r.file,
+            valid: r.valid,
+            issueCount: r.issues.length,
+            issues: r.issues,
+          },
         ])
       ),
     };
-    if (hasErrors || totalIssues > 0) io.printErrorJson(payload);
-    else io.printJson(payload);
+    io.printJson(payload);
   } else {
-    io.printText(`Audit: ${totalIssues} issue(s) across ${results.length} page(s)`);
-    for (const { route: r, issues } of results) {
-      if (issues.length === 0) continue;
-      io.printText(`  ${r}`);
-      for (const issue of issues) {
-        const sev = issue.severity === "error" ? "ERROR" : "WARN";
-        const loc = issue.path ? ` @ ${issue.path}` : "";
-        io.printText(`    [${sev}] ${issue.code}${loc}: ${issue.message}`);
+    const failed = results.length - validCount;
+    io.printText(
+      `Audit (strict-load): ${validCount}/${results.length} pages valid` +
+        (failed > 0 ? ` — ${totalIssues} issue(s) on ${failed} page(s)` : "")
+    );
+    for (const r of results) {
+      if (r.issues.length === 0) continue;
+      io.printText(`  ${r.route}  (${r.file})`);
+      for (const issue of r.issues) {
+        io.printText(formatIssueHuman(issue));
       }
     }
     if (totalIssues === 0) io.printText("  (no issues found)");

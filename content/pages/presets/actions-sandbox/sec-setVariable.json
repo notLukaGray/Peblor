@@ -1,0 +1,70 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "entrancePreset": "fade"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "demo-buttons", "indicator-panel"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "setVariable — Toggle State"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Buttons set a page variable. The panel below uses visibleWhen to show or hide based on the current variable value — no component logic needed."
+    },
+    "demo-buttons": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "gap": "0.75rem",
+      "section": {
+        "elementOrder": ["btn-activate", "btn-deactivate"],
+        "definitions": {
+          "btn-activate": {
+            "preset": "btn-primary",
+            "label": "Activate → toggleVar = active",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "toggleVar",
+              "value": "active"
+            },
+            "wrapperBorderRadius": "10px"
+          },
+          "btn-deactivate": {
+            "preset": "btn-squircle",
+            "label": "Deactivate → toggleVar = inactive",
+            "action": "setVariable",
+            "actionPayload": {
+              "key": "toggleVar",
+              "value": "inactive"
+            },
+            "wrapperBorderRadius": "10px",
+            "wrapperPadding": "0.7rem 1.5rem"
+          }
+        }
+      }
+    },
+    "indicator-panel": {
+      "preset": "ui-indicator-panel",
+      "visibleWhen": {
+        "variable": "toggleVar",
+        "operator": "equals",
+        "value": "active"
+      },
+      "section": {
+        "elementOrder": ["indicator-text"],
+        "definitions": {
+          "indicator-text": {
+            "type": "elementBody",
+            "level": 4,
+            "text": "toggleVar is active — this panel is visible via visibleWhen.",
+            "color": "var(--pb-on-secondary)"
+          }
+        }
+      }
+    }
+  },
+  "id": "sec-setVariable"
+}

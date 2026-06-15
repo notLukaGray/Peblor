@@ -9,6 +9,9 @@ type SectionColumnContentProps = {
   columnLayout: UseColumnLayoutResult<ElementBlock>;
   gridDebug: boolean | undefined;
   gridAutoRows: string | undefined;
+  gridAutoColumns: string | undefined;
+  gridAutoFlow: string | undefined;
+  gridTemplateAreas: string | undefined;
 };
 
 export function SectionColumnContent({
@@ -16,6 +19,9 @@ export function SectionColumnContent({
   columnLayout,
   gridDebug,
   gridAutoRows,
+  gridAutoColumns,
+  gridAutoFlow,
+  gridTemplateAreas,
 }: SectionColumnContentProps) {
   if (elements.length === 0) {
     return (
@@ -36,6 +42,9 @@ export function SectionColumnContent({
       gridMode={columnLayout.resolvedGridMode}
       gridDebug={gridDebug}
       gridAutoRows={gridAutoRows}
+      gridAutoColumns={gridAutoColumns}
+      gridAutoFlow={gridAutoFlow}
+      gridTemplateAreas={gridTemplateAreas}
       gridLayoutItems={columnLayout.gridLayoutItems}
       itemLayout={columnLayout.resolvedItemLayout}
       layoutSegments={columnLayout.layoutSegments}

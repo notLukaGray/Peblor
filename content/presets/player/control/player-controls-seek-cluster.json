@@ -1,0 +1,20 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "row",
+  "align": "center",
+  "gap": "0.75rem",
+  "width": "100%",
+  "padding": "0 1rem",
+  "section": {
+    "elementOrder": ["seek-bar", "time-display"],
+    "definitions": {
+      "seek-bar": {
+        "preset": "video-controls-seek"
+      },
+      "time-display": {
+        "preset": "video-controls-time"
+      }
+    }
+  }
+}

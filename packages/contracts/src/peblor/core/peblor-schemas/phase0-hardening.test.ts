@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { bgBlockSchema } from "./background-block-schemas";
-import { elementButtonSchema } from "./element-button-schemas";
+import { BUTTON_ACTION_TYPES, elementButtonSchema } from "./element-button-schemas";
 import { elementHeadingSchema } from "./element-content-schemas";
 import { formFieldBlockSchema } from "./form-field-schemas";
 import {
@@ -16,7 +16,7 @@ import {
   sectionFormBlockSchema,
   sectionRevealSchema,
 } from "./section-block-base-schemas";
-import { themeStringSchema } from "./schema-primitives";
+import { themeStringSchema, TRIGGER_ACTION_CORE_VARIANTS } from "./schema-primitives";
 import { evaluateConditions } from "../peblor-condition-evaluator";
 
 describe("phase 0 schema hardening", () => {
@@ -117,24 +117,24 @@ describe("phase 0 schema hardening", () => {
       ).toBe(false);
     });
 
-    it("requires label for submit fields", () => {
+    it("requires label for button fields", () => {
       expect(
         formFieldBlockSchema.safeParse({
           type: "formField",
-          fieldType: "submit",
+          fieldType: "button",
         }).success
       ).toBe(false);
       expect(
         formFieldBlockSchema.safeParse({
           type: "formField",
-          fieldType: "submit",
+          fieldType: "button",
           label: "  ",
         }).success
       ).toBe(false);
       expect(
         formFieldBlockSchema.safeParse({
           type: "formField",
-          fieldType: "submit",
+          fieldType: "button",
           label: "Send",
         }).success
       ).toBe(true);
@@ -365,15 +365,12 @@ describe("phase 0 schema hardening", () => {
       expect(result.success).toBe(false);
     });
 
-    it("normalizes unknown revealPreset to undefined", () => {
+    it("rejects unknown revealPreset values", () => {
       const result = sectionRevealSchema.safeParse({
         type: "revealSection",
         revealPreset: "not-a-real-preset",
       });
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.data.revealPreset).toBeUndefined();
-      }
+      expect(result.success).toBe(false);
     });
   });
 
@@ -548,5 +545,174 @@ describe("phase 0 schema hardening", () => {
         expect(evaluateConditions({ conditions: [] }, {})).toBe(false);
       });
     });
+  });
+
+  describe("action-type parity (B-2 canary)", () => {
+    it("BUTTON_ACTION_TYPES is derived from TRIGGER_ACTION_CORE_VARIANTS (no drift possible)", () => {
+      // BUTTON_ACTION_TYPES is now derived from TRIGGER_ACTION_CORE_VARIANTS at runtime,
+      // so this test serves as a structural canary: if derivation broke, both arrays would
+      // be empty or mismatched.
+      expect(BUTTON_ACTION_TYPES.length).toBe(TRIGGER_ACTION_CORE_VARIANTS.length);
+    });
+
+    it("every BUTTON_ACTION_TYPES entry exists in TRIGGER_ACTION_CORE_VARIANTS", () => {
+      const variantTypes = new Set(TRIGGER_ACTION_CORE_VARIANTS.map((v) => v.shape.type.value));
+      const missing = BUTTON_ACTION_TYPES.filter((t) => !variantTypes.has(t));
+      expect(missing).toEqual([]);
+    });
+
+    it("every TRIGGER_ACTION_CORE_VARIANTS entry is covered by BUTTON_ACTION_TYPES", () => {
+      const buttonTypes = new Set(BUTTON_ACTION_TYPES);
+      const missing = TRIGGER_ACTION_CORE_VARIANTS.map((v) => v.shape.type.value).filter(
+        (t) => !buttonTypes.has(t)
+      );
+      expect(missing).toEqual([]);
+    });
+  });
+
+  describe("element base layout action validation (#2 tightening)", () => {
+    it("rejects a typo'd action on a non-button element (elementHeading)", () => {
+      // elementHeading inherits from elementLayoutSchema; action is now an enum
+      const result = elementHeadingSchema.safeParse({
+        type: "elementHeading",
+        text: "Hello",
+        action: "notARealAction",
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it("accepts a valid action on a non-button element", () => {
+      const result = elementHeadingSchema.safeParse({
+        type: "elementHeading",
+        text: "Hello",
+        action: "modalOpen",
+        actionPayload: { id: "my-modal" },
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it("rejects a valid action type with wrong payload on a non-button element", () => {
+      const result = elementHeadingSchema.safeParse({
+        type: "elementHeading",
+        text: "Hello",
+        action: "modalOpen",
+        // modalOpen requires { id: string } — missing id
+        actionPayload: { wrong: "payload" },
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it("accepts a valid action without payload on a non-button element (back has no payload)", () => {
+      const result = elementHeadingSchema.safeParse({
+        type: "elementHeading",
+        text: "Hello",
+        action: "back",
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it("accepts an element with no action at all (action is optional)", () => {
+      const result = elementHeadingSchema.safeParse({
+        type: "elementHeading",
+        text: "Hello",
+      });
+      expect(result.success).toBe(true);
+    });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// P1.4 — focused regression tests
+// ---------------------------------------------------------------------------
+
+import { elementImageCompareSchema } from "./element-image-compare-schemas";
+// sectionContentBlockSchema is already imported at top of file
+
+describe("P1.4 — imageCompare handleElements cross-validation (#14)", () => {
+  const baseImageCompare = {
+    type: "elementImageCompare" as const,
+    before: { src: "https://example.com/before.jpg" },
+    after: { src: "https://example.com/after.jpg" },
+  };
+
+  it("accepts imageCompare with no handleElements", () => {
+    const result = elementImageCompareSchema.safeParse(baseImageCompare);
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts imageCompare with handleElements where elementOrder and definitions match", () => {
+    const result = elementImageCompareSchema.safeParse({
+      ...baseImageCompare,
+      handleElements: {
+        elementOrder: ["handle-icon"],
+        definitions: {
+          "handle-icon": { type: "elementSVG", markup: "<svg></svg>" },
+        },
+      },
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects imageCompare when a definitions key is missing from elementOrder (orphaned def)", () => {
+    const result = elementImageCompareSchema.safeParse({
+      ...baseImageCompare,
+      handleElements: {
+        elementOrder: [],
+        definitions: {
+          "orphaned-key": { type: "elementSVG", markup: "<svg></svg>" },
+        },
+      },
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const paths = result.error.issues.map((i) => i.path.join("."));
+      expect(paths).toContain("handleElements.definitions.orphaned-key");
+    }
+  });
+
+  it("rejects imageCompare when an elementOrder key has no definition (dangling ref)", () => {
+    const result = elementImageCompareSchema.safeParse({
+      ...baseImageCompare,
+      handleElements: {
+        elementOrder: ["missing-def"],
+        definitions: {},
+      },
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const paths = result.error.issues.map((i) => i.path.join("."));
+      expect(paths).toContain("handleElements.elementOrder");
+    }
+  });
+});
+
+describe("P1.4 — section borderTop/borderLeft accept responsive tuple (#8)", () => {
+  const baseSection = {
+    type: "contentBlock" as const,
+    elements: [],
+  };
+
+  it("accepts a plain string for borderTop", () => {
+    const result = sectionContentBlockSchema.safeParse({
+      ...baseSection,
+      borderTop: "1px solid red",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts a tier map for borderTop", () => {
+    const result = sectionContentBlockSchema.safeParse({
+      ...baseSection,
+      borderTop: { base: "1px solid red", md: "2px solid blue" },
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts a tier map for position", () => {
+    const result = sectionContentBlockSchema.safeParse({
+      ...baseSection,
+      position: { base: "relative", md: "absolute" },
+    });
+    expect(result.success).toBe(true);
   });
 });

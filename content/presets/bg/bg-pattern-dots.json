@@ -1,0 +1,20 @@
+{
+  "type": "backgroundVariable",
+  "layers": [
+    {
+      "fill": "var(--pb-secondary)"
+    },
+    {
+      "fill": "radial-gradient(circle, color-mix(in oklab, var(--pb-on-secondary) 13%, transparent) 1px, transparent 1px)",
+      "backgroundSize": "20px 20px",
+      "backgroundPosition": "0% 0%",
+      "motion": [
+        {
+          "type": "parallax",
+          "speed": 0.22,
+          "axis": "y"
+        }
+      ]
+    }
+  ]
+}

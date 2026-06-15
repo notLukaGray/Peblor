@@ -1,0 +1,367 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "staggerChildren": 0.15,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": [
+    "sec-label",
+    "sec-desc",
+    "reorder-intro",
+    "reorder-item-1",
+    "reorder-item-2",
+    "reorder-item-3",
+    "reorder-item-4",
+    "reorder-item-5"
+  ],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Reorderable List Concept"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "A live reorderable list using framer-motion Reorder. Drag the handle (☰) or the item itself to reorder project phases. Uses elasticSnap behavior for springy bounce between positions."
+    },
+    "reorder-intro": {
+      "type": "elementBody",
+      "level": 4,
+      "text": "Drag any item to reorder the list. Items snap into place with elastic spring physics. The section uses reorderable: true with elasticSnap behavior — drag firmly and release to see the bounce.",
+      "selfAlign": "center",
+      "textAlign": "center",
+      "color": "color-mix(in oklab, var(--pb-on-secondary) 55%, transparent)",
+      "width": {
+        "base": "100%",
+        "md": "80%"
+      }
+    },
+    "reorder-item-1": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "gap": "1rem",
+      "align": "center",
+      "padding": "1rem 1.5rem",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+      "borderRadius": "10px",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+      },
+      "motionTiming": {
+        "entrancePreset": "slideUp",
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": ["handle", "num", "content"],
+        "definitions": {
+          "handle": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "☰",
+            "wordWrap": false,
+            "width": "auto",
+            "color": "color-mix(in oklab, var(--pb-on-secondary) 35%, transparent)"
+          },
+          "num": {
+            "type": "elementBody",
+            "level": 1,
+            "text": "01",
+            "wordWrap": false,
+            "width": "auto",
+            "color": "var(--pb-accent)"
+          },
+          "content": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.25rem",
+            "width": "100%",
+            "section": {
+              "elementOrder": ["title", "desc"],
+              "definitions": {
+                "title": {
+                  "type": "elementHeading",
+                  "level": 4,
+                  "text": "Research Phase",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto"
+                },
+                "desc": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "Problem discovery, user research, and space definition",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 50%, transparent)",
+                  "width": "auto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "width": "100%"
+    },
+    "reorder-item-2": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "gap": "1rem",
+      "align": "center",
+      "padding": "1rem 1.5rem",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+      "borderRadius": "10px",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+      },
+      "motionTiming": {
+        "entrancePreset": "slideUp",
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": ["handle", "num", "content"],
+        "definitions": {
+          "handle": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "☰",
+            "wordWrap": false,
+            "width": "auto",
+            "color": "color-mix(in oklab, var(--pb-on-secondary) 35%, transparent)"
+          },
+          "num": {
+            "type": "elementBody",
+            "level": 1,
+            "text": "02",
+            "wordWrap": false,
+            "width": "auto",
+            "color": "var(--pb-primary)"
+          },
+          "content": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.25rem",
+            "width": "100%",
+            "section": {
+              "elementOrder": ["title", "desc"],
+              "definitions": {
+                "title": {
+                  "type": "elementHeading",
+                  "level": 4,
+                  "text": "Design Phase",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto"
+                },
+                "desc": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "Wireframing, prototyping, and visual design",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 50%, transparent)",
+                  "width": "auto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "width": "100%"
+    },
+    "reorder-item-3": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "gap": "1rem",
+      "align": "center",
+      "padding": "1rem 1.5rem",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+      "borderRadius": "10px",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+      },
+      "motionTiming": {
+        "entrancePreset": "slideUp",
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": ["handle", "num", "content"],
+        "definitions": {
+          "handle": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "☰",
+            "wordWrap": false,
+            "width": "auto",
+            "color": "color-mix(in oklab, var(--pb-on-secondary) 35%, transparent)"
+          },
+          "num": {
+            "type": "elementBody",
+            "level": 1,
+            "text": "03",
+            "wordWrap": false,
+            "width": "auto",
+            "color": "color-mix(in oklab, var(--pb-accent) 60%, var(--pb-primary))"
+          },
+          "content": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.25rem",
+            "width": "100%",
+            "section": {
+              "elementOrder": ["title", "desc"],
+              "definitions": {
+                "title": {
+                  "type": "elementHeading",
+                  "level": 4,
+                  "text": "Development Phase",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto"
+                },
+                "desc": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "Implementation, code review, and integration",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 50%, transparent)",
+                  "width": "auto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "width": "100%"
+    },
+    "reorder-item-4": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "gap": "1rem",
+      "align": "center",
+      "padding": "1rem 1.5rem",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+      "borderRadius": "10px",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+      },
+      "motionTiming": {
+        "entrancePreset": "slideUp",
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": ["handle", "num", "content"],
+        "definitions": {
+          "handle": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "☰",
+            "wordWrap": false,
+            "width": "auto",
+            "color": "color-mix(in oklab, var(--pb-on-secondary) 35%, transparent)"
+          },
+          "num": {
+            "type": "elementBody",
+            "level": 1,
+            "text": "04",
+            "wordWrap": false,
+            "width": "auto",
+            "color": "var(--pb-accent)"
+          },
+          "content": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.25rem",
+            "width": "100%",
+            "section": {
+              "elementOrder": ["title", "desc"],
+              "definitions": {
+                "title": {
+                  "type": "elementHeading",
+                  "level": 4,
+                  "text": "Testing Phase",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto"
+                },
+                "desc": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "QA testing, user acceptance, and bug fixes",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 50%, transparent)",
+                  "width": "auto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "width": "100%"
+    },
+    "reorder-item-5": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "gap": "1rem",
+      "align": "center",
+      "padding": "1rem 1.5rem",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+      "borderRadius": "10px",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+      },
+      "motionTiming": {
+        "entrancePreset": "slideUp",
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": ["handle", "num", "content"],
+        "definitions": {
+          "handle": {
+            "type": "elementBody",
+            "level": 3,
+            "text": "☰",
+            "wordWrap": false,
+            "width": "auto",
+            "color": "color-mix(in oklab, var(--pb-on-secondary) 35%, transparent)"
+          },
+          "num": {
+            "type": "elementBody",
+            "level": 1,
+            "text": "05",
+            "wordWrap": false,
+            "width": "auto",
+            "color": "var(--pb-primary)"
+          },
+          "content": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.25rem",
+            "width": "100%",
+            "section": {
+              "elementOrder": ["title", "desc"],
+              "definitions": {
+                "title": {
+                  "type": "elementHeading",
+                  "level": 4,
+                  "text": "Deploy Phase",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto"
+                },
+                "desc": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "Release automation, monitoring, and support",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 50%, transparent)",
+                  "width": "auto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "width": "100%"
+    }
+  },
+  "reorderable": true,
+  "reorderAxis": "y",
+  "reorderDragBehavior": "elasticSnap"
+}

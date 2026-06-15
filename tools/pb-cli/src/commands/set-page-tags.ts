@@ -55,7 +55,8 @@ export async function runSetPageTags(args: string[], io: CommandIo): Promise<num
   let newTags: Record<string, string[]>;
   try {
     newTags = JSON.parse(tagsStr) as Record<string, string[]>;
-  } catch {
+  } catch (err) {
+    console.warn("[pb-cli] Failed to parse --tags JSON", err);
     io.printErrorText("Error: --tags is not valid JSON.");
     return 2;
   }

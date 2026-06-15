@@ -1,0 +1,13 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Type Effects — Preset Demo",
+  "description": "Typography visual effects — shadow glow, gradient fill, outline stroke, animated gradient, gleam, blur, blend mode, knockout, reflection, typewriter.",
+  "presets": ["demo", "type/core", "ui/link", "type/effects", "bg"],
+  "sectionOrder": ["nav-header", "hero", "sec-effects"],
+  "bgKey": "bg-type",
+  "definitions": {
+    "bg-type": {
+      "preset": "bg-type"
+    }
+  }
+}

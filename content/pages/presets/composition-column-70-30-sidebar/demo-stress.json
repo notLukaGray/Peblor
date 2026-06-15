@@ -1,0 +1,28 @@
+{
+  "preset": "composition-column-70-30-sidebar",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "1080px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "0 0 8rem",
+    "md": "0 0 12rem"
+  },
+  "definitions": {
+    "title": {
+      "text": "Stress variant: dense sidebar content"
+    },
+    "narrative": {
+      "text": "The primary column carries the decision narrative while the sidebar absorbs operational detail. This pattern is useful for briefs, change logs, and implementation notes where metadata is important but must not overtake the main argument."
+    },
+    "meta-list": {
+      "text": "Owner: Growth + Platform\\nStatus: Blocked pending security review\\nWindow: Q3 migration\\nDependencies: Auth service, billing webhooks, analytics mapping\\nRisk: Medium-high due to legacy token assumptions"
+    },
+    "meta-link": {
+      "label": "Open issue board ->",
+      "href": "#"
+    }
+  }
+}

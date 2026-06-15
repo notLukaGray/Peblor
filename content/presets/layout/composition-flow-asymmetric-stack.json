@@ -1,0 +1,93 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "width": "100%",
+  "maxWidth": "1000px",
+  "selfAlign": "center",
+  "align": "stretch",
+  "height": "hug",
+  "padding": {
+    "base": "2rem 1.25rem",
+    "md": "3rem 1.5rem"
+  },
+  "gap": "1.5rem",
+  "borderRadius": "22px",
+  "fill": "color-mix(in oklab, var(--pb-accent) 8%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 13%, transparent)"
+  },
+  "elementOrder": ["kicker", "headline", "body", "quote", "actions"],
+  "definitions": {
+    "kicker": {
+      "preset": "type-kicker-badge",
+      "text": "Offset Rhythm"
+    },
+    "headline": {
+      "preset": "type-h3-label",
+      "text": "Asymmetric stack with deliberate offsets",
+      "width": {
+        "base": "100%",
+        "md": "74%"
+      }
+    },
+    "body": {
+      "preset": "type-body-standard",
+      "text": "This preset leans into uneven line lengths and mixed alignment so long-form blurbs can breathe without introducing columns.",
+      "width": {
+        "base": "100%",
+        "md": "86%"
+      }
+    },
+    "quote": {
+      "preset": "type-body-fine",
+      "text": "\"The asymmetry is intentional: it creates pacing in a single lane and keeps hierarchy obvious as content grows.\"",
+      "width": {
+        "base": "100%",
+        "md": "68%"
+      },
+      "wrapperPadding": "1.25rem 1.5rem",
+      "wrapperBorderRadius": "14px",
+      "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)"
+    },
+    "actions": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": {
+        "base": "column",
+        "md": "row"
+      },
+      "align": {
+        "base": "stretch",
+        "md": "center"
+      },
+      "gap": "0.85rem",
+      "padding": "0",
+      "width": {
+        "base": "100%",
+        "md": "fit-content"
+      },
+      "section": {
+        "elementOrder": ["primary", "secondary"],
+        "definitions": {
+          "primary": {
+            "type": "elementButton",
+            "label": "Review Structure",
+            "href": "#",
+            "wrapperPadding": "0.85rem 1.75rem",
+            "wrapperBorderRadius": "12px",
+            "wrapperFill": "var(--pb-on-secondary)",
+            "linkDefault": "var(--pb-secondary)",
+            "linkHover": "var(--pb-secondary)"
+          },
+          "secondary": {
+            "type": "elementLink",
+            "label": "See documentation",
+            "href": "#",
+            "copyType": "body",
+            "level": 3
+          }
+        }
+      }
+    }
+  }
+}

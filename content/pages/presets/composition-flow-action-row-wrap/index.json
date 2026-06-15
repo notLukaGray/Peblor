@@ -1,0 +1,140 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Composition Flow Action Row Wrap — Preset Demo",
+  "description": "Horizontal action clusters that stay usable on mobile by wrapping intentionally instead of collapsing awkwardly.",
+  "sectionOrder": ["nav-header", "hero", "demo-label", "demo-primary", "demo-stress"],
+  "definitions": {
+    "bg-composition": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "radial-gradient(120% 110% at 92% 2%, color-mix(in oklab, var(--pb-accent) 16%, transparent) 0%, transparent 54%), linear-gradient(160deg, color-mix(in oklab, var(--pb-primary) 11%, var(--pb-secondary)) 0%, var(--pb-secondary) 66%, color-mix(in oklab, var(--pb-accent) 6%, var(--pb-secondary)) 100%)"
+        }
+      ],
+      "preset": "bg-composition"
+    },
+    "nav-header": {
+      "preset": "preset-demo-nav-header"
+    },
+    "hero": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "align": "start",
+      "height": "hug",
+      "padding": {
+        "base": "10rem 0 6rem",
+        "md": "12rem 0 8rem"
+      },
+      "gap": "1rem",
+      "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+      "definitions": {
+        "hero-eyebrow": {
+          "preset": "type-kicker-badge",
+          "text": "Flow · Row · Wrap Fallback"
+        },
+        "hero-title": {
+          "preset": "type-h1-display",
+          "text": "Composition Flow Action Row Wrap"
+        },
+        "hero-description": {
+          "preset": "type-body-standard",
+          "text": "Horizontal action clusters that stay usable on mobile by wrapping intentionally instead of collapsing awkwardly.",
+          "width": {
+            "base": "100%",
+            "md": "72%"
+          }
+        }
+      }
+    },
+    "demo-label": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "align": "start",
+      "height": "hug",
+      "padding": {
+        "base": "3rem 0 0.75rem",
+        "md": "4rem 0 0.75rem"
+      },
+      "elementOrder": ["label"],
+      "definitions": {
+        "label": {
+          "preset": "type-h3-label",
+          "text": "Primary + Stress Variant"
+        }
+      }
+    },
+    "demo-primary": {
+      "preset": "composition-flow-action-row-wrap",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "marginBottom": {
+        "base": "2rem",
+        "md": "3rem"
+      }
+    },
+    "demo-stress": {
+      "preset": "composition-flow-action-row-wrap",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "definitions": {
+        "eyebrow": {
+          "text": "Action Wrap Stress"
+        },
+        "title": {
+          "text": "High-option action band with labels long enough to force clean wraps"
+        },
+        "body": {
+          "text": "Useful for settings and workspace pages where several pathways must remain visible together without collapsing into unreadable buttons."
+        },
+        "actions": {
+          "section": {
+            "definitions": {
+              "a1": {
+                "label": "Product overview",
+                "href": "/presets/composition-flow-action-row-wrap"
+              },
+              "a2": {
+                "label": "Team permissions",
+                "href": "/presets"
+              },
+              "a3": {
+                "label": "Release notes",
+                "href": "/presets/type-patterns"
+              },
+              "a4": {
+                "label": "Support center",
+                "href": "/presets/cards-collections"
+              }
+            }
+          }
+        }
+      },
+      "marginBottom": {
+        "base": "4rem",
+        "md": "8rem"
+      }
+    }
+  },
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "layout", "bg"],
+  "bgKey": "bg-composition"
+}

@@ -18,10 +18,18 @@ export const explainFieldPath: Tool = {
   run: async (args) => {
     const { clusterId, path } = args as { clusterId: string; path: string };
     const schema = (await getElementSchema.run({ clusterId })) as {
+      keyFields?: Record<string, unknown>;
       fields?: Record<string, unknown>;
     };
+    // Support both the new keyFields shape and the legacy fields shape
+    const fieldMap = schema.keyFields ?? schema.fields ?? {};
     const parts = path.split(".").filter(Boolean);
-    let cursor: unknown = schema.fields;
+    // First try: direct top-level lookup in fieldMap (handles the common "motion" case)
+    if (parts.length === 1 && parts[0] !== undefined && fieldMap[parts[0]] !== undefined) {
+      return { clusterId, path, node: fieldMap[parts[0]] };
+    }
+    // Fallback: walk nested structure
+    let cursor: unknown = fieldMap;
     for (const part of parts) {
       if (!cursor || typeof cursor !== "object") {
         throw new Error(`Path not found: ${path}`);

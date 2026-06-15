@@ -1,0 +1,16 @@
+{
+  "type": "elementGroup",
+  "width": "100%",
+  "flex": "0 0 auto",
+  "height": {
+    "base": "9rem",
+    "md": "15rem"
+  },
+  "borderRadius": "1.5rem 1.5rem 0 0",
+  "scroll": "hidden",
+  "opacity": 0.92,
+  "filter": "saturate(0.92) brightness(1.02)",
+  "wrapperStyle": {
+    "position": "relative"
+  }
+}

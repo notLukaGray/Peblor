@@ -1,16 +1,33 @@
 "use client";
 
 import { useEffect } from "react";
-import { getWorkbenchSession } from "@/app/dev/workbench/workbench-session";
 import { subscribeWorkbenchSessionChanges } from "@/core/lib/workbench-session-subscribe";
 import { buildWorkbenchThemeColorVarMap } from "@/app/theme/pb-workbench-color-var-map";
+import type { ColorToolPersistedLike } from "@/app/theme/pb-workbench-color-var-map";
 
 const STYLE_ELEMENT_ID = "pb-colors-runtime";
+const WORKBENCH_SESSION_STORAGE_KEY = "workbench-session-v2";
 
-function buildColorCss(session: ReturnType<typeof getWorkbenchSession>): string {
-  const colors = session.colors;
-  const lightVars = buildWorkbenchThemeColorVarMap(colors, "light");
-  const darkVars = buildWorkbenchThemeColorVarMap(colors, "dark");
+function readWorkbenchColors(): Record<string, unknown> | null {
+  try {
+    const raw = localStorage.getItem(WORKBENCH_SESSION_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
+    const colors = parsed["colors"];
+    if (!colors || typeof colors !== "object" || Array.isArray(colors)) return null;
+    return colors as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+}
+
+function buildColorCss(): string {
+  const colors = readWorkbenchColors();
+  if (!colors) return "";
+  // Dev-only: the colors object structure matches ColorToolPersistedLike written by apps/studio.
+  const colorData = colors as unknown as ColorToolPersistedLike;
+  const lightVars = buildWorkbenchThemeColorVarMap(colorData, "light");
+  const darkVars = buildWorkbenchThemeColorVarMap(colorData, "dark");
 
   const rootLines = Object.keys(lightVars)
     .sort()
@@ -37,7 +54,7 @@ function ensureStyleTag(): HTMLStyleElement | null {
 function updateColorStyleTag(): void {
   const el = ensureStyleTag();
   if (!el) return;
-  const css = buildColorCss(getWorkbenchSession());
+  const css = buildColorCss();
   if (el.textContent !== css) el.textContent = css;
 }
 

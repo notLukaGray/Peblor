@@ -257,8 +257,8 @@ describe("element-video-utils", () => {
         justifyContent: "stretch",
       });
     });
-    it("uses desktop value when objectFit is tuple", () => {
-      expect(getElementVideoInnerStyle(base, ["fillWidth", "cover"])).toEqual(base);
+    it("uses md value when objectFit is tier map", () => {
+      expect(getElementVideoInnerStyle(base, { base: "fillWidth", md: "cover" })).toEqual(base);
     });
   });
 });

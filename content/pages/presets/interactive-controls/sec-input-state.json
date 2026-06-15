@@ -1,0 +1,130 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "staggerChildren": 0.15,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "state-group"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Input-Driven State"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Inputs that connect to visible state displays. Form fields and sliders update labels and values in response to user interaction."
+    },
+    "state-group": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "2rem",
+      "width": "100%",
+      "motionTiming": {
+        "staggerChildren": 0.1,
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": ["state-display-1", "state-display-2", "state-controls-hint"],
+        "definitions": {
+          "state-display-1": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "1rem",
+            "padding": "1.5rem",
+            "borderRadius": "12px",
+            "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+            "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+            "motionTiming": {
+              "entrancePreset": "slideUp",
+              "trigger": "onFirstVisible"
+            },
+            "section": {
+              "elementOrder": ["s-title", "s-body"],
+              "definitions": {
+                "s-title": {
+                  "type": "elementHeading",
+                  "level": 4,
+                  "text": "Slider Value Display",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto"
+                },
+                "s-body": {
+                  "type": "elementBody",
+                  "level": 3,
+                  "text": "The range slider above emits change events that can be bound to a variable for display. In a full page builder setup, the current value would update live in this panel as the user drags.",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 68%, transparent)"
+                }
+              }
+            }
+          },
+          "state-display-2": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "1rem",
+            "padding": "1.5rem",
+            "borderRadius": "12px",
+            "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+            "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)",
+            "motionTiming": {
+              "entrancePreset": "slideUp",
+              "trigger": "onFirstVisible"
+            },
+            "section": {
+              "elementOrder": ["s-title", "s-body"],
+              "definitions": {
+                "s-title": {
+                  "type": "elementHeading",
+                  "level": 4,
+                  "text": "Form Field Binding",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto"
+                },
+                "s-body": {
+                  "type": "elementBody",
+                  "level": 3,
+                  "text": "Standalone form fields hold local state and can dispatch actions through the trigger system. Fields like text, email, and select each emit their value through the element's action payload.",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 68%, transparent)"
+                }
+              }
+            }
+          },
+          "state-controls-hint": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.75rem",
+            "padding": "1rem 1.5rem",
+            "borderRadius": "8px",
+            "fill": "color-mix(in oklab, var(--pb-accent) 8%, transparent)",
+            "border": "1px solid color-mix(in oklab, var(--pb-accent) 20%, transparent)",
+            "motionTiming": {
+              "entrancePreset": "fade",
+              "trigger": "onFirstVisible"
+            },
+            "section": {
+              "elementOrder": ["hint-icon", "hint-text"],
+              "definitions": {
+                "hint-icon": {
+                  "type": "elementBody",
+                  "level": 1,
+                  "text": "ℹ️",
+                  "wordWrap": false,
+                  "width": "auto"
+                },
+                "hint-text": {
+                  "type": "elementBody",
+                  "level": 4,
+                  "text": "In a production page builder, inputs bind to variables via the variableKey field. State changes propagate through the action bus, enabling forms that update live previews, control media playback, or navigate between views.",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 68%, transparent)"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

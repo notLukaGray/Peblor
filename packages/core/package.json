@@ -25,7 +25,9 @@
     "./host": "./src/host.ts",
     "./motion": "./src/motion.ts",
     "./overrides": "./src/overrides.ts",
-    "./modules": "./src/modules.ts"
+    "./modules": "./src/modules.ts",
+    "./bg-loop-classify": "./src/internal/bg-loop-classify.ts",
+    "./css-keyframe-utils": "./src/internal/css-keyframe-utils.ts"
   },
   "files": [
     "src"
@@ -36,6 +38,11 @@
   },
   "dependencies": {
     "@pb/contracts": "1.0.0",
+    "rehype-stringify": "^10.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
+    "unified": "^11.0.5",
     "zod": "4.4.2"
   }
 }

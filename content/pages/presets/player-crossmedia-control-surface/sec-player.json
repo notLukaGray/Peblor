@@ -1,0 +1,599 @@
+{
+  "preset": "player-section",
+  "elementOrder": ["player-label", "master-controls", "media-grid", "bridge-section"],
+  "definitions": {
+    "player-label": {
+      "preset": "type-h3-label",
+      "text": "Crossmedia Control Surface — One Surface, All Media"
+    },
+    "master-controls": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "align": "center",
+      "gap": "0.75rem",
+      "padding": "0.85rem 1.25rem",
+      "borderRadius": "16px",
+      "fill": "color-mix(in oklab, var(--pb-secondary) 88%, transparent)",
+      "bgBlur": "blur(20px)",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["mc-label", "mc-play-all", "mc-pause-all", "mc-mute"],
+        "definitions": {
+          "mc-label": {
+            "preset": "type-h5-meta",
+            "text": "Master:"
+          },
+          "mc-play-all": {
+            "type": "elementButton",
+            "label": "▶ Play All",
+            "action": "fireMultiple",
+            "actionPayload": {
+              "actions": [
+                {
+                  "type": "assetPlay",
+                  "payload": {
+                    "target": "all"
+                  }
+                },
+                {
+                  "type": "rive.play",
+                  "payload": {
+                    "target": "all"
+                  }
+                },
+                {
+                  "type": "three.playAnimation",
+                  "payload": {
+                    "id": "cm-3d"
+                  }
+                }
+              ]
+            },
+            "level": 4,
+            "wrapperPadding": "0.5rem 1.1rem",
+            "wrapperBorderRadius": "999px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-accent) 22%, transparent)",
+            "linkDefault": "var(--pb-on-secondary)",
+            "motion": {
+              "onHover": {
+                "scale": 1.05
+              },
+              "transition": {
+                "duration": 0.15
+              }
+            }
+          },
+          "mc-pause-all": {
+            "type": "elementButton",
+            "label": "⏸ Pause All",
+            "action": "fireMultiple",
+            "actionPayload": {
+              "actions": [
+                {
+                  "type": "assetPause",
+                  "payload": {
+                    "target": "all"
+                  }
+                },
+                {
+                  "type": "rive.pause",
+                  "payload": {
+                    "target": "all"
+                  }
+                },
+                {
+                  "type": "three.pauseAnimation",
+                  "payload": {
+                    "id": "cm-3d"
+                  }
+                }
+              ]
+            },
+            "level": 4,
+            "wrapperPadding": "0.5rem 1.1rem",
+            "wrapperBorderRadius": "999px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)",
+            "linkDefault": "var(--pb-on-secondary)",
+            "motion": {
+              "onHover": {
+                "scale": 1.05
+              },
+              "transition": {
+                "duration": 0.15
+              }
+            }
+          },
+          "mc-mute": {
+            "type": "elementButton",
+            "label": "M Mute All",
+            "action": "assetMute",
+            "actionPayload": {
+              "target": "all"
+            },
+            "level": 5,
+            "wrapperPadding": "0.5rem 1rem",
+            "wrapperBorderRadius": "999px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+            "linkDefault": "var(--pb-on-secondary)",
+            "motion": {
+              "onHover": {
+                "scale": 1.05
+              },
+              "transition": {
+                "duration": 0.15
+              }
+            }
+          }
+        }
+      }
+    },
+    "media-grid": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": {
+        "base": "column",
+        "md": "row"
+      },
+      "align": "stretch",
+      "gap": "1rem",
+      "width": "100%",
+      "section": {
+        "elementOrder": ["video-cell", "audio-cell", "lottie-cell", "model3d-cell"],
+        "definitions": {
+          "video-cell": {
+            "preset": "player-crossmedia-media-cell",
+            "section": {
+              "elementOrder": ["vc-label", "vc-video"],
+              "definitions": {
+                "vc-label": {
+                  "type": "elementGroup",
+                  "padding": "0.75rem 1rem 0.4rem",
+                  "section": {
+                    "elementOrder": ["vl"],
+                    "definitions": {
+                      "vl": {
+                        "preset": "type-h5-meta",
+                        "text": "Video Surface"
+                      }
+                    }
+                  }
+                },
+                "vc-video": {
+                  "type": "elementVideo",
+                  "id": "cm-video",
+                  "src": "https://samplelib.com/preview/mp4/sample-15s.mp4",
+                  "poster": "https://picsum.photos/id/1015/1280/720",
+                  "module": "video-player-minimal-noplay",
+                  "width": "100%",
+                  "aspectRatio": "16 / 9",
+                  "autoplay": false,
+                  "loop": true,
+                  "muted": true,
+                  "objectFit": "cover"
+                }
+              }
+            }
+          },
+          "audio-cell": {
+            "preset": "player-crossmedia-media-cell",
+            "section": {
+              "elementOrder": ["ac-label", "ac-track", "ac-audio"],
+              "definitions": {
+                "ac-label": {
+                  "type": "elementGroup",
+                  "padding": "0.75rem 1rem 0.4rem",
+                  "section": {
+                    "elementOrder": ["al"],
+                    "definitions": {
+                      "al": {
+                        "preset": "type-h5-meta",
+                        "text": "Audio Surface"
+                      }
+                    }
+                  }
+                },
+                "ac-track": {
+                  "type": "elementGroup",
+                  "display": "flex",
+                  "flow": "column",
+                  "gap": "0.15rem",
+                  "padding": "0.25rem 1rem 0.5rem",
+                  "section": {
+                    "elementOrder": ["at", "aa"],
+                    "definitions": {
+                      "at": {
+                        "preset": "type-h4-card",
+                        "text": "Crossmedia Mix"
+                      },
+                      "aa": {
+                        "preset": "type-body-fine",
+                        "text": "Audio Collective"
+                      }
+                    }
+                  }
+                },
+                "ac-audio": {
+                  "type": "elementAudio",
+                  "id": "cm-audio",
+                  "src": "https://upload.wikimedia.org/wikipedia/commons/1/17/BWV.847_c_minor_Prelude_Bach%2C_Performer_JMC%2C_Han.ogg",
+                  "module": "audio-player",
+                  "autoplay": false,
+                  "loop": true
+                }
+              }
+            }
+          },
+          "lottie-cell": {
+            "preset": "player-crossmedia-media-cell",
+            "fill": "color-mix(in oklab, var(--pb-accent) 6%, transparent)",
+            "section": {
+              "elementOrder": ["lc-label", "lc-lottie"],
+              "definitions": {
+                "lc-label": {
+                  "type": "elementGroup",
+                  "padding": "0.75rem 1rem 0.4rem",
+                  "section": {
+                    "elementOrder": ["ll"],
+                    "definitions": {
+                      "ll": {
+                        "preset": "type-h5-meta",
+                        "text": "Lottie Surface"
+                      }
+                    }
+                  }
+                },
+                "lc-lottie": {
+                  "type": "elementLottie",
+                  "id": "cm-lottie",
+                  "src": "https://assets6.lottiefiles.com/packages/lf20_iwmd6pyr.json",
+                  "autoplay": false,
+                  "loop": true,
+                  "width": "100%",
+                  "aspectRatio": "1 / 1"
+                }
+              }
+            }
+          },
+          "model3d-cell": {
+            "preset": "player-crossmedia-media-cell",
+            "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+            "section": {
+              "elementOrder": ["mc3-label", "mc3-model"],
+              "definitions": {
+                "mc3-label": {
+                  "type": "elementGroup",
+                  "padding": "0.75rem 1rem 0.4rem",
+                  "section": {
+                    "elementOrder": ["ml3"],
+                    "definitions": {
+                      "ml3": {
+                        "preset": "type-h5-meta",
+                        "text": "3D Surface"
+                      }
+                    }
+                  }
+                },
+                "mc3-model": {
+                  "type": "elementModel3D",
+                  "id": "cm-3d",
+                  "width": "100%",
+                  "aspectRatio": "1 / 1",
+                  "initiallyLoaded": true,
+                  "models": {
+                    "robot": {
+                      "geometry": "https://threejs.org/examples/models/gltf/RobotExpressive/RobotExpressive.glb"
+                    }
+                  },
+                  "scene": {
+                    "camera": {
+                      "type": "perspective",
+                      "position": [0, 1.4, 4.2],
+                      "fov": 44
+                    },
+                    "background": {
+                      "type": "color",
+                      "color": "#10141c"
+                    },
+                    "lights": [
+                      {
+                        "type": "ambient",
+                        "intensity": 0.5
+                      },
+                      {
+                        "type": "directional",
+                        "position": [3, 5, 4],
+                        "intensity": 1.6
+                      }
+                    ],
+                    "contents": {
+                      "models": [
+                        {
+                          "model": "robot",
+                          "animation": {
+                            "clip": "Idle",
+                            "loop": true
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "bridge-section": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "0.75rem",
+      "width": "100%",
+      "section": {
+        "elementOrder": ["bridge-label", "bridge-row", "bridge-3d"],
+        "definitions": {
+          "bridge-label": {
+            "preset": "type-h5-meta",
+            "text": "Rive → 3D bridge — one button fires into both runtimes"
+          },
+          "bridge-row": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "row",
+            "align": "center",
+            "wrap": "wrap",
+            "gap": "0.5rem",
+            "section": {
+              "elementOrder": ["btn-rive-jump", "btn-3d-orbit", "btn-3d-front", "btn-reset-all"],
+              "definitions": {
+                "btn-rive-jump": {
+                  "preset": "player-demo-btn",
+                  "label": "Rive → Jump + 3D Orbit + Video",
+                  "action": "fireMultiple",
+                  "actionPayload": {
+                    "actions": [
+                      {
+                        "type": "rive.fireTrigger",
+                        "payload": {
+                          "id": "bridge-rive",
+                          "input": "jump"
+                        }
+                      },
+                      {
+                        "type": "three.orbitEnable",
+                        "payload": {
+                          "id": "bridge-model",
+                          "autoRotate": true,
+                          "autoRotateSpeed": 2
+                        }
+                      },
+                      {
+                        "type": "assetPlay",
+                        "payload": {
+                          "id": "cm-video"
+                        }
+                      }
+                    ]
+                  },
+                  "wrapperFill": "color-mix(in oklab, var(--pb-accent) 15%, transparent)"
+                },
+                "btn-3d-orbit": {
+                  "preset": "player-demo-btn",
+                  "label": "3D: Auto-Rotate",
+                  "action": "three.orbitEnable",
+                  "actionPayload": {
+                    "id": "bridge-model",
+                    "autoRotate": true,
+                    "autoRotateSpeed": 1.5
+                  },
+                  "wrapperFill": "color-mix(in oklab, var(--pb-primary) 18%, transparent)"
+                },
+                "btn-3d-front": {
+                  "preset": "player-demo-btn",
+                  "label": "3D: Front",
+                  "action": "three.setCameraPreset",
+                  "actionPayload": {
+                    "id": "bridge-model",
+                    "preset": "front"
+                  },
+                  "wrapperFill": "color-mix(in oklab, var(--pb-primary) 18%, transparent)"
+                },
+                "btn-reset-all": {
+                  "preset": "player-demo-btn",
+                  "label": "Reset Camera",
+                  "action": "three.resetCamera",
+                  "actionPayload": {
+                    "id": "bridge-model"
+                  },
+                  "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+                }
+              }
+            }
+          },
+          "bridge-3d": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": {
+              "base": "column",
+              "md": "row"
+            },
+            "align": "stretch",
+            "gap": "1rem",
+            "width": "100%",
+            "section": {
+              "elementOrder": ["rive-cell", "model-cell"],
+              "definitions": {
+                "rive-cell": {
+                  "preset": "player-crossmedia-media-cell",
+                  "fill": "color-mix(in oklab, var(--pb-primary) 6%, transparent)",
+                  "section": {
+                    "elementOrder": ["rc-label", "rc-rive"],
+                    "definitions": {
+                      "rc-label": {
+                        "type": "elementGroup",
+                        "padding": "0.75rem 1rem 0.4rem",
+                        "section": {
+                          "elementOrder": ["rl"],
+                          "definitions": {
+                            "rl": {
+                              "preset": "type-h5-meta",
+                              "text": "Rive Surface"
+                            }
+                          }
+                        }
+                      },
+                      "rc-rive": {
+                        "type": "elementRive",
+                        "id": "bridge-rive",
+                        "src": "https://cdn.rive.app/animations/vehicles.riv",
+                        "autoplay": false,
+                        "loop": true,
+                        "hover": true,
+                        "width": "100%",
+                        "aspectRatio": "1 / 1",
+                        "interactivity": [
+                          {
+                            "event": "hoverEnter",
+                            "input": "hover",
+                            "value": true
+                          },
+                          {
+                            "event": "hoverLeave",
+                            "input": "hover",
+                            "value": false
+                          }
+                        ],
+                        "onStateChange": {
+                          "type": "setVariable",
+                          "payload": {
+                            "key": "riveState",
+                            "value": "$event.stateName"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "model-cell": {
+                  "preset": "player-crossmedia-media-cell",
+                  "flex": "2",
+                  "fill": "color-mix(in oklab, var(--pb-on-secondary) 4%, transparent)",
+                  "section": {
+                    "elementOrder": ["mc2-label", "mc2-model"],
+                    "definitions": {
+                      "mc2-label": {
+                        "type": "elementGroup",
+                        "padding": "0.75rem 1rem 0.4rem",
+                        "section": {
+                          "elementOrder": ["mll"],
+                          "definitions": {
+                            "mll": {
+                              "preset": "type-h5-meta",
+                              "text": "3D Surface — responds to controls above"
+                            }
+                          }
+                        }
+                      },
+                      "mc2-model": {
+                        "type": "elementModel3D",
+                        "id": "bridge-model",
+                        "width": "100%",
+                        "aspectRatio": "16 / 9",
+                        "initiallyLoaded": true,
+                        "models": {
+                          "bird": {
+                            "geometry": "https://threejs.org/examples/models/gltf/Flamingo.glb"
+                          }
+                        },
+                        "canvas": {
+                          "dpr": 1.5,
+                          "gl": {
+                            "antialias": true,
+                            "powerPreference": "high-performance"
+                          }
+                        },
+                        "scene": {
+                          "camera": {
+                            "type": "perspective",
+                            "position": [0, 1.2, 4],
+                            "fov": 46,
+                            "near": 0.1,
+                            "far": 100
+                          },
+                          "cameraPresets": {
+                            "front": {
+                              "position": [0, 1.2, 4],
+                              "lookAt": [0, 0.8, 0]
+                            },
+                            "top": {
+                              "position": [0, 4.5, 0.5],
+                              "lookAt": [0, 0.5, 0],
+                              "fov": 40
+                            }
+                          },
+                          "controls": {
+                            "mode": "orbit"
+                          },
+                          "cameraEffects": {
+                            "mouseFollow": {
+                              "sensitivity": -0.06,
+                              "smoothness": 0.09,
+                              "desktopOnly": true
+                            }
+                          },
+                          "lights": [
+                            {
+                              "type": "ambient",
+                              "intensity": 0.4
+                            },
+                            {
+                              "type": "directional",
+                              "position": [2, 4, 3],
+                              "intensity": 1.8
+                            },
+                            {
+                              "type": "spot",
+                              "position": [-2, 1, 2],
+                              "target": [0, 0, 0],
+                              "intensity": 0.8,
+                              "angle": 0.5,
+                              "penumbra": 0.8
+                            }
+                          ],
+                          "background": {
+                            "type": "color",
+                            "color": "#0a0a0a"
+                          },
+                          "contents": {
+                            "models": [
+                              {
+                                "model": "bird"
+                              }
+                            ]
+                          }
+                        },
+                        "postProcessing": [
+                          {
+                            "type": "bloom",
+                            "intensity": 0.4,
+                            "luminanceThreshold": 0.65,
+                            "radius": 0.4,
+                            "mipmapBlur": true
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

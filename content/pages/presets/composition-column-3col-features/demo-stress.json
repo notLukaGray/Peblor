@@ -1,0 +1,51 @@
+{
+  "preset": "composition-column-3col-features",
+  "width": {
+    "base": "92%",
+    "md": "86%"
+  },
+  "maxWidth": "1240px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "0 0 8rem",
+    "md": "0 0 12rem"
+  },
+  "definitions": {
+    "feature-a": {
+      "section": {
+        "definitions": {
+          "title": {
+            "text": "Stress: longer headline in feature one to test wraps"
+          },
+          "body": {
+            "text": "This card intentionally uses a longer sentence to verify that three-column layouts do not collapse into uneven heights or cramped line breaks at medium desktop widths."
+          }
+        }
+      }
+    },
+    "feature-b": {
+      "section": {
+        "definitions": {
+          "title": {
+            "text": "Stress: supporting card with denser explanation"
+          },
+          "body": {
+            "text": "Equal-width tracks should still feel balanced when one card carries more context than the others."
+          }
+        }
+      }
+    },
+    "feature-c": {
+      "section": {
+        "definitions": {
+          "title": {
+            "text": "Stress: concise card for contrast"
+          },
+          "body": {
+            "text": "Short copy remains visually anchored beside long neighbors."
+          }
+        }
+      }
+    }
+  }
+}

@@ -29,7 +29,13 @@
           "fill": "linear-gradient(180deg, #0a0a0a 0%, #111111 100%)"
         }
       ]
-    }
+    },
+    "cinematic_a": { "type": "contentBlock", "elementOrder": [], "definitions": {} },
+    "cinematic_b": { "type": "contentBlock", "elementOrder": [], "definitions": {} },
+    "cinematic_c": { "type": "contentBlock", "elementOrder": [], "definitions": {} },
+    "cinematic_d": { "type": "contentBlock", "elementOrder": [], "definitions": {} },
+    "cinematic_e": { "type": "contentBlock", "elementOrder": [], "definitions": {} },
+    "cinematic_f": { "type": "contentBlock", "elementOrder": [], "definitions": {} }
   },
   "transitions": [
     {

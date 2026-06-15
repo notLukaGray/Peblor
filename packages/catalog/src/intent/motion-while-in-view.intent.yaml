@@ -1,4 +1,4 @@
-id: motion.whileInView
+id: motion.onVisible
 kind: cluster
 package: "@pb/contracts"
 stability: stable
@@ -19,7 +19,7 @@ not_this_if:
 
 axes:
   - name: keyframes
-    fields: [whileInView]
+    fields: [onVisible]
     note: "z.union([motionKeyframesSchema, string]) — any known FM property"
 
 does_not_cover:
@@ -30,7 +30,7 @@ does_not_cover:
   - what: "Scroll-progress-driven animation"
     use_instead: trigger.onViewportProgress
   - what: "Hover gesture"
-    use_instead: motion.whileHover
+    use_instead: motion.onHover
 
 covers:
   - description: "CTA button that glows continuously while visible in viewport"
@@ -38,13 +38,13 @@ covers:
 
 composes_with:
   parents: [section.*, element.*]
-  siblings_typical: [motion.whileHover, trigger.onVisible]
-  motion: "whileInView on motionProps — merged from motion defaults; also available via motion component defaults"
+  siblings_typical: [motion.onHover, trigger.onVisible]
+  motion: "onVisible on motionProps — merged from motion defaults; also available via motion component defaults"
 
 known_limitations:
-  - "whileInView persists as long as the element is visible — unlike one-shot entrance animations"
-  - "whileInView keyframes are stripped of layout-owned keys"
-  - "Viewport margin is controlled by the viewport config on motionTiming, not whileInView itself"
+  - "onVisible persists as long as the element is visible — unlike one-shot entrance animations"
+  - "onVisible keyframes are stripped of layout-owned keys"
+  - "Viewport margin is controlled by the viewport config on motionTiming, not onVisible itself"
 
 proposal_hints:
   new_variant_value: "N/A — motion gesture, no variant"

@@ -1,0 +1,111 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["sec-label", "cards-row"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Article Previews"
+    },
+    "cards-row": {
+      "preset": "card-grid-row",
+      "section": {
+        "elementOrder": ["article-1", "article-2", "article-3"],
+        "definitions": {
+          "article-1": {
+            "preset": "card-article-preview",
+            "section": {
+              "elementOrder": ["meta", "divider", "title", "excerpt", "link"],
+              "definitions": {
+                "meta": {
+                  "preset": "type-h5-meta",
+                  "text": "Essay · 06 min"
+                },
+                "divider": {
+                  "type": "elementDivider",
+                  "width": "100%",
+                  "height": "1px",
+                  "fill": "color-mix(in oklab, var(--pb-on-secondary) 14%, transparent)"
+                },
+                "title": {
+                  "preset": "type-h4-card",
+                  "text": "The case for fewer components"
+                },
+                "excerpt": {
+                  "preset": "type-body-fine",
+                  "text": "Why a smaller, more composable system outperforms a large one in every real-world scenario."
+                },
+                "link": {
+                  "preset": "type-link-inline",
+                  "label": "Read more",
+                  "href": "#"
+                }
+              }
+            }
+          },
+          "article-2": {
+            "preset": "card-article-preview",
+            "section": {
+              "elementOrder": ["meta", "divider", "title", "excerpt", "link"],
+              "definitions": {
+                "meta": {
+                  "preset": "type-h5-meta",
+                  "text": "Craft · 04 min"
+                },
+                "divider": {
+                  "type": "elementDivider",
+                  "width": "100%",
+                  "height": "1px",
+                  "fill": "color-mix(in oklab, var(--pb-on-secondary) 14%, transparent)"
+                },
+                "title": {
+                  "preset": "type-h4-card",
+                  "text": "Motion as communication"
+                },
+                "excerpt": {
+                  "preset": "type-body-fine",
+                  "text": "How well-timed transitions carry meaning without adding unnecessary visual weight."
+                },
+                "link": {
+                  "preset": "type-link-inline",
+                  "label": "Read more",
+                  "href": "#"
+                }
+              }
+            }
+          },
+          "article-3": {
+            "preset": "card-article-preview",
+            "section": {
+              "elementOrder": ["meta", "divider", "title", "excerpt", "link"],
+              "definitions": {
+                "meta": {
+                  "preset": "type-h5-meta",
+                  "text": "Process · 08 min"
+                },
+                "divider": {
+                  "type": "elementDivider",
+                  "width": "100%",
+                  "height": "1px",
+                  "fill": "color-mix(in oklab, var(--pb-on-secondary) 14%, transparent)"
+                },
+                "title": {
+                  "preset": "type-h4-card",
+                  "text": "Type as architecture"
+                },
+                "excerpt": {
+                  "preset": "type-body-fine",
+                  "text": "Building a typographic scale that works across every breakpoint from a single token definition."
+                },
+                "link": {
+                  "preset": "type-link-inline",
+                  "label": "Read more",
+                  "href": "#"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

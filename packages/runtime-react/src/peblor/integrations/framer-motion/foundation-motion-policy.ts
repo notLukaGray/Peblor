@@ -4,15 +4,20 @@ export type FoundationReduceMotionPolicy = "honor-system" | "disable-all" | "rep
 
 const DEFAULT_POLICY: FoundationReduceMotionPolicy = "honor-system";
 
+// Cached after first read — the CSS custom property is static (set at build/theme time).
+let cachedPolicy: FoundationReduceMotionPolicy | null = null;
+
 export function readFoundationReduceMotionPolicy(): FoundationReduceMotionPolicy {
   if (typeof window === "undefined" || typeof document === "undefined") return DEFAULT_POLICY;
+  if (cachedPolicy !== null) return cachedPolicy;
   const raw = getComputedStyle(document.documentElement)
     .getPropertyValue("--pb-reduce-motion-policy")
     .trim();
-  if (raw === "disable-all" || raw === "replace-with-fade" || raw === "honor-system") {
-    return raw;
-  }
-  return DEFAULT_POLICY;
+  cachedPolicy =
+    raw === "disable-all" || raw === "replace-with-fade" || raw === "honor-system"
+      ? raw
+      : DEFAULT_POLICY;
+  return cachedPolicy;
 }
 
 export function resolveFoundationMotionControls(reduceMotion: boolean | undefined): {

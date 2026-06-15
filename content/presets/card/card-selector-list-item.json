@@ -1,0 +1,38 @@
+{
+  "type": "elementGroup",
+  "width": "100%",
+  "height": "hug",
+  "display": "flex",
+  "flow": "row",
+  "align": "center",
+  "distribute": "between",
+  "gap": "0.75rem",
+  "padding": {
+    "base": "0.8rem 0",
+    "md": "1rem 0"
+  },
+  "wrapperStyle": {
+    "borderBottom": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+  },
+  "section": {
+    "elementOrder": ["item-title", "item-arrow"],
+    "definitions": {
+      "item-title": {
+        "type": "elementBody",
+        "level": 3,
+        "width": "100%",
+        "textAlign": "left",
+        "wordWrap": false,
+        "text": "Item title",
+        "color": "var(--card-list-title-color, var(--pb-on-secondary))"
+      },
+      "item-arrow": {
+        "type": "elementBody",
+        "level": 3,
+        "width": "hug",
+        "text": "→",
+        "color": "var(--card-list-arrow-color, color-mix(in oklab, var(--pb-on-secondary) 44%, transparent))"
+      }
+    }
+  }
+}

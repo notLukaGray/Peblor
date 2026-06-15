@@ -1,0 +1,17 @@
+{
+  "definitions": {
+    "hero-badge": {
+      "preset": "demo-hero-badge",
+      "text": "backgroundVariable · 3× loop motion"
+    },
+    "hero-title": {
+      "preset": "demo-hero-title",
+      "text": "bg-aurora"
+    },
+    "hero-desc": {
+      "preset": "demo-hero-description",
+      "text": "Four composited layers: a gradient base, an accent aurora panning right (14s), a primary aurora panning left (19s), and an overlay shimmer pulsing on an 8s mirror. Incommensurable durations produce a pattern that never exactly repeats."
+    }
+  },
+  "preset": "demo-hero-100vh"
+}

@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "highlight.js/styles/github-dark.min.css";
+@source "../../../../packages/runtime-react/src";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -111,6 +111,9 @@
   --pb-sidebar-border: oklch(0.922 0 0);
   --pb-sidebar-ring: oklch(0.708 0 0);
 
+  --pb-preset-tab-bg: oklch(0.98 0.004 285 / 0.34);
+  --pb-preset-tab-text: oklch(0.16 0.01 270);
+
   /* Consumed by Tailwind `@theme inline` and existing utilities. */
   --background: var(--pb-surface-root);
   --foreground: var(--pb-text-primary);
@@ -148,6 +151,18 @@
   --frame-link-hover: var(--pb-text-primary);
   --frame-link-active: var(--pb-text-primary);
   --frame-link-disabled: var(--pb-text-muted);
+}
+
+/* color-scheme must be set so light-dark() resolves correctly in both modes.
+   Without this, light-dark() always picks the light value regardless of .dark class. */
+:root {
+  color-scheme: light dark;
+}
+.light {
+  color-scheme: light;
+}
+.dark {
+  color-scheme: dark;
 }
 
 .dark {
@@ -192,6 +207,9 @@
   --pb-on-sidebar-accent: oklch(0.985 0 0);
   --pb-sidebar-border: oklch(1 0 0 / 10%);
   --pb-sidebar-ring: oklch(0.556 0 0);
+
+  --pb-preset-tab-bg: oklch(0.08 0.012 270 / 0.36);
+  --pb-preset-tab-text: oklch(0.96 0.004 285);
 }
 
 @layer base {
@@ -201,13 +219,38 @@
     @apply border-border;
   }
   html {
-    background: #000000;
+    background: var(--pb-surface-root, #000000);
     overscroll-behavior-y: none;
   }
   body {
     @apply text-foreground;
-    background: #000000;
+    background: var(--pb-surface-root, #000000);
     overscroll-behavior-y: none;
+  }
+
+  /* Site-level smooth scrolling — only when the user has not requested reduced motion.
+     Inline scrollBehavior:"smooth" was removed from section styles (A-M3) so this
+     CSS rule is now the single place that opts in to smooth scroll. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  /* Disable CSS transitions and animations when the user requests reduced motion.
+     The !important values use 0.01ms instead of 0s to avoid a Chrome bug that can
+     still trigger transitions with 0s duration. This covers CSS-based animations
+     on interactive elements (tab switches, button hover effects) that framer-motion
+     respects via its own reduced-motion handling. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
@@ -219,13 +262,30 @@
     display: none;
   }
 
-  /* Hide horizontal scroll container scrollbar in all browsers (Chrome overlay included) */
-  .scroll-container-hide-scrollbar {
+  /* Hide scrollbar in scroll containers across all browsers.
+     Chrome/WebKit overlay scrollbars: `scrollbar-width: none` only suppresses
+     the overlay scrollbar behavior in Firefox. For Chrome, ::-webkit-scrollbar
+     { display: none } is required. We use a double-class selector for higher
+     specificity so !important is not needed.
+
+     Why overlay scrollbars need hiding:
+     macOS and some Linux desktops use "overlay" scrollbars that float above
+     content. In our scroll containers (work-scroll, scroll-container-*) these
+     overlay scrollbars overlap interactive content. Hiding them via CSS is the
+     safest approach — the scroll container remains scrollable via trackpad,
+     keyboard, and touch, and the hidden scrollbar doesn't block any content. */
+  .scroll-container-hide-scrollbar.scroll-container-hide-scrollbar {
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
   .scroll-container-hide-scrollbar::-webkit-scrollbar {
-    display: none !important;
+    display: none;
+    width: 0;
+    height: 0;
+  }
+  /* Double class for webkit to match specificity without !important */
+  .scroll-container-hide-scrollbar.scroll-container-hide-scrollbar::-webkit-scrollbar {
+    display: none;
     width: 0;
     height: 0;
   }
@@ -236,7 +296,7 @@
   }
   .typography-font-regular {
     font-family: var(--font-body, var(--font-sans));
-    font-weight: var(--font-weight-regular, 600);
+    font-weight: var(--font-weight-regular, 400);
   }
   .typography-font-book {
     font-family: var(--font-body, var(--font-sans));
@@ -266,7 +326,8 @@
 
   /* Sizes, line-heights, and semantic weights (--type-*-fw) come from type-scale.ts via layout.tsx.
      Edit typeScaleConfig or use /dev/fonts. Each class uses the primary font’s weight map.
-     font-size-adjust stabilizes text metrics during font swap, reducing CLS (Lighthouse). */
+     CLS during font swap is eliminated by metric-adjusted @font-face fallback rules
+     injected in layout.tsx via generateFallbackFontFaces(). */
 
   .typography-heading-xs {
     font-family: var(--font-heading, var(--font-sans));
@@ -274,7 +335,7 @@
     font-size: var(--type-heading-xs-size, 16px);
     line-height: var(--type-heading-xs-lh, 20px);
     letter-spacing: var(--type-heading-xs-ls, 0);
-    font-size-adjust: 0.52;
+    /* size-adjust via metric-adjusted @font-face fallback */
   }
   .typography-heading-sm {
     font-family: var(--font-heading, var(--font-sans));
@@ -282,7 +343,7 @@
     font-size: var(--type-heading-sm-size, 20px);
     line-height: var(--type-heading-sm-lh, 22px);
     letter-spacing: var(--type-heading-sm-ls, 0);
-    font-size-adjust: 0.52;
+    /* size-adjust via metric-adjusted @font-face fallback */
   }
   .typography-heading-md {
     font-family: var(--font-heading, var(--font-sans));
@@ -290,7 +351,7 @@
     font-size: var(--type-heading-md-size, 22px);
     line-height: var(--type-heading-md-lh, 26px);
     letter-spacing: var(--type-heading-md-ls, 0);
-    font-size-adjust: 0.52;
+    /* size-adjust via metric-adjusted @font-face fallback */
   }
   .typography-heading-lg {
     font-family: var(--font-heading, var(--font-sans));
@@ -298,7 +359,7 @@
     font-size: var(--type-heading-lg-size, 26px);
     line-height: var(--type-heading-lg-lh, 29px);
     letter-spacing: var(--type-heading-lg-ls, 0);
-    font-size-adjust: 0.52;
+    /* size-adjust via metric-adjusted @font-face fallback */
   }
   .typography-heading-xl {
     font-family: var(--font-heading, var(--font-sans));
@@ -306,7 +367,7 @@
     font-size: var(--type-heading-xl-size, 30px);
     line-height: var(--type-heading-xl-lh, 33px);
     letter-spacing: var(--type-heading-xl-ls, 0);
-    font-size-adjust: 0.52;
+    /* size-adjust via metric-adjusted @font-face fallback */
   }
   .typography-heading-2xl {
     font-family: var(--font-heading, var(--font-sans));
@@ -314,7 +375,7 @@
     font-size: var(--type-heading-2xl-size, 44px);
     line-height: var(--type-heading-2xl-lh, 48px);
     letter-spacing: var(--type-heading-2xl-ls, 0);
-    font-size-adjust: 0.52;
+    /* size-adjust via metric-adjusted @font-face fallback */
   }
 
   .typography-body-xs {
@@ -323,7 +384,7 @@
     font-size: var(--type-body-xs-size, 8px);
     line-height: var(--type-body-xs-lh, 12px);
     letter-spacing: var(--type-body-xs-ls, 0);
-    font-size-adjust: 0.49;
+    /* size-adjust via metric-adjusted @font-face fallback */
   }
   .typography-body-sm {
     font-family: var(--font-body, var(--font-sans));
@@ -331,7 +392,7 @@
     font-size: var(--type-body-sm-size, 8px);
     line-height: var(--type-body-sm-lh, 12px);
     letter-spacing: var(--type-body-sm-ls, 0);
-    font-size-adjust: 0.49;
+    /* size-adjust via metric-adjusted @font-face fallback */
   }
   .typography-body-md {
     font-family: var(--font-body, var(--font-sans));
@@ -339,7 +400,7 @@
     font-size: var(--type-body-md-size, 12px);
     line-height: var(--type-body-md-lh, 18px);
     letter-spacing: var(--type-body-md-ls, 0);
-    font-size-adjust: 0.49;
+    /* size-adjust via metric-adjusted @font-face fallback */
   }
   .typography-body-lg {
     font-family: var(--font-body, var(--font-sans));
@@ -347,7 +408,7 @@
     font-size: var(--type-body-lg-size, 12px);
     line-height: var(--type-body-lg-lh, 18px);
     letter-spacing: var(--type-body-lg-ls, 0);
-    font-size-adjust: 0.49;
+    /* size-adjust via metric-adjusted @font-face fallback */
   }
   .typography-body-xl {
     font-family: var(--font-body, var(--font-sans));
@@ -355,7 +416,7 @@
     font-size: var(--type-body-xl-size, 18px);
     line-height: var(--type-body-xl-lh, 28px);
     letter-spacing: var(--type-body-xl-ls, 0);
-    font-size-adjust: 0.49;
+    /* size-adjust via metric-adjusted @font-face fallback */
   }
   .typography-body-2xl {
     font-family: var(--font-body, var(--font-sans));
@@ -363,11 +424,13 @@
     font-size: var(--type-body-2xl-size, 18px);
     line-height: var(--type-body-2xl-lh, 28px);
     letter-spacing: var(--type-body-2xl-ls, 0);
-    font-size-adjust: 0.49;
+    /* size-adjust via metric-adjusted @font-face fallback */
   }
 
   /* ── Button wrapper interactive states ──────────────────────────── */
   .element-btn-wrap {
+    background: var(--element-btn-fill, transparent);
+    border-color: var(--element-btn-stroke, transparent);
     transition: var(
       --element-btn-transition,
       background 0.15s ease,
@@ -396,6 +459,24 @@
     opacity: 0.6;
     transform: scale(var(--element-btn-scale-disabled, 1));
     pointer-events: none;
+  }
+
+  /* Button text color — base reads var from inline, hover overrides via higher-specificity selector */
+  .element-btn-text {
+    color: var(--element-btn-text, inherit);
+  }
+  .element-btn-wrap:hover button .element-btn-text,
+  .element-btn-wrap:hover .element-btn-text {
+    color: var(--element-btn-text-hover, var(--element-btn-text, inherit));
+  }
+  .element-btn-wrap:active button .element-btn-text,
+  .element-btn-wrap:has(button:active) button .element-btn-text,
+  .element-btn-wrap:active .element-btn-text,
+  .element-btn-wrap:has(button:active) .element-btn-text {
+    color: var(
+      --element-btn-text-active,
+      var(--element-btn-text-hover, var(--element-btn-text, inherit))
+    );
   }
 
   /* Glass fill layer — sits above the glass overlay, below content.
@@ -432,7 +513,7 @@
     );
   }
   .element-link:focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline: 2px solid var(--pb-focus-ring-color, currentColor);
     outline-offset: 2px;
     border-radius: 0.25rem;
   }
@@ -492,7 +573,17 @@
   animation: page-fade-in 0.4s ease-out both;
 }
 
-/* Video module fullscreen: Chrome/WebKit do not auto-size the fullscreen element; force fill so the bottom bar flows correctly. */
+/* Video module fullscreen: browsers do not auto-size the fullscreen element.
+   Each vendor prefix is required because the :fullscreen pseudo-class is not
+   supported consistently across older browsers. Chrome needs -webkit-full-screen,
+   Firefox -moz-full-screen, and IE/Edge -ms-fullscreen.
+
+   !important is load-bearing here because the browser's fullscreen API applies
+   inline styles (e.g. width: 100%) that would otherwise override our CSS. The
+   vendor-prefixed pseudo-classes also have lower specificity than :fullscreen,
+   so each needs its own !important to ensure consistent sizing across all
+   browsers. Without these the fullscreen element may not fill the viewport,
+   causing layout issues with floating controls. */
 .video-module-fullscreen-container:fullscreen {
   width: 100vw !important;
   height: 100vh !important;
@@ -529,4 +620,54 @@
 
 .pb-rich-text s {
   text-decoration: line-through;
+}
+
+/* ── Windows High Contrast Mode / forced-colors ───────────────────────
+   Ensures interactive elements remain distinguishable when the user
+   enables system-level forced colors mode (Windows High Contrast Theme).
+   Uses system color keywords (ButtonText, ButtonFace, Highlight,
+   HighlightText) that map to the user's chosen high-contrast palette. */
+@media (forced-colors: active) {
+  .element-btn-wrap {
+    border: 1px solid ButtonText;
+  }
+  .element-btn-wrap:focus-visible,
+  button:focus-visible,
+  a:focus-visible,
+  [role="button"]:focus-visible,
+  [role="tab"]:focus-visible,
+  [role="slider"]:focus-visible {
+    outline: 2px solid Highlight !important;
+    outline-offset: 2px !important;
+  }
+  .element-btn-wrap--disabled {
+    border-color: GrayText;
+  }
+  .element-link {
+    color: LinkText;
+  }
+  .element-link--disabled {
+    color: GrayText;
+  }
+}
+
+/* ── prefers-contrast: more ───────────────────────────────────────────
+   Strengthens border and muted-text contrast ratios for users who need
+   more visual distinction between UI elements. Only overrides the pb-*
+   design tokens so the rest of the theme system inherits the bump. */
+@media (prefers-contrast: more) {
+  :root {
+    --pb-border: oklch(0.5 0 0);
+    --pb-border-strong: oklch(0.35 0 0);
+    --pb-text-muted: oklch(0.3 0 0);
+    --pb-ring: oklch(0.25 0 0);
+    --pb-input: oklch(0.6 0 0);
+  }
+  .dark {
+    --pb-border: oklch(0.7 0 0);
+    --pb-border-strong: oklch(0.85 0 0);
+    --pb-text-muted: oklch(0.8 0 0);
+    --pb-ring: oklch(0.85 0 0);
+    --pb-input: oklch(0.55 0 0 / 0.6);
+  }
 }

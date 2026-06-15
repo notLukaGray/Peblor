@@ -1,0 +1,11 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["label"],
+  "definitions": {
+    "label": {
+      "preset": "type-h3-label",
+      "text": "Primary + Stress Variant"
+    }
+  },
+  "align": "start"
+}

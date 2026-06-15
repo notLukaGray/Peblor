@@ -2,22 +2,29 @@ import { describe, expect, it } from "vitest";
 import { validateSectionValue } from "./section-validate.js";
 
 describe("validateSectionValue", () => {
-  it("surfaces deep action payload paths for invalid trigger actions", () => {
+  it("accepts a valid divider section (authored shape)", () => {
+    const result = validateSectionValue({ type: "divider" });
+    expect(result.valid).toBe(true);
+    expect(result.diagnostics).toHaveLength(0);
+  });
+
+  it("accepts a valid contentBlock in authored shape (elementOrder + definitions)", () => {
     const result = validateSectionValue({
       type: "contentBlock",
-      elements: [],
-      cursorTriggers: [
-        {
-          axis: "x",
-          action: { type: "setVariable", key: "foo", value: "bar" },
-        },
-      ],
+      elementOrder: ["hero-title"],
+      definitions: {
+        "hero-title": { type: "elementHeading", text: "Hello" },
+      },
     });
+    // peblorDefinitionBlockSchema accepts authored shape
+    expect(result.valid).toBe(true);
+  });
 
+  it("rejects an invalid section type", () => {
+    const result = validateSectionValue({ type: "notARealType", elementOrder: [] });
     expect(result.valid).toBe(false);
-    expect(result.diagnostics.some((d) => d.path.includes("cursorTriggers.0.action.payload"))).toBe(
-      true
-    );
+    expect(result.diagnostics.length).toBeGreaterThan(0);
+    expect(result.diagnostics.some((d) => d.code === "PB_SECTION_INVALID")).toBe(true);
   });
 
   it("adds explicit bgKey page-only guidance", () => {
@@ -33,5 +40,25 @@ describe("validateSectionValue", () => {
         path: "$.bgKey",
       })
     );
+  });
+
+  it("rejects sectionOrder field (page-only)", () => {
+    const result = validateSectionValue({
+      type: "divider",
+      sectionOrder: ["section-a"],
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.diagnostics).toContainEqual(
+      expect.objectContaining({
+        code: "PB_SECTION_PAGE_ONLY_FIELD",
+        path: "$.sectionOrder",
+      })
+    );
+  });
+
+  it("uses peblorDefinitionBlockSchema as the schema name", () => {
+    const result = validateSectionValue({ type: "divider" });
+    expect(result.schema).toBe("peblorDefinitionBlockSchema");
   });
 });

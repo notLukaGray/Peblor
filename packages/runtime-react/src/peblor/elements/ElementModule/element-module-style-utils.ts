@@ -1,8 +1,13 @@
 import type { CSSProperties } from "react";
-import { resolveResponsiveValue } from "@pb/runtime-react/core/lib/responsive-value";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
 import type { ElementLayout, SectionEffect } from "@pb/contracts/peblor/core/peblor-schemas";
 
-export type BorderGradient = { stroke: string; width: string | number };
+// Border-gradient overlay helpers live in a shared module so the mask string isn't duplicated
+// (C-22). Re-exported here for the existing import sites.
+export {
+  type BorderGradient,
+  buildBorderGradientOverlayStyle,
+} from "@/peblor/elements/Shared/border-gradient-overlay";
 
 const ALIGN_TO_ALIGN_SELF: Record<"left" | "center" | "right", CSSProperties["alignSelf"]> = {
   left: "flex-start",
@@ -32,24 +37,6 @@ export function getContainerWrapperStyle(base: CSSProperties): CSSProperties {
   };
 }
 
-export function buildBorderGradientOverlayStyle(
-  borderGradient: BorderGradient,
-  borderRadius: CSSProperties["borderRadius"]
-): CSSProperties {
-  return {
-    position: "absolute",
-    inset: 0,
-    padding: borderGradient.width,
-    borderRadius: borderRadius ?? "inherit",
-    background: borderGradient.stroke,
-    boxSizing: "border-box",
-    pointerEvents: "none",
-    WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-    WebkitMaskComposite: "xor",
-    maskComposite: "exclude",
-  };
-}
-
 export function coerceSectionEffects(value: unknown): SectionEffect[] | undefined {
   if (!Array.isArray(value)) return undefined;
   const entries = value.filter(
@@ -63,15 +50,15 @@ export function coerceSectionEffects(value: unknown): SectionEffect[] | undefine
 }
 
 export function getChildWrapperLayoutStyle(
-  layout: Pick<ElementLayout, "align">,
+  layout: Pick<ElementLayout, "selfAlign">,
   isMobile: boolean
 ): CSSProperties {
   const align = resolveResponsiveValue<"left" | "center" | "right">(
-    layout.align as
+    layout.selfAlign as
       | "left"
       | "center"
       | "right"
-      | ["left" | "center" | "right", "left" | "center" | "right"]
+      | { base?: "left" | "center" | "right"; md?: "left" | "center" | "right" }
       | undefined,
     isMobile
   );

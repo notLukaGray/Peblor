@@ -1,5 +1,4 @@
 import { CONTRACT_VERSION, type ExporterCapability, type Peblor } from "@pb/contracts";
-import type { PeblorDiagnostic } from "@pb/core/validate";
 import type { ExportResult, ExporterPlugin } from "./index";
 
 const referenceCapability: ExporterCapability = {
@@ -13,18 +12,14 @@ const referenceCapability: ExporterCapability = {
 };
 
 function deepClonePage(page: Peblor): Peblor {
-  return JSON.parse(JSON.stringify(page)) as Peblor;
-}
-
-function emptyDiagnostics(): PeblorDiagnostic[] {
-  return [];
+  return structuredClone(page) as Peblor;
 }
 
 async function exportToJsonTarget(page: Peblor): Promise<ExportResult> {
   return {
     target: "peblor-json",
     output: deepClonePage(page),
-    diagnostics: emptyDiagnostics(),
+    diagnostics: [],
   };
 }
 

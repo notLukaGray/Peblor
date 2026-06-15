@@ -1,0 +1,37 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "gap": "0.85rem",
+  "width": "100%",
+  "padding": "0.75rem",
+  "borderRadius": "24px",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+  "section": {
+    "elementOrder": ["compare", "caption"],
+    "definitions": {
+      "compare": {
+        "type": "elementImageCompare",
+        "before": {
+          "src": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80&auto=format&fit=crop",
+          "alt": "Before state"
+        },
+        "after": {
+          "src": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&q=80&auto=format&fit=crop",
+          "alt": "After state"
+        },
+        "beforeLabel": "Before",
+        "afterLabel": "After",
+        "width": "100%",
+        "aspectRatio": "16 / 9",
+        "borderRadius": "18px",
+        "keyboardStep": 0.05,
+        "initialPosition": 0.5
+      },
+      "caption": {
+        "preset": "type-body-fine",
+        "text": "Drag the handle or use arrow keys to compare before and after states."
+      }
+    }
+  }
+}

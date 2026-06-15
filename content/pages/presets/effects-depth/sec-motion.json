@@ -1,0 +1,244 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "width": {
+    "base": "92%",
+    "md": "84%"
+  },
+  "maxWidth": "880px",
+  "selfAlign": "center",
+  "align": "center",
+  "padding": {
+    "base": "4rem 0 5rem",
+    "md": "7rem 0 9rem"
+  },
+  "gap": "2.5rem",
+  "height": "hug",
+  "scroll": "visible",
+  "motionTiming": {
+    "entrancePreset": "fade",
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["label", "desc", "list"],
+  "definitions": {
+    "label": {
+      "preset": "type-h3-label",
+      "text": "Scroll-Reactive Motion"
+    },
+    "desc": {
+      "preset": "type-body-fine",
+      "text": "Entrance presets triggered as elements scroll into view. Each row uses a distinct keyframe preset — fade, slideUp, blurIn, zoomIn, popIn — choreographed to cascade down the page."
+    },
+    "list": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "0.7rem",
+      "width": "100%",
+      "padding": "0",
+      "section": {
+        "elementOrder": ["i1", "i2", "i3", "i4", "i5", "i6"],
+        "definitions": {
+          "i1": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "row",
+            "align": "center",
+            "padding": "1.25rem 1.75rem",
+            "gap": "1.5rem",
+            "borderRadius": "13px",
+            "wrapperStyle": {
+              "backgroundColor": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+            },
+            "motionTiming": {
+              "entrancePreset": "fade",
+              "trigger": "onFirstVisible",
+              "viewport": {
+                "amount": 0.2
+              }
+            },
+            "section": {
+              "elementOrder": ["n", "t"],
+              "definitions": {
+                "n": {
+                  "preset": "type-body-mono",
+                  "text": "01"
+                },
+                "t": {
+                  "preset": "type-h4-card",
+                  "text": "Fade — opacity 0 to 1. Clean, understated entrance."
+                }
+              }
+            }
+          },
+          "i2": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "row",
+            "align": "center",
+            "padding": "1.25rem 1.75rem",
+            "gap": "1.5rem",
+            "borderRadius": "13px",
+            "wrapperStyle": {
+              "backgroundColor": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+            },
+            "motionTiming": {
+              "entrancePreset": "slideUp",
+              "trigger": "onFirstVisible",
+              "viewport": {
+                "amount": 0.2
+              }
+            },
+            "section": {
+              "elementOrder": ["n", "t"],
+              "definitions": {
+                "n": {
+                  "preset": "type-body-mono",
+                  "text": "02"
+                },
+                "t": {
+                  "preset": "type-h4-card",
+                  "text": "Slide Up — translateY with opacity. Content rises into view."
+                }
+              }
+            }
+          },
+          "i3": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "row",
+            "align": "center",
+            "padding": "1.25rem 1.75rem",
+            "gap": "1.5rem",
+            "borderRadius": "13px",
+            "wrapperStyle": {
+              "backgroundColor": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+            },
+            "motionTiming": {
+              "entrancePreset": "blurIn",
+              "trigger": "onFirstVisible",
+              "viewport": {
+                "amount": 0.2
+              }
+            },
+            "section": {
+              "elementOrder": ["n", "t"],
+              "definitions": {
+                "n": {
+                  "preset": "type-body-mono",
+                  "text": "03"
+                },
+                "t": {
+                  "preset": "type-h4-card",
+                  "text": "Blur In — focus snap from blurred to sharp. Lens-like reveal."
+                }
+              }
+            }
+          },
+          "i4": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "row",
+            "align": "center",
+            "padding": "1.25rem 1.75rem",
+            "gap": "1.5rem",
+            "borderRadius": "13px",
+            "wrapperStyle": {
+              "backgroundColor": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+            },
+            "motionTiming": {
+              "entrancePreset": "zoomIn",
+              "trigger": "onFirstVisible",
+              "viewport": {
+                "amount": 0.2
+              }
+            },
+            "section": {
+              "elementOrder": ["n", "t"],
+              "definitions": {
+                "n": {
+                  "preset": "type-body-mono",
+                  "text": "04"
+                },
+                "t": {
+                  "preset": "type-h4-card",
+                  "text": "Zoom In — scale 0.95 to 1.0 with opacity. Subtle pop."
+                }
+              }
+            }
+          },
+          "i5": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "row",
+            "align": "center",
+            "padding": "1.25rem 1.75rem",
+            "gap": "1.5rem",
+            "borderRadius": "13px",
+            "wrapperStyle": {
+              "backgroundColor": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+            },
+            "motionTiming": {
+              "entrancePreset": "popIn",
+              "trigger": "onFirstVisible",
+              "viewport": {
+                "amount": 0.2
+              }
+            },
+            "section": {
+              "elementOrder": ["n", "t"],
+              "definitions": {
+                "n": {
+                  "preset": "type-body-mono",
+                  "text": "05"
+                },
+                "t": {
+                  "preset": "type-h4-card",
+                  "text": "Pop In — scale + opacity + translateY. Combined entrance."
+                }
+              }
+            }
+          },
+          "i6": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "row",
+            "align": "center",
+            "padding": "1.25rem 1.75rem",
+            "gap": "1.5rem",
+            "borderRadius": "13px",
+            "wrapperStyle": {
+              "backgroundColor": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)"
+            },
+            "motionTiming": {
+              "entrancePreset": "fade",
+              "trigger": "onFirstVisible",
+              "viewport": {
+                "amount": 0.2
+              }
+            },
+            "section": {
+              "elementOrder": ["n", "t"],
+              "definitions": {
+                "n": {
+                  "preset": "type-body-mono",
+                  "text": "06"
+                },
+                "t": {
+                  "preset": "type-h4-card",
+                  "text": "Fade (slow) — longer opacity ramp. A graceful closing note."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

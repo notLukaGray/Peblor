@@ -1,0 +1,148 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": {
+    "base": "column",
+    "md": "row"
+  },
+  "align": "stretch",
+  "gap": "1rem",
+  "width": "100%",
+  "motionTiming": {
+    "staggerChildren": 0.12,
+    "trigger": "onFirstVisible"
+  },
+  "section": {
+    "elementOrder": ["stat-a", "stat-b", "stat-c"],
+    "definitions": {
+      "stat-a": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "align": "start",
+        "gap": "0.4rem",
+        "width": "100%",
+        "padding": "1.25rem",
+        "borderRadius": "18px",
+        "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+        "wrapperStyle": {
+          "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+        },
+        "section": {
+          "elementOrder": ["num", "label", "body"],
+          "definitions": {
+            "num": {
+              "type": "elementCounter",
+              "level": 1,
+              "target": 48,
+              "suffix": "+",
+              "separator": true,
+              "trigger": "onVisible",
+              "tween": {
+                "duration": 2600,
+                "easing": "easeOut"
+              },
+              "color": "var(--pb-on-secondary)",
+              "textAlign": "left",
+              "width": "hug"
+            },
+            "label": {
+              "preset": "type-counter-label",
+              "text": "Projects Shipped",
+              "textAlign": "left"
+            },
+            "body": {
+              "preset": "type-body-fine",
+              "text": "Completed and delivered across four years."
+            }
+          }
+        }
+      },
+      "stat-b": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "align": "start",
+        "gap": "0.4rem",
+        "width": "100%",
+        "padding": "1.25rem",
+        "borderRadius": "18px",
+        "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+        "wrapperStyle": {
+          "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+        },
+        "section": {
+          "elementOrder": ["num", "label", "body"],
+          "definitions": {
+            "num": {
+              "type": "elementCounter",
+              "level": 1,
+              "target": 94,
+              "suffix": "%",
+              "trigger": "onVisible",
+              "tween": {
+                "duration": 2800,
+                "easing": "easeOut"
+              },
+              "color": "var(--pb-on-secondary)",
+              "textAlign": "left",
+              "width": "hug"
+            },
+            "label": {
+              "preset": "type-counter-label",
+              "text": "Client Satisfaction",
+              "textAlign": "left"
+            },
+            "body": {
+              "preset": "type-body-fine",
+              "text": "Measured across all engagements."
+            }
+          }
+        }
+      },
+      "stat-c": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "align": "start",
+        "gap": "0.4rem",
+        "width": "100%",
+        "padding": "1.25rem",
+        "borderRadius": "18px",
+        "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+        "wrapperStyle": {
+          "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+        },
+        "section": {
+          "elementOrder": ["num", "label", "body"],
+          "definitions": {
+            "num": {
+              "type": "elementCounter",
+              "level": 1,
+              "target": 12,
+              "suffix": "K",
+              "separator": false,
+              "trigger": "onVisible",
+              "tween": {
+                "duration": 2400,
+                "easing": "easeOut"
+              },
+              "color": "var(--pb-on-secondary)",
+              "textAlign": "left",
+              "width": "hug"
+            },
+            "label": {
+              "preset": "type-counter-label",
+              "text": "Hours Saved",
+              "textAlign": "left"
+            },
+            "body": {
+              "preset": "type-body-fine",
+              "text": "For teams using this preset system."
+            }
+          }
+        }
+      }
+    }
+  }
+}

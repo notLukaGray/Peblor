@@ -1,0 +1,652 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Media Showreel — Composition Demo",
+  "description": "Director and studio reel page: background video hero, video thumbnail grid, director statement, scrolling film stills carousel, awards stats, and contact CTA.",
+  "presets": [
+    "demo",
+    "type/core",
+    "type/effects",
+    "type/motion",
+    "ui/button",
+    "ui/link",
+    "layout",
+    "card",
+    "bg"
+  ],
+  "bgKey": "bg-page",
+  "scroll": {
+    "smooth": true,
+    "lockBody": true,
+    "scrollX": "hidden"
+  },
+  "sectionOrder": [
+    "nav-header",
+    "hero",
+    "sec-video-grid",
+    "sec-director",
+    "sec-carousel-label",
+    "sec-carousel",
+    "sec-awards",
+    "sec-cta"
+  ],
+  "definitions": {
+    "bg-page": {
+      "preset": "bg-video-dark"
+    },
+    "nav-header": {
+      "preset": "preset-demo-nav-header"
+    },
+    "hero": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "960px",
+      "selfAlign": "center",
+      "align": "center",
+      "height": "hug",
+      "padding": {
+        "base": "5rem 1.5rem 8rem",
+        "md": "14rem 2rem 12rem"
+      },
+      "gap": "2rem",
+      "motionTiming": {
+        "staggerChildren": 0.1,
+        "trigger": "onMount"
+      },
+      "elementOrder": ["hero-kicker", "hero-title", "hero-body", "hero-actions"],
+      "definitions": {
+        "hero-kicker": {
+          "preset": "type-kicker-badge",
+          "text": "Direction · Cinematography · Post",
+          "selfAlign": "center",
+          "width": "auto"
+        },
+        "hero-title": {
+          "type": "elementHeading",
+          "level": 1,
+          "text": "Frame & Light Studio",
+          "textAlign": "center",
+          "selfAlign": "center",
+          "wordWrap": true,
+          "width": {
+            "base": "100%",
+            "md": "80%"
+          },
+          "color": "var(--pb-on-secondary)",
+          "motionTiming": {
+            "entrancePreset": "blurIn",
+            "trigger": "onFirstVisible"
+          }
+        },
+        "hero-body": {
+          "preset": "type-body-lead",
+          "text": "Narrative film, commercial direction, and motion design for the world’s most ambitious brands.",
+          "textAlign": "center",
+          "selfAlign": "center",
+          "width": {
+            "base": "100%",
+            "md": "60%"
+          }
+        },
+        "hero-actions": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": {
+            "base": "column",
+            "md": "row"
+          },
+          "align": {
+            "base": "stretch",
+            "md": "center"
+          },
+          "gap": "0.85rem",
+          "selfAlign": "center",
+          "section": {
+            "elementOrder": ["btn-reel", "btn-work"],
+            "definitions": {
+              "btn-reel": {
+                "preset": "btn-primary",
+                "label": "▶ Watch Reel",
+                "href": "#",
+                "wrapperPadding": "0.9rem 1.75rem",
+                "wrapperBorderRadius": "12px"
+              },
+              "btn-work": {
+                "preset": "btn-ghost",
+                "label": "See all work",
+                "href": "#",
+                "wrapperPadding": "0.9rem 1.75rem",
+                "wrapperBorderRadius": "12px"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-video-grid": {
+      "type": "sectionColumn",
+      "columns": {
+        "base": 1,
+        "md": 3
+      },
+      "columnWidths": {
+        "base": [1],
+        "md": [1, 1, 1]
+      },
+      "columnGaps": {
+        "base": "1rem",
+        "md": "1.5rem"
+      },
+      "columnAssignments": {
+        "base": {
+          "vid-a": 0,
+          "vid-b": 0,
+          "vid-c": 0
+        },
+        "md": {
+          "vid-a": 0,
+          "vid-b": 1,
+          "vid-c": 2
+        }
+      },
+      "contentWidth": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "contentHeight": "hug",
+      "gridMode": "grid",
+      "gridAutoRows": "auto",
+      "selfAlign": "center",
+      "padding": {
+        "base": "5rem 0 4rem",
+        "md": "8rem 0 6rem"
+      },
+      "elementOrder": ["vid-a", "vid-b", "vid-c"],
+      "definitions": {
+        "vid-a": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "column",
+          "gap": "0",
+          "width": "100%",
+          "borderRadius": "16px",
+          "scroll": "hidden",
+          "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+          "wrapperStyle": {
+            "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+          },
+          "section": {
+            "elementOrder": ["thumb", "vid-meta"],
+            "definitions": {
+              "thumb": {
+                "type": "elementImage",
+                "src": "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=700&q=80&auto=format&fit=crop",
+                "alt": "Film still — urban night",
+                "width": "100%",
+                "height": {
+                  "base": "10rem",
+                  "md": "12rem"
+                },
+                "objectFit": "cover"
+              },
+              "vid-meta": {
+                "type": "elementGroup",
+                "display": "flex",
+                "flow": "column",
+                "gap": "0.35rem",
+                "padding": "1rem 1.1rem 1.2rem",
+                "section": {
+                  "elementOrder": ["vid-title", "vid-tag"],
+                  "definitions": {
+                    "vid-title": {
+                      "preset": "type-h4-card",
+                      "text": "Night Architecture"
+                    },
+                    "vid-tag": {
+                      "preset": "type-body-fine",
+                      "text": "Commercial · 2’ 48”"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "vid-b": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "column",
+          "gap": "0",
+          "width": "100%",
+          "borderRadius": "16px",
+          "scroll": "hidden",
+          "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+          "wrapperStyle": {
+            "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+          },
+          "section": {
+            "elementOrder": ["thumb", "vid-meta"],
+            "definitions": {
+              "thumb": {
+                "type": "elementImage",
+                "src": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=700&q=80&auto=format&fit=crop",
+                "alt": "Film still — light study",
+                "width": "100%",
+                "height": {
+                  "base": "10rem",
+                  "md": "12rem"
+                },
+                "objectFit": "cover"
+              },
+              "vid-meta": {
+                "type": "elementGroup",
+                "display": "flex",
+                "flow": "column",
+                "gap": "0.35rem",
+                "padding": "1rem 1.1rem 1.2rem",
+                "section": {
+                  "elementOrder": ["vid-title", "vid-tag"],
+                  "definitions": {
+                    "vid-title": {
+                      "preset": "type-h4-card",
+                      "text": "Light & Form"
+                    },
+                    "vid-tag": {
+                      "preset": "type-body-fine",
+                      "text": "Brand Film · 4’ 12”"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "vid-c": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "column",
+          "gap": "0",
+          "width": "100%",
+          "borderRadius": "16px",
+          "scroll": "hidden",
+          "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+          "wrapperStyle": {
+            "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+          },
+          "section": {
+            "elementOrder": ["thumb", "vid-meta"],
+            "definitions": {
+              "thumb": {
+                "type": "elementImage",
+                "src": "https://images.unsplash.com/photo-1500964757637-c85e8a162699?w=700&q=80&auto=format&fit=crop",
+                "alt": "Film still — landscape",
+                "width": "100%",
+                "height": {
+                  "base": "10rem",
+                  "md": "12rem"
+                },
+                "objectFit": "cover"
+              },
+              "vid-meta": {
+                "type": "elementGroup",
+                "display": "flex",
+                "flow": "column",
+                "gap": "0.35rem",
+                "padding": "1rem 1.1rem 1.2rem",
+                "section": {
+                  "elementOrder": ["vid-title", "vid-tag"],
+                  "definitions": {
+                    "vid-title": {
+                      "preset": "type-h4-card",
+                      "text": "Open Country"
+                    },
+                    "vid-tag": {
+                      "preset": "type-body-fine",
+                      "text": "Documentary · 18’ 00”"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-director": {
+      "preset": "composition-column-30-70-media",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "4rem 0 6rem",
+        "md": "6rem 0 10rem"
+      },
+      "definitions": {
+        "media": {
+          "src": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=700&q=80&auto=format&fit=crop&crop=face",
+          "alt": "Director Marcus Webb",
+          "height": {
+            "base": "14rem",
+            "md": "100%"
+          },
+          "borderRadius": "16px"
+        },
+        "title": {
+          "text": "Marcus Webb, Director"
+        },
+        "description": {
+          "text": "I came to film through photography — chasing the single frame that tells the whole story. That instinct shapes everything I direct: every cut is a question, every image an argument."
+        },
+        "detail": {
+          "text": "Based in Los Angeles and New York. Represented worldwide by Frame & Light Studio. Currently accepting briefs for 2026 and 2027."
+        },
+        "cta": {
+          "label": "Send a brief →",
+          "href": "#"
+        }
+      }
+    },
+    "sec-carousel-label": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "5rem 0 1.5rem",
+        "md": "7rem 0 2rem"
+      },
+      "elementOrder": ["carousel-heading"],
+      "definitions": {
+        "carousel-heading": {
+          "preset": "type-h3-label",
+          "text": "Stills from the archive"
+        }
+      }
+    },
+    "sec-carousel": {
+      "type": "contentBlock",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1400px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 0 4rem",
+        "md": "0 0 6rem"
+      },
+      "elementOrder": ["stills"],
+      "definitions": {
+        "stills": {
+          "preset": "card-carousel-basic",
+          "section": {
+            "definitions": {
+              "slide-a": {
+                "section": {
+                  "definitions": {
+                    "kicker": {
+                      "text": "2024"
+                    },
+                    "title": {
+                      "text": "Night Architecture"
+                    },
+                    "body": {
+                      "text": "Los Angeles, California"
+                    }
+                  }
+                }
+              },
+              "slide-b": {
+                "section": {
+                  "definitions": {
+                    "kicker": {
+                      "text": "2024"
+                    },
+                    "title": {
+                      "text": "Light & Form"
+                    },
+                    "body": {
+                      "text": "Chicago, Illinois"
+                    }
+                  }
+                }
+              },
+              "slide-c": {
+                "section": {
+                  "definitions": {
+                    "kicker": {
+                      "text": "2023"
+                    },
+                    "title": {
+                      "text": "Open Country"
+                    },
+                    "body": {
+                      "text": "Montana, USA"
+                    }
+                  }
+                }
+              },
+              "slide-d": {
+                "section": {
+                  "definitions": {
+                    "kicker": {
+                      "text": "2023"
+                    },
+                    "title": {
+                      "text": "Tide Study"
+                    },
+                    "body": {
+                      "text": "Malibu, California"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-awards": {
+      "type": "sectionColumn",
+      "columns": {
+        "base": 1,
+        "md": 3
+      },
+      "columnWidths": {
+        "base": [1],
+        "md": [1, 1, 1]
+      },
+      "columnGaps": {
+        "base": "1rem",
+        "md": "1.5rem"
+      },
+      "columnAssignments": {
+        "base": {
+          "award-a": 0,
+          "award-b": 0,
+          "award-c": 0
+        },
+        "md": {
+          "award-a": 0,
+          "award-b": 1,
+          "award-c": 2
+        }
+      },
+      "contentWidth": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "contentHeight": "hug",
+      "gridMode": "grid",
+      "gridAutoRows": "auto",
+      "selfAlign": "center",
+      "padding": {
+        "base": "4rem 0 8rem",
+        "md": "6rem 0 12rem"
+      },
+      "elementOrder": ["award-a", "award-b", "award-c"],
+      "definitions": {
+        "award-a": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "column",
+          "align": "start",
+          "gap": "0.5rem",
+          "width": "100%",
+          "padding": "1.5rem",
+          "borderRadius": "14px",
+          "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+          "wrapperStyle": {
+            "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+          },
+          "section": {
+            "elementOrder": ["award-num", "award-label", "award-body"],
+            "definitions": {
+              "award-num": {
+                "type": "elementCounter",
+                "level": 1,
+                "target": 14,
+                "suffix": "",
+                "trigger": "onVisible",
+                "tween": {
+                  "duration": 1000
+                },
+                "color": "var(--pb-on-secondary)",
+                "width": "hug"
+              },
+              "award-label": {
+                "preset": "type-counter-label",
+                "text": "Awards won",
+                "textAlign": "left"
+              },
+              "award-body": {
+                "preset": "type-body-fine",
+                "text": "Cannes, Sundance, D&AD, and Webby."
+              }
+            }
+          }
+        },
+        "award-b": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "column",
+          "align": "start",
+          "gap": "0.5rem",
+          "width": "100%",
+          "padding": "1.5rem",
+          "borderRadius": "14px",
+          "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+          "wrapperStyle": {
+            "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+          },
+          "section": {
+            "elementOrder": ["award-num", "award-label", "award-body"],
+            "definitions": {
+              "award-num": {
+                "type": "elementCounter",
+                "level": 1,
+                "target": 80,
+                "suffix": "+",
+                "trigger": "onVisible",
+                "tween": {
+                  "duration": 1200
+                },
+                "color": "var(--pb-on-secondary)",
+                "width": "hug"
+              },
+              "award-label": {
+                "preset": "type-counter-label",
+                "text": "Brands directed",
+                "textAlign": "left"
+              },
+              "award-body": {
+                "preset": "type-body-fine",
+                "text": "Fortune 500 to Series A startups."
+              }
+            }
+          }
+        },
+        "award-c": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "column",
+          "align": "start",
+          "gap": "0.5rem",
+          "width": "100%",
+          "padding": "1.5rem",
+          "borderRadius": "14px",
+          "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+          "wrapperStyle": {
+            "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+          },
+          "section": {
+            "elementOrder": ["award-num", "award-label", "award-body"],
+            "definitions": {
+              "award-num": {
+                "type": "elementCounter",
+                "level": 1,
+                "target": 22,
+                "suffix": "M",
+                "trigger": "onVisible",
+                "tween": {
+                  "duration": 1400
+                },
+                "color": "var(--pb-on-secondary)",
+                "width": "hug"
+              },
+              "award-label": {
+                "preset": "type-counter-label",
+                "text": "Views delivered",
+                "textAlign": "left"
+              },
+              "award-body": {
+                "preset": "type-body-fine",
+                "text": "Organic reach across all campaigns."
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-cta": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 0 8rem",
+        "md": "0 0 12rem"
+      },
+      "elementOrder": ["cta-card"],
+      "definitions": {
+        "cta-card": {
+          "preset": "card-cta-compact",
+          "section": {
+            "definitions": {
+              "title": {
+                "text": "Ready to make something great?"
+              },
+              "body": {
+                "text": "We’re selective about the projects we take on. If your brief is ambitious, let’s talk."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

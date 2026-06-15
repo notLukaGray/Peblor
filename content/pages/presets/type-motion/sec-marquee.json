@@ -1,0 +1,91 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "staggerChildren": 0.1,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["mq-header", "mq-display", "mq-label", "mq-vert-row", "mq-path"],
+  "definitions": {
+    "mq-header": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "width": "100%",
+      "gap": "0.75rem",
+      "section": {
+        "elementOrder": ["mq-title", "mq-desc"],
+        "definitions": {
+          "mq-title": {
+            "preset": "type-h3-label",
+            "text": "Marquee"
+          },
+          "mq-desc": {
+            "preset": "type-body-standard",
+            "text": "Horizontal, vertical, and path-following. Pause on hover, gradient-fade edges. Speed, direction, and gap are JSON-configurable.",
+            "width": {
+              "base": "100%",
+              "md": "82%"
+            }
+          }
+        }
+      }
+    },
+    "mq-display": {
+      "preset": "type-marquee-display",
+      "text": "Typography · Scale · Motion · Rhythm · "
+    },
+    "mq-label": {
+      "preset": "type-marquee-label",
+      "text": "heading · body · marquee · counter · richtext · link · kicker · mono · "
+    },
+    "mq-vert-row": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "gap": "1rem",
+      "width": "100%",
+      "scroll": "visible",
+      "padding": {
+        "base": "1.5rem 0",
+        "md": "2rem 0"
+      },
+      "section": {
+        "elementOrder": ["mq-vert", "mq-copy"],
+        "definitions": {
+          "mq-vert": {
+            "preset": "type-marquee-vertical",
+            "text": "Motion · Rhythm · Scale · Flow · System · Motion · Rhythm · Scale · Flow · System · Motion · Rhythm · Scale · Flow · System · "
+          },
+          "mq-copy": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.5rem",
+            "width": "100%",
+            "section": {
+              "elementOrder": ["l", "b"],
+              "definitions": {
+                "l": {
+                  "preset": "type-h5-meta",
+                  "text": "Vertical · Up or down · Pause on hover"
+                },
+                "b": {
+                  "preset": "type-body-standard",
+                  "text": "Direction, height, and gap are configurable. The marquee pauses when hovered and resumes from the same position."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "mq-path": {
+      "preset": "type-marquee-path",
+      "text": "Type follows the path · "
+    }
+  },
+  "align": "start",
+  "scroll": "visible"
+}

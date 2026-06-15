@@ -1,9 +1,9 @@
 {
-  "whileInView": {
+  "onVisible": {
     "opacity": 1,
     "y": 0
   },
-  "initial": {
+  "from": {
     "opacity": 0,
     "y": 12
   },

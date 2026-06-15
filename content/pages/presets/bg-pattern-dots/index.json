@@ -1,0 +1,19 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "bg-pattern-dots — Preset Demo",
+  "description": "CSS radial-gradient dot grid with parallax drift on scroll",
+  "presets": ["demo", "bg"],
+  "sectionOrder": ["nav-header", "hero", "scroll-body"],
+  "bgKey": "bg-pattern-dots",
+  "scroll": {
+    "smooth": true,
+    "lockBody": false,
+    "scrollX": "hidden",
+    "scrollY": "auto"
+  },
+  "definitions": {
+    "bg-pattern-dots": {
+      "preset": "bg-pattern-dots"
+    }
+  }
+}

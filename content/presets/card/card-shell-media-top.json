@@ -1,0 +1,70 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "gap": "0",
+  "width": "100%",
+  "borderRadius": "24px",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+  },
+  "motion": {
+    "onHover": {
+      "y": -4
+    },
+    "transition": {
+      "duration": 0.18
+    }
+  },
+  "section": {
+    "elementOrder": ["media", "copy"],
+    "definitions": {
+      "media": {
+        "type": "elementGroup",
+        "width": "100%",
+        "height": "180px",
+        "borderRadius": "24px 24px 0 0",
+        "scroll": "hidden",
+        "fill": "color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)",
+        "section": {
+          "elementOrder": ["img"],
+          "definitions": {
+            "img": {
+              "type": "elementImage",
+              "src": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80&auto=format&fit=crop",
+              "alt": "Card media",
+              "width": "100%",
+              "height": "100%",
+              "objectFit": "cover"
+            }
+          }
+        }
+      },
+      "copy": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "gap": "0.75rem",
+        "padding": "1rem 1.1rem 1.25rem",
+        "section": {
+          "elementOrder": ["kicker", "title", "body"],
+          "definitions": {
+            "kicker": {
+              "preset": "type-kicker-badge",
+              "text": "Shell · Media Top"
+            },
+            "title": {
+              "preset": "type-h4-card",
+              "text": "Media-top card shell"
+            },
+            "body": {
+              "preset": "type-body-fine",
+              "text": "Two zones: media above, copy below. The copy slot accepts kicker / title / body / actions."
+            }
+          }
+        }
+      }
+    }
+  }
+}

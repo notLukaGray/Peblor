@@ -1,4 +1,5 @@
 import type { ElementBlock } from "@pb/contracts/types";
+import { BREAKPOINT_TIER_NAMES } from "@pb/contracts/peblor/core/breakpoint-tiers";
 import { resolveResponsiveValue } from "../../lib/responsive-value";
 
 const LAYOUT_KEYS = [
@@ -37,8 +38,13 @@ const LAYOUT_KEYS = [
 
 function valueNeedsResolution(value: unknown): boolean {
   if (value === undefined) return false;
-  if (Array.isArray(value)) return value.length === 2;
-  if (value !== null && typeof value === "object") return "mobile" in value || "desktop" in value;
+  if (value !== null && typeof value === "object") {
+    const obj = value as Record<string, unknown>;
+    if ("@container" in obj) return true;
+    for (const tier of BREAKPOINT_TIER_NAMES) {
+      if (tier in obj) return true;
+    }
+  }
   return false;
 }
 
@@ -61,13 +67,13 @@ export function resolveElementBlockForBreakpoint(
   }
   const rawConstraints = rec.constraints;
   if (rawConstraints !== undefined) {
-    (resolved as Record<string, unknown>).constraints = Array.isArray(rawConstraints)
+    (resolved as Record<string, unknown>).constraints = valueNeedsResolution(rawConstraints)
       ? resolveResponsiveValue(rawConstraints, isMobile)
       : rawConstraints;
   }
   const rawObjectFit = rec.objectFit;
   if (rawObjectFit !== undefined) {
-    (resolved as Record<string, unknown>).objectFit = Array.isArray(rawObjectFit)
+    (resolved as Record<string, unknown>).objectFit = valueNeedsResolution(rawObjectFit)
       ? resolveResponsiveValue(rawObjectFit, isMobile)
       : rawObjectFit;
   }

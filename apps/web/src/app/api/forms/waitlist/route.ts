@@ -67,7 +67,8 @@ async function postHandler(request: NextRequest) {
           formErrorResponse("Join failed. Try again later.", 502),
           rateLimit
         );
-    } catch {
+    } catch (err) {
+      console.warn("[web] Failed to send waitlist form email", err);
       return withFormRateLimitCookie(
         formErrorResponse("Join failed. Try again later.", 502),
         rateLimit

@@ -137,6 +137,12 @@ export type GridLayoutItem<T extends ElementWithId> = {
   alignSelf?: "start" | "center" | "end" | "stretch";
   zIndex?: number;
   order?: number;
+  /** CSS grid-area shorthand or named area from gridTemplateAreas. */
+  gridArea?: string;
+  /** CSS grid-column placement shorthand. */
+  gridColumn?: string;
+  /** CSS grid-row placement shorthand. */
+  gridRow?: string;
 };
 
 function effectiveGapValue(gaps: string | string[]): string | undefined {

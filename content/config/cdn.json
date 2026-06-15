@@ -1,5 +1,5 @@
 {
-  "cdnBase": "",
+  "cdnBase": "https://media.notlukagray.com/website",
   "cdn": {
     "tokenExpiryDays": 7,
     "clientCacheExpiryHours": 168,
@@ -33,9 +33,10 @@
       "mobileMaxWidth": 768,
       "mobileMaxWidth2x": 1536,
       "defaultQuality": 75,
-      "defaultFormat": "webp",
+      "mobileQuality": 60,
+      "defaultFormat": "auto",
       "defaultAspectRatio": null,
-      "posterAspectRatio": "16/9",
+      "posterAspectRatio": null,
       "class": null,
       "posterClass": null
     }

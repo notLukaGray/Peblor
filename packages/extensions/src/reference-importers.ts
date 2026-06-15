@@ -41,21 +41,19 @@ function parsePageCandidate(value: unknown): {
     return { page: parsed.data, diagnostics: [] };
   }
 
-  const firstIssue = parsed.error.issues[0];
-  const issuePath =
-    firstIssue && firstIssue.path.length > 0
-      ? `$${firstIssue.path.map((segment) => `[${String(segment)}]`).join("")}`
-      : "$";
   return {
     page: null,
-    diagnostics: [
-      diagnostic(
-        "PB_EXT_IMPORT_INVALID_PAGE",
-        firstIssue?.message ?? "Imported payload is not a valid peblor document.",
-        "error",
-        issuePath
-      ),
-    ],
+    diagnostics: parsed.error.issues.map((issue) => {
+      const issuePath =
+        issue.path.length > 0
+          ? `$${issue.path
+              .map((segment) =>
+                typeof segment === "number" ? `[${segment}]` : `.${String(segment)}`
+              )
+              .join("")}`
+          : "$";
+      return diagnostic("PB_EXT_IMPORT_INVALID_PAGE", issue.message, "error", issuePath);
+    }),
   };
 }
 
@@ -83,7 +81,8 @@ async function importFromFileSource(source: unknown): Promise<ImportResult> {
   let raw: string;
   try {
     raw = await fs.readFile(resolved, "utf8");
-  } catch {
+  } catch (err) {
+    console.warn("[pb-extensions] Failed to read import file", err);
     return {
       pages: [],
       diagnostics: [diagnostic("PB_EXT_IMPORT_FILE_MISSING", `Could not read file: ${resolved}`)],
@@ -94,7 +93,8 @@ async function importFromFileSource(source: unknown): Promise<ImportResult> {
   let parsedJson: unknown;
   try {
     parsedJson = JSON.parse(raw) as unknown;
-  } catch {
+  } catch (err) {
+    console.warn("[pb-extensions] Failed to parse import file JSON", err);
     return {
       pages: [],
       diagnostics: [
@@ -131,8 +131,8 @@ async function importFromThirdPartySource(source: unknown): Promise<ImportResult
 
   const normalized = source as ThirdPartySource;
   const documents: unknown[] = Array.isArray((normalized as { records?: unknown }).records)
-    ? (normalized as { records: Array<{ document: unknown }> }).records.map(
-        (record) => record.document
+    ? (normalized as { records: Array<{ document: unknown }> }).records.map((record) =>
+        record != null && typeof record === "object" ? record.document : undefined
       )
     : [(normalized as { payload?: unknown }).payload];
 

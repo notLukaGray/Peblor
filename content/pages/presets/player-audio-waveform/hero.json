@@ -1,0 +1,25 @@
+{
+  "preset": "demo-hero",
+  "padding": {
+    "base": "10rem 0 4rem",
+    "md": "12rem 0 6rem"
+  },
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Live Waveform · AnalyserNode · 4 Modes"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Audio Waveform"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Real-time frequency visualization via Web Audio API. Four rendering modes — bars, wave, mirror, spectrum — each driven by the live audio signal. Same glass control pill as Minimal.",
+      "width": {
+        "base": "100%",
+        "md": "78%"
+      }
+    }
+  }
+}

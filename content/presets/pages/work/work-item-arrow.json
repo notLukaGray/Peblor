@@ -1,0 +1,21 @@
+{
+  "type": "elementBody",
+  "text": "\u2192",
+  "level": 3,
+  "width": "hug",
+  "color": "var(--work-list-arrow-color, color-mix(in oklab, var(--pb-on-secondary) 44%, transparent))",
+  "motion": {
+    "from": {
+      "opacity": 0,
+      "x": -8
+    },
+    "to": {
+      "opacity": 1,
+      "x": 0
+    },
+    "transition": {
+      "duration": 0.3,
+      "ease": "easeOut"
+    }
+  }
+}

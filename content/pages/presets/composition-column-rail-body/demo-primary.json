@@ -1,0 +1,76 @@
+{
+  "preset": "composition-column-rail-body",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "1100px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "2rem 0 4rem",
+    "md": "2rem 0 5rem"
+  },
+  "definitions": {
+    "rail": {
+      "section": {
+        "definitions": {
+          "kicker": {
+            "text": "Playbook"
+          },
+          "title": {
+            "text": "Incident Rail"
+          },
+          "body": {
+            "text": "Pinned utility lane for runbooks, owners, and escalation links."
+          },
+          "link": {
+            "label": "Open procedures ->",
+            "href": "#"
+          }
+        }
+      }
+    },
+    "body": {
+      "section": {
+        "definitions": {
+          "article-a": {
+            "section": {
+              "definitions": {
+                "title": {
+                  "text": "Timeline Reconstruction"
+                },
+                "excerpt": {
+                  "text": "How teams rebuilt event order from logs, alerts, and operator notes."
+                }
+              }
+            }
+          },
+          "article-b": {
+            "section": {
+              "definitions": {
+                "title": {
+                  "text": "Decision Ledger"
+                },
+                "excerpt": {
+                  "text": "Why each mitigation step was chosen and what was deferred."
+                }
+              }
+            }
+          },
+          "article-c": {
+            "section": {
+              "definitions": {
+                "title": {
+                  "text": "Aftercare Tasks"
+                },
+                "excerpt": {
+                  "text": "Follow-up debt items with accountable owners and target windows."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

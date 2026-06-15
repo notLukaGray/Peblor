@@ -1,6 +1,6 @@
 import type React from "react";
 import type { bgBlock } from "@pb/contracts/types";
-import { OVERRIDE_KEY_BG } from "@pb/contracts/peblor/core/peblor-schemas";
+import { OVERRIDE_KEY_BG } from "@pb/contracts/peblor/core/trigger-action-types";
 import type { BackgroundTransitionEffect } from "@pb/contracts/types";
 import type { OverridesMap } from "../peblor-overrides";
 

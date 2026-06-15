@@ -49,7 +49,8 @@ export async function parseFormBody(
   let body: unknown;
   try {
     body = JSON.parse(text);
-  } catch {
+  } catch (err) {
+    console.warn("[web-core] Failed to parse form body JSON", err);
     return NextResponse.json({ error: "Invalid body." }, { status: 400 });
   }
   if (body === null || typeof body !== "object" || Array.isArray(body)) {

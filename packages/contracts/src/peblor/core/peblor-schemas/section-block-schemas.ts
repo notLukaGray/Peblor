@@ -13,9 +13,12 @@ import {
   sectionContentBlockSchema,
   sectionDividerSchema,
   sectionFormBlockSchema,
+  sectionPageTriggerSchema,
   sectionRevealSchema,
   sectionScrollContainerSchema,
   sectionTriggerSchema,
+  sectionContentSizeSchema,
+  responsiveSectionContentSizeSchema,
 } from "./section-block-base-schemas";
 
 const sectionColumnSchema = sectionColumnBaseSchema
@@ -50,8 +53,9 @@ export const sectionBlockSchema = z.discriminatedUnion("type", [
   sectionScrollContainerSchema,
   sectionColumnSchema,
   sectionTriggerSchema,
+  sectionPageTriggerSchema,
   sectionFormBlockSchema,
   sectionRevealSchema,
 ]);
 
-export { baseSectionPropsSchema };
+export { baseSectionPropsSchema, sectionContentSizeSchema, responsiveSectionContentSizeSchema };

@@ -56,6 +56,7 @@ export type ModuleSlotConfig = {
     whileHover?: Record<string, unknown>;
     whileTap?: Record<string, unknown>;
     whileFocus?: Record<string, unknown>;
+    hoverExitDelayMs?: number;
   };
   /**
    * How this slot inherits the parent motion layer's transform.

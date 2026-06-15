@@ -1,0 +1,17 @@
+{
+  "preset": "player-section",
+  "elementOrder": ["player-label", "waveform-card"],
+  "definitions": {
+    "player-label": {
+      "preset": "type-h3-label",
+      "text": "Waveform Visualization Modes"
+    },
+    "waveform-card": {
+      "preset": "player-audio-surface-waveform"
+    }
+  },
+  "padding": {
+    "base": "3rem 0",
+    "md": "3rem 0 10rem"
+  }
+}

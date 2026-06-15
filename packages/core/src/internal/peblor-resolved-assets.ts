@@ -7,9 +7,9 @@ export { collectPeblorAssetRefs } from "./resolved-assets/peblor-asset-ref-colle
 export {
   urlMapKey,
   buildUrlByKeyMap,
-  type GetSignedImageUrlFn,
+  type ResolveImageAssetFn,
+  type ResolvedImageAsset,
   type ElementInjectionContext,
-  type BuildUrlByKeyMapOptions,
 } from "./resolved-assets/peblor-asset-url-map";
 export {
   injectResolvedUrlsIntoPage,

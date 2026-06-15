@@ -1,0 +1,22 @@
+{
+  "elementOrder": ["hero-badge", "hero-title", "hero-desc", "hero-hint"],
+  "definitions": {
+    "hero-badge": {
+      "preset": "demo-hero-badge",
+      "text": "backgroundVariable · parallax image"
+    },
+    "hero-title": {
+      "preset": "demo-hero-title",
+      "text": "bg-image-darken"
+    },
+    "hero-desc": {
+      "preset": "demo-hero-description",
+      "text": "Photo at 120% size with a top-to-bottom secondary fade. The image layer parallaxes at 0.3× scroll speed, implying depth behind the overlay."
+    },
+    "hero-hint": {
+      "preset": "demo-scroll-hint",
+      "text": "↓ Scroll to feel the parallax ↓"
+    }
+  },
+  "preset": "demo-hero-100vh"
+}

@@ -1,6 +1,9 @@
 import Image from "next/image";
 import type { ElementBlock } from "@pb/contracts/types";
 import { computeElementImagePresentation } from "../../elements/ElementImage/element-image-presentation";
+import { stripResponsiveLayoutKeys } from "@pb/core/layout";
+import { globals } from "@pb/runtime-react/core/lib/globals";
+import type { ServerElementComponentProps } from "../server-element-types";
 
 type Props = Extract<ElementBlock, { type: "elementImage" }>;
 
@@ -11,13 +14,13 @@ export function ServerElementImage({
   height,
   borderRadius,
   constraints,
-  align,
+  selfAlign,
   alignY,
   marginTop,
   marginBottom,
   marginLeft,
   marginRight,
-  zIndex,
+  layer,
   objectFit = "cover",
   objectPosition,
   imageCrop,
@@ -36,18 +39,69 @@ export function ServerElementImage({
   blendMode,
   boxShadow,
   filter,
-  backdropFilter,
-  overflow,
+  bgBlur,
+  scroll,
   hidden,
   priority,
   loading,
   decoding,
   srcSet,
   sizes,
+  blurDataURL,
   aria,
   tabIndex,
   role,
-}: Props) {
+  stateStyleClass,
+  responsiveStyleClass,
+  responsiveLayoutKeys,
+}: Props &
+  Pick<
+    ServerElementComponentProps,
+    "stateStyleClass" | "responsiveStyleClass" | "responsiveLayoutKeys"
+  >) {
+  const resolvedSizes =
+    sizes ??
+    `(max-width: ${globals.uiBreakpointDesktopPx}px) 100vw, (max-width: 1200px) 80vw, 1200px`;
+  const imagePresentationProps = stripResponsiveLayoutKeys(
+    {
+      type: "elementImage" as const,
+      src,
+      alt,
+      width,
+      height,
+      borderRadius,
+      constraints,
+      selfAlign,
+      alignY,
+      marginTop,
+      marginBottom,
+      marginLeft,
+      marginRight,
+      layer,
+      objectFit,
+      objectPosition,
+      imageCrop,
+      imageFilters,
+      fillOpacity,
+      imageRotation,
+      rotate,
+      flipHorizontal,
+      flipVertical,
+      link,
+      aspectRatio,
+      figmaConstraints,
+      effects,
+      wrapperStyle,
+      opacity,
+      blendMode,
+      boxShadow,
+      filter,
+      bgBlur,
+      scroll,
+      hidden,
+    },
+    responsiveStyleClass ? responsiveLayoutKeys : undefined
+  );
   const {
     fillHeight,
     hasSource,
@@ -61,43 +115,9 @@ export function ServerElementImage({
     resolvedHref,
     isInternal,
     imageFrameStyle,
-  } = computeElementImagePresentation({
-    type: "elementImage",
-    src,
-    alt,
-    width,
-    height,
-    borderRadius,
-    constraints,
-    align,
-    alignY,
-    marginTop,
-    marginBottom,
-    marginLeft,
-    marginRight,
-    zIndex,
-    objectFit,
-    objectPosition,
-    imageCrop,
-    imageFilters,
-    fillOpacity,
-    imageRotation,
-    rotate,
-    flipHorizontal,
-    flipVertical,
-    link,
-    aspectRatio,
-    figmaConstraints,
-    effects,
-    wrapperStyle,
-    opacity,
-    blendMode,
-    boxShadow,
-    filter,
-    backdropFilter,
-    overflow,
-    hidden,
-  });
+  } = computeElementImagePresentation(
+    imagePresentationProps as Parameters<typeof computeElementImagePresentation>[0]
+  );
   const isBlobSrc = typeof src === "string" && src.startsWith("blob:");
   const usePlainImg = useIntrinsicSizing;
   const resolvedTarget = link?.target ?? (!isInternal && resolvedHref ? "_blank" : undefined);
@@ -127,7 +147,7 @@ export function ServerElementImage({
               loading={loading ?? (priority ? "eager" : "lazy")}
               decoding={decoding}
               srcSet={srcSet}
-              sizes={sizes}
+              sizes={resolvedSizes}
               fetchPriority={priority ? "high" : undefined}
             />
           ) : (
@@ -138,10 +158,12 @@ export function ServerElementImage({
               unoptimized={isBlobSrc}
               priority={!!priority}
               fetchPriority={priority ? "high" : "auto"}
-              sizes={sizes ?? "(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"}
+              sizes={resolvedSizes}
               style={fillHeight ? fillImgStyle : nextImageFillStyle}
               loading={loading ?? (priority ? "eager" : "lazy")}
               decoding={decoding}
+              placeholder={blurDataURL ? "blur" : "empty"}
+              blurDataURL={blurDataURL}
             />
           )}
         </span>
@@ -163,7 +185,7 @@ export function ServerElementImage({
 
   return (
     <figure
-      className={figureClassName}
+      className={[figureClassName, stateStyleClass, responsiveStyleClass].filter(Boolean).join(" ")}
       tabIndex={tabIndex}
       role={role}
       {...(ariaProps ? ariaProps : {})}

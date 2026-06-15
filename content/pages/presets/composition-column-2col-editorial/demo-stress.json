@@ -1,0 +1,27 @@
+{
+  "preset": "composition-column-2col-editorial",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "1040px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "0 0 8rem",
+    "md": "0 0 12rem"
+  },
+  "definitions": {
+    "headline": {
+      "text": "Stress variant: long-form narrative keeps hierarchy intact"
+    },
+    "body": {
+      "text": "This extended paragraph intentionally pushes line length and sentence complexity to verify that the two-column editorial system remains readable across narrow phones, medium tablets, and wider desktop widths without clipped copy, awkward balancing, or loss of narrative order when the layout collapses."
+    },
+    "pull-quote": {
+      "text": "\"When collapsed, story still reads first, context second.\""
+    },
+    "support": {
+      "text": "Footnotes, legal caveats, and references remain visible but secondary, preserving scan rhythm and editorial intent."
+    }
+  }
+}

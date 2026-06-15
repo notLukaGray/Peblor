@@ -1,0 +1,153 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": {
+    "base": "column",
+    "md": "row"
+  },
+  "align": "stretch",
+  "distribute": "start",
+  "wrap": "wrap",
+  "gap": {
+    "base": "1.25rem",
+    "md": "2rem"
+  },
+  "width": "100%",
+  "section": {
+    "elementOrder": ["article-a", "article-b", "article-c"],
+    "definitions": {
+      "article-a": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "align": "start",
+        "gap": "0.85rem",
+        "width": {
+          "base": "100%",
+          "md": "calc(33.333% - 1.34rem)"
+        },
+        "flex": {
+          "base": "1 1 100%",
+          "md": "1 1 calc(33.333% - 1.34rem)"
+        },
+        "padding": "1.1rem 0",
+        "section": {
+          "elementOrder": ["meta", "divider", "title", "excerpt", "link"],
+          "definitions": {
+            "meta": {
+              "preset": "type-h5-meta",
+              "text": "Essay · 06 min"
+            },
+            "divider": {
+              "preset": "card-divider"
+            },
+            "title": {
+              "preset": "type-h4-card",
+              "text": "The case for fewer components"
+            },
+            "excerpt": {
+              "preset": "type-body-fine",
+              "text": "Why a smaller, more composable system outperforms a large one every time."
+            },
+            "link": {
+              "preset": "type-link-inline",
+              "label": "Read more",
+              "href": "#"
+            }
+          }
+        },
+        "constraints": {
+          "minWidth": "18rem"
+        }
+      },
+      "article-b": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "align": "start",
+        "gap": "0.85rem",
+        "width": {
+          "base": "100%",
+          "md": "calc(33.333% - 1.34rem)"
+        },
+        "flex": {
+          "base": "1 1 100%",
+          "md": "1 1 calc(33.333% - 1.34rem)"
+        },
+        "padding": "1.1rem 0",
+        "section": {
+          "elementOrder": ["meta", "divider", "title", "excerpt", "link"],
+          "definitions": {
+            "meta": {
+              "preset": "type-h5-meta",
+              "text": "Craft · 04 min"
+            },
+            "divider": {
+              "preset": "card-divider"
+            },
+            "title": {
+              "preset": "type-h4-card",
+              "text": "Motion as communication"
+            },
+            "excerpt": {
+              "preset": "type-body-fine",
+              "text": "How well-timed transitions carry meaning without adding visual weight."
+            },
+            "link": {
+              "preset": "type-link-inline",
+              "label": "Read more",
+              "href": "#"
+            }
+          }
+        },
+        "constraints": {
+          "minWidth": "18rem"
+        }
+      },
+      "article-c": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "align": "start",
+        "gap": "0.85rem",
+        "width": {
+          "base": "100%",
+          "md": "calc(33.333% - 1.34rem)"
+        },
+        "flex": {
+          "base": "1 1 100%",
+          "md": "1 1 calc(33.333% - 1.34rem)"
+        },
+        "padding": "1.1rem 0",
+        "section": {
+          "elementOrder": ["meta", "divider", "title", "excerpt", "link"],
+          "definitions": {
+            "meta": {
+              "preset": "type-h5-meta",
+              "text": "Process · 08 min"
+            },
+            "divider": {
+              "preset": "card-divider"
+            },
+            "title": {
+              "preset": "type-h4-card",
+              "text": "Type as architecture"
+            },
+            "excerpt": {
+              "preset": "type-body-fine",
+              "text": "Building a typographic scale that works across every breakpoint from a single token."
+            },
+            "link": {
+              "preset": "type-link-inline",
+              "label": "Read more",
+              "href": "#"
+            }
+          }
+        },
+        "constraints": {
+          "minWidth": "18rem"
+        }
+      }
+    }
+  }
+}

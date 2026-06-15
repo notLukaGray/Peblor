@@ -1,0 +1,66 @@
+flowchart LR
+    subgraph DISK["content/ on disk"]
+        PAGES["pages/<route>/index.json"]
+        PRESETS["presets/*.json"]
+        MODULES["modules/*.json"]
+        SIDECAR["sidecar section files"]
+    end
+
+    subgraph CORE["packages/core — framework-agnostic"]
+        direction TB
+
+        subgraph LOAD["1. LOAD"]
+            L1["Discover page file"]
+            L2["Load & merge presets"]
+            L3["Resolve preset references"]
+            L4["Detect circular refs"]
+        end
+
+        LOAD --> VALIDATE
+
+        subgraph VALIDATE["2. VALIDATE"]
+            V1["Zod safeParse"]
+            V2["Cross-reference checks"]
+            V3["Diagnostic array"]
+        end
+
+        VALIDATE --> EXPAND
+
+        subgraph EXPAND["3. EXPAND"]
+            E1["Inline elements from elementOrder"]
+            E2["Apply builder defaults"]
+            E3["Compute entrance keyframes"]
+        end
+
+        EXPAND --> RESOLVE
+
+        subgraph RESOLVE["4. RESOLVE"]
+            R1["Collect asset refs"]
+            R2["Sign CDN URLs"]
+            R3["Resolve theme values"]
+        end
+    end
+
+    subgraph RUNTIME["packages/runtime-react — renderer"]
+        direction TB
+
+        subgraph RENDER["5. RENDER"]
+            X1["Dispatch sections by type"]
+            X2["Dispatch elements by type"]
+            X3["Wrap in motion + error boundaries"]
+        end
+    end
+
+    DISK --> LOAD
+    RESOLVE --> RENDER
+    RENDER --> PAGE["Rendered page"]
+
+    classDef diskStyle fill:#f5f5f5,stroke:#bbb,color:#555
+    classDef coreStyle fill:#e8f0fe,stroke:#4a90d9,color:#1a3a5c
+    classDef runtimeStyle fill:#e8f5e9,stroke:#4caf50,color:#1b3a1b
+    classDef stageStyle fill:#fff,stroke:#888,stroke-width:1px,color:#333
+
+    class DISK diskStyle
+    class CORE coreStyle
+    class RUNTIME runtimeStyle
+    class LOAD,VALIDATE,EXPAND,RESOLVE,RENDER stageStyle

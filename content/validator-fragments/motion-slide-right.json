@@ -1,9 +1,9 @@
 {
-  "initial": {
+  "from": {
     "opacity": 0,
     "x": 16
   },
-  "animate": {
+  "to": {
     "opacity": 1
   },
   "transition": {

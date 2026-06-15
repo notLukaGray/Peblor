@@ -1,0 +1,8 @@
+{
+  "type": "elementBody",
+  "level": 5,
+  "width": "100%",
+  "textAlign": "left",
+  "text": "",
+  "color": "var(--work-list-category-color, color-mix(in oklab, var(--pb-on-secondary) 44%, transparent))"
+}

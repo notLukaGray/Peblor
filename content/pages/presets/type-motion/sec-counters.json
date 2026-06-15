@@ -1,0 +1,122 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "staggerChildren": 0.1,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "counter-row", "note"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Counters"
+    },
+    "sec-desc": {
+      "preset": "type-body-standard",
+      "text": "Stat, currency, percentage, and scroll-driven. Animate on first viewport entry — except scroll-driven, which maps directly to scroll position.",
+      "width": {
+        "base": "100%",
+        "md": "82%"
+      }
+    },
+    "counter-row": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "distribute": "center",
+      "gap": "3rem",
+      "width": "100%",
+      "section": {
+        "elementOrder": ["s1", "s2", "s3", "s4"],
+        "definitions": {
+          "s1": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "align": "center",
+            "gap": "0.3rem",
+            "section": {
+              "elementOrder": ["num", "label"],
+              "definitions": {
+                "num": {
+                  "preset": "type-counter-stat",
+                  "target": 2400
+                },
+                "label": {
+                  "preset": "type-counter-label",
+                  "text": "Elements Built"
+                }
+              }
+            }
+          },
+          "s2": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "align": "center",
+            "gap": "0.3rem",
+            "section": {
+              "elementOrder": ["num", "label"],
+              "definitions": {
+                "num": {
+                  "preset": "type-counter-currency",
+                  "target": 2.4
+                },
+                "label": {
+                  "preset": "type-counter-label",
+                  "text": "Revenue Generated"
+                }
+              }
+            }
+          },
+          "s3": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "align": "center",
+            "gap": "0.3rem",
+            "section": {
+              "elementOrder": ["num", "label"],
+              "definitions": {
+                "num": {
+                  "preset": "type-counter-percentage",
+                  "target": 94
+                },
+                "label": {
+                  "preset": "type-counter-label",
+                  "text": "Satisfaction Rate"
+                }
+              }
+            }
+          },
+          "s4": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "align": "center",
+            "gap": "0.3rem",
+            "section": {
+              "elementOrder": ["num", "label"],
+              "definitions": {
+                "num": {
+                  "preset": "type-counter-scroll"
+                },
+                "label": {
+                  "preset": "type-counter-label",
+                  "text": "Scroll Progress"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "note": {
+      "preset": "type-body-fine",
+      "text": "Each counter uses a dedicated preset with tween, scroll, or variable bindings. Duration, easing, prefix, suffix, and separator are JSON-configurable.",
+      "textAlign": "center",
+      "selfAlign": "center"
+    }
+  },
+  "align": "start"
+}

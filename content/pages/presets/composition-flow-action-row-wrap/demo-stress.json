@@ -1,0 +1,46 @@
+{
+  "preset": "composition-flow-action-row-wrap",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "900px",
+  "selfAlign": "center",
+  "definitions": {
+    "eyebrow": {
+      "text": "Action Wrap Stress"
+    },
+    "title": {
+      "text": "High-option action band with labels long enough to force clean wraps"
+    },
+    "body": {
+      "text": "Useful for settings and workspace pages where several pathways must remain visible together without collapsing into unreadable buttons."
+    },
+    "actions": {
+      "section": {
+        "definitions": {
+          "a1": {
+            "label": "Product overview",
+            "href": "/presets/composition-flow-action-row-wrap"
+          },
+          "a2": {
+            "label": "Team permissions",
+            "href": "/presets"
+          },
+          "a3": {
+            "label": "Release notes",
+            "href": "/presets/type-patterns"
+          },
+          "a4": {
+            "label": "Support center",
+            "href": "/presets/cards-collections"
+          }
+        }
+      }
+    }
+  },
+  "marginBottom": {
+    "base": "4rem",
+    "md": "8rem"
+  }
+}

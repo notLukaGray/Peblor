@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { applyBuilderElementDefaultsToSections } from "./peblor-apply-element-defaults";
+import { applyDefaultsToElement } from "./peblor-apply-element-defaults";
+import { transformElementsInSections } from "./shared-element-transformer";
 import { getPeblorHostConfig, setPeblorHostConfig } from "./adapters/host-config";
 import type { SectionBlock } from "@pb/contracts/types";
+
+/** Thin wrapper matching the removed section-level entry point. */
+function applyDefaults(sections: SectionBlock[]): SectionBlock[] {
+  return transformElementsInSections(sections, applyDefaultsToElement);
+}
 
 function imageSection(...elements: Record<string, unknown>[]): SectionBlock {
   return {
@@ -13,7 +19,7 @@ function imageSection(...elements: Record<string, unknown>[]): SectionBlock {
 
 describe("peblor-apply-element-defaults", () => {
   it("applies image variant defaults including motion timing", () => {
-    const sections = applyBuilderElementDefaultsToSections([
+    const sections = applyDefaults([
       imageSection({
         type: "elementImage",
         id: "img-1",
@@ -28,9 +34,9 @@ describe("peblor-apply-element-defaults", () => {
     expect(image.objectFit).toBe("cover");
     expect(image.aspectRatio).toBe("16 / 9");
     expect(image.borderRadius).toBe("0.375rem");
-    expect(image.align).toBe("center");
+    expect(image.selfAlign).toBe("center");
     expect(image.alignY).toBe("center");
-    expect(image.overflow).toBe("hidden");
+    expect(image.scroll).toBe("hidden");
     expect(image.priority).toBe(true);
     expect(image.opacity).toBe(1);
     expect(image.motionTiming).toMatchObject({
@@ -41,7 +47,7 @@ describe("peblor-apply-element-defaults", () => {
   });
 
   it("respects explicit image settings and explicit motion timing", () => {
-    const sections = applyBuilderElementDefaultsToSections([
+    const sections = applyDefaults([
       imageSection({
         type: "elementImage",
         id: "img-2",
@@ -50,8 +56,8 @@ describe("peblor-apply-element-defaults", () => {
         alt: "Feature",
         objectFit: "contain",
         borderRadius: "2rem",
-        align: "right",
-        overflow: "auto",
+        selfAlign: "right",
+        scroll: "auto",
         priority: false,
         motionTiming: {
           trigger: "onMount",
@@ -65,8 +71,8 @@ describe("peblor-apply-element-defaults", () => {
       .elements[0]!;
     expect(image.objectFit).toBe("contain");
     expect(image.borderRadius).toBe("2rem");
-    expect(image.align).toBe("right");
-    expect(image.overflow).toBe("auto");
+    expect(image.selfAlign).toBe("right");
+    expect(image.scroll).toBe("auto");
     expect(image.priority).toBe(false);
     expect(image.motionTiming).toMatchObject({
       trigger: "onMount",
@@ -76,7 +82,7 @@ describe("peblor-apply-element-defaults", () => {
   });
 
   it("does not inject motion timing when custom motion object already exists", () => {
-    const sections = applyBuilderElementDefaultsToSections([
+    const sections = applyDefaults([
       imageSection({
         type: "elementImage",
         id: "img-3",
@@ -100,7 +106,7 @@ describe("peblor-apply-element-defaults", () => {
   });
 
   it("applies heading variant template defaults when fields are omitted", () => {
-    const sections = applyBuilderElementDefaultsToSections([
+    const sections = applyDefaults([
       imageSection({
         type: "elementHeading",
         id: "h-1",
@@ -113,12 +119,12 @@ describe("peblor-apply-element-defaults", () => {
     const heading = (sections[0] as unknown as { elements: Array<Record<string, unknown>> })
       .elements[0]!;
     expect(heading.wordWrap).toBe(true);
-    expect(heading.align).toBe("left");
+    expect(heading.selfAlign).toBe("left");
     expect(heading.alignY).toBe("top");
   });
 
   it("applies fill layout defaults for full-cover variant", () => {
-    const sections = applyBuilderElementDefaultsToSections([
+    const sections = applyDefaults([
       imageSection({
         type: "elementImage",
         id: "img-4",
@@ -135,64 +141,44 @@ describe("peblor-apply-element-defaults", () => {
     expect(image.aspectRatio).toBeUndefined();
   });
 
-  it("resolves image variant aliases (full cover/full-cover/fullcover)", () => {
-    const fromWords = applyBuilderElementDefaultsToSections([
+  it("resolves image fullCover variant defaults", () => {
+    const sections = applyDefaults([
       imageSection({
         type: "elementImage",
-        id: "img-words",
-        variant: "full cover",
-        src: "/cover-words.webp",
-        alt: "Cover words",
-      }),
-    ]);
-    const fromHyphen = applyBuilderElementDefaultsToSections([
-      imageSection({
-        type: "elementImage",
-        id: "img-hyphen",
-        variant: "full-cover",
-        src: "/cover-hyphen.webp",
-        alt: "Cover hyphen",
-      }),
-    ]);
-    const fromFlat = applyBuilderElementDefaultsToSections([
-      imageSection({
-        type: "elementImage",
-        id: "img-flat",
-        variant: "fullcover",
-        src: "/cover-flat.webp",
-        alt: "Cover flat",
+        id: "img-full",
+        variant: "fullCover",
+        src: "/cover.webp",
+        alt: "Full cover",
       }),
     ]);
 
-    for (const section of [fromWords, fromHyphen, fromFlat]) {
-      const image = (section[0] as unknown as { elements: Array<Record<string, unknown>> })
-        .elements[0]!;
-      expect(image.width).toBe("100%");
-      expect(image.height).toBe("100%");
-      expect(image.objectFit).toBe("cover");
-      expect(image.aspectRatio).toBeUndefined();
-    }
+    const image = (sections[0] as unknown as { elements: Array<Record<string, unknown>> })
+      .elements[0]!;
+    expect(image.width).toBe("100%");
+    expect(image.height).toBe("100%");
+    expect(image.objectFit).toBe("cover");
+    expect(image.aspectRatio).toBeUndefined();
   });
 
-  it("resolves heading/body/link aliases to canonical variants", () => {
-    const sections = applyBuilderElementDefaultsToSections([
+  it("resolves heading/body/link canonical variant defaults", () => {
+    const sections = applyDefaults([
       imageSection({
         type: "elementHeading",
-        id: "h-alias",
-        variant: "headline",
+        id: "h-display",
+        variant: "display",
         level: 1,
-        text: "Headline",
+        text: "Display",
       }),
       imageSection({
         type: "elementBody",
-        id: "b-alias",
-        variant: "body text",
+        id: "b-std",
+        variant: "standard",
         text: "Body",
       }),
       imageSection({
         type: "elementLink",
-        id: "l-alias",
-        variant: "navigation",
+        id: "l-nav",
+        variant: "nav",
         label: "Nav",
         href: "/",
         copyType: "body",
@@ -208,11 +194,11 @@ describe("peblor-apply-element-defaults", () => {
 
     expect(heading.alignY).toBe("center");
     expect(body.wordWrap).toBe(true);
-    expect(link.align).toBe("center");
+    expect(link.selfAlign).toBe("center");
   });
 
   it("applies button accent variant — injects wrapperFill and copyType", () => {
-    const sections = applyBuilderElementDefaultsToSections([
+    const sections = applyDefaults([
       imageSection({
         type: "elementButton",
         id: "btn-accent",
@@ -230,7 +216,7 @@ describe("peblor-apply-element-defaults", () => {
   });
 
   it("applies button ghost variant — injects wrapperStroke, no fill", () => {
-    const sections = applyBuilderElementDefaultsToSections([
+    const sections = applyDefaults([
       imageSection({ type: "elementButton", id: "btn-ghost", variant: "ghost", label: "Learn" }),
     ]);
     const btn = (sections[0] as unknown as { elements: Array<Record<string, unknown>> })
@@ -240,7 +226,7 @@ describe("peblor-apply-element-defaults", () => {
   });
 
   it("applies button text variant — no wrapper styling injected", () => {
-    const sections = applyBuilderElementDefaultsToSections([
+    const sections = applyDefaults([
       imageSection({ type: "elementButton", id: "btn-text", variant: "text", label: "Read more" }),
     ]);
     const btn = (sections[0] as unknown as { elements: Array<Record<string, unknown>> })
@@ -252,9 +238,9 @@ describe("peblor-apply-element-defaults", () => {
     expect(btn.wrapperPadding).toBeUndefined();
   });
 
-  it("resolves button alias 'primary' to accent", () => {
-    const sections = applyBuilderElementDefaultsToSections([
-      imageSection({ type: "elementButton", id: "btn-primary", variant: "primary", label: "Go" }),
+  it("resolves button accent variant defaults", () => {
+    const sections = applyDefaults([
+      imageSection({ type: "elementButton", id: "btn-accent", variant: "accent", label: "Go" }),
     ]);
     const btn = (sections[0] as unknown as { elements: Array<Record<string, unknown>> })
       .elements[0]!;
@@ -262,7 +248,7 @@ describe("peblor-apply-element-defaults", () => {
   });
 
   it("respects explicit button fields — does not overwrite set values", () => {
-    const sections = applyBuilderElementDefaultsToSections([
+    const sections = applyDefaults([
       imageSection({
         type: "elementButton",
         id: "btn-explicit",
@@ -281,7 +267,7 @@ describe("peblor-apply-element-defaults", () => {
   });
 
   it("applies crop variant defaults including imageCrop", () => {
-    const sections = applyBuilderElementDefaultsToSections([
+    const sections = applyDefaults([
       imageSection({
         type: "elementImage",
         id: "img-crop",
@@ -346,7 +332,7 @@ describe("peblor-apply-element-defaults", () => {
     });
 
     try {
-      const sections = applyBuilderElementDefaultsToSections([
+      const sections = applyDefaults([
         imageSection(
           { type: "elementRichText", content: "Copy" },
           { type: "elementVideoTime" },

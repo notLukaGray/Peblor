@@ -1,0 +1,103 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Composition Column 30 70 Media — Preset Demo",
+  "description": "Media-priority split with responsive stacking tuned for scanability and context.",
+  "sectionOrder": ["nav-header", "hero", "demo-primary", "demo-stress"],
+  "definitions": {
+    "bg-composition": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "radial-gradient(120% 110% at 92% 2%, color-mix(in oklab, var(--pb-accent) 16%, transparent) 0%, transparent 54%), linear-gradient(160deg, color-mix(in oklab, var(--pb-primary) 11%, var(--pb-secondary)) 0%, var(--pb-secondary) 66%, color-mix(in oklab, var(--pb-accent) 6%, var(--pb-secondary)) 100%)"
+        }
+      ],
+      "preset": "bg-composition"
+    },
+    "nav-header": {
+      "preset": "preset-demo-nav-header"
+    },
+    "hero": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "align": "start",
+      "height": "hug",
+      "padding": {
+        "base": "10rem 0 6rem",
+        "md": "12rem 0 8rem"
+      },
+      "gap": "1rem",
+      "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+      "definitions": {
+        "hero-eyebrow": {
+          "preset": "type-kicker-badge",
+          "text": "Column · Media Lead · Story Support"
+        },
+        "hero-title": {
+          "preset": "type-h1-display",
+          "text": "Composition Column 30 70 Media"
+        },
+        "hero-description": {
+          "preset": "type-body-standard",
+          "text": "Media-priority split with responsive stacking tuned for scanability and context.",
+          "width": {
+            "base": "100%",
+            "md": "72%"
+          }
+        }
+      }
+    },
+    "demo-primary": {
+      "preset": "composition-column-30-70-media",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "1080px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "2rem 0 3rem",
+        "md": "2rem 0 4rem"
+      }
+    },
+    "demo-stress": {
+      "preset": "composition-column-30-70-media",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "1080px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 0 8rem",
+        "md": "0 0 12rem"
+      },
+      "definitions": {
+        "media": {
+          "src": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=900&q=80&auto=format&fit=crop",
+          "alt": "Wide editorial camera still"
+        },
+        "title": {
+          "text": "Stress variant: wide media with long descriptive copy"
+        },
+        "description": {
+          "text": "The larger explanatory block checks whether line wraps remain comfortable while a dominant visual still anchors the section. On mobile the image leads, then all text follows in order for coherent storytelling."
+        },
+        "detail": {
+          "text": "Additional implementation detail: include source credits, caption context, and capture notes without forcing a second layout pattern."
+        },
+        "cta": {
+          "label": "View production notes ->",
+          "href": "#"
+        }
+      }
+    }
+  },
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "layout", "card", "bg"],
+  "bgKey": "bg-composition"
+}

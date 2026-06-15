@@ -1,0 +1,112 @@
+{
+  "preset": "player-section",
+  "elementOrder": ["player-label", "scene-note", "player-surface", "scene-controls"],
+  "definitions": {
+    "player-label": {
+      "preset": "type-h3-label",
+      "text": "Nonlinear Video Player"
+    },
+    "scene-note": {
+      "preset": "type-body-fine",
+      "text": "Each jump button seeks to a specific timestamp. The video surface handles playback — buttons trigger assetSeek with absolute time values.",
+      "width": {
+        "base": "100%",
+        "md": "85%"
+      }
+    },
+    "player-surface": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "stretch",
+      "gap": "0",
+      "width": "100%",
+      "height": "hug",
+      "borderRadius": "18px",
+      "scroll": "hidden",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["video"],
+        "definitions": {
+          "video": {
+            "type": "elementVideo",
+            "module": "video-player",
+            "src": "https://samplelib.com/preview/mp4/sample-10s.mp4",
+            "poster": "",
+            "width": "100%",
+            "aspectRatio": "16 / 9",
+            "objectFit": "cover"
+          }
+        }
+      }
+    },
+    "scene-controls": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "1rem",
+      "width": "100%",
+      "section": {
+        "elementOrder": ["controls-label", "jump-buttons"],
+        "definitions": {
+          "controls-label": {
+            "preset": "type-h5-meta",
+            "text": "Scene Navigation"
+          },
+          "jump-buttons": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "row",
+            "wrap": "wrap",
+            "align": "center",
+            "gap": "0.5rem",
+            "section": {
+              "elementOrder": ["jump-open", "jump-twist", "jump-reveal", "jump-end"],
+              "definitions": {
+                "jump-open": {
+                  "preset": "player-demo-btn",
+                  "label": "Opening — 0:00",
+                  "action": "assetSeek",
+                  "actionPayload": {
+                    "time": 0
+                  },
+                  "wrapperFill": "color-mix(in oklab, var(--pb-primary) 20%, transparent)"
+                },
+                "jump-twist": {
+                  "preset": "player-demo-btn",
+                  "label": "Plot Twist — 1:30",
+                  "action": "assetSeek",
+                  "actionPayload": {
+                    "time": 90
+                  },
+                  "wrapperFill": "color-mix(in oklab, var(--pb-primary) 20%, transparent)"
+                },
+                "jump-reveal": {
+                  "preset": "player-demo-btn",
+                  "label": "Reveal — 3:15",
+                  "action": "assetSeek",
+                  "actionPayload": {
+                    "time": 195
+                  },
+                  "wrapperFill": "color-mix(in oklab, var(--pb-primary) 20%, transparent)"
+                },
+                "jump-end": {
+                  "preset": "player-demo-btn",
+                  "label": "Ending — 5:00",
+                  "action": "assetSeek",
+                  "actionPayload": {
+                    "time": 300
+                  },
+                  "wrapperFill": "color-mix(in oklab, var(--pb-primary) 20%, transparent)"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "3D Explorer — Preset Demo",
+  "description": "Fly through a GLB scene with WASD, arrows, Q/E, and pointer-lock mouse look.",
+  "presets": [
+    "demo",
+    "type/core",
+    "ui/link",
+    "type/motion",
+    "player/surface",
+    "bg",
+    "player/section"
+  ],
+  "bgKey": "bg-players",
+  "sectionOrder": ["nav-header", "hero", "sec-player"],
+  "definitions": {
+    "bg-players": {
+      "preset": "bg-players"
+    }
+  }
+}

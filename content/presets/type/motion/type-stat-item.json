@@ -1,0 +1,21 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "align": "center",
+  "gap": "0.3rem",
+  "width": "100%",
+  "section": {
+    "elementOrder": ["stat-num", "stat-label"],
+    "definitions": {
+      "stat-num": {
+        "preset": "type-counter-stat",
+        "target": 100
+      },
+      "stat-label": {
+        "preset": "type-counter-label",
+        "text": "Label"
+      }
+    }
+  }
+}

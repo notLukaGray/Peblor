@@ -1,0 +1,13 @@
+{
+  "preset": "player-section",
+  "elementOrder": ["player-label", "player-surface"],
+  "definitions": {
+    "player-label": {
+      "preset": "type-h3-label",
+      "text": "3D Animation Lab — Crossfade Transport"
+    },
+    "player-surface": {
+      "preset": "player-3d-surface-animation"
+    }
+  }
+}

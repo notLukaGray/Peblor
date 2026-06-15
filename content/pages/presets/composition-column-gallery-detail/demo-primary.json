@@ -1,0 +1,31 @@
+{
+  "preset": "composition-column-gallery-detail",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "1100px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "2rem 0 4rem",
+    "md": "2rem 0 5rem"
+  },
+  "definitions": {
+    "detail": {
+      "section": {
+        "definitions": {
+          "panel-title": {
+            "text": "Atlas Operator Console"
+          },
+          "panel-desc": {
+            "text": "Selected artifact details, notes, and action path in a dedicated pane."
+          },
+          "panel-cta": {
+            "label": "Inspect build ->",
+            "href": "#"
+          }
+        }
+      }
+    }
+  }
+}

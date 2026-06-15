@@ -32,16 +32,16 @@ describe("module-slot-utils", () => {
         "a",
       ]);
     });
-    it("handles responsive { mobile, desktop } elementOrder shape", () => {
+    it("handles responsive { base, md } elementOrder shape", () => {
       const definitions = {
         a: elImage({ id: "a" }),
         b: elVideo(),
       };
       const result = reconcileElementOrderWithDefinitions(
-        { mobile: ["a", "b"], desktop: ["b", "a"] },
+        { base: ["a", "b"], md: ["b", "a"] },
         definitions
       );
-      // Defaults to desktop order
+      // Defaults to md order
       expect(result).toEqual(["b", "a"]);
     });
   });

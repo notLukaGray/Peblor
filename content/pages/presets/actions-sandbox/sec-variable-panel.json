@@ -1,0 +1,147 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "entrancePreset": "fade"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "states-grid"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Variable State Panel"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Each panel below shows when its respective variable is active — a live dashboard of all page state at a glance."
+    },
+    "states-grid": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": {
+        "base": "column",
+        "md": "row"
+      },
+      "gap": "1rem",
+      "width": "100%",
+      "align": "stretch",
+      "section": {
+        "elementOrder": [
+          "state-toggleVar",
+          "state-copyState",
+          "state-sequenceStatus",
+          "state-modalState"
+        ],
+        "definitions": {
+          "state-toggleVar": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flex": "1",
+            "padding": "0.75rem 1rem",
+            "wrapperStyle": {
+              "background": "color-mix(in oklab, var(--pb-accent) 10%, transparent)",
+              "borderRadius": "10px",
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+            },
+            "visibleWhen": {
+              "variable": "toggleVar",
+              "operator": "equals",
+              "value": "active"
+            },
+            "section": {
+              "elementOrder": ["st-toggle-label"],
+              "definitions": {
+                "st-toggle-label": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "toggleVar = active",
+                  "color": "var(--pb-on-secondary)"
+                }
+              }
+            }
+          },
+          "state-copyState": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flex": "1",
+            "padding": "0.75rem 1rem",
+            "wrapperStyle": {
+              "background": "color-mix(in oklab, var(--pb-accent) 10%, transparent)",
+              "borderRadius": "10px",
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+            },
+            "visibleWhen": {
+              "variable": "copyState",
+              "operator": "equals",
+              "value": "copied"
+            },
+            "section": {
+              "elementOrder": ["st-copy-label"],
+              "definitions": {
+                "st-copy-label": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "copyState = copied",
+                  "color": "var(--pb-on-secondary)"
+                }
+              }
+            }
+          },
+          "state-sequenceStatus": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flex": "1",
+            "padding": "0.75rem 1rem",
+            "wrapperStyle": {
+              "background": "color-mix(in oklab, var(--pb-accent) 10%, transparent)",
+              "borderRadius": "10px",
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+            },
+            "visibleWhen": {
+              "variable": "sequenceStatus",
+              "operator": "equals",
+              "value": "launched"
+            },
+            "section": {
+              "elementOrder": ["st-sequence-label"],
+              "definitions": {
+                "st-sequence-label": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "sequenceStatus = launched",
+                  "color": "var(--pb-on-secondary)"
+                }
+              }
+            }
+          },
+          "state-modalState": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flex": "1",
+            "padding": "0.75rem 1rem",
+            "wrapperStyle": {
+              "background": "color-mix(in oklab, var(--pb-accent) 10%, transparent)",
+              "borderRadius": "10px",
+              "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+            },
+            "visibleWhen": {
+              "variable": "modalState",
+              "operator": "equals",
+              "value": "open"
+            },
+            "section": {
+              "elementOrder": ["st-modal-label"],
+              "definitions": {
+                "st-modal-label": {
+                  "type": "elementBody",
+                  "level": 5,
+                  "text": "modalState = open",
+                  "color": "var(--pb-on-secondary)"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "id": "sec-variable-panel"
+}

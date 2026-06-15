@@ -1,7 +1,24 @@
 import type { bgBlock, ElementBlock, SectionBlock } from "@pb/contracts";
-import { ASSET_URL_KEYS, MODEL3D_ASSET_KEYS } from "@pb/contracts";
+import { ASSET_URL_KEYS, MODEL3D_ASSET_KEYS, NESTED_SECTION_ELEMENT_TYPES } from "@pb/contracts";
 
 export type AssetTreeNodeKind = "standard" | "model3d" | "bg" | "element" | "section";
+
+/** Check whether any asset URL key exists in the object, avoiding a Set→array spread. */
+function hasAssetUrlKey(obj: Readonly<Record<string, unknown>>): boolean {
+  for (const key of ASSET_URL_KEYS) {
+    if (key in obj) return true;
+  }
+  return false;
+}
+
+/** Element types that have nested asset structures requiring deep traversal. */
+const DEEP_TRAVERSAL_ELEMENT_TYPES = new Set([
+  "elementModel3D",
+  "elementVideo",
+  "elementAudio",
+  ...NESTED_SECTION_ELEMENT_TYPES,
+  "elementModule",
+]);
 
 export type AssetKeyVisitor = (
   assetKey: string,
@@ -106,6 +123,11 @@ function walkBgBlockInternal(
   obj: Readonly<Record<string, unknown>>,
   visitor: AssetKeyVisitor
 ): Record<string, unknown> {
+  // Skip copy when no asset keys present and block is not a backgroundTransition.
+  if (!hasAssetUrlKey(obj) && obj.type !== "backgroundTransition") {
+    return obj;
+  }
+
   const next: Record<string, unknown> = { ...obj };
   visitStandardAssetKeys(next, "bg", visitor);
 
@@ -134,7 +156,15 @@ export function walkElement(
 ): ElementBlock {
   if (!element || typeof element !== "object") return element;
 
-  let el = { ...(element as Record<string, unknown>) };
+  const elRecord = element as Record<string, unknown>;
+  // Skip spread copy for elements without asset URL keys (text-only elements).
+  // Exceptions: elements with nested asset structures (model3D, video, audio,
+  // elementGroup, elementInfiniteScroll, elementModule) need deep traversal.
+  if (!hasAssetUrlKey(elRecord) && !DEEP_TRAVERSAL_ELEMENT_TYPES.has(elRecord.type as string)) {
+    return element;
+  }
+
+  let el = { ...elRecord };
 
   // Standard asset keys on the element itself (including elementModel3D).
   visitStandardAssetKeys(el, "element", visitor);
@@ -160,7 +190,9 @@ export function walkElement(
     }
   ).section;
   if (
-    (el.type === "elementGroup" || el.type === "elementInfiniteScroll") &&
+    NESTED_SECTION_ELEMENT_TYPES.includes(
+      el.type as (typeof NESTED_SECTION_ELEMENT_TYPES)[number]
+    ) &&
     groupSection?.definitions &&
     typeof groupSection.definitions === "object"
   ) {
@@ -216,7 +248,11 @@ export function walkSectionKeys(
   visitor: AssetKeyVisitor
 ): SectionBlock {
   if (!section || typeof section !== "object") return section;
-  const next = { ...(section as Record<string, unknown>) };
+  const sectionRecord = section as Record<string, unknown>;
+  if (!hasAssetUrlKey(sectionRecord)) {
+    return section;
+  }
+  const next = { ...sectionRecord };
   visitStandardAssetKeys(next, "section", visitor);
   return next as SectionBlock;
 }
@@ -262,14 +298,13 @@ export function walkPeblorAssetTree(
   visitor: AssetKeyVisitor
 ): void {
   if (bg) {
-    const nextBg = walkBgBlock(bg, visitor) as Record<string, unknown>;
-    Object.assign(bg as Record<string, unknown>, nextBg);
+    walkBgBlock(bg, visitor);
   }
 
   for (let i = 0; i < sections.length; i += 1) {
     const section = sections[i];
     if (section && typeof section === "object") {
-      sections[i] = walkSection(section, visitor);
+      walkSection(section, visitor);
     }
   }
 }

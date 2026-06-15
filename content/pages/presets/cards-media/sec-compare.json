@@ -1,0 +1,17 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["sec-label", "sec-desc", "compare-card"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Before / After"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Drag the handle or press arrow keys to compare the two states. Supports touch, pointer, and keyboard interaction."
+    },
+    "compare-card": {
+      "preset": "card-before-after"
+    }
+  }
+}

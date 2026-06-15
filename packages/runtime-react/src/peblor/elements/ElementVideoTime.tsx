@@ -20,7 +20,7 @@ export function ElementVideoTime({
   format: _format,
   level = DEFAULT_VIDEO_TIME_LEVEL,
   wordWrap = false,
-  align,
+  selfAlign,
   textAlign,
   width,
   height,
@@ -43,7 +43,7 @@ export function ElementVideoTime({
     ...getElementLayoutStyle({
       width,
       height,
-      align,
+      selfAlign,
       textAlign,
       marginTop,
       marginBottom,
@@ -52,7 +52,7 @@ export function ElementVideoTime({
       ...rest,
     }),
   };
-  const multilineAlign = textAlign ?? align;
+  const multilineAlign = textAlign ?? selfAlign;
   if (multilineAlign)
     blockStyle.textAlign = multilineAlign as "left" | "right" | "center" | "justify";
   blockStyle.whiteSpace = wordWrap ? "normal" : "nowrap";
@@ -66,6 +66,11 @@ export function ElementVideoTime({
       <span
         className={`m-0 block ${typographyClass}`}
         style={Object.keys(styleOverride).length > 0 ? styleOverride : undefined}
+        // suppressHydrationWarning: The video time text (`currentTime / duration`) is
+        // rendered server-side as "0:00 / 0:00" because videoCtx is unavailable during SSR.
+        // After hydration, the real media time values update this text. Without suppression,
+        // React would warn about the mismatch between SSR "0:00 / 0:00" and the client-side
+        // "0:00 / 0:00" (which may already differ if the video has loaded by hydration time).
         suppressHydrationWarning
       >
         {text}

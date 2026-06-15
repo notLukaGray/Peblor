@@ -1,0 +1,27 @@
+{
+  "preset": "demo-hero",
+  "maxWidth": "900px",
+  "padding": {
+    "base": "8rem 0 5rem",
+    "md": "10rem 0 7rem"
+  },
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "setVariable · modal · copyToClipboard · scrollTo · setTheme · fireMultiple"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Buttons As Actions"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Buttons wired to Peblor's action system. Each section demonstrates a different action type — setVariable, modalOpen/Close, copyToClipboard, scrollTo, setTheme, and fireMultiple — showing how buttons drive page interactivity without JavaScript.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  },
+  "id": "hero"
+}

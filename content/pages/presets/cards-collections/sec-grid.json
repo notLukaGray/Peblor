@@ -1,0 +1,30 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "width": {
+    "base": "92%",
+    "md": "86%"
+  },
+  "maxWidth": "1240px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "5rem 0",
+    "md": "8rem 0"
+  },
+  "gap": "2.5rem",
+  "height": "hug",
+  "elementOrder": ["sec-label", "sec-desc", "grid"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Card Grid"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Three equal-width feature cards in a responsive flex grid. Stacks on mobile, three columns on desktop."
+    },
+    "grid": {
+      "preset": "card-grid-basic"
+    }
+  }
+}

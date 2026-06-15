@@ -1,0 +1,17 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["sec-label", "sec-desc", "row"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Editorial Row"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Three article preview cards in a horizontal row. Divider and meta-date treatment for editorial contexts."
+    },
+    "row": {
+      "preset": "card-row-editorial"
+    }
+  }
+}

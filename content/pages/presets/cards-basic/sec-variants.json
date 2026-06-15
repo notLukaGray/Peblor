@@ -1,0 +1,44 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["sec-label", "sec-desc", "cards-row"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Card Variants"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "The same card surface idea expressed with different slot layouts — horizontal split and overlay action."
+    },
+    "cards-row": {
+      "preset": "card-grid-row",
+      "section": {
+        "elementOrder": ["split", "overlay"],
+        "definitions": {
+          "split": {
+            "preset": "card-horizontal-split",
+            "width": {
+              "base": "100%",
+              "md": "calc(52% - 0.5rem)"
+            },
+            "flex": {
+              "base": "1 1 100%",
+              "md": "1 1 calc(52% - 0.5rem)"
+            }
+          },
+          "overlay": {
+            "preset": "card-overlay-action",
+            "width": {
+              "base": "100%",
+              "md": "calc(48% - 0.5rem)"
+            },
+            "flex": {
+              "base": "1 1 100%",
+              "md": "1 1 calc(48% - 0.5rem)"
+            }
+          }
+        }
+      }
+    }
+  }
+}

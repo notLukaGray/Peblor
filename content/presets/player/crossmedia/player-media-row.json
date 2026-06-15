@@ -1,0 +1,11 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": {
+    "base": "column",
+    "md": "row"
+  },
+  "align": "stretch",
+  "gap": "1rem",
+  "width": "100%"
+}

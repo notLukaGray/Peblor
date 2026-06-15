@@ -1,0 +1,196 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "width": {
+    "base": "100%",
+    "md": "88%"
+  },
+  "maxWidth": "1200px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "5rem 0",
+    "md": "8rem 0"
+  },
+  "gap": "2.5rem",
+  "height": "hug",
+  "scroll": "visible",
+  "motionTiming": {
+    "entrancePreset": "fade",
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "behavior-cards"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Drag Physics & Behaviors"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Four different drag behaviors demonstrated with elementDrag. Drag each card to feel the difference — bounce springs back, grid step snaps to increments, free form moves without constraints, and constrained stays within bounds."
+    },
+    "behavior-cards": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": {
+        "base": "column",
+        "md": "row"
+      },
+      "wrap": "wrap",
+      "gap": "1.5rem",
+      "width": "100%",
+      "padding": "0",
+      "scroll": "visible",
+      "align": "stretch",
+      "distribute": "center",
+      "section": {
+        "elementOrder": ["card-bounce", "card-grid", "card-free", "card-constrained"],
+        "definitions": {
+          "card-bounce": {
+            "type": "elementDrag",
+            "axis": "both",
+            "snapBack": true,
+            "snapBackDuration": 500,
+            "width": {
+              "base": "100%",
+              "md": "220px"
+            },
+            "height": "140px",
+            "fill": "color-mix(in oklab, var(--pb-accent) 10%, transparent)",
+            "borderRadius": "16px",
+            "border": "1px solid color-mix(in oklab, var(--pb-accent) 25%, transparent)",
+            "padding": "1.25rem",
+            "effects": [
+              {
+                "type": "dropShadow",
+                "y": "4px",
+                "blur": "12px",
+                "color": "color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+              }
+            ],
+            "children": {
+              "elementOrder": ["label"],
+              "definitions": {
+                "label": {
+                  "type": "elementHeading",
+                  "level": 4,
+                  "text": "Bounce",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto"
+                }
+              }
+            }
+          },
+          "card-grid": {
+            "type": "elementDrag",
+            "axis": "both",
+            "snap": {
+              "x": 30,
+              "y": 30
+            },
+            "width": {
+              "base": "100%",
+              "md": "220px"
+            },
+            "height": "140px",
+            "fill": "color-mix(in oklab, var(--pb-primary) 10%, transparent)",
+            "borderRadius": "16px",
+            "border": "1px solid color-mix(in oklab, var(--pb-primary) 25%, transparent)",
+            "padding": "1.25rem",
+            "effects": [
+              {
+                "type": "dropShadow",
+                "y": "4px",
+                "blur": "12px",
+                "color": "color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+              }
+            ],
+            "children": {
+              "elementOrder": ["label"],
+              "definitions": {
+                "label": {
+                  "type": "elementHeading",
+                  "level": 4,
+                  "text": "Grid Step",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto"
+                }
+              }
+            }
+          },
+          "card-free": {
+            "type": "elementDrag",
+            "axis": "both",
+            "width": {
+              "base": "100%",
+              "md": "220px"
+            },
+            "height": "140px",
+            "fill": "color-mix(in oklab, var(--pb-accent) 8%, transparent)",
+            "borderRadius": "16px",
+            "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 15%, transparent)",
+            "padding": "1.25rem",
+            "effects": [
+              {
+                "type": "dropShadow",
+                "y": "4px",
+                "blur": "12px",
+                "color": "color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+              }
+            ],
+            "children": {
+              "elementOrder": ["label"],
+              "definitions": {
+                "label": {
+                  "type": "elementHeading",
+                  "level": 4,
+                  "text": "Free Form",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto"
+                }
+              }
+            }
+          },
+          "card-constrained": {
+            "type": "elementDrag",
+            "axis": "both",
+            "bounds": {
+              "left": 0,
+              "top": 0,
+              "right": 150,
+              "bottom": 100
+            },
+            "width": {
+              "base": "100%",
+              "md": "220px"
+            },
+            "height": "140px",
+            "fill": "color-mix(in oklab, var(--pb-accent) 10%, transparent)",
+            "borderRadius": "16px",
+            "border": "1px solid color-mix(in oklab, var(--pb-accent) 25%, transparent)",
+            "padding": "1.25rem",
+            "effects": [
+              {
+                "type": "dropShadow",
+                "y": "4px",
+                "blur": "12px",
+                "color": "color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+              }
+            ],
+            "children": {
+              "elementOrder": ["label"],
+              "definitions": {
+                "label": {
+                  "type": "elementHeading",
+                  "level": 4,
+                  "text": "Constrained",
+                  "color": "var(--pb-on-secondary)",
+                  "width": "auto"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

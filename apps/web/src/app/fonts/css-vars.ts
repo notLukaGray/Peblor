@@ -69,6 +69,108 @@ export function generateFontCssVars(
   return rootBlock + desktopBlock;
 }
 
+/** OpenType font metrics — units per em are 1000 for all fonts in use. */
+interface FontMetrics {
+  family: string;
+  xHeight: number;
+  ascender: number;
+  descender: number;
+  lineGap: number;
+}
+
+/**
+ * Known OpenType metrics for webfonts and their system fallback counterparts.
+ *
+ * Sources:
+ *   Urbanist       — Google Fonts metadata
+ *   Vollkorn       — Google Fonts metadata
+ *   Intel One Mono — Frere-Jones Type / font source
+ *   Arial          — OpenType spec (converted from 2048 UPM to 1000)
+ *   Times New Roman — OpenType spec (converted from 2048 UPM to 1000)
+ *   Courier New    — OpenType spec (converted from 2048 UPM to 1000)
+ */
+const WEBFONT_METRICS: Record<string, FontMetrics> = {
+  Urbanist: { family: "Urbanist", xHeight: 500, ascender: 935, descender: 265, lineGap: 0 },
+  Vollkorn: { family: "Vollkorn", xHeight: 450, ascender: 940, descender: 231, lineGap: 0 },
+  "Intel One Mono": {
+    family: "Intel One Mono",
+    xHeight: 520,
+    ascender: 1000,
+    descender: 250,
+    lineGap: 0,
+  },
+};
+
+const FALLBACK_METRICS: Record<string, FontMetrics> = {
+  Arial: { family: "Arial", xHeight: 519, ascender: 905, descender: 212, lineGap: 34 },
+  "Times New Roman": {
+    family: "Times New Roman",
+    xHeight: 449,
+    ascender: 906,
+    descender: 211,
+    lineGap: 28,
+  },
+  "Courier New": {
+    family: "Courier New",
+    xHeight: 420,
+    ascender: 860,
+    descender: 215,
+    lineGap: 34,
+  },
+};
+
+/** Which system font to use as metric-adjusted fallback per webfont family. */
+const FALLBACK_MAP: Record<string, string> = {
+  Urbanist: "Arial",
+  Vollkorn: "Times New Roman",
+  "Intel One Mono": "Courier New",
+};
+
+/**
+ * Compute `@font-face` override values so the fallback system font matches the
+ * webfont's vertical metrics exactly. After size-adjust scales the fallback
+ * proportionally to match x-height, ascent-override and descent-override
+ * correct the line-height metrics so line boxes don't shift during font swap.
+ *
+ * Formula:
+ *   size-adjust = fallback.xHeight / webfont.xHeight
+ *   ascent-override = webfont.ascender / (fallback.ascender * size-adjust)
+ *   descent-override = webfont.descender / (fallback.descender * size-adjust)
+ */
+function computeFontFaceOverrides(
+  webfontFamily: string,
+  fallbackFamily: string
+): {
+  sizeAdjust: string;
+  ascentOverride: string;
+  descentOverride: string;
+  lineGapOverride: string;
+} {
+  const webfont = WEBFONT_METRICS[webfontFamily];
+  const fallback = FALLBACK_METRICS[fallbackFamily];
+
+  if (!webfont || !fallback) {
+    return {
+      sizeAdjust: "100%",
+      ascentOverride: "100%",
+      descentOverride: "100%",
+      lineGapOverride: "0%",
+    };
+  }
+
+  const sizeAdjust = fallback.xHeight / webfont.xHeight;
+  const ascentOverride = webfont.ascender / (fallback.ascender * sizeAdjust);
+  const descentOverride = webfont.descender / (fallback.descender * sizeAdjust);
+  const lineGapOverride = webfont.lineGap / (fallback.lineGap * sizeAdjust);
+
+  return {
+    sizeAdjust: `${(sizeAdjust * 100).toFixed(1)}%`,
+    ascentOverride: `${(ascentOverride * 100).toFixed(1)}%`,
+    descentOverride: `${(descentOverride * 100).toFixed(1)}%`,
+    lineGapOverride: `${lineGapOverride}%`,
+  };
+}
+
 /** Metric-adjusted @font-face rules for system fallback fonts.
  *  Each rule creates a synthetic font family (e.g. 'Urbanist Fallback') backed by a
  *  local system font (Arial) with ascent/descent/size overrides tuned to match the
@@ -80,31 +182,37 @@ export function generateFontCssVars(
 export function generateFallbackFontFaces(
   primary: FontSlotConfig,
   secondary: FontSlotConfig,
-  _mono: FontSlotConfig
+  mono: FontSlotConfig
 ): string {
   const rules: string[] = [];
 
-  if (primary.source === "webfont") {
-    // Urbanist → Arial (geometric sans → grotesk sans; adjust ascent/descent)
-    rules.push(`@font-face {
-  font-family: '${primary.webfont.family} Fallback';
-  src: local('Arial');
-  ascent-override: 105%;
-  descent-override: 25%;
-  line-gap-override: 2%;
-  size-adjust: 98%;
-}`);
-  }
+  const slots: { config: FontSlotConfig; key: string }[] = [
+    { config: primary, key: "primary" },
+    { config: secondary, key: "secondary" },
+    { config: mono, key: "mono" },
+  ];
 
-  if (secondary.source === "webfont") {
-    // Vollkorn → Times New Roman (old-style serif → transitional serif)
+  for (const slot of slots) {
+    if (slot.config.source !== "webfont") continue;
+
+    const family = slot.config.webfont.family;
+    const fallbackFamily = FALLBACK_MAP[family];
+    if (!fallbackFamily) {
+      console.warn(
+        `[css-vars] No fallback font mapped for "${family}" — skipping fallback @font-face`
+      );
+      continue;
+    }
+
+    const overrides = computeFontFaceOverrides(family, fallbackFamily);
+
     rules.push(`@font-face {
-  font-family: '${secondary.webfont.family} Fallback';
-  src: local('Times New Roman');
-  ascent-override: 107%;
-  descent-override: 110%;
-  line-gap-override: 5%;
-  size-adjust: 97%;
+  font-family: '${family} Fallback';
+  src: local('${fallbackFamily}');
+  ascent-override: ${overrides.ascentOverride};
+  descent-override: ${overrides.descentOverride};
+  line-gap-override: ${overrides.lineGapOverride};
+  size-adjust: ${overrides.sizeAdjust};
 }`);
   }
 

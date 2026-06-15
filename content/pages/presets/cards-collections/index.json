@@ -1,0 +1,21 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Cards Collections — Preset Demo",
+  "description": "Reusable card collections — grids, editorial rows, and horizontally scrolling card carousels.",
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "card", "bg"],
+  "sectionOrder": [
+    "nav-header",
+    "hero",
+    "sec-grid",
+    "sec-row",
+    "sec-carousel",
+    "sec-selector-preview",
+    "sec-bento"
+  ],
+  "bgKey": "bg-cards",
+  "definitions": {
+    "bg-cards": {
+      "preset": "bg-cards"
+    }
+  }
+}

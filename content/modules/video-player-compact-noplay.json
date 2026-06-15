@@ -15,32 +15,60 @@
     "feedbackDurationMs": 100
   },
   "keyBindings": [
-    { "key": "Space", "action": "assetTogglePlay" },
-    { "key": "KeyK", "action": "assetTogglePlay" },
-    { "key": "ArrowLeft", "action": "assetSeek", "payload": -5 },
-    { "key": "KeyJ", "action": "assetSeek", "payload": -5 },
-    { "key": "ArrowRight", "action": "assetSeek", "payload": 5 },
-    { "key": "KeyL", "action": "assetSeek", "payload": 5 },
-    { "key": "KeyM", "action": "assetMute" },
-    { "key": "KeyF", "action": "videoFullscreen" }
+    {
+      "key": "Space",
+      "action": "assetTogglePlay"
+    },
+    {
+      "key": "KeyK",
+      "action": "assetTogglePlay"
+    },
+    {
+      "key": "ArrowLeft",
+      "action": "assetSeek",
+      "payload": -5
+    },
+    {
+      "key": "KeyJ",
+      "action": "assetSeek",
+      "payload": -5
+    },
+    {
+      "key": "ArrowRight",
+      "action": "assetSeek",
+      "payload": 5
+    },
+    {
+      "key": "KeyL",
+      "action": "assetSeek",
+      "payload": 5
+    },
+    {
+      "key": "KeyM",
+      "action": "assetMute"
+    },
+    {
+      "key": "KeyF",
+      "action": "videoFullscreen"
+    }
   ],
   "overlayMotion": {
-    "initial": {
+    "from": {
       "opacity": 0
     },
-    "animate": {
+    "to": {
       "opacity": 1
     },
     "transition": {
       "duration": 0.5,
       "ease": "easeOut"
     },
-    "whileHover": {},
-    "whileTap": {
+    "onHover": {},
+    "onPress": {
       "scale": 1,
       "opacity": 1
     },
-    "whileFocus": {
+    "onFocus": {
       "opacity": 1
     }
   },
@@ -48,32 +76,32 @@
     "main": {
       "position": "absolute",
       "inset": "0",
-      "zIndex": 0
+      "layer": 0
     },
     "bottomBar": {
       "position": "absolute",
       "bottom": "calc(10px + env(safe-area-inset-bottom, 0px))",
       "left": "10px",
       "right": "10px",
-      "zIndex": 10,
+      "layer": 10,
       "paddingBottom": "10px",
       "display": "flex",
-      "flexDirection": "row",
-      "alignItems": "center",
-      "justifyContent": "flex-start",
+      "flow": "row",
+      "align": "center",
+      "distribute": "start",
       "height": "44px",
       "gap": "2px",
       "visibleWhen": ["awake"],
       "transformInherit": "disable",
       "slotWrapperGestures": false,
       "wrapperMotion": {
-        "whileHover": {
+        "onHover": {
           "opacity": 1
         },
-        "whileTap": {
+        "onPress": {
           "opacity": 1
         },
-        "whileFocus": {
+        "onFocus": {
           "opacity": 1
         }
       },
@@ -81,7 +109,10 @@
         "width": "44px",
         "height": "44px",
         "minWidth": "44px",
-        "minHeight": "44px"
+        "minHeight": "44px",
+        "align": "center",
+        "distribute": "center",
+        "flexShrink": "0"
       },
       "style": {
         "background": "#00000020",
@@ -107,19 +138,20 @@
         "definitions": {
           "left-controls": {
             "type": "elementGroup",
-            "width": "88px",
+            "width": "hug",
             "height": "44px",
             "display": "flex",
-            "flexDirection": "row",
-            "alignItems": "center",
+            "flow": "row",
+            "align": "center",
             "padding": "0 0 0 4px",
             "gap": "0px",
             "wrapperStyle": {
               "position": "relative",
-              "zIndex": 1
+              "layer": 1,
+              "align": "center"
             },
             "section": {
-              "elementOrder": ["ui-play", "ui-pause", "mute-btn", "unmute-btn"],
+              "elementOrder": ["ui-play", "ui-pause", "volume"],
               "definitions": {
                 "ui-play": {
                   "preset": "video-controls-play-bar",
@@ -137,21 +169,8 @@
                     "transform": "translateY(1px)"
                   }
                 },
-                "mute-btn": {
-                  "preset": "video-controls-mute-bar",
-                  "action": "assetMute",
-                  "showWhen": "assetUnmuted",
-                  "wrapperStyle": {
-                    "transform": "translateY(1px)"
-                  }
-                },
-                "unmute-btn": {
-                  "preset": "video-controls-unmute-bar",
-                  "action": "assetMute",
-                  "showWhen": "assetMuted",
-                  "wrapperStyle": {
-                    "transform": "translateY(1px)"
-                  }
+                "volume": {
+                  "preset": "player-controls-volume-hover"
                 }
               }
             }
@@ -161,13 +180,14 @@
             "flex": "1",
             "height": "44px",
             "display": "flex",
-            "flexDirection": "row",
-            "alignItems": "center",
-            "justifyContent": "center",
+            "flow": "row",
+            "align": "center",
+            "distribute": "center",
             "padding": "0 16px 0 8px",
             "wrapperStyle": {
               "position": "relative",
-              "zIndex": 1
+              "layer": 1,
+              "align": "center"
             },
             "section": {
               "elementOrder": ["seek"],
@@ -194,13 +214,14 @@
             "type": "elementGroup",
             "width": "hug",
             "display": "flex",
-            "flexDirection": "row",
-            "alignItems": "center",
-            "justifyContent": "flex-end",
+            "flow": "row",
+            "align": "center",
+            "distribute": "end",
             "gap": "4px",
             "wrapperStyle": {
               "position": "relative",
-              "zIndex": 1
+              "layer": 1,
+              "align": "center"
             },
             "section": {
               "elementOrder": ["fullscreen", "minimize"],

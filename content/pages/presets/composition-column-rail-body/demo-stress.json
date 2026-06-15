@@ -1,0 +1,39 @@
+{
+  "preset": "composition-column-rail-body",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "1100px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "0 0 8rem",
+    "md": "0 0 12rem"
+  },
+  "definitions": {
+    "rail": {
+      "section": {
+        "definitions": {
+          "body": {
+            "text": "Stress copy in the rail validates that utility content can expand without collapsing the primary reading column or forcing unusable line lengths on narrow breakpoints."
+          }
+        }
+      }
+    },
+    "body": {
+      "section": {
+        "definitions": {
+          "article-a": {
+            "section": {
+              "definitions": {
+                "excerpt": {
+                  "text": "Extended summary paragraph testing long-copy endurance in the narrative stream with multiple clauses and contextual detail for incident review audiences."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

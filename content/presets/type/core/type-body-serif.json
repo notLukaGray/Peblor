@@ -1,0 +1,9 @@
+{
+  "type": "elementBody",
+  "level": 3,
+  "fontFamily": "Vollkorn",
+  "color": "color-mix(in oklab, var(--pb-on-secondary) 68%, transparent)",
+  "wordWrap": true,
+  "width": "100%",
+  "text": ""
+}

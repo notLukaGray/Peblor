@@ -1,0 +1,12 @@
+{
+  "type": "elementMarquee",
+  "level": 1,
+  "speed": 15,
+  "pauseOnHover": true,
+  "gradientEdges": true,
+  "gradientColor": "var(--pb-secondary)",
+  "gradientWidth": "120px",
+  "gap": "3rem",
+  "width": "100%",
+  "color": "var(--pb-on-secondary)"
+}

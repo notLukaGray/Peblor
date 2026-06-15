@@ -15,11 +15,21 @@ import type { MotionPropsFromJson, MotionTiming } from "@pb/contracts/peblor/cor
 export type ElementExitWrapperProps = {
   /** When false, child unmounts after exit animation. */
   show: boolean;
-  /** Optional full motion config from JSON (initial, animate, exit, transition). When set, exit and transition come from here. */
+  /**
+   * Full motion config from JSON (initial, animate, exit, transition).
+   * Used as a runtime fallback when `motionTiming.resolvedExitMotion` is not
+   * pre-populated by the server pipeline (e.g. in dev tooling / studio).
+   */
   motion?: MotionPropsFromJson;
-  /** Explicit entrance/exit semantics; exitPreset and exitMotion override legacy exitPreset/motion when set. */
+  /** Exit trigger, viewport, presets, and pre-resolved motion. When the server
+   * pipeline runs, `resolvedExitMotion` takes priority. When it doesn't,
+   * `exitMotion` and `exitPreset` inside this object serve as runtime fallbacks. */
   motionTiming?: MotionTiming;
-  /** Optional preset name (from framer-motion-presets exitPresets) for exit keyframes. Ignored when motion.exit or motionTiming.exitMotion is set. */
+  /**
+   * Exit preset name (from framer-motion-presets exitPresets).
+   * Runtime fallback when `motionTiming.resolvedExitMotion` is not set and
+   * `motionTiming.exitPreset` is not provided.
+   */
   exitPreset?: string;
   /** Exit duration in seconds. Used when exitPreset is set and motion.transition is not. */
   exitDuration?: number;
@@ -43,6 +53,13 @@ export type ElementExitWrapperProps = {
 /**
  * Wraps content in AnimatePresence + MotionFromJson. When presence becomes false, exit animation
  * runs from motion.exit, exitPreset, or motionComponent.exit (motion-defaults).
+ *
+ * Resolution priority:
+ * 1. replaceWithFade — reduced-motion override, hardcoded fade
+ * 2. `motionTiming.resolvedExitMotion` — pre-resolved by the server pipeline (production fast-path)
+ * 3. Runtime fallback — `motionTiming.exitMotion` / `motion` / `exitPreset` resolved at runtime
+ *    (used in dev tooling / studio where the pipeline hasn't run)
+ * 4. Generic defaults from MOTION_DEFAULTS.motionComponent
  *
  * `motionTiming.exitTrigger`:
  * - `manual` (default): presence follows the `show` prop only (parent / dev preview).
@@ -70,72 +87,103 @@ export function ElementExitWrapper({
   const exitTrigger = motionTiming?.exitTrigger ?? "manual";
   const exitVp = motionTiming?.exitViewport;
 
-  const effectiveExitPreset = motionControls.replaceWithFade
-    ? "fade"
-    : (motionTiming?.exitPreset ?? exitPreset);
-  const effectiveExitMotion = motionControls.replaceWithFade
-    ? undefined
-    : (motionTiming?.exitMotion ?? motionFromJson);
-  const exitTransitionOverrides =
-    effectiveExitMotion && typeof effectiveExitMotion === "object"
-      ? (() => {
-          const transition = (effectiveExitMotion as MotionPropsFromJson).transition;
-          return transition && typeof transition === "object"
-            ? (transition as Record<string, unknown>)
-            : undefined;
-        })()
-      : undefined;
-  const resolvedExitDuration =
-    (exitTransitionOverrides?.duration as number | undefined) ?? exitDuration;
-  const resolvedExitDelay = (exitTransitionOverrides?.delay as number | undefined) ?? 0;
-  const resolvedExitEasing =
-    (exitTransitionOverrides?.ease as string | [number, number, number, number] | undefined) ??
-    exitEasing;
-
   const motionConfig: MotionPropsFromJson = (() => {
-    const hasMotionExit =
+    // Priority 1: replaceWithFade — hardcoded fade exit (reduced-motion override).
+    if (motionControls.replaceWithFade) {
+      return (
+        mergeMotionDefaults({
+          from: MOTION_DEFAULTS.motionComponent.to as Record<string, unknown>,
+          to: MOTION_DEFAULTS.motionComponent.to as Record<string, unknown>,
+          leave: { opacity: 0 },
+          transition: {
+            type: "ease" as const,
+            duration: exitDuration,
+            delay: 0,
+            ease: exitEasing,
+          },
+        } as MotionPropsFromJson) ?? ({} as MotionPropsFromJson)
+      );
+    }
+
+    // Priority 2: pre-resolved exit motion from server pipeline.
+    // Covers both exitMotion.leave and exitPreset resolution — no runtime lookup needed.
+    if (motionTiming?.resolvedExitMotion) {
+      const { leave, transition } = motionTiming.resolvedExitMotion;
+      return (
+        mergeMotionDefaults({
+          from: MOTION_DEFAULTS.motionComponent.to as Record<string, unknown>,
+          to: MOTION_DEFAULTS.motionComponent.to as Record<string, unknown>,
+          leave: leave as Record<string, unknown>,
+          transition: transition ?? {
+            type: "ease" as const,
+            duration: exitDuration,
+            delay: 0,
+            ease: exitEasing,
+          },
+        } as MotionPropsFromJson) ?? ({} as MotionPropsFromJson)
+      );
+    }
+
+    // Priority 3: runtime fallback — resolve exitMotion / exitPreset at runtime.
+    // This path handles dev tooling (studio) where the pipeline hasn't run,
+    // and any edge case where resolvedExitMotion wasn't populated.
+    const effectiveExitMotion = motionTiming?.exitMotion ?? motionFromJson;
+    const effectiveExitPreset = motionTiming?.exitPreset ?? exitPreset;
+
+    // 3a: explicit exitMotion with a leave key — use the full motion object directly
+    if (
       effectiveExitMotion != null &&
       typeof effectiveExitMotion === "object" &&
-      (effectiveExitMotion as MotionPropsFromJson)?.exit != null;
-    if (hasMotionExit && effectiveExitMotion != null) {
+      (effectiveExitMotion as MotionPropsFromJson)?.leave != null
+    ) {
       return (
         mergeMotionDefaults(effectiveExitMotion as MotionPropsFromJson) ??
         ({} as MotionPropsFromJson)
       );
     }
-    if (effectiveExitPreset && typeof effectiveExitPreset === "string") {
-      const { exit, transition } = getExitMotionFromPreset(effectiveExitPreset, {
-        duration: resolvedExitDuration,
-        delay: resolvedExitDelay,
-        ease: resolvedExitEasing,
+
+    // 3b: exitPreset name — resolve via getExitMotionFromPreset.
+    // When exitMotion coexists (with a transition but no leave key), extract its
+    // duration/delay/ease overrides so authored values are not silently dropped.
+    if (typeof effectiveExitPreset === "string" && effectiveExitPreset.length > 0) {
+      const motionTransition =
+        effectiveExitMotion != null && typeof effectiveExitMotion === "object"
+          ? ((effectiveExitMotion as Record<string, unknown>).transition as
+              | {
+                  duration?: number;
+                  delay?: number;
+                  ease?: string | [number, number, number, number];
+                }
+              | undefined)
+          : undefined;
+      const { leave, transition } = getExitMotionFromPreset(effectiveExitPreset, {
+        duration: motionTransition?.duration ?? exitDuration,
+        delay: motionTransition?.delay ?? 0,
+        ease: motionTransition?.ease ?? exitEasing,
       });
       return (
         mergeMotionDefaults({
-          initial: ((MOTION_DEFAULTS.motionComponent.animate as Record<string, unknown>) ?? {
-            opacity: 1,
-          }) as Record<string, string | number | number[]>,
-          animate: MOTION_DEFAULTS.motionComponent.animate as Record<
-            string,
-            string | number | number[]
-          >,
-          exit: exit as Record<string, string | number | number[]>,
+          from: MOTION_DEFAULTS.motionComponent.to as Record<string, unknown>,
+          to: MOTION_DEFAULTS.motionComponent.to as Record<string, unknown>,
+          leave: leave as Record<string, unknown>,
           transition,
         } as MotionPropsFromJson) ?? ({} as MotionPropsFromJson)
       );
     }
+
+    // Priority 4: generic defaults (no exit config provided at all).
     const mc = MOTION_DEFAULTS.motionComponent;
-    const exitTransition = {
-      type: "tween" as const,
-      duration: resolvedExitDuration,
-      delay: resolvedExitDelay,
-      ease: resolvedExitEasing,
-    };
     return (
       mergeMotionDefaults({
-        initial: mc.animate as Record<string, string | number | number[]>,
-        animate: mc.animate as Record<string, string | number | number[]>,
-        exit: (mc.exit as Record<string, string | number | number[]>) ?? { opacity: 0 },
-        transition: exitTransition,
+        from: mc.to as Record<string, string | number | number[]>,
+        to: mc.to as Record<string, string | number | number[]>,
+        leave: (mc.leave as Record<string, string | number | number[]>) ?? { opacity: 0 },
+        transition: {
+          type: "ease" as const,
+          duration: exitDuration,
+          delay: 0,
+          ease: exitEasing,
+        },
       } as MotionPropsFromJson) ?? ({} as MotionPropsFromJson)
     );
   })();

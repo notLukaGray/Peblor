@@ -1,0 +1,28 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Actions & Logic — Preset Demo",
+  "description": "Explore peblor's action system — setVariable, setTheme, copyToClipboard, scrollTo, fireMultiple, and visibleWhen patterns for state-driven interfaces.",
+  "presets": ["demo", "type/core", "ui/link", "ui/button", "ui/panel", "bg"],
+  "sectionOrder": [
+    "nav-header",
+    "hero",
+    "sec-setVariable",
+    "sec-setTheme",
+    "sec-copyToClipboard",
+    "sec-scrollTo",
+    "sec-modal",
+    "sec-fireMultiple",
+    "sec-variable-panel"
+  ],
+  "bgKey": "bg",
+  "scroll": {
+    "smooth": true,
+    "lockBody": true,
+    "scrollX": "hidden"
+  },
+  "definitions": {
+    "bg": {
+      "preset": "bg-solid"
+    }
+  }
+}

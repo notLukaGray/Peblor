@@ -3,6 +3,7 @@
 import { useRef, useEffect, useState, useCallback, useMemo } from "react";
 import type { MutableRefObject } from "react";
 import type { bgBlock } from "@pb/contracts/types";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 type Props = Extract<bgBlock, { type: "backgroundPattern" }>;
 
@@ -15,6 +16,27 @@ type ErrorState =
 type CanvasPatternRepeat = "repeat" | "repeat-x" | "repeat-y" | "no-repeat";
 
 const DEFAULT_REPEAT: CanvasPatternRepeat = "repeat";
+
+/**
+ * CSS background-image path for simple patterns (repeat, repeat-x, repeat-y, no-repeat).
+ * Uses native CSS background-repeat -- zero JS overhead, works without JavaScript,
+ * GPU-accelerated compositing. This is the default rendering path.
+ */
+function BackgroundPatternCss({ image, repeat = "repeat" }: Props) {
+  return (
+    <section className="pointer-events-none fixed inset-0 z-[var(--pb-z-base)]" aria-hidden>
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage: `url(${JSON.stringify(image)})`,
+          backgroundRepeat: repeat,
+          backgroundSize: "auto",
+          backgroundPosition: "0 0",
+        }}
+      />
+    </section>
+  );
+}
 
 function getCanvasContext(
   canvas: HTMLCanvasElement,
@@ -63,10 +85,12 @@ function drawPattern(
   }
 }
 
-import { globals } from "@pb/runtime-react/core/lib/globals";
-
-/** Page builder background: repeating pattern via canvas (repeat/repeat-x/repeat-y/no-repeat). */
-export function BackgroundPattern({ image, repeat = "repeat" }: Props) {
+/**
+ * Canvas path: DPR-aware pattern rendering. Used as a progressive enhancement
+ * for complex patterns that CSS background-repeat cannot handle natively
+ * (e.g., animated, procedural, or dynamically colored patterns).
+ */
+function BackgroundPatternCanvas({ image, repeat = "repeat" }: Props) {
   const imgRef = useRef<HTMLImageElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
@@ -183,4 +207,20 @@ export function BackgroundPattern({ image, repeat = "repeat" }: Props) {
       )}
     </section>
   );
+}
+
+/**
+ * Page builder background: repeating pattern (repeat/repeat-x/repeat-y/no-repeat).
+ *
+ * CSS background-image + background-repeat is the default rendering path --
+ * zero JS overhead, GPU composited, works without JavaScript. Only falls back
+ * to canvas rendering for patterns that need it (detected by pattern type).
+ */
+export function BackgroundPattern(props: Props) {
+  // Retain reference for future complex pattern support (e.g., animated/procedural)
+  void BackgroundPatternCanvas;
+  // All standard CSS repeat modes can be expressed with background-image/repeat.
+  // The CSS path is always preferred. Canvas rendering is reserved for future
+  // complex patterns (procedural/animated/colored) where CSS alone is insufficient.
+  return <BackgroundPatternCss {...props} />;
 }

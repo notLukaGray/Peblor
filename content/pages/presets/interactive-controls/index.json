@@ -1,0 +1,18 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Interactive Controls — Preset Demo",
+  "description": "Form and control input UI patterns — text fields, select menus, range sliders, and input-driven state displays.",
+  "presets": ["demo", "type/core", "ui/link"],
+  "sectionOrder": ["nav-header", "hero", "sec-form-fields", "sec-range-sliders", "sec-input-state"],
+  "bgKey": "bg-controls",
+  "definitions": {
+    "bg-controls": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "linear-gradient(160deg, color-mix(in oklab, var(--pb-primary) 12%, var(--pb-secondary)) 0%, var(--pb-secondary) 60%, color-mix(in oklab, var(--pb-accent) 6%, var(--pb-secondary)) 100%)"
+        }
+      ]
+    }
+  }
+}

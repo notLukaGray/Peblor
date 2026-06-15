@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { isRecord } from "../lib/json-file.js";
+import { findPresetsDir } from "../lib/pages.js";
 import type { CommandIo } from "./types.js";
 
 type GrepMatch = {
@@ -39,7 +40,7 @@ function parseGrepArgs(args: string[]): { query?: string; opts: GrepOptions } {
   const preset = flag("--preset");
 
   for (let i = 0; i < args.length; i++) {
-    if (["--json", "--help", "-h"].includes(args[i])) consumed.add(i);
+    if (["--json", "--help", "-h"].includes(args[i]!)) consumed.add(i);
   }
 
   const query = args.filter((_, i) => !consumed.has(i))[0];
@@ -85,7 +86,8 @@ function walkPages(dir: string): Array<{ route: string; file: string }> {
     let entries: fs.Dirent[];
     try {
       entries = fs.readdirSync(current, { withFileTypes: true });
-    } catch {
+    } catch (err) {
+      console.warn("[pb-cli] Failed to read directory during grep walk", current, err);
       return;
     }
     for (const entry of entries) {
@@ -203,14 +205,58 @@ export async function runGrep(args: string[], io: CommandIo): Promise<number> {
   const pages = walkPages(pagesDir);
   const allMatches: GrepMatch[] = [];
 
+  // Cache preset files across pages (many pages share the same presets).
+  const presetCache = new Map<string, unknown | null>();
+
   for (const { route, file } of pages) {
-    let parsed: unknown;
+    let parsed: Record<string, unknown>;
     try {
-      parsed = JSON.parse(fs.readFileSync(file, "utf8"));
-    } catch {
+      parsed = JSON.parse(fs.readFileSync(file, "utf8")) as Record<string, unknown>;
+    } catch (err) {
+      console.warn("[pb-cli] Failed to parse page JSON for grep", file, err);
       continue;
     }
+
+    // Scan the page JSON itself.
     walkNode(parsed, [], opts, allMatches, route, file);
+
+    // When matching by type, also scan preset files the page imports.
+    // Element types defined inside presets won't appear in the page JSON,
+    // so we need to resolve them to get accurate type coverage.
+    if (opts.type && Array.isArray(parsed.presets)) {
+      const presetsDir = findPresetsDir();
+      if (presetsDir) {
+        const pagePresets = (parsed.presets as unknown[]).filter(
+          (p): p is string => typeof p === "string" && p.endsWith(".json")
+        );
+        for (const presetFilename of pagePresets) {
+          const presetPath = path.join(presetsDir, presetFilename);
+          let presetData = presetCache.get(presetPath);
+          if (presetData === undefined) {
+            try {
+              presetData = JSON.parse(fs.readFileSync(presetPath, "utf8"));
+            } catch (err) {
+              console.warn("[pb-cli] Failed to parse preset for grep", presetPath, err);
+              presetData = null;
+            }
+            presetCache.set(presetPath, presetData);
+          }
+          if (presetData == null) continue;
+
+          // Walk with a `$(preset:filename)` path prefix so callers can
+          // distinguish preset-derived matches from direct page matches.
+          // Keep the original page route so results group under the page.
+          walkNode(
+            presetData,
+            [`$(preset:${presetFilename})`],
+            { ...opts, preset: undefined },
+            allMatches,
+            route,
+            file
+          );
+        }
+      }
+    }
   }
 
   const byPage = new Map<string, GrepMatch[]>();

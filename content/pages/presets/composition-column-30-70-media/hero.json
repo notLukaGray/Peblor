@@ -1,0 +1,23 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Column · Media Lead · Story Support"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Composition Column 30 70 Media"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Media-priority split with responsive stacking tuned for scanability and context.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  },
+  "align": "start"
+}

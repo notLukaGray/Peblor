@@ -45,9 +45,9 @@ export type FontSlotConfig = {
 //   update `weights` — the CSS vars and typography classes update automatically.
 
 export const primaryFontConfig: FontSlotConfig = {
-  source: "local",
+  source: "webfont",
 
-  webfont: { family: "Primary Font" },
+  webfont: { family: "Urbanist" },
 
   local: {
     variable: true,
@@ -56,20 +56,18 @@ export const primaryFontConfig: FontSlotConfig = {
   },
 
   weights: {
-    thin: 100,
-    light: 300,
     regular: 400,
     book: 500,
     bold: 700,
     black: 900,
   },
-  italic: true,
+  italic: false,
 };
 
 export const secondaryFontConfig: FontSlotConfig = {
-  source: "local",
+  source: "webfont",
 
-  webfont: { family: "Secondary Font" },
+  webfont: { family: "Vollkorn" },
 
   local: {
     variable: true,
@@ -78,20 +76,18 @@ export const secondaryFontConfig: FontSlotConfig = {
   },
 
   weights: {
-    thin: 400,
-    light: 400,
     regular: 400,
     book: 500,
     bold: 700,
     black: 900,
   },
-  italic: true,
+  italic: false,
 };
 
 export const monoFontConfig: FontSlotConfig = {
-  source: "local",
+  source: "webfont",
 
-  webfont: { family: "Mono Font" },
+  webfont: { family: "Intel One Mono" },
 
   local: {
     variable: true,
@@ -100,12 +96,9 @@ export const monoFontConfig: FontSlotConfig = {
   },
 
   weights: {
-    thin: 300,
-    light: 300,
     regular: 400,
     book: 500,
     bold: 700,
-    black: 700,
   },
-  italic: true,
+  italic: false,
 };

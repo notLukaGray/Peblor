@@ -1,5 +1,12 @@
 import fs from "node:fs";
-import { findPagesDir, findPageFile, walkAllPages, isRecord } from "../lib/pages.js";
+import path from "node:path";
+import {
+  findPagesDir,
+  findPageFile,
+  walkAllPages,
+  isRecord,
+  findPresetsDir,
+} from "../lib/pages.js";
 import { getSignedCdnUrl } from "@pb/core/lib/cdn-asset-server";
 import type { CommandIo } from "./types.js";
 
@@ -95,10 +102,38 @@ export async function runAuditAssets(args: string[], io: CommandIo): Promise<num
 
   const results: Record<string, AssetStatus[]> = {};
   let totalBroken = 0;
+  const presetsDir = findPresetsDir();
+  const assetPresetCache = new Map<string, Array<{ path: string; value: string }>>();
 
   for (const { route: r, data } of pages) {
     const assets: Array<{ path: string; value: string }> = [];
     collectAssetValues(data, [], assets);
+
+    // Also collect asset values from preset files the page imports.
+    const presets = Array.isArray(data.presets)
+      ? (data.presets as unknown[]).filter(
+          (p): p is string => typeof p === "string" && p.endsWith(".json")
+        )
+      : [];
+    if (presetsDir) {
+      for (const presetFilename of presets) {
+        let presetAssets = assetPresetCache.get(presetFilename);
+        if (presetAssets === undefined) {
+          const presetPath = path.join(presetsDir, presetFilename);
+          try {
+            const presetData = JSON.parse(fs.readFileSync(presetPath, "utf8"));
+            presetAssets = [];
+            collectAssetValues(presetData, [`$(preset:${presetFilename})`], presetAssets);
+          } catch (err) {
+            console.warn("[pb-cli] Failed to parse preset for asset audit", presetPath, err);
+            presetAssets = [];
+          }
+          assetPresetCache.set(presetFilename, presetAssets);
+        }
+        assets.push(...presetAssets);
+      }
+    }
+
     if (assets.length === 0) continue;
 
     const statuses: AssetStatus[] = [];

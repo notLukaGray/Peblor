@@ -3,6 +3,7 @@ import {
   bgBlockSchema,
   bgPatternRepeatSchema,
   bgVarLayerSchema,
+  backgroundTransitionEffectSchema,
 } from "./peblor-schemas/background-block-schemas";
 import {
   cssGradientDefinitionSchema,
@@ -40,7 +41,6 @@ import {
   modalTransitionConfigSchema,
 } from "./peblor-schemas/modal-block-schemas";
 import {
-  backgroundTransitionEffectSchema,
   forcedThemeSchema,
   peblorDefinitionBlockSchema,
   pageDensitySchema,
@@ -100,32 +100,320 @@ export {
   OVERRIDE_KEY_BG,
 } from "./trigger-action-types";
 
-export * from "./peblor-schemas/background-block-schemas";
-export * from "./peblor-schemas/schema-primitives";
-export * from "./peblor-schemas/element-foundation-schemas";
-export * from "./peblor-schemas/element-button-schemas";
-export * from "./peblor-schemas/element-content-schemas";
-export * from "./peblor-schemas/element-model3d-schemas";
-export * from "./peblor-schemas/element-rive-schemas";
-export * from "./peblor-schemas/element-block-schemas";
-export * from "./peblor-schemas/element-form-field-schemas";
-export * from "./peblor-schemas/element-audio-schemas";
-export * from "./peblor-schemas/element-counter-schemas";
-export * from "./peblor-schemas/element-marquee-schemas";
-export * from "./peblor-schemas/element-image-compare-schemas";
-export * from "./peblor-schemas/element-tabs-schemas";
-export * from "./peblor-schemas/element-tooltip-schemas";
-export * from "./peblor-schemas/element-lottie-schemas";
-export * from "./peblor-schemas/section-effect-schemas";
-export * from "./peblor-schemas/section-column-layout-schemas";
-export * from "./peblor-schemas/section-style-and-column-schemas";
-export * from "./peblor-schemas/section-block-base-schemas";
-export * from "./peblor-schemas/section-block-schemas";
-export * from "./peblor-schemas/form-field-schemas";
-export * from "./peblor-schemas/module-block-schemas";
-export * from "./peblor-schemas/modal-block-schemas";
-export * from "./peblor-schemas/motion-props-schema";
-export * from "./peblor-schemas/page-definition-and-resolution-schemas";
+// Explicit re-exports from background-block-schemas
+export {
+  bgLayerMotionSchema,
+  type BgLayerMotion,
+  type BgLoopMotion,
+  bgVarLayerSchema,
+  bgPatternRepeatSchema,
+  bgBlockSchema,
+  backgroundTransitionEffectSchema,
+  BG_BLOCK_TYPE_STRINGS,
+} from "./peblor-schemas/background-block-schemas";
+
+// Explicit re-exports from schema-primitives (includes schema-shared-primitives transitively)
+export {
+  // Direct exports from schema-primitives
+  TRIGGER_ACTION_CORE_VARIANTS,
+  triggerActionSchemaCore,
+  triggerActionSchema,
+  type CoreTriggerAction,
+  validateActionPayload,
+  // Transitive exports from schema-shared-primitives
+  headingLevelSchema,
+  jsonValueSchema,
+  conditionOperatorSchema,
+  variableConditionSchema,
+  conditionGroupSchema,
+  themeStringObjectSchema,
+  themeStringSchema,
+  type ThemeString,
+  responsiveThemeStringSchema,
+  gradientStopSchema,
+  type GradientStop,
+  structuredGradientSchema,
+  type StructuredGradient,
+  themeStringOrGradientSchema,
+  type ThemeStringOrGradient,
+  textFillBaseSchema,
+  cssInlineStyleValueSchema,
+  cssInlineStyleSchema,
+  responsiveStringSchema,
+  jsonNullishOptional,
+  variantWithAliases,
+  typographyOverridesSchema,
+  responsiveAlignSchema,
+  responsiveSectionAlignSchema,
+  responsiveElementAlignSchema,
+  responsiveElementAlignYSchema,
+  elementTextAlignSchema,
+  responsiveTextAlignSchema,
+  responsiveBooleanSchema,
+  referrerPolicySchema,
+  booleanishSchema,
+  visibleWhenSchema,
+  progressRangeSchema,
+  reorderablePropsSchema,
+  cursorSchema,
+  scrollSnapTypeEnum,
+} from "./peblor-schemas/schema-primitives";
+
+// Explicit re-exports from element-foundation-schemas
+export {
+  borderGradientSchema,
+  elementLayoutConstraintsSchema,
+  figmaConstraintsSchema,
+  elementInteractionsSchema,
+  elementLayoutSchemaBase,
+  elementLayoutSchema,
+  elementVideoObjectFitSchema,
+  elementImageObjectFitSchema,
+  responsiveImageObjectFitSchema,
+  responsiveVideoObjectFitSchema,
+  elementBodyVariantSchema,
+  responsiveElementBodyVariantSchema,
+  elementSimpleLinkSchema,
+  elementGraphicLinkSchema,
+  vectorColorsSchema,
+  vectorShapeStyleSchema,
+  vectorGradientStopSchema,
+  vectorLinearGradientSchema,
+  vectorRadialGradientSchema,
+  vectorGradientSchema,
+  vectorShapeSchema,
+} from "./peblor-schemas/element-foundation-schemas";
+
+// Explicit re-exports from element-button-schemas
+export {
+  BUTTON_ACTION_TYPES,
+  buttonActionSchema,
+  type ButtonAction,
+  parseButtonAction,
+  elementButtonSchema,
+} from "./peblor-schemas/element-button-schemas";
+
+// Explicit re-exports from element-content-schemas
+export {
+  elementBodySchema,
+  elementHeadingSchema,
+  elementImageSchema,
+  elementLinkSchema,
+  elementRangeSchema,
+  elementInputSchema,
+  elementRichTextSchema,
+  elementSVGSchema,
+  elementSpacerSchema,
+  elementDividerSchema,
+  elementScrollProgressBarSchema,
+  elementVectorSchema,
+  elementVideoSchema,
+  elementVideoTimeSchema,
+  elementVideoQualitySelectSchema,
+} from "./peblor-schemas/element-content-schemas";
+
+// Explicit re-exports from element-model3d-schemas
+export {
+  textureDefSchema,
+  materialDefSchema,
+  modelDefSchema,
+  environmentDefSchema,
+  lightDefSchema,
+  cameraDefSchema,
+  modelInstanceDefSchema,
+  cameraEffectsSchema,
+  sceneBackgroundDefSchema,
+  sceneControlsDefSchema,
+  sceneDefSchema,
+  canvasDefSchema,
+  postProcessingEffectSchema,
+  elementModel3DSchema,
+} from "./peblor-schemas/element-model3d-schemas";
+
+// Explicit re-exports from element-rive-schemas
+export { elementRiveSchema } from "./peblor-schemas/element-rive-schemas";
+
+// Explicit re-exports from element-block-schemas
+export {
+  lazyElementBlock,
+  presetReferenceSchema,
+  NESTED_SECTION_ELEMENT_TYPES,
+  elementBlockSchema,
+  cssGradientDefinitionSchema,
+  sectionDefinitionBlockSchema,
+  figmaExporterMetaSchema,
+  peblorMetaSchema,
+  type FigmaExporterMeta,
+  type PeblorMeta,
+} from "./peblor-schemas/element-block-schemas";
+
+// Explicit re-exports from element-form-field-schemas
+export { elementFormFieldSchema } from "./peblor-schemas/element-form-field-schemas";
+
+// Explicit re-exports from element-audio-schemas
+export { elementAudioSchema } from "./peblor-schemas/element-audio-schemas";
+
+// Explicit re-exports from element-counter-schemas
+export {
+  counterTweenSchema,
+  counterScrollSchema,
+  elementCounterSchema,
+} from "./peblor-schemas/element-counter-schemas";
+
+// Explicit re-exports from element-marquee-schemas
+export {
+  elementMarqueeFollowPathSchema,
+  elementMarqueeSchema,
+} from "./peblor-schemas/element-marquee-schemas";
+
+// Explicit re-exports from element-image-compare-schemas
+export { elementImageCompareSchema } from "./peblor-schemas/element-image-compare-schemas";
+
+// Explicit re-exports from element-tabs-schemas
+export { elementTabsSchema } from "./peblor-schemas/element-tabs-schemas";
+
+// Explicit re-exports from element-tooltip-schemas
+export { elementTooltipSchema } from "./peblor-schemas/element-tooltip-schemas";
+
+// Explicit re-exports from element-lottie-schemas
+export { elementLottieSchema } from "./peblor-schemas/element-lottie-schemas";
+
+// Explicit re-exports from section-effect-schemas
+export {
+  dividerLayerSchema,
+  sectionBorderSchema,
+  backdropBlurEffectSchema,
+  glassEffectSchema,
+  dropShadowEffectSchema,
+  innerShadowEffectSchema,
+  glowEffectSchema,
+  opacityEffectSchema,
+  blurEffectSchema,
+  brightnessEffectSchema,
+  contrastEffectSchema,
+  saturateEffectSchema,
+  grayscaleEffectSchema,
+  sepiaEffectSchema,
+  sectionEffectSchema,
+} from "./peblor-schemas/section-effect-schemas";
+
+// Explicit re-exports from section-column-layout-schemas
+export {
+  cssWidthOrFunctionSchema,
+  columnCountSchema,
+  columnWidthsSchema,
+  columnGapsSchema,
+  columnSpanSchema,
+  columnSpanMapSchema,
+  responsiveColumnSpanSchema,
+  responsiveGridModeSchema,
+  columnStyleSchema,
+  columnStylesSchema,
+  itemStyleSchema,
+  itemStylesSchema,
+  itemLayoutEntrySchema,
+  itemLayoutSchema,
+  elementOrderSchema,
+  columnAssignmentsSchema,
+  columnAssignmentsRequiredSchema,
+} from "./peblor-schemas/section-column-layout-schemas";
+
+// Explicit re-exports from section-block-base-schemas
+export {
+  sectionContentSizeSchema,
+  responsiveSectionContentSizeSchema,
+  type CustomEventTriggerDef,
+  type ElementEventTriggerDef,
+  type ScrollThresholdTriggerDef,
+  type MediaProgressTriggerDef,
+  baseSectionPropsSchema,
+  sectionPageTriggerSchema,
+  sectionDividerSchema,
+  sectionContentBlockSchema,
+  sectionScrollContainerSchema,
+  sectionColumnBaseSchema,
+  sectionTriggerSchema,
+  formHandlerKeySchema,
+  sectionFormBlockSchema,
+  sectionRevealSchema,
+} from "./peblor-schemas/section-block-base-schemas";
+
+// Explicit re-exports from section-block-schemas
+export { sectionBlockSchema } from "./peblor-schemas/section-block-schemas";
+
+// Explicit re-exports from form-field-schemas
+export {
+  formFieldOptionSchema,
+  formFieldStyleSchema,
+  formFieldTypeSchema,
+  formButtonTypeSchema,
+  formFieldBlockSchema,
+} from "./peblor-schemas/form-field-schemas";
+
+// Explicit re-exports from module-block-schemas
+export { moduleSlotSchema, moduleBlockSchema } from "./peblor-schemas/module-block-schemas";
+
+// Explicit re-exports from modal-block-schemas
+export {
+  modalTransitionConfigSchema,
+  modalSizeSchema,
+  modalPositionSchema,
+  modalBackdropSchema,
+  modalBehaviorSchema,
+  modalBuilderSchema,
+  type ModalBuilderFromSchema,
+  type ModalBehaviorFromSchema,
+  type ModalSizeFromSchema,
+  type ModalPositionFromSchema,
+  type ModalBackdropFromSchema,
+} from "./peblor-schemas/modal-block-schemas";
+
+// Explicit re-exports from motion-props-schema
+export {
+  motionTriggerSchema,
+  motionExitTriggerSchema,
+  type MotionState,
+  resolvedEntranceMotionSchema,
+  type ResolvedEntranceMotion,
+  resolvedExitMotionSchema,
+  type ResolvedExitMotion,
+  motionTimingSchema,
+  type MotionTiming,
+  inheritModeSchema,
+  motionPropsSchema,
+  type MotionPropsFromJson,
+} from "./peblor-schemas/motion-props-schema";
+
+// Explicit re-exports from page-definition-and-resolution-schemas
+export {
+  SECTION_TYPE_STRINGS,
+  peblorDefinitionBlockSchema,
+  pageScrollConfigSchema,
+  pageDensitySchema,
+  forcedThemeSchema,
+  figmaExportDiagnosticsPageFieldSchema,
+  type FigmaExportDiagnosticsPageField,
+  pageTagsSchema,
+  knownPageTagsConfigSchema,
+  filterCategorySchema,
+  filterConfigSchema,
+  projectGroupSchema,
+  projectGroupsSchema,
+  type PageTags,
+  type KnownPageTagsConfig,
+  type FilterCategory,
+  type FilterConfig,
+  type ProjectGroup,
+  type ProjectGroupsMap,
+  type PageTagValidationIssue,
+  validateKnownPageTags,
+  validateKnownFilterCategories,
+  validateProjectGroups,
+  pageVisibilitySchema,
+  peblorSchema,
+  validatePageReferences,
+  resolvedPageSchema,
+} from "./peblor-schemas/page-definition-and-resolution-schemas";
 
 export type bgVarLayer = z.infer<typeof bgVarLayerSchema>;
 export type bgPatternRepeat = z.infer<typeof bgPatternRepeatSchema>;
@@ -213,16 +501,6 @@ export type SectionBlockWithElementOrder = Omit<
   Extract<SectionBlock, { elements: ElementBlock[] }>,
   "elements"
 > & { elementOrder: string[] };
-
-export const SECTION_TYPE_STRINGS = new Set([
-  "divider",
-  "contentBlock",
-  "scrollContainer",
-  "sectionColumn",
-  "sectionTrigger",
-  "formBlock",
-  "revealSection",
-]);
 
 export const ASSET_URL_KEYS = new Set(["url", "src", "poster", "image", "video"]);
 

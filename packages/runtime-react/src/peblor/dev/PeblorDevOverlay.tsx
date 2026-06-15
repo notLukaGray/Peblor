@@ -1,8 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useVariableStore } from "@/peblor/runtime/peblor-variable-store";
-import { useActionLogStore } from "@/peblor/runtime/peblor-variable-store";
+import {
+  useVariableStore,
+  useActionLogStore,
+  useMutationLogStore,
+  type MutationLogEntry,
+} from "@/peblor/runtime/peblor-variable-store";
 import { useFigmaExportDiagnosticsStore } from "@/peblor/dev/figma-export-diagnostics-store";
 
 // ---------------------------------------------------------------------------
@@ -185,11 +189,59 @@ function ActionsTab() {
   );
 }
 
+function MutationsTab() {
+  const entries = useMutationLogStore((s) => s.entries);
+  const clear = useMutationLogStore((s) => s.clear);
+
+  return (
+    <>
+      <div className="flex items-center justify-between px-3 py-1.5 border-b border-gray-800">
+        <span className="text-gray-500 text-xs font-mono">
+          {entries.length} mutation{entries.length !== 1 ? "s" : ""}
+        </span>
+        <button
+          onClick={clear}
+          className="text-xs text-gray-400 hover:text-gray-100 font-mono px-2 py-0.5 rounded border border-gray-700 hover:border-gray-500 transition-colors"
+        >
+          Clear
+        </button>
+      </div>
+      {entries.length === 0 ? (
+        <p className="text-gray-500 text-xs px-3 py-4 font-mono">No mutations yet.</p>
+      ) : (
+        <div className="overflow-y-auto max-h-64">
+          <table className="w-full text-xs font-mono">
+            <tbody>
+              {entries.map((entry: MutationLogEntry) => (
+                <tr key={entry.id} className="border-b border-gray-800">
+                  <td className="px-2 py-1.5 text-gray-500 whitespace-nowrap align-top">
+                    {formatTimestamp(entry.timestamp)}
+                  </td>
+                  <td className="px-2 py-1.5 text-yellow-400 whitespace-nowrap align-top">
+                    {entry.key}
+                  </td>
+                  <td className="px-2 py-1.5 text-gray-400 align-top break-all">
+                    {truncate(JSON.stringify(entry.from ?? null))}
+                    <span className="text-gray-600 mx-1">→</span>
+                    <span className="text-green-400">
+                      {truncate(JSON.stringify(entry.to ?? null))}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Main overlay
 // ---------------------------------------------------------------------------
 
-type Tab = "variables" | "actions" | "figma";
+type Tab = "variables" | "actions" | "mutations" | "figma";
 
 export function PeblorDevOverlay() {
   const isDev = process.env.NODE_ENV === "development";
@@ -220,7 +272,7 @@ export function PeblorDevOverlay() {
       <div className="flex items-center justify-between px-3 py-2 bg-gray-800 border-b border-gray-700">
         <span className="text-xs font-semibold text-gray-300 tracking-wide uppercase">PB Dev</span>
         <div className="flex items-center gap-1">
-          {(["variables", "actions", "figma"] as Tab[]).map((t) => (
+          {(["variables", "actions", "mutations", "figma"] as Tab[]).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -242,7 +294,15 @@ export function PeblorDevOverlay() {
       </div>
 
       {/* Tab content */}
-      {tab === "variables" ? <VariablesTab /> : tab === "actions" ? <ActionsTab /> : <FigmaTab />}
+      {tab === "variables" ? (
+        <VariablesTab />
+      ) : tab === "actions" ? (
+        <ActionsTab />
+      ) : tab === "mutations" ? (
+        <MutationsTab />
+      ) : (
+        <FigmaTab />
+      )}
 
       {/* Footer hint */}
       <div className="px-3 py-1 bg-gray-800 border-t border-gray-700">

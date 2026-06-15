@@ -1,0 +1,69 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "entrancePreset": "fade"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "demo-buttons"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "scrollTo — Scroll Navigation"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Buttons scroll the page to different sections using the scrollTo action with smooth behavior. The action accepts an id, offset, and behavior mode."
+    },
+    "demo-buttons": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "align": "center",
+      "distribute": "center",
+      "gap": "1rem",
+      "section": {
+        "elementOrder": ["btn-scroll-top", "btn-scroll-variables", "btn-scroll-setvariable"],
+        "definitions": {
+          "btn-scroll-top": {
+            "preset": "btn-primary",
+            "label": "Scroll to Top",
+            "action": "scrollTo",
+            "actionPayload": {
+              "id": "hero",
+              "behavior": "smooth",
+              "block": "start",
+              "offset": 0
+            },
+            "wrapperBorderRadius": "10px"
+          },
+          "btn-scroll-variables": {
+            "preset": "btn-squircle",
+            "label": "Scroll to Variable Panel",
+            "action": "scrollTo",
+            "actionPayload": {
+              "id": "sec-variable-panel",
+              "behavior": "smooth",
+              "block": "start",
+              "offset": 0
+            },
+            "wrapperBorderRadius": "10px",
+            "wrapperPadding": "0.7rem 1.5rem"
+          },
+          "btn-scroll-setvariable": {
+            "preset": "btn-ghost",
+            "label": "Scroll to setVariable Section",
+            "action": "scrollTo",
+            "actionPayload": {
+              "id": "sec-setVariable",
+              "behavior": "smooth",
+              "block": "start",
+              "offset": 0
+            },
+            "wrapperBorderRadius": "10px"
+          }
+        }
+      }
+    }
+  },
+  "id": "sec-scrollTo"
+}

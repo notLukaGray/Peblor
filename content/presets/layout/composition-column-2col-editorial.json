@@ -1,0 +1,52 @@
+{
+  "type": "sectionColumn",
+  "columns": {
+    "base": 1,
+    "md": 2
+  },
+  "columnWidths": {
+    "base": [1],
+    "md": [1, 0.42]
+  },
+  "columnGaps": {
+    "base": "1.5rem",
+    "md": "3.5rem"
+  },
+  "columnAssignments": {
+    "eyebrow": 0,
+    "headline": 0,
+    "body": 0,
+    "pull-quote": 1,
+    "support": 1
+  },
+  "contentWidth": "100%",
+  "contentHeight": "hug",
+  "elementOrder": ["eyebrow", "headline", "body", "pull-quote", "support"],
+  "gridMode": "grid",
+  "gridAutoRows": "auto",
+  "definitions": {
+    "eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Editorial Layout",
+      "marginBottom": "0.75rem"
+    },
+    "headline": {
+      "preset": "type-h3-label",
+      "text": "Balanced narrative and supporting context"
+    },
+    "body": {
+      "preset": "type-body-standard",
+      "text": "Use the left column for primary story flow. This slot should hold the densest copy so mobile collapse still reads naturally in sequence.",
+      "width": "100%"
+    },
+    "pull-quote": {
+      "preset": "type-h4-card",
+      "text": "\"Clear hierarchy survives every breakpoint.\"",
+      "marginTop": "2rem"
+    },
+    "support": {
+      "preset": "type-body-fine",
+      "text": "Right column captures annotations, references, and secondary interpretation without stealing focus from the core narrative."
+    }
+  }
+}

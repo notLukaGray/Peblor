@@ -1,0 +1,21 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Video Minimal — Preset Demo",
+  "description": "Minimal video module with play/pause, flexible seek, and transport time.",
+  "presets": [
+    "demo",
+    "type/core",
+    "ui/link",
+    "type/motion",
+    "player/surface",
+    "bg",
+    "player/section"
+  ],
+  "bgKey": "bg-players",
+  "sectionOrder": ["nav-header", "hero", "sec-player"],
+  "definitions": {
+    "bg-players": {
+      "preset": "bg-players"
+    }
+  }
+}

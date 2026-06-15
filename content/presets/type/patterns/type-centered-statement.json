@@ -1,0 +1,17 @@
+{
+  "type": "elementHeading",
+  "level": 2,
+  "textAlign": "center",
+  "selfAlign": "center",
+  "wordWrap": true,
+  "width": {
+    "base": "90%",
+    "md": "55%"
+  },
+  "color": "var(--pb-on-secondary)",
+  "motionTiming": {
+    "entrancePreset": "blurIn",
+    "trigger": "onFirstVisible"
+  },
+  "text": ""
+}

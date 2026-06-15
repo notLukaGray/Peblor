@@ -9,15 +9,16 @@ export async function listPages(): Promise<{ route: string; path: string }[]> {
     let entries;
     try {
       entries = await readdir(dir, { withFileTypes: true });
-    } catch {
+    } catch (err) {
+      console.warn("[pb-mcp] Failed to read directory", dir, err);
       return;
     }
     for (const entry of entries) {
       if (entry.isDirectory()) {
         await walk(join(dir, entry.name), `${routePrefix}/${entry.name}`);
-      } else if (entry.isFile() && entry.name.endsWith(".json")) {
-        const name = entry.name.replace(/\.json$/, "");
-        const route = name === "index" ? routePrefix || "/" : `${routePrefix}/${name}`;
+      } else if (entry.isFile() && entry.name === "index.json") {
+        // Only emit index.json files — sidecar section fragments (e.g. hero.json) are not routes.
+        const route = routePrefix || "/";
         pages.push({ route, path: join(dir, entry.name) });
       }
     }
@@ -39,7 +40,9 @@ export async function findPage(
     try {
       const raw = await readFile(p, "utf-8");
       return { content: JSON.parse(raw) as Record<string, unknown>, path: p };
-    } catch {}
+    } catch (err) {
+      console.warn("[pb-mcp] Failed to read/find page candidate", p, err);
+    }
   }
   throw new Error(`Page not found: ${route}`);
 }
@@ -48,7 +51,8 @@ export async function listPresets(): Promise<{ category: string; presets: string
   let entries;
   try {
     entries = await readdir(PRESETS_DIR, { withFileTypes: true });
-  } catch {
+  } catch (err) {
+    console.warn("[pb-mcp] Failed to list presets directory", err);
     return [];
   }
 
@@ -81,12 +85,15 @@ export async function findPreset(id: string): Promise<unknown> {
   try {
     const content = await readFile(join(PRESETS_DIR, `${id}.json`), "utf-8");
     return JSON.parse(content);
-  } catch {}
+  } catch (err) {
+    console.warn("[pb-mcp] Failed to read preset at top-level", id, err);
+  }
 
   let entries;
   try {
     entries = await readdir(PRESETS_DIR, { withFileTypes: true });
-  } catch {
+  } catch (err) {
+    console.warn("[pb-mcp] Failed to read presets directory", err);
     throw new Error(`Preset not found: ${id}`);
   }
 
@@ -95,7 +102,13 @@ export async function findPreset(id: string): Promise<unknown> {
       try {
         const content = await readFile(join(PRESETS_DIR, entry.name, `${id}.json`), "utf-8");
         return JSON.parse(content);
-      } catch {}
+      } catch (err) {
+        console.warn(
+          "[pb-mcp] Failed to read preset file",
+          join(PRESETS_DIR, entry.name, `${id}.json`),
+          err
+        );
+      }
     }
   }
 
@@ -110,7 +123,9 @@ export async function getPresetsInCategory(category: string): Promise<Record<str
   for (const id of found.presets) {
     try {
       result[id] = await findPreset(id);
-    } catch {}
+    } catch (err) {
+      console.warn("[pb-mcp] Failed to find preset in category", category, id, err);
+    }
   }
   return result;
 }
@@ -119,7 +134,8 @@ export async function listContentDir(dir: string): Promise<{ id: string; path: s
   let entries;
   try {
     entries = await readdir(dir, { withFileTypes: true });
-  } catch {
+  } catch (err) {
+    console.warn("[pb-mcp] Failed to list content directory", dir, err);
     return [];
   }
   return entries
@@ -132,7 +148,8 @@ export async function readContentFile(dir: string, id: string): Promise<unknown>
   const p = join(dir, `${id}.json`);
   try {
     return JSON.parse(await readFile(p, "utf-8"));
-  } catch {
+  } catch (err) {
+    console.warn("[pb-mcp] Failed to read content file", p, err);
     throw new Error(`Not found: ${id}`);
   }
 }

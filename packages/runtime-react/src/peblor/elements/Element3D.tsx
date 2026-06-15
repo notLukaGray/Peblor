@@ -3,6 +3,8 @@
 import { useMemo, useState, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter } from "next/navigation";
+import { useDeviceType } from "@pb/runtime-react/core/hooks/use-device-type";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
 import type { ElementBlock, MotionPropsFromJson } from "@pb/contracts/peblor/core/peblor-schemas";
 import type { ElementLayoutTransformOptions } from "@pb/core/layout";
 import { ElementLayoutWrapper } from "./Shared/ElementLayoutWrapper";
@@ -27,6 +29,7 @@ import { useModel3DLoadedState } from "./Element3D/use-model3d-loaded-state";
 import { useModel3DTriggerControls } from "./Element3D/use-model3d-trigger-controls";
 import { useModel3DReadySequence } from "./Element3D/use-model3d-ready-sequence";
 import { useModel3DPreload } from "./Element3D/use-model3d-preload";
+import { clearModel3DGLTFCache } from "./Element3D/model3d-use-gltf";
 import { resolveModel3DAssetPath } from "./Element3D/model3d-texture-map";
 import { MotionFromJson } from "@/peblor/integrations/framer-motion";
 import {
@@ -51,12 +54,12 @@ type LayoutProps = Pick<
 function buildLayout(values: {
   width: Props["width"];
   height: Props["height"];
-  align: Props["align"];
+  selfAlign: Props["selfAlign"];
   marginTop: Props["marginTop"];
   marginBottom: Props["marginBottom"];
   marginLeft: Props["marginLeft"];
   marginRight: Props["marginRight"];
-  zIndex: Props["zIndex"];
+  layer: Props["layer"];
   constraints: Props["constraints"];
   effects: Props["effects"];
   wrapperStyle: Props["wrapperStyle"];
@@ -64,19 +67,19 @@ function buildLayout(values: {
   blendMode: Props["blendMode"];
   boxShadow: Props["boxShadow"];
   filter: Props["filter"];
-  backdropFilter: Props["backdropFilter"];
+  bgBlur: Props["bgBlur"];
   hidden: Props["hidden"];
-  overflow: Props["overflow"];
+  scroll: Props["scroll"];
 }): LayoutProps {
   return {
     width: values.width as string | undefined,
     height: values.height as string | undefined,
-    align: values.align as "left" | "center" | "right" | undefined,
+    align: values.selfAlign as "left" | "center" | "right" | undefined,
     marginTop: values.marginTop as string | undefined,
     marginBottom: values.marginBottom as string | undefined,
     marginLeft: values.marginLeft as string | undefined,
     marginRight: values.marginRight as string | undefined,
-    zIndex: values.zIndex,
+    zIndex: values.layer,
     constraints: values.constraints,
     effects: values.effects,
     wrapperStyle: values.wrapperStyle,
@@ -84,9 +87,9 @@ function buildLayout(values: {
     blendMode: values.blendMode,
     boxShadow: values.boxShadow,
     filter: values.filter,
-    backdropFilter: values.backdropFilter,
+    backdropFilter: values.bgBlur,
     hidden: values.hidden,
-    overflow: values.overflow,
+    overflow: values.scroll,
   };
 }
 
@@ -109,9 +112,10 @@ export function ElementModel3D({
   scene,
   canvas,
   postProcessing,
+  aspectRatio,
   width,
   height,
-  align,
+  selfAlign,
   marginTop,
   marginBottom,
   marginLeft,
@@ -127,11 +131,11 @@ export function ElementModel3D({
   blendMode,
   boxShadow,
   filter,
-  backdropFilter,
+  bgBlur,
   hidden,
-  overflow,
+  scroll,
   constraints,
-  zIndex,
+  layer,
   alignY: _alignY,
   textAlign: _textAlign,
   moduleConfig: _moduleConfig,
@@ -139,15 +143,18 @@ export function ElementModel3D({
   exitPreset,
   interactions,
 }: Props) {
+  const { isMobile } = useDeviceType();
+  const resolvedAspectRatio = resolveResponsiveValue(aspectRatio, isMobile) as string | undefined;
+
   const layout = buildLayout({
     width,
     height,
-    align,
+    selfAlign,
     marginTop,
     marginBottom,
     marginLeft,
     marginRight,
-    zIndex,
+    layer,
     constraints,
     effects,
     wrapperStyle,
@@ -155,9 +162,9 @@ export function ElementModel3D({
     blendMode,
     boxShadow,
     filter,
-    backdropFilter,
+    bgBlur,
     hidden,
-    overflow,
+    scroll,
   });
   const router = useRouter();
   const pathname = usePathname();
@@ -170,9 +177,14 @@ export function ElementModel3D({
       .map((m) => resolveModel3DAssetPath(m.geometry, { raw: true }))
       .filter((g): g is string => !!g);
   }, [models]);
-  useModel3DPreload(geometryUrls, { eager: isHomepagePriority });
 
   const { isLoaded, setLoadedState } = useModel3DLoadedState({ id, initiallyLoaded });
+
+  const clearGeometryCache = useCallback(() => {
+    clearModel3DGLTFCache(geometryUrls);
+  }, [geometryUrls]);
+
+  useModel3DPreload(geometryUrls, { eager: isHomepagePriority, enabled: isLoaded });
   const [isVisible, setIsVisible] = useState(true);
   const [opacity, setOpacity] = useState(1);
   const [opacityTransitionMs, setOpacityTransitionMs] = useState(
@@ -200,6 +212,7 @@ export function ElementModel3D({
 
   useModel3DTriggerControls({
     id,
+    sceneCameraPresets: scene.cameraPresets,
     opacity,
     setLoadedState,
     setIsVisible,
@@ -214,6 +227,7 @@ export function ElementModel3D({
     setSceneCommand,
     setPostProcessingCommand,
     onBeforeLoad: (payload) => prepareLoad(payload),
+    onClearGeometryCache: clearGeometryCache,
   });
 
   const block = useMemo(
@@ -235,15 +249,15 @@ export function ElementModel3D({
     const durationSec = Math.max(0, opacityTransitionMs) / 1000;
     const exitFromPreset =
       exitPreset && typeof exitPreset === "string"
-        ? getExitMotionFromPreset(exitPreset, { duration: durationSec }).exit
+        ? getExitMotionFromPreset(exitPreset, { duration: durationSec }).leave
         : undefined;
     const exitKeyframes =
-      (base.exit as Record<string, unknown> | undefined) ??
+      (base.leave as Record<string, unknown> | undefined) ??
       exitFromPreset ??
-      (MOTION_DEFAULTS.motionComponent.exit as Record<string, unknown>);
+      (MOTION_DEFAULTS.motionComponent.leave as Record<string, unknown>);
     return {
       ...base,
-      exit: exitKeyframes as Record<string, string | number | number[]>,
+      leave: exitKeyframes as Record<string, string | number | number[]>,
       transition:
         typeof base.transition === "object" && base.transition != null
           ? { ...base.transition, duration: durationSec }
@@ -258,11 +272,22 @@ export function ElementModel3D({
 
   return (
     <ElementLayoutWrapper layout={layout} interactions={interactions}>
-      <div className="relative w-full h-full min-h-0 min-w-0 flex-1">
+      <div
+        className={
+          resolvedAspectRatio
+            ? "relative w-full min-h-0 min-w-0"
+            : "relative w-full h-full min-h-0 min-w-0 flex-1"
+        }
+        style={resolvedAspectRatio ? { aspectRatio: resolvedAspectRatio } : undefined}
+      >
         <MotionFromJson
           motion={motionConfig}
           animateOverride={{ opacity: clampedOpacity }}
-          className="absolute inset-0 rounded overflow-hidden"
+          className={
+            resolvedAspectRatio
+              ? "relative w-full h-full rounded overflow-hidden"
+              : "absolute inset-0 rounded overflow-hidden"
+          }
           style={{
             visibility: showLayer ? "visible" : "hidden",
             pointerEvents: isVisible && clampedOpacity > 0 ? "auto" : "none",

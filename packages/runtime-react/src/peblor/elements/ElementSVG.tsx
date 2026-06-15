@@ -315,6 +315,20 @@ function ensureSvgFillsContainer(sanitized: string): string {
   });
 }
 
+/**
+ * Mobile SVG compatibility helpers.
+ *
+ * These two functions patch SVG markup for known mobile rendering quirks.
+ * Both run in a useEffect after sanitization — they modify the markup text,
+ * not the DOM, so they're safe to call on every effect re-run.
+ */
+
+/**
+ * iOS Safari drops mix-blend-mode on <g> elements that don't have a
+ * hardware-accelerated composite context. Adding `transform:translateZ(0)`
+ * forces GPU compositing on the group, which preserves the blend mode.
+ * Only applies when the style doesn't already have a transform property.
+ */
 function fixBlendModeForMobile(svg: string): string {
   return svg.replace(/<g([^>]*style="([^"]*mix-blend-mode[^"]*)"([^>]*))>/gi, (match) => {
     const styleMatch = match.match(/style="([^"]*)"/);
@@ -329,6 +343,12 @@ function fixBlendModeForMobile(svg: string): string {
   });
 }
 
+/**
+ * Chromium-based browsers on Android apply gradientTransform incorrectly when
+ * it uses a matrix() with non-integer values or complex transforms. Parsing
+ * and normalizing via buildGradientTransformMatrix produces a stable matrix
+ * that renders consistently across platforms.
+ */
 function fixGradientTransformForMobile(svg: string): string {
   return svg.replace(/gradientTransform="([^"]+)"/gi, (_, transformValue) => {
     const parsed = parseTransformString(transformValue);
@@ -346,12 +366,12 @@ export const ElementSVG = forwardRef<HTMLAnchorElement | HTMLDivElement, Props>(
       ariaLabel,
       width,
       height,
-      align,
+      selfAlign,
       marginTop,
       marginBottom,
       marginLeft,
       marginRight,
-      zIndex,
+      layer,
       fixed,
       constraints,
       effects,
@@ -360,8 +380,8 @@ export const ElementSVG = forwardRef<HTMLAnchorElement | HTMLDivElement, Props>(
       blendMode,
       boxShadow,
       filter,
-      backdropFilter,
-      overflow,
+      bgBlur,
+      scroll,
       hidden,
       borderRadius,
       rotate,
@@ -381,24 +401,38 @@ export const ElementSVG = forwardRef<HTMLAnchorElement | HTMLDivElement, Props>(
     const [sanitizeFailed, setSanitizeFailed] = useState(false);
 
     useEffect(() => {
+      let cancelled = false;
       const trimmed = markup != null ? String(markup).trim() : "";
       if (!trimmed) {
-        queueMicrotask(() => {
-          setSafeHtml("");
-          setSanitizeFailed(false);
-        });
+        setSafeHtml("");
+        setSanitizeFailed(false);
         return;
       }
-      const sanitized = sanitizeSvgMarkup(markup);
-      const filled = ensureSvgFillsContainer(sanitized);
-      const blendModeFixed = fixBlendModeForMobile(filled);
-      const gradientFixed = fixGradientTransformForMobile(blendModeFixed);
-      const hasValidSvg =
-        gradientFixed.trim().length > 0 && gradientFixed.trim().toLowerCase().startsWith("<svg");
-      queueMicrotask(() => {
-        setSafeHtml(gradientFixed);
-        setSanitizeFailed(!hasValidSvg);
-      });
+
+      sanitizeSvgMarkup(markup)
+        .then((sanitized) => {
+          if (cancelled) return;
+          const filled = ensureSvgFillsContainer(sanitized);
+          const blendModeFixed = fixBlendModeForMobile(filled);
+          const gradientFixed = fixGradientTransformForMobile(blendModeFixed);
+          const hasValidSvg =
+            gradientFixed.trim().length > 0 &&
+            gradientFixed.trim().toLowerCase().startsWith("<svg");
+          if (!cancelled) {
+            setSafeHtml(gradientFixed);
+            setSanitizeFailed(!hasValidSvg);
+          }
+        })
+        .catch(() => {
+          if (!cancelled) {
+            setSanitizeFailed(true);
+            setSafeHtml("");
+          }
+        });
+
+      return () => {
+        cancelled = true;
+      };
     }, [markup]);
 
     const inferredGlassClipPath = useMemo(() => {
@@ -419,12 +453,12 @@ export const ElementSVG = forwardRef<HTMLAnchorElement | HTMLDivElement, Props>(
       width,
       height,
       borderRadius: borderRadius ?? inferredBorderRadius,
-      align,
+      selfAlign,
       marginTop,
       marginBottom,
       marginLeft,
       marginRight,
-      zIndex,
+      layer,
       fixed,
       constraints,
       figmaConstraints,
@@ -434,8 +468,8 @@ export const ElementSVG = forwardRef<HTMLAnchorElement | HTMLDivElement, Props>(
       blendMode,
       boxShadow,
       filter,
-      backdropFilter,
-      overflow,
+      bgBlur,
+      scroll,
       hidden,
     };
 

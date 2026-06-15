@@ -1,0 +1,93 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["sec-label", "cards-row"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Feature Cards"
+    },
+    "cards-row": {
+      "preset": "card-grid-row",
+      "section": {
+        "elementOrder": ["card-1", "card-2", "card-3"],
+        "definitions": {
+          "card-1": {
+            "preset": "card-feature-basic",
+            "section": {
+              "elementOrder": ["kicker", "title", "body", "link"],
+              "definitions": {
+                "kicker": {
+                  "preset": "type-kicker-badge",
+                  "text": "Design System"
+                },
+                "title": {
+                  "preset": "type-h4-card",
+                  "text": "Composable card surfaces"
+                },
+                "body": {
+                  "preset": "type-body-standard",
+                  "text": "Each card is a slot-based surface with predictable internal zones for media, copy, and actions."
+                },
+                "link": {
+                  "preset": "type-link-nav",
+                  "label": "Explore →",
+                  "href": "#"
+                }
+              }
+            }
+          },
+          "card-2": {
+            "preset": "card-feature-basic",
+            "section": {
+              "elementOrder": ["kicker", "title", "body", "link"],
+              "definitions": {
+                "kicker": {
+                  "preset": "type-kicker-badge",
+                  "text": "Motion"
+                },
+                "title": {
+                  "preset": "type-h4-card",
+                  "text": "Hover lift out of the box"
+                },
+                "body": {
+                  "preset": "type-body-standard",
+                  "text": "Cards animate with a subtle upward lift on hover and a smooth 0.18s transition."
+                },
+                "link": {
+                  "preset": "type-link-nav",
+                  "label": "Explore →",
+                  "href": "#"
+                }
+              }
+            }
+          },
+          "card-3": {
+            "preset": "card-feature-basic",
+            "section": {
+              "elementOrder": ["kicker", "title", "body", "link"],
+              "definitions": {
+                "kicker": {
+                  "preset": "type-kicker-badge",
+                  "text": "Tokens"
+                },
+                "title": {
+                  "preset": "type-h4-card",
+                  "text": "Theme-aware by default"
+                },
+                "body": {
+                  "preset": "type-body-standard",
+                  "text": "All fills, borders, and text colors reference CSS token variables and adapt to any theme."
+                },
+                "link": {
+                  "preset": "type-link-nav",
+                  "label": "Explore →",
+                  "href": "#"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

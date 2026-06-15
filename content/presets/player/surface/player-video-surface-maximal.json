@@ -1,0 +1,65 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "column",
+  "align": "stretch",
+  "gap": "0",
+  "width": "100%",
+  "height": "hug",
+  "borderRadius": "20px",
+  "scroll": "hidden",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+  },
+  "section": {
+    "elementOrder": ["player-surface", "player-chapters"],
+    "definitions": {
+      "player-surface": {
+        "type": "elementGroup",
+        "width": "100%",
+        "aspectRatio": "16 / 9",
+        "scroll": "hidden",
+        "section": {
+          "elementOrder": ["video"],
+          "definitions": {
+            "video": {
+              "type": "elementVideo",
+              "module": "video-player-full",
+              "src": "https://samplelib.com/preview/mp4/sample-20s.mp4",
+              "poster": "",
+              "width": "100%",
+              "height": "100%",
+              "objectFit": "cover"
+            }
+          }
+        }
+      },
+      "player-chapters": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "row",
+        "align": "center",
+        "gap": "0.5rem",
+        "padding": "0.5rem 1rem",
+        "width": "100%",
+        "scroll": "hidden",
+        "section": {
+          "elementOrder": ["chapter-label", "chapter-btns"],
+          "definitions": {
+            "chapter-label": {
+              "type": "elementBody",
+              "level": 5,
+              "text": "Chapters",
+              "color": "color-mix(in oklab, var(--pb-on-secondary) 55%, transparent)",
+              "width": "hug"
+            },
+            "chapter-btns": {
+              "preset": "player-controls-scene-selector"
+            }
+          }
+        }
+      }
+    }
+  }
+}

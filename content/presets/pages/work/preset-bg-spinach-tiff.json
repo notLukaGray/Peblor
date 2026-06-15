@@ -1,0 +1,86 @@
+{
+  "preset": "work-bg-overlay",
+  "fill": "radial-gradient(ellipse 140% 120% at 62% 50%, oklch(0.85 0.025 160 / 0.55) 0%, oklch(0.85 0.01 160 / 0.08) 100%)",
+  "visibleWhen": {
+    "logic": "and",
+    "conditions": [
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "brand"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "campaign"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "cinematic"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "documentary"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "editorial"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "exhibition"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "immersive"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "motion"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "photography"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "process"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "systems"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "clean-it-up"
+      },
+      {
+        "variable": "selectedProject",
+        "operator": "notEquals",
+        "value": "lenero"
+      }
+    ]
+  },
+  "motion": {
+    "from": {
+      "opacity": 0
+    },
+    "to": {
+      "opacity": 1
+    },
+    "transition": {
+      "duration": 1.1,
+      "ease": "easeInOut"
+    }
+  }
+}

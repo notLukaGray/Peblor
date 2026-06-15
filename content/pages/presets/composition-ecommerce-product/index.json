@@ -1,0 +1,637 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Product Detail — Composition Demo",
+  "description": "Single product page: hero with image + purchase panel, image gallery carousel, tabbed details, scroll-triggered sticky buy bar (sectionTrigger + visibleWhen), related products, and KPI stats.",
+  "presets": [
+    "demo",
+    "type/core",
+    "type/effects",
+    "type/motion",
+    "ui/button",
+    "ui/link",
+    "layout",
+    "card",
+    "bg"
+  ],
+  "bgKey": "bg-page",
+  "scroll": {
+    "smooth": true,
+    "lockBody": true,
+    "scrollX": "hidden"
+  },
+  "sectionOrder": [
+    "nav-header",
+    "sec-product-hero",
+    "sec-gallery-label",
+    "sec-gallery",
+    "sec-tabs",
+    "sec-scroll-trigger",
+    "sec-sticky-bar",
+    "sec-related-label",
+    "sec-related",
+    "sec-proof"
+  ],
+  "definitions": {
+    "bg-page": {
+      "type": "backgroundVariable",
+      "layers": [
+        {
+          "fill": "oklch(0.05 0.003 262)"
+        },
+        {
+          "fill": "radial-gradient(ellipse 60% 40% at 15% 20%, oklch(0.2 0.05 270 / 0.4) 0%, transparent 60%)",
+          "motion": [
+            {
+              "type": "loop",
+              "to": {
+                "opacity": [0.6, 1, 0.6]
+              },
+              "transition": {
+                "duration": 9,
+                "ease": "easeInOut",
+                "repeatType": "mirror"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "nav-header": {
+      "preset": "preset-demo-nav-header"
+    },
+    "sec-product-hero": {
+      "preset": "composition-column-30-70-media",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "5rem 0 4rem",
+        "md": "12rem 0 6rem"
+      },
+      "definitions": {
+        "media": {
+          "src": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80&auto=format&fit=crop",
+          "alt": "Precision Timepiece — Obsidian Black",
+          "height": {
+            "base": "16rem",
+            "md": "100%"
+          },
+          "borderRadius": "20px",
+          "objectFit": "cover"
+        },
+        "title": {
+          "text": "Precision Timepiece — Obsidian Black"
+        },
+        "description": {
+          "text": "Sapphire crystal. Swiss automatic movement. 316L surgical steel case. Water resistant to 100m. Every component machined to tolerance."
+        },
+        "detail": {
+          "preset": "type-h2-section",
+          "text": "$1,290"
+        },
+        "cta": {
+          "label": "Add to cart →",
+          "href": "#"
+        }
+      }
+    },
+    "sec-gallery-label": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "4rem 0 1.5rem",
+        "md": "5rem 0 2rem"
+      },
+      "elementOrder": ["gallery-heading"],
+      "definitions": {
+        "gallery-heading": {
+          "preset": "type-h3-label",
+          "text": "Product gallery"
+        }
+      }
+    },
+    "sec-gallery": {
+      "type": "contentBlock",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1400px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 0 3rem",
+        "md": "0 0 5rem"
+      },
+      "elementOrder": ["gallery-carousel"],
+      "definitions": {
+        "gallery-carousel": {
+          "preset": "card-carousel-basic",
+          "section": {
+            "definitions": {
+              "slide-a": {
+                "section": {
+                  "definitions": {
+                    "kicker": {
+                      "text": "View 01"
+                    },
+                    "title": {
+                      "text": "Front profile"
+                    },
+                    "body": {
+                      "text": "12mm case depth, polished bezel"
+                    }
+                  }
+                }
+              },
+              "slide-b": {
+                "section": {
+                  "definitions": {
+                    "kicker": {
+                      "text": "View 02"
+                    },
+                    "title": {
+                      "text": "Case back"
+                    },
+                    "body": {
+                      "text": "Sapphire exhibition caseback"
+                    }
+                  }
+                }
+              },
+              "slide-c": {
+                "section": {
+                  "definitions": {
+                    "kicker": {
+                      "text": "View 03"
+                    },
+                    "title": {
+                      "text": "Movement detail"
+                    },
+                    "body": {
+                      "text": "ETA 2824-2 automatic"
+                    }
+                  }
+                }
+              },
+              "slide-d": {
+                "section": {
+                  "definitions": {
+                    "kicker": {
+                      "text": "View 04"
+                    },
+                    "title": {
+                      "text": "Strap option"
+                    },
+                    "body": {
+                      "text": "Brushed steel bracelet"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-tabs": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "3rem 0 4rem",
+        "md": "4rem 0 6rem"
+      },
+      "gap": "2rem",
+      "elementOrder": ["tabs-heading", "product-tabs"],
+      "definitions": {
+        "tabs-heading": {
+          "preset": "type-h3-label",
+          "text": "Product details"
+        },
+        "product-tabs": {
+          "type": "elementTabs",
+          "variant": "underline",
+          "tabs": [
+            {
+              "label": "Description",
+              "elements": [
+                {
+                  "type": "elementBody",
+                  "level": 3,
+                  "text": "The Precision Timepiece is built for those who understand that true luxury is in the details. Swiss automatic movement with 42-hour power reserve. Sapphire crystal front and back. Screw-down crown for water resistance. Available in Obsidian Black, Polished Silver, and Bronze.",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 75%, transparent)"
+                }
+              ]
+            },
+            {
+              "label": "Specifications",
+              "elements": [
+                {
+                  "type": "elementBody",
+                  "level": 3,
+                  "text": "Case diameter: 40mm · Case depth: 12mm · Movement: ETA 2824-2 automatic · Power reserve: 42h · Crystal: Sapphire AR-coated · Water resistance: 100m · Strap: 20mm lug width · Weight: 148g",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 75%, transparent)"
+                }
+              ]
+            },
+            {
+              "label": "Reviews",
+              "elements": [
+                {
+                  "type": "elementBody",
+                  "level": 3,
+                  "text": "★★★★★  The finishing on this watch is extraordinary. I've worn it daily for six months and it still looks perfect.  — James R.\n\n★★★★★  Arrived in two days, perfectly packaged. The movement is smooth and accurate to within 4 seconds/day.  — Elena M.",
+                  "color": "color-mix(in oklab, var(--pb-on-secondary) 75%, transparent)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "sec-scroll-trigger": {
+      "type": "sectionTrigger",
+      "onVisible": {
+        "type": "setVariable",
+        "payload": {
+          "key": "stickyBarVisible",
+          "value": "visible"
+        }
+      },
+      "threshold": 0.5,
+      "triggerOnce": true
+    },
+    "sec-sticky-bar": {
+      "type": "contentBlock",
+      "width": "100%",
+      "height": "hug",
+      "fill": "transparent",
+      "elementOrder": ["sticky-group"],
+      "definitions": {
+        "sticky-group": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "row",
+          "fixed": true,
+          "bottom": "0",
+          "left": "0",
+          "width": "100%",
+          "padding": {
+            "base": "0.85rem 1.5rem",
+            "md": "1rem 2rem"
+          },
+          "gap": "1.5rem",
+          "align": "center",
+          "distribute": "between",
+          "fill": "color-mix(in oklab, var(--pb-secondary) 80%, transparent)",
+          "layer": 90,
+          "wrapperStyle": {
+            "bgBlur": "blur(20px)",
+            "WebkitBackdropFilter": "blur(20px)",
+            "borderTop": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+          },
+          "visibleWhen": {
+            "variable": "stickyBarVisible",
+            "operator": "equals",
+            "value": "visible"
+          },
+          "section": {
+            "elementOrder": ["sticky-title", "sticky-price", "sticky-btn"],
+            "definitions": {
+              "sticky-title": {
+                "preset": "type-h5-meta",
+                "text": "Precision Timepiece — Obsidian Black"
+              },
+              "sticky-price": {
+                "preset": "type-h4-card",
+                "text": "$1,290"
+              },
+              "sticky-btn": {
+                "preset": "btn-primary",
+                "label": "Add to cart",
+                "href": "#",
+                "wrapperPadding": "0.75rem 1.5rem",
+                "wrapperBorderRadius": "10px"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-related-label": {
+      "type": "contentBlock",
+      "flow": "column",
+      "width": {
+        "base": "92%",
+        "md": "72%"
+      },
+      "maxWidth": "900px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "4rem 0 2rem",
+        "md": "6rem 0 3rem"
+      },
+      "elementOrder": ["related-heading"],
+      "definitions": {
+        "related-heading": {
+          "preset": "type-h3-label",
+          "text": "You may also like"
+        }
+      }
+    },
+    "sec-related": {
+      "type": "sectionColumn",
+      "columns": {
+        "base": 1,
+        "md": 3
+      },
+      "columnWidths": {
+        "base": [1],
+        "md": [1, 1, 1]
+      },
+      "columnGaps": {
+        "base": "1rem",
+        "md": "1.5rem"
+      },
+      "columnAssignments": {
+        "base": {
+          "rel-a": 0,
+          "rel-b": 0,
+          "rel-c": 0
+        },
+        "md": {
+          "rel-a": 0,
+          "rel-b": 1,
+          "rel-c": 2
+        }
+      },
+      "contentWidth": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "contentHeight": "hug",
+      "gridMode": "grid",
+      "gridAutoRows": "auto",
+      "selfAlign": "center",
+      "padding": {
+        "base": "0 0 4rem",
+        "md": "0 0 6rem"
+      },
+      "elementOrder": ["rel-a", "rel-b", "rel-c"],
+      "definitions": {
+        "rel-a": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "column",
+          "gap": "0",
+          "width": "100%",
+          "borderRadius": "16px",
+          "scroll": "hidden",
+          "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+          "wrapperStyle": {
+            "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+          },
+          "section": {
+            "elementOrder": ["prod-img", "prod-info"],
+            "definitions": {
+              "prod-img": {
+                "type": "elementImage",
+                "src": "https://images.unsplash.com/photo-1594534475808-b18fc33b045e?w=600&q=80&auto=format&fit=crop",
+                "alt": "Moonphase Edition",
+                "width": "100%",
+                "height": {
+                  "base": "10rem",
+                  "md": "11rem"
+                },
+                "objectFit": "cover"
+              },
+              "prod-info": {
+                "type": "elementGroup",
+                "display": "flex",
+                "flow": "column",
+                "gap": "0.3rem",
+                "padding": "1rem 1.1rem 1.2rem",
+                "section": {
+                  "elementOrder": ["prod-name", "prod-price"],
+                  "definitions": {
+                    "prod-name": {
+                      "preset": "type-h4-card",
+                      "text": "Moonphase Edition"
+                    },
+                    "prod-price": {
+                      "preset": "type-body-fine",
+                      "text": "$1,890"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "rel-b": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "column",
+          "gap": "0",
+          "width": "100%",
+          "borderRadius": "16px",
+          "scroll": "hidden",
+          "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+          "wrapperStyle": {
+            "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+          },
+          "section": {
+            "elementOrder": ["prod-img", "prod-info"],
+            "definitions": {
+              "prod-img": {
+                "type": "elementImage",
+                "src": "https://images.unsplash.com/photo-1518715303843-586e350060c0?w=600&q=80&auto=format&fit=crop",
+                "alt": "Field Watch Khaki",
+                "width": "100%",
+                "height": {
+                  "base": "10rem",
+                  "md": "11rem"
+                },
+                "objectFit": "cover"
+              },
+              "prod-info": {
+                "type": "elementGroup",
+                "display": "flex",
+                "flow": "column",
+                "gap": "0.3rem",
+                "padding": "1rem 1.1rem 1.2rem",
+                "section": {
+                  "elementOrder": ["prod-name", "prod-price"],
+                  "definitions": {
+                    "prod-name": {
+                      "preset": "type-h4-card",
+                      "text": "Field Watch — Khaki"
+                    },
+                    "prod-price": {
+                      "preset": "type-body-fine",
+                      "text": "$890"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "rel-c": {
+          "type": "elementGroup",
+          "display": "flex",
+          "flow": "column",
+          "gap": "0",
+          "width": "100%",
+          "borderRadius": "16px",
+          "scroll": "hidden",
+          "fill": "color-mix(in oklab, var(--pb-on-secondary) 6%, transparent)",
+          "wrapperStyle": {
+            "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+          },
+          "section": {
+            "elementOrder": ["prod-img", "prod-info"],
+            "definitions": {
+              "prod-img": {
+                "type": "elementImage",
+                "src": "https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=600&q=80&auto=format&fit=crop",
+                "alt": "Chrono Sport",
+                "width": "100%",
+                "height": {
+                  "base": "10rem",
+                  "md": "11rem"
+                },
+                "objectFit": "cover"
+              },
+              "prod-info": {
+                "type": "elementGroup",
+                "display": "flex",
+                "flow": "column",
+                "gap": "0.3rem",
+                "padding": "1rem 1.1rem 1.2rem",
+                "section": {
+                  "elementOrder": ["prod-name", "prod-price"],
+                  "definitions": {
+                    "prod-name": {
+                      "preset": "type-h4-card",
+                      "text": "Chrono Sport"
+                    },
+                    "prod-price": {
+                      "preset": "type-body-fine",
+                      "text": "$1,450"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "sec-proof": {
+      "preset": "composition-column-kpi-matrix",
+      "width": {
+        "base": "92%",
+        "md": "86%"
+      },
+      "maxWidth": "1240px",
+      "selfAlign": "center",
+      "padding": {
+        "base": "2rem 0 5rem",
+        "md": "3rem 0 8rem"
+      },
+      "definitions": {
+        "kpi-1": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 4,
+                "suffix": ".9★",
+                "tween": {
+                  "duration": 800
+                }
+              },
+              "label": {
+                "text": "Average rating"
+              },
+              "body": {
+                "text": "Across 2,400+ verified reviews."
+              }
+            }
+          }
+        },
+        "kpi-2": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 30,
+                "suffix": "d",
+                "tween": {
+                  "duration": 1000
+                }
+              },
+              "label": {
+                "text": "Returns policy"
+              },
+              "body": {
+                "text": "Free returns, no questions asked."
+              }
+            }
+          }
+        },
+        "kpi-3": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 5,
+                "suffix": "yr",
+                "tween": {
+                  "duration": 1200
+                }
+              },
+              "label": {
+                "text": "Warranty"
+              },
+              "body": {
+                "text": "Movement and case fully covered."
+              }
+            }
+          }
+        },
+        "kpi-4": {
+          "section": {
+            "definitions": {
+              "num": {
+                "target": 2,
+                "suffix": "d",
+                "tween": {
+                  "duration": 600
+                }
+              },
+              "label": {
+                "text": "Free shipping"
+              },
+              "body": {
+                "text": "Express delivery worldwide."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

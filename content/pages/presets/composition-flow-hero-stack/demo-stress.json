@@ -1,0 +1,39 @@
+{
+  "preset": "composition-flow-hero-stack",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "900px",
+  "selfAlign": "center",
+  "definitions": {
+    "eyebrow": {
+      "text": "Flow Hero Stress"
+    },
+    "title": {
+      "text": "A longer hero title that deliberately tests wrap behavior on compact mobile widths"
+    },
+    "lead": {
+      "text": "This stress variant keeps the same preset shape while pushing denser explanatory copy, ensuring spacing cadence and readability hold even when a content editor writes more than expected.",
+      "width": "100%"
+    },
+    "actions": {
+      "section": {
+        "definitions": {
+          "primary": {
+            "label": "Launch trial",
+            "href": "/presets/composition-flow-hero-stack"
+          },
+          "secondary": {
+            "label": "See all composition demos ->",
+            "href": "/presets"
+          }
+        }
+      }
+    }
+  },
+  "marginBottom": {
+    "base": "4rem",
+    "md": "8rem"
+  }
+}

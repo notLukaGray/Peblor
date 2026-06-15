@@ -1,0 +1,25 @@
+{
+  "preset": "demo-hero",
+  "padding": {
+    "base": "10rem 0 6rem",
+    "md": "12rem 0 8rem"
+  },
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Scroll · Camera Path"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "3D Scroll Walkthrough"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Scroll the section below — the camera follows keyframes driven by section progress. The viewport stays pinned while you scroll.",
+      "width": {
+        "base": "100%",
+        "md": "78%"
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "preset": "composition-flow-dense-controls",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "900px",
+  "selfAlign": "center",
+  "marginBottom": {
+    "base": "2rem",
+    "md": "3rem"
+  }
+}

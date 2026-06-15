@@ -1,0 +1,23 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Depth & Motion — Preset Demo",
+  "description": "Parallax depth staging, scroll-reactive motion, layered glass panels, and sticky compositions — immersive depth and motion effects for page experiences.",
+  "presets": ["demo", "type/core", "ui/link", "type/effects", "bg"],
+  "sectionOrder": [
+    "nav-header",
+    "hero",
+    "parallax-near",
+    "parallax-mid",
+    "parallax-far",
+    "sec-motion",
+    "sec-sticky",
+    "sec-glass",
+    "sec-floating-sidebar"
+  ],
+  "bgKey": "bg",
+  "definitions": {
+    "bg": {
+      "preset": "bg-solid"
+    }
+  }
+}

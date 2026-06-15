@@ -1,3 +1,4 @@
+import { isRecord } from "@pb/core";
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { StaticResource } from "../types.js";
@@ -21,10 +22,6 @@ type Graph = {
   elementTypeUsage: Record<string, string[]>;
   pages: Record<string, GraphNode>;
 };
-
-function isRecord(v: unknown): v is Record<string, unknown> {
-  return v != null && typeof v === "object" && !Array.isArray(v);
-}
 
 function collectPresets(node: unknown, found: Set<string>): void {
   if (Array.isArray(node)) {
@@ -70,7 +67,8 @@ async function walkPages(dir: string): Promise<Array<{ route: string; file: stri
     let entries;
     try {
       entries = await readdir(current, { withFileTypes: true });
-    } catch {
+    } catch (err) {
+      console.warn("[pb-mcp] Failed to walk page directory for graph", current, err);
       return;
     }
     for (const entry of entries) {
@@ -104,7 +102,8 @@ async function buildGraph(): Promise<Graph> {
     let parsed: unknown;
     try {
       parsed = JSON.parse(await readFile(file, "utf-8"));
-    } catch {
+    } catch (err) {
+      console.warn("[pb-mcp] Failed to parse page JSON for graph", file, err);
       continue;
     }
     if (!isRecord(parsed)) continue;

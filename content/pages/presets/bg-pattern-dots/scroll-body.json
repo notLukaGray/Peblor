@@ -1,0 +1,11 @@
+{
+  "preset": "demo-scroll-body",
+  "height": "150vh",
+  "elementOrder": ["scroll-note"],
+  "definitions": {
+    "scroll-note": {
+      "preset": "demo-scroll-note",
+      "text": "Dot grid layer drifts at 0.22× scroll speed — a subtle but unmistakable sense of depth."
+    }
+  }
+}

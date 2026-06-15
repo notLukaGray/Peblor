@@ -1,0 +1,246 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "row",
+  "wrap": "wrap",
+  "gap": "1rem",
+  "width": "100%",
+  "section": {
+    "elementOrder": ["bento-wide", "bento-narrow", "bento-eq1", "bento-eq2", "bento-eq3"],
+    "definitions": {
+      "bento-wide": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "gap": "0",
+        "width": {
+          "base": "100%",
+          "md": "calc(65% - 0.5rem)"
+        },
+        "padding": "0.75rem",
+        "borderRadius": "24px",
+        "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+        "wrapperStyle": {
+          "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+        },
+        "motion": {
+          "onHover": {
+            "y": -4
+          },
+          "transition": {
+            "duration": 0.18
+          }
+        },
+        "section": {
+          "elementOrder": ["image", "copy"],
+          "definitions": {
+            "image": {
+              "type": "elementImage",
+              "src": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80&auto=format&fit=crop",
+              "alt": "Bento hero image",
+              "width": "100%",
+              "height": {
+                "base": "190px",
+                "md": "250px"
+              },
+              "objectFit": "cover",
+              "borderRadius": "18px"
+            },
+            "copy": {
+              "type": "elementGroup",
+              "display": "flex",
+              "flow": "column",
+              "gap": "0.55rem",
+              "padding": "0.75rem 0.5rem 0.4rem",
+              "section": {
+                "elementOrder": ["kicker", "title"],
+                "definitions": {
+                  "kicker": {
+                    "preset": "type-kicker-badge",
+                    "text": "Featured"
+                  },
+                  "title": {
+                    "preset": "type-h4-card",
+                    "text": "Wide bento card — 65%"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "bento-narrow": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "align": "start",
+        "gap": "0.4rem",
+        "width": {
+          "base": "100%",
+          "md": "calc(35% - 0.5rem)"
+        },
+        "padding": "1.25rem",
+        "borderRadius": "18px",
+        "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+        "wrapperStyle": {
+          "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+        },
+        "section": {
+          "elementOrder": ["num", "label", "body"],
+          "definitions": {
+            "num": {
+              "type": "elementCounter",
+              "level": 1,
+              "target": 48,
+              "suffix": "+",
+              "separator": true,
+              "trigger": "onVisible",
+              "tween": {
+                "duration": 2600,
+                "easing": "easeOut"
+              },
+              "color": "var(--pb-on-secondary)",
+              "textAlign": "left",
+              "width": "hug"
+            },
+            "label": {
+              "preset": "type-counter-label",
+              "text": "Projects",
+              "textAlign": "left"
+            },
+            "body": {
+              "preset": "type-body-fine",
+              "text": "Narrow bento card — 35%"
+            }
+          }
+        }
+      },
+      "bento-eq1": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "align": "start",
+        "gap": "0.9rem",
+        "width": {
+          "base": "100%",
+          "md": "calc(33.33% - 0.67rem)"
+        },
+        "padding": "1.25rem",
+        "borderRadius": "18px",
+        "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+        "wrapperStyle": {
+          "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+        },
+        "motion": {
+          "onHover": {
+            "y": -4
+          },
+          "transition": {
+            "duration": 0.18
+          }
+        },
+        "section": {
+          "elementOrder": ["kicker", "title", "body"],
+          "definitions": {
+            "kicker": {
+              "preset": "type-kicker-badge",
+              "text": "Design"
+            },
+            "title": {
+              "preset": "type-h4-card",
+              "text": "Equal-width card"
+            },
+            "body": {
+              "preset": "type-body-fine",
+              "text": "Three equal columns in row two — each 33%."
+            }
+          }
+        }
+      },
+      "bento-eq2": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "align": "start",
+        "gap": "0.9rem",
+        "width": {
+          "base": "100%",
+          "md": "calc(33.33% - 0.67rem)"
+        },
+        "padding": "1.25rem",
+        "borderRadius": "18px",
+        "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+        "wrapperStyle": {
+          "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+        },
+        "motion": {
+          "onHover": {
+            "y": -4
+          },
+          "transition": {
+            "duration": 0.18
+          }
+        },
+        "section": {
+          "elementOrder": ["kicker", "title", "body"],
+          "definitions": {
+            "kicker": {
+              "preset": "type-kicker-badge",
+              "text": "System"
+            },
+            "title": {
+              "preset": "type-h4-card",
+              "text": "Flex-wrap bento"
+            },
+            "body": {
+              "preset": "type-body-fine",
+              "text": "Bento uses flex-wrap, not CSS grid. Width on each child drives the layout."
+            }
+          }
+        }
+      },
+      "bento-eq3": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "align": "start",
+        "gap": "0.9rem",
+        "width": {
+          "base": "100%",
+          "md": "calc(33.33% - 0.67rem)"
+        },
+        "padding": "1.25rem",
+        "borderRadius": "18px",
+        "fill": "color-mix(in oklab, var(--pb-accent) 10%, transparent)",
+        "wrapperStyle": {
+          "border": "1px solid color-mix(in oklab, var(--pb-accent) 22%, transparent)"
+        },
+        "motion": {
+          "onHover": {
+            "y": -4
+          },
+          "transition": {
+            "duration": 0.18
+          }
+        },
+        "section": {
+          "elementOrder": ["kicker", "title", "body"],
+          "definitions": {
+            "kicker": {
+              "preset": "type-kicker-badge",
+              "text": "CTA"
+            },
+            "title": {
+              "preset": "type-h4-card",
+              "text": "Mixed card types"
+            },
+            "body": {
+              "preset": "type-body-fine",
+              "text": "Combine feature, stat, media, and CTA cards in one bento composition."
+            }
+          }
+        }
+      }
+    }
+  }
+}

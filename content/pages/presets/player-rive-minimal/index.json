@@ -1,0 +1,21 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Rive Minimal — Preset Demo",
+  "description": "Hover drives Rive inputs (Peblor→Rive). onStateChange fires back and Peblor renders different panels (Rive→Peblor).",
+  "presets": [
+    "demo",
+    "type/core",
+    "ui/link",
+    "type/motion",
+    "player/surface",
+    "bg",
+    "player/section"
+  ],
+  "bgKey": "bg-players",
+  "sectionOrder": ["nav-header", "hero", "sec-player"],
+  "definitions": {
+    "bg-players": {
+      "preset": "bg-players"
+    }
+  }
+}

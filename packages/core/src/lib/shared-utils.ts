@@ -19,6 +19,10 @@ export function splitTopLevelCommaList(value: string): string[] {
   return out;
 }
 
+export function isMobileFromUserAgent(userAgent: string): boolean {
+  return MOBILE_UA_REGEX.test(userAgent);
+}
+
 export function parseJsonSafe<T = unknown>(
   raw: string
 ): { ok: true; data: T } | { ok: false; error: unknown } {

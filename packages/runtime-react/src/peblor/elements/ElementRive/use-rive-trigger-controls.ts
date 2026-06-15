@@ -2,7 +2,9 @@
 
 import { useEffect } from "react";
 import { PEBLOR_TRIGGER_EVENT, type PeblorTriggerDetail } from "@/peblor/triggers";
-import type { RiveAction } from "@pb/contracts/types";
+import { shouldApplyMediaTarget } from "@/peblor/triggers/target-matching";
+import { subscribeToElementActions } from "@/peblor/triggers/action-bus";
+import type { PeblorAction, RiveAction } from "@pb/contracts/types";
 import type { Rive } from "@/peblor/integrations/rive";
 
 type UseRiveTriggerControlsArgs = {
@@ -13,14 +15,6 @@ type UseRiveTriggerControlsArgs = {
   /** State machine name currently active (needed to look up inputs). */
   stateMachine?: string;
 };
-
-function readTargetId(payload: unknown): string | undefined {
-  if (payload && typeof payload === "object" && "id" in payload) {
-    const v = (payload as Record<string, unknown>).id;
-    if (typeof v === "string" && v.length > 0) return v;
-  }
-  return undefined;
-}
 
 function readInputName(payload: unknown): string | undefined {
   if (payload && typeof payload === "object" && "input" in payload) {
@@ -38,12 +32,13 @@ function readInputValue(payload: unknown): boolean | number | undefined {
   return undefined;
 }
 
-function matchesId(elementId: string | undefined, targetId: string | undefined): boolean {
-  if (!targetId) {
-    // No target id in payload — broadcast; matches any element.
-    return true;
+function readBroadcastTargetId(payload: unknown): string | null {
+  if (payload && typeof payload === "object") {
+    const p = payload as Record<string, unknown>;
+    if (typeof p.id === "string" && p.id.trim()) return p.id.trim();
+    if (typeof p.target === "string" && p.target.trim()) return p.target.trim();
   }
-  return elementId === targetId;
+  return null;
 }
 
 export function useRiveTriggerControls({
@@ -61,9 +56,9 @@ export function useRiveTriggerControls({
 
       const riveAction = action as RiveAction;
       const payload = riveAction.payload as Record<string, unknown> | undefined;
-      const targetId = readTargetId(payload);
+      const targetId = readBroadcastTargetId(payload);
 
-      if (!matchesId(id, targetId)) return;
+      if (!shouldApplyMediaTarget(id, targetId)) return;
 
       const rive = riveRef.current;
       if (!rive) return;
@@ -80,8 +75,8 @@ export function useRiveTriggerControls({
             if (value !== undefined) {
               input.value = value;
             }
-          } catch {
-            // Rive instance may not be in a ready state; ignore.
+          } catch (err) {
+            console.warn("[pb-runtime-react] Rive setInput failed (instance not ready)", err);
           }
           return;
         }
@@ -99,8 +94,8 @@ export function useRiveTriggerControls({
             ) {
               (input as { fire: () => void }).fire();
             }
-          } catch {
-            // Ignore.
+          } catch (err) {
+            console.warn("[pb-runtime-react] Rive fireTrigger failed", err);
           }
           return;
         }
@@ -116,8 +111,8 @@ export function useRiveTriggerControls({
             } else {
               rive.play();
             }
-          } catch {
-            // Ignore.
+          } catch (err) {
+            console.warn("[pb-runtime-react] Rive play failed", err);
           }
           return;
         }
@@ -125,8 +120,8 @@ export function useRiveTriggerControls({
         case "rive.pause": {
           try {
             rive.pause();
-          } catch {
-            // Ignore.
+          } catch (err) {
+            console.warn("[pb-runtime-react] Rive pause failed", err);
           }
           return;
         }
@@ -134,8 +129,8 @@ export function useRiveTriggerControls({
         case "rive.reset": {
           try {
             rive.reset();
-          } catch {
-            // Ignore.
+          } catch (err) {
+            console.warn("[pb-runtime-react] Rive reset failed", err);
           }
           return;
         }
@@ -145,7 +140,18 @@ export function useRiveTriggerControls({
       }
     };
 
+    const busUnsub = id
+      ? subscribeToElementActions(id, (rawAction) => {
+          const syntheticEvent = new CustomEvent<PeblorTriggerDetail>(PEBLOR_TRIGGER_EVENT, {
+            detail: { action: rawAction as PeblorAction, source: "system" },
+          });
+          listener(syntheticEvent);
+        })
+      : null;
     window.addEventListener(PEBLOR_TRIGGER_EVENT, listener as EventListener);
-    return () => window.removeEventListener(PEBLOR_TRIGGER_EVENT, listener as EventListener);
+    return () => {
+      busUnsub?.();
+      window.removeEventListener(PEBLOR_TRIGGER_EVENT, listener as EventListener);
+    };
   }, [id, riveRef, stateMachine]);
 }

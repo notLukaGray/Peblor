@@ -4,12 +4,20 @@ import {
   useRef,
   useMemo,
   useState,
+  useEffect,
   useCallback,
   type CSSProperties,
   type KeyboardEvent as ReactKeyboardEvent,
 } from "react";
 import type { ElementBlock, ModuleBlock } from "@pb/contracts/peblor/core/peblor-schemas";
-import { firePeblorAction } from "@/peblor/triggers";
+import type { PeblorAction } from "@pb/contracts/types";
+import {
+  firePeblorAction,
+  PEBLOR_TRIGGER_EVENT,
+  type PeblorTriggerDetail,
+} from "@/peblor/triggers";
+import { shouldApplyMediaTarget } from "@/peblor/triggers/target-matching";
+import { subscribeToElementActions } from "@/peblor/triggers/action-bus";
 import {
   choosePreferredVideoSource,
   resolveVideoLink,
@@ -35,24 +43,18 @@ import { useVideoAudioSession } from "./ElementVideo/engine/audio-session";
 import { useMediaSession } from "./ElementVideo/engine/use-media-session";
 import { resolveElementVideoSlots } from "./ElementVideo/element-video-slots";
 import { SectionGlassEffect } from "@/peblor/section/stack/SectionGlassEffect";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
-import { resolveThemeValueDeep } from "@/peblor/theme/theme-string";
-import { coerceSectionEffects } from "@/peblor/elements/ElementModule/element-module-style-utils";
+import { useElementEffects } from "@/peblor/elements/Shared/use-element-effects";
 
 type Props = Extract<ElementBlock, { type: "elementVideo" }> & {
   moduleConfig?: ModuleBlock;
 };
 
 function resolveAspectRatioValue(aspectRatio: Props["aspectRatio"]): string {
+  if (typeof aspectRatio === "number") return String(aspectRatio);
   if (typeof aspectRatio === "string" && aspectRatio.trim().length > 0) return aspectRatio;
-  if (
-    Array.isArray(aspectRatio) &&
-    typeof aspectRatio[0] === "string" &&
-    aspectRatio[0].trim().length > 0
-  ) {
-    return aspectRatio[0];
-  }
-  return "16 / 9";
+  // Responsive tuple — use the desktop (second) value as a fallback scalar
+  if (Array.isArray(aspectRatio) && typeof aspectRatio[1] === "string") return aspectRatio[1];
+  return globals.uiVideoDefaultAspectRatio;
 }
 
 function NoVideoSource({ poster, aspectRatio }: { poster?: string; aspectRatio?: string }) {
@@ -60,10 +62,10 @@ function NoVideoSource({ poster, aspectRatio }: { poster?: string; aspectRatio?:
     display: "block",
     width: "100%",
     minHeight: "10rem",
-    aspectRatio: aspectRatio ?? "16 / 9",
+    aspectRatio: aspectRatio ?? globals.uiVideoDefaultAspectRatio,
     borderRadius: "inherit",
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: globals.colorVideoPlaceholderBg,
   };
 
   if (poster && poster.trim().length > 0) {
@@ -79,7 +81,7 @@ function NoVideoSource({ poster, aspectRatio }: { poster?: string; aspectRatio?:
         }}
       >
         <span className="pointer-events-none absolute inset-0 grid place-items-center text-[11px] uppercase tracking-[0.2em] text-white/70">
-          Video source missing
+          {globals.stringsErrorVideoSourceMissing}
         </span>
       </span>
     );
@@ -91,7 +93,7 @@ function NoVideoSource({ poster, aspectRatio }: { poster?: string; aspectRatio?:
       role="status"
       style={fallbackStyle}
     >
-      Video source missing
+      {globals.stringsErrorVideoSourceMissing}
       <span className="mt-1 block text-[9px] normal-case tracking-normal text-white/50">
         Add a URL or Bunny key to see live playback.
       </span>
@@ -128,7 +130,7 @@ function PrePlayPosterOverlay({
     <span
       className="pointer-events-none absolute inset-0 block"
       style={{
-        zIndex: 1,
+        zIndex: globals.zIndexRaised,
         backgroundImage: `url("${poster}")`,
         backgroundPosition: objectPosition ?? "center",
         backgroundRepeat: "no-repeat",
@@ -168,6 +170,7 @@ function usePreferredVideoSource(
 }
 
 export function ElementVideo({
+  id,
   src,
   sources,
   poster,
@@ -178,7 +181,7 @@ export function ElementVideo({
   playbackRate,
   width,
   height,
-  align,
+  selfAlign,
   alignY,
   borderRadius,
   constraints,
@@ -186,7 +189,7 @@ export function ElementVideo({
   marginBottom,
   marginLeft,
   marginRight,
-  zIndex,
+  layer,
   fixed,
   effects,
   wrapperStyle,
@@ -194,8 +197,8 @@ export function ElementVideo({
   blendMode,
   boxShadow,
   filter,
-  backdropFilter,
-  overflow,
+  bgBlur,
+  scroll,
   hidden,
   objectFit = "cover",
   objectPosition,
@@ -214,8 +217,8 @@ export function ElementVideo({
   preload,
   crossOrigin,
   controlsList,
+  tracks,
 }: Props) {
-  const themeMode = usePeblorThemeMode();
   const videoRef = useRef<HTMLVideoElement>(null);
   const figureRef = useRef<HTMLElement | null>(null);
   const containerRef = useRef<HTMLSpanElement>(null);
@@ -250,7 +253,7 @@ export function ElementVideo({
   const styles = useElementVideoStyles({
     width,
     height,
-    align,
+    align: selfAlign,
     alignY,
     borderRadius,
     constraints,
@@ -258,16 +261,16 @@ export function ElementVideo({
     marginBottom,
     marginLeft,
     marginRight,
-    zIndex,
+    zIndex: layer,
     fixed,
     wrapperStyle,
     opacity,
     blendMode,
     boxShadow,
     filter,
-    backdropFilter,
-    overflow,
-    hidden,
+    backdropFilter: bgBlur,
+    overflow: scroll,
+    hidden: typeof hidden === "boolean" ? hidden : undefined,
     rotate,
     flipHorizontal,
     flipVertical,
@@ -276,11 +279,7 @@ export function ElementVideo({
     aspectRatio,
     moduleConfig,
   });
-  const videoEffects = useMemo(
-    () => coerceSectionEffects(resolveThemeValueDeep(effects, themeMode)),
-    [effects, themeMode]
-  );
-  const hasGlassEffect = (videoEffects ?? []).some((effect) => effect.type === "glass");
+  const { resolvedEffects: videoEffects, hasGlassEffect } = useElementEffects(effects);
 
   const { isLinkable, resolvedHref, isInternal, target, rel } = useMemo(
     () => resolveVideoLink(link, showPlayButton),
@@ -342,6 +341,74 @@ export function ElementVideo({
     armVideoLoadImmediately,
     startLoad: videoSourceState.startLoad,
   });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const listener = (event: Event) => {
+      const detail = (event as CustomEvent<PeblorTriggerDetail>).detail;
+      const action = detail?.action;
+      if (!action || typeof action.type !== "string") return;
+      const actionType = String(action.type);
+
+      const payload = action.payload as Record<string, unknown> | undefined;
+      const targetId =
+        typeof payload?.id === "string"
+          ? payload.id
+          : typeof payload?.target === "string"
+            ? payload.target
+            : undefined;
+      if (!shouldApplyMediaTarget(id, targetId ?? null)) return;
+
+      switch (actionType) {
+        case "assetPlay":
+          armVideoLoadImmediately();
+          void baseControls.play();
+          return;
+        case "assetPause":
+          baseControls.pause();
+          return;
+        case "assetTogglePlay":
+          armVideoLoadImmediately();
+          baseControls.handleTogglePlay();
+          state.showFeedback(state.isPlaying ? "pause" : "play");
+          return;
+        case "assetSeek": {
+          const time = typeof payload?.time === "number" ? payload.time : 0;
+          baseControls.handleSeek(time);
+          state.showFeedback(time < 0 ? "seekBack" : "seekForward");
+          return;
+        }
+        case "assetMute":
+          baseControls.toggleMute();
+          return;
+        case "videoFullscreen":
+          fullscreen.toggleFullscreen();
+          return;
+        default:
+          return;
+      }
+    };
+
+    // When this element has an id, register with the action bus for direct delivery.
+    // The bus only fires for actions with payload.id === this element's id.
+    // Broadcast actions (no payload.id) still come through the window event below.
+    const busUnsub = id
+      ? subscribeToElementActions(id, (rawAction) => {
+          const syntheticEvent = new CustomEvent<PeblorTriggerDetail>(PEBLOR_TRIGGER_EVENT, {
+            detail: { action: rawAction as PeblorAction, source: "system" },
+          });
+          listener(syntheticEvent);
+        })
+      : null;
+
+    window.addEventListener(PEBLOR_TRIGGER_EVENT, listener as EventListener);
+    return () => {
+      busUnsub?.();
+      window.removeEventListener(PEBLOR_TRIGGER_EVENT, listener as EventListener);
+    };
+  }, [armVideoLoadImmediately, baseControls, fullscreen, id, state]);
+
   const keyboardHandlers = useMemo(
     () => ({
       onPlay: () => void baseControls.play(),
@@ -360,7 +427,7 @@ export function ElementVideo({
     [baseControls, fullscreen.toggleFullscreen, state]
   );
 
-  useVideoKeyboard({
+  const videoKeyboardRef = useVideoKeyboard({
     containerRef,
     keyBindings: moduleConfig?.keyBindings,
     handlers: keyboardHandlers,
@@ -407,17 +474,12 @@ export function ElementVideo({
     [activateTogglePlayFromContainer, moduleConfig?.keyBindings, showPlayButton]
   );
 
-  const moduleEffects = useMemo(
-    () =>
-      coerceSectionEffects(
-        resolveThemeValueDeep(
-          (moduleConfig as { effects?: unknown } | undefined)?.effects,
-          themeMode
-        )
-      ),
-    [moduleConfig, themeMode]
-  );
-  const hasModuleGlassEffect = (moduleEffects ?? []).some((effect) => effect.type === "glass");
+  const { resolvedEffects: moduleEffects, hasGlassEffect: hasModuleGlassEffect } =
+    useElementEffects(
+      (moduleConfig as { effects?: unknown } | undefined)?.effects as
+        | import("@pb/contracts/peblor/core/peblor-schemas").SectionEffect[]
+        | undefined
+    );
 
   const videoContextValue = useVideoContextValue({
     moduleConfig,
@@ -468,6 +530,7 @@ export function ElementVideo({
       preload={preload}
       crossOrigin={crossOrigin}
       controlsList={controlsList}
+      tracks={tracks}
     />
   );
 
@@ -495,7 +558,7 @@ export function ElementVideo({
         onKeyDown={showPlayButton ? handleInteractiveContainerKeyDown : undefined}
         tabIndex={moduleKeyboardInteractive ? 0 : undefined}
       >
-        <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
+        <div style={{ position: "absolute", inset: 0, zIndex: globals.zIndexBase }}>
           {showVideo && preferredSrc ? (
             <>
               {videoCore}
@@ -539,7 +602,7 @@ export function ElementVideo({
       {!hasSource && <NoVideoSource poster={resolvedPoster} aspectRatio={resolvedAspectRatio} />}
       {showVideo && preferredSrc && (
         <span
-          ref={containerRef}
+          ref={videoKeyboardRef}
           className="relative block w-full h-full"
           style={styles.containerStyle}
           onContextMenu={(e) => e.preventDefault()}

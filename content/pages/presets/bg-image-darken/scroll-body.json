@@ -1,0 +1,11 @@
+{
+  "preset": "demo-scroll-body",
+  "height": "150vh",
+  "elementOrder": ["scroll-note"],
+  "definitions": {
+    "scroll-note": {
+      "preset": "demo-scroll-note",
+      "text": "Image layer drifts at 0.3× scroll speed behind the fixed overlay."
+    }
+  }
+}

@@ -1,3 +1,5 @@
 echo "Running pre-push checks..."
 npm run check
 
+echo "Running E2E tests (warn-only)..."
+npm run test:e2e || echo "⚠️  E2E tests failed — push continuing (warn-only)"

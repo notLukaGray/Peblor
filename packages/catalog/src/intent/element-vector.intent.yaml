@@ -31,7 +31,7 @@ axes:
 
 covers:
   - description: "Play-icon glyph with hover fill transition"
-    example: content/presets/video-controls.json
+    example: content/presets/video/control/video-controls-play.json
   - description: "Shield logo mark with theme-mapped path fills and checkmark accent"
     example: content/validator-fragments/logo-vector.json
 

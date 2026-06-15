@@ -1,11 +1,12 @@
 {
-  "siteUrl": "",
+  "siteUrl": "http://localhost:3000",
   "person": {
-    "name": "",
-    "jobTitle": "",
-    "url": "",
+    "name": "Peblor",
+    "jobTitle": "JSON-driven page builder",
+    "url": "http://localhost:3000",
     "sameAs": []
   },
   "assetBaseUrl": "",
-  "layoutFromJsonSlugs": []
+  "twitterSite": "",
+  "twitterCreator": ""
 }

@@ -6,8 +6,7 @@ import { globals } from "@pb/runtime-react/core/lib/globals";
 import { ElementRenderer } from "@/peblor/elements/Shared/ElementRenderer";
 import { getFeedbackJustifyContent, getFeedbackPadding } from "@pb/core/modules";
 import type { ModuleSlotConfig } from "./types";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
-import { resolveThemeStyleObject } from "@/peblor/theme/theme-string";
+import { lowerThemeStyleObject } from "@/peblor/theme/theme-string";
 
 export type ModuleSlotFeedbackProps = {
   slot: ModuleSlotConfig;
@@ -22,7 +21,6 @@ export function ModuleSlotFeedback({
   feedbackMap,
   feedbackDurationMs = globals.uiVideoFeedbackDurationMs,
 }: ModuleSlotFeedbackProps) {
-  const themeMode = usePeblorThemeMode();
   const elementKey = feedbackMap[feedback.type];
   if (!elementKey) return null;
   const section = slot.section;
@@ -32,8 +30,8 @@ export function ModuleSlotFeedback({
   const wrapperStyle = (block as ElementBlock & { wrapperStyle?: CssInlineStyle }).wrapperStyle;
   const feedbackChrome = slot.feedbackChromeStyle;
   const mergedStyle: CSSProperties = {
-    ...(resolveThemeStyleObject(feedbackChrome, themeMode) as CSSProperties),
-    ...(resolveThemeStyleObject(wrapperStyle, themeMode) as CSSProperties),
+    ...(lowerThemeStyleObject(feedbackChrome) as CSSProperties),
+    ...(lowerThemeStyleObject(wrapperStyle) as CSSProperties),
   };
   const justifyContent = getFeedbackJustifyContent(feedback.type);
   const padding = getFeedbackPadding(feedback.type);
@@ -55,7 +53,7 @@ export function ModuleSlotFeedback({
         padding,
         pointerEvents: "none",
         animation: `touch-feedback-flash ${feedbackDurationMs}ms ease forwards`,
-        ...(resolveThemeStyleObject(slot.style, themeMode) as CSSProperties),
+        ...(lowerThemeStyleObject(slot.style) as CSSProperties),
       }}
       aria-hidden="false"
     >

@@ -1,0 +1,88 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "width": "100%",
+  "maxWidth": "1000px",
+  "selfAlign": "center",
+  "align": "stretch",
+  "height": "hug",
+  "padding": {
+    "base": "2rem 1.25rem",
+    "md": "2.75rem 1.5rem"
+  },
+  "gap": "1.5rem",
+  "borderRadius": "20px",
+  "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+  "wrapperStyle": {
+    "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 11%, transparent)"
+  },
+  "elementOrder": ["eyebrow", "title", "body", "actions"],
+  "definitions": {
+    "eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Action Row"
+    },
+    "title": {
+      "preset": "type-h4-card",
+      "text": "Wrappable action cluster"
+    },
+    "body": {
+      "preset": "type-body-standard",
+      "text": "Horizontal action band that wraps deliberately on mobile instead of collapsing into an unreadable stack."
+    },
+    "actions": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "align": "center",
+      "gap": "0.75rem",
+      "padding": "0",
+      "section": {
+        "elementOrder": ["a1", "a2", "a3", "a4"],
+        "definitions": {
+          "a1": {
+            "type": "elementButton",
+            "label": "Primary action",
+            "href": "#",
+            "wrapperPadding": "0.75rem 1.25rem",
+            "wrapperBorderRadius": "11px",
+            "wrapperFill": "var(--pb-on-secondary)",
+            "linkDefault": "var(--pb-secondary)",
+            "linkHover": "var(--pb-secondary)"
+          },
+          "a2": {
+            "type": "elementButton",
+            "label": "Secondary",
+            "href": "#",
+            "wrapperPadding": "0.75rem 1.25rem",
+            "wrapperBorderRadius": "11px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+            "linkDefault": "var(--pb-on-secondary)",
+            "linkHover": "var(--pb-on-secondary)"
+          },
+          "a3": {
+            "type": "elementButton",
+            "label": "Tertiary",
+            "href": "#",
+            "wrapperPadding": "0.75rem 1.25rem",
+            "wrapperBorderRadius": "11px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+            "linkDefault": "var(--pb-on-secondary)",
+            "linkHover": "var(--pb-on-secondary)"
+          },
+          "a4": {
+            "type": "elementButton",
+            "label": "Learn more",
+            "href": "#",
+            "wrapperPadding": "0.75rem 1.25rem",
+            "wrapperBorderRadius": "11px",
+            "wrapperFill": "color-mix(in oklab, var(--pb-on-secondary) 8%, transparent)",
+            "linkDefault": "var(--pb-on-secondary)",
+            "linkHover": "var(--pb-on-secondary)"
+          }
+        }
+      }
+    }
+  }
+}

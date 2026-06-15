@@ -1,0 +1,208 @@
+{
+  "type": "sectionColumn",
+  "columns": {
+    "base": 2,
+    "md": 4
+  },
+  "columnWidths": {
+    "base": [1, 1],
+    "md": [1, 1, 1, 1]
+  },
+  "columnGaps": {
+    "base": "1rem",
+    "md": "1.5rem"
+  },
+  "columnAssignments": {
+    "base": {
+      "kpi-1": 0,
+      "kpi-2": 0,
+      "kpi-3": 1,
+      "kpi-4": 1
+    },
+    "md": {
+      "kpi-1": 0,
+      "kpi-2": 1,
+      "kpi-3": 2,
+      "kpi-4": 3
+    }
+  },
+  "contentWidth": "100%",
+  "contentHeight": "hug",
+  "elementOrder": ["kpi-1", "kpi-2", "kpi-3", "kpi-4"],
+  "gridMode": "grid",
+  "gridAutoRows": "auto",
+  "definitions": {
+    "kpi-1": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "gap": "0.85rem",
+      "width": "100%",
+      "padding": {
+        "base": "1.5rem",
+        "md": "1.75rem"
+      },
+      "borderRadius": "14px",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["num", "label", "body"],
+        "definitions": {
+          "num": {
+            "type": "elementCounter",
+            "level": 1,
+            "target": 100,
+            "suffix": "+",
+            "trigger": "onVisible",
+            "color": "var(--pb-on-secondary)",
+            "width": "hug",
+            "tween": {
+              "duration": 800
+            }
+          },
+          "label": {
+            "preset": "type-counter-label",
+            "text": "Metric Label",
+            "textAlign": "left"
+          },
+          "body": {
+            "preset": "type-body-fine",
+            "text": "Short explanation of what this metric means."
+          }
+        }
+      }
+    },
+    "kpi-2": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "gap": "0.85rem",
+      "width": "100%",
+      "padding": {
+        "base": "1.5rem",
+        "md": "1.75rem"
+      },
+      "borderRadius": "14px",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["num", "label", "body"],
+        "definitions": {
+          "num": {
+            "type": "elementCounter",
+            "level": 1,
+            "target": 100,
+            "suffix": "+",
+            "trigger": "onVisible",
+            "color": "var(--pb-on-secondary)",
+            "width": "hug",
+            "tween": {
+              "duration": 800
+            }
+          },
+          "label": {
+            "preset": "type-counter-label",
+            "text": "Metric Label",
+            "textAlign": "left"
+          },
+          "body": {
+            "preset": "type-body-fine",
+            "text": "Short explanation of what this metric means."
+          }
+        }
+      }
+    },
+    "kpi-3": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "gap": "0.85rem",
+      "width": "100%",
+      "padding": {
+        "base": "1.5rem",
+        "md": "1.75rem"
+      },
+      "borderRadius": "14px",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["num", "label", "body"],
+        "definitions": {
+          "num": {
+            "type": "elementCounter",
+            "level": 1,
+            "target": 100,
+            "suffix": "+",
+            "trigger": "onVisible",
+            "color": "var(--pb-on-secondary)",
+            "width": "hug",
+            "tween": {
+              "duration": 800
+            }
+          },
+          "label": {
+            "preset": "type-counter-label",
+            "text": "Metric Label",
+            "textAlign": "left"
+          },
+          "body": {
+            "preset": "type-body-fine",
+            "text": "Short explanation of what this metric means."
+          }
+        }
+      }
+    },
+    "kpi-4": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "align": "start",
+      "gap": "0.85rem",
+      "width": "100%",
+      "padding": {
+        "base": "1.5rem",
+        "md": "1.75rem"
+      },
+      "borderRadius": "14px",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["num", "label", "body"],
+        "definitions": {
+          "num": {
+            "type": "elementCounter",
+            "level": 1,
+            "target": 100,
+            "suffix": "+",
+            "trigger": "onVisible",
+            "color": "var(--pb-on-secondary)",
+            "width": "hug",
+            "tween": {
+              "duration": 800
+            }
+          },
+          "label": {
+            "preset": "type-counter-label",
+            "text": "Metric Label",
+            "textAlign": "left"
+          },
+          "body": {
+            "preset": "type-body-fine",
+            "text": "Short explanation of what this metric means."
+          }
+        }
+      }
+    }
+  }
+}

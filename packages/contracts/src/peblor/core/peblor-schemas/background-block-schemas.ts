@@ -1,12 +1,17 @@
 import { z } from "zod";
-import { themeStringSchema, triggerActionSchema } from "./schema-primitives";
-import { bgLayerMotionSchema } from "../../background/motion/bg-layer-motion-schema";
+import {
+  themeStringSchema,
+  themeStringOrGradientSchema,
+  triggerActionSchemaCore,
+} from "./schema-primitives";
+import { bgLayerMotionSchema } from "./background-motion-schemas";
+import { progressRangeSchema } from "./schema-shared-primitives";
 
 export { bgLayerMotionSchema };
-export type { BgLayerMotion } from "../../background/motion/bg-layer-motion-types";
+export type { BgLayerMotion, BgLoopMotion } from "../../background/motion/bg-layer-motion-types";
 
 export const bgVarLayerSchema = z.object({
-  fill: themeStringSchema,
+  fill: themeStringOrGradientSchema,
   blendMode: z.string().optional(),
   opacity: z.number().optional(),
   /**
@@ -20,6 +25,10 @@ export const bgVarLayerSchema = z.object({
    */
   backgroundPosition: z.string().optional(),
   /**
+   * CSS `background-repeat` value for this layer.
+   */
+  backgroundRepeat: z.string().optional(),
+  /**
    * Ordered array of motion configs that animate this layer.
    * Multiple types compose additively — e.g. loop + scroll + trigger can all
    * run simultaneously on the same layer. See bgLayerMotionSchema for full docs.
@@ -27,7 +36,14 @@ export const bgVarLayerSchema = z.object({
   motion: z.array(bgLayerMotionSchema).optional(),
 });
 
-export const bgPatternRepeatSchema = z.enum(["repeat", "repeat-x", "repeat-y", "no-repeat"]);
+export const bgPatternRepeatSchema = z.enum([
+  "repeat",
+  "repeat-x",
+  "repeat-y",
+  "no-repeat",
+  "space",
+  "round",
+]);
 
 const bgBlockSchemaBase: z.ZodTypeAny = z.lazy(() => bgBlockSchema);
 
@@ -42,6 +58,23 @@ export const bgBlockSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("backgroundImage"),
     image: z.string(),
+    /** CSS `background-size` (e.g. "cover", "contain", "100% 100%"). Defaults to "cover". */
+    backgroundSize: z.string().optional(),
+    /** CSS `background-position` (e.g. "center", "top left", "50% 25%"). Defaults to "center". */
+    backgroundPosition: z.string().optional(),
+    /** CSS `background-repeat` (e.g. "no-repeat", "repeat", "repeat-x"). Defaults to "no-repeat". */
+    backgroundRepeat: z
+      .enum(["repeat", "repeat-x", "repeat-y", "no-repeat", "space", "round"])
+      .optional(),
+    /**
+     * CSS `background-attachment` — controls whether the background scrolls with the page.
+     * - `"scroll"` (default): background moves with the element
+     * - `"fixed"`: background is fixed relative to the viewport (parallax/CSS-native effect)
+     * - `"local"`: background scrolls with the element's own scroll box
+     */
+    backgroundAttachment: z.enum(["scroll", "fixed", "local"]).optional(),
+    /** CSS color overlay rendered on top of the image (e.g. #00000080, oklch(), color-mix()). */
+    overlay: themeStringSchema.optional(),
   }),
   z.object({
     type: z.literal("backgroundVariable"),
@@ -60,19 +93,11 @@ export const bgBlockSchema = z.discriminatedUnion("type", [
       duration: z.number().positive().optional(),
       easing: z.string().optional(),
       mode: z.enum(["progress", "time"]).optional(),
-      trigger: triggerActionSchema.optional(),
+      trigger: triggerActionSchemaCore.optional(),
       time: z.number().nonnegative().optional(),
       position: z.union([z.number(), z.string()]).optional(),
       progress: z.number().min(0).max(1).optional(),
-      progressRange: z
-        .object({
-          start: z.number().min(0).max(1),
-          end: z.number().min(0).max(1),
-        })
-        .refine((range) => range.start < range.end, {
-          message: "progressRange.start must be less than progressRange.end",
-        })
-        .optional(),
+      progressRange: progressRangeSchema.optional(),
     })
     .refine(
       (data) => {
@@ -86,3 +111,37 @@ export const bgBlockSchema = z.discriminatedUnion("type", [
       }
     ),
 ]);
+
+/** Describes a transition between two background definitions, keyed by background definition IDs. */
+export const backgroundTransitionEffectSchema = z.discriminatedUnion("type", [
+  z.object({
+    type: z.literal("TIME"),
+    id: z.string().min(1),
+    from: z.string(),
+    to: z.string(),
+    duration: z.number().positive(),
+    easing: z.string().optional(),
+  }),
+  z.object({
+    type: z.literal("TRIGGER"),
+    id: z.string().min(1),
+    from: z.string(),
+    to: z.string(),
+    duration: z.number().positive(),
+    easing: z.string().optional(),
+  }),
+  z.object({
+    type: z.literal("SCROLL"),
+    id: z.string().min(1),
+    from: z.string(),
+    to: z.string(),
+    source: z.enum(["page", "trigger"]).optional(),
+    progress: z.number().min(0).max(1).optional(),
+    progressRange: progressRangeSchema.optional(),
+  }),
+]);
+
+/** Discriminant strings for bgBlockSchema — single source of truth for bg type guards. */
+export const BG_BLOCK_TYPE_STRINGS: readonly string[] = bgBlockSchema.options.map(
+  (opt) => (opt as z.ZodObject<{ type: z.ZodLiteral<string> }>).shape.type.value
+);

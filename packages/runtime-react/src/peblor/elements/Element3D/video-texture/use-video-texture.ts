@@ -64,7 +64,10 @@ export function useVideoTexture({
       textureCreatedRef.current = true;
       setTextureState(tex);
 
-      if (autoplay) video.play().catch(() => {});
+      if (autoplay)
+        video.play().catch((err) => {
+          console.warn("[pb-runtime-react] Video texture autoplay failed", err);
+        });
       setTextureReady(true);
       setTextureVersion((prev) => prev + 1);
     };

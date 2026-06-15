@@ -1,0 +1,13 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Type Motion — Preset Demo",
+  "description": "Typography motion presets — marquee, counter, stagger, and scroll-driven text animation.",
+  "presets": ["demo", "type/core", "ui/link", "type/motion", "bg"],
+  "sectionOrder": ["nav-header", "hero", "sec-marquee", "sec-counters", "sec-stagger"],
+  "bgKey": "bg-type",
+  "definitions": {
+    "bg-type": {
+      "preset": "bg-type"
+    }
+  }
+}

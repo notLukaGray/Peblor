@@ -1,6 +1,8 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 describe("peblor validation fail-closed", () => {
+  afterEach(() => vi.resetModules());
+
   it("throws when a loaded page fails schema validation", async () => {
     vi.resetModules();
 

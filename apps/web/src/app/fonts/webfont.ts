@@ -65,6 +65,26 @@ export function buildBunnyFontUrl(
 }
 
 /**
+ * Extract variable weight range from a slot's local config when the font
+ * supports a variable axis. Returns undefined for static fonts.
+ */
+export function getVariableWghtRange(
+  slot: FontSlotConfig
+): { min: number; max: number } | undefined {
+  if (slot.local.variable) {
+    const parts = slot.local.weightRange.split(" ");
+    if (parts.length === 2) {
+      const min = Number(parts[0]);
+      const max = Number(parts[1]);
+      if (!isNaN(min) && !isNaN(max)) {
+        return { min, max };
+      }
+    }
+  }
+  return undefined;
+}
+
+/**
  * Returns the CSS URLs for every slot currently set to `source: "webfont"`.
  * Slots using local files are excluded — they're handled by next/font/local.
  */
@@ -75,7 +95,11 @@ export function getActiveWebfontUrls(
 ): string[] {
   return [primary, secondary, mono]
     .filter((c) => c.source === "webfont")
-    .map((c) => buildBunnyFontUrl(c.webfont.family, c.weights, c.italic));
+    .map((c) =>
+      buildBunnyFontUrl(c.webfont.family, c.weights, c.italic, {
+        variableWghtRange: getVariableWghtRange(c),
+      })
+    );
 }
 
 /** Above-fold weights needed for LCP text rendering: bold + regular + book.
@@ -103,7 +127,9 @@ export function getCriticalWebfontUrls(
   return [primary, secondary, mono]
     .filter((c) => c.source === "webfont")
     .map((c) => ({
-      url: buildBunnyFontUrl(c.webfont.family, pickCriticalWeights(c.weights), false),
+      url: buildBunnyFontUrl(c.webfont.family, pickCriticalWeights(c.weights), false, {
+        variableWghtRange: getVariableWghtRange(c),
+      }),
       family: c.webfont.family,
     }));
 }

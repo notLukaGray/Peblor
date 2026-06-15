@@ -1,0 +1,13 @@
+{
+  "preset": "composition-column-70-30-sidebar",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "1080px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "3rem 0 4rem",
+    "md": "3rem 0 5rem"
+  }
+}

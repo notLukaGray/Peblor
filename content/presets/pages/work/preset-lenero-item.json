@@ -1,0 +1,32 @@
+{
+  "preset": "work-list-item",
+  "section": {
+    "elementOrder": ["item-meta", "item-arrow"],
+    "definitions": {
+      "item-meta": {
+        "preset": "work-item-meta",
+        "section": {
+          "elementOrder": ["item-title", "item-category"],
+          "definitions": {
+            "item-title": {
+              "preset": "work-item-title",
+              "text": "Echo \u2014 Documentary"
+            },
+            "item-category": {
+              "preset": "work-item-category",
+              "text": "Film \u00b7 Documentary"
+            }
+          }
+        }
+      },
+      "item-arrow": {
+        "preset": "work-item-arrow",
+        "visibleWhen": {
+          "variable": "selectedProject",
+          "operator": "equals",
+          "value": "lenero"
+        }
+      }
+    }
+  }
+}

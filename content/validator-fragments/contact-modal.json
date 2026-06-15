@@ -30,10 +30,10 @@
           "label": "Message",
           "width": "100%"
         },
-        "submit": { "type": "formField", "fieldType": "submit", "label": "Send", "width": "auto" }
+        "submit": { "type": "formField", "fieldType": "button", "label": "Send", "width": "auto" }
       }
     }
   },
   "transition": { "duration": 0.3, "easing": "easeOut" },
-  "motion": { "enter": {}, "exit": {} }
+  "motion": { "enter": {}, "leave": {} }
 }

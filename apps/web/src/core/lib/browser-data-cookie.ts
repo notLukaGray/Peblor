@@ -1,5 +1,7 @@
 export const browserDataCookieName = "pb_browser_data";
 
+const COOKIE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+
 export type BrowserDataCookie = {
   viewportWidthPx?: number;
   viewportHeightPx?: number;
@@ -48,7 +50,24 @@ export function parseBrowserDataCookie(raw: string | undefined): BrowserDataCook
   try {
     const parsed = JSON.parse(decodeURIComponent(raw)) as BrowserDataCookie;
     return normalizeBrowserDataCookie(parsed);
-  } catch {
+  } catch (err) {
+    console.warn("[web-core] Failed to parse browser data cookie", err);
     return null;
   }
+}
+
+/**
+ * Returns the cookie's viewport width if the cookie is fresh (< 24h old), otherwise undefined.
+ * Stale data (e.g. a laptop's last-known width surfacing on a phone) would misreport the breakpoint.
+ */
+export function canonicalViewportWidthFromCookie(
+  browserData: BrowserDataCookie | null
+): number | undefined {
+  const isFresh =
+    browserData?.updatedAtMs != null &&
+    browserData.updatedAtMs > 0 &&
+    Date.now() - browserData.updatedAtMs < COOKIE_MAX_AGE_MS;
+  return isFresh && browserData?.viewportWidthPx != null && browserData.viewportWidthPx > 0
+    ? browserData.viewportWidthPx
+    : undefined;
 }

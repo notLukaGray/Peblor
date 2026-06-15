@@ -1,0 +1,45 @@
+{
+  "type": "elementGroup",
+  "display": "flex",
+  "flow": "row",
+  "align": "center",
+  "gap": "0.4rem",
+  "section": {
+    "elementOrder": ["btn-mute", "volume-slider"],
+    "definitions": {
+      "btn-mute": {
+        "type": "elementButton",
+        "action": "assetMute",
+        "actionPayload": {},
+        "wrapperPadding": "0.4rem",
+        "wrapperBorderRadius": "999px",
+        "wrapperFill": "transparent",
+        "level": 5,
+        "motion": {
+          "onHover": {
+            "scale": 1.1
+          },
+          "transition": {
+            "duration": 0.15
+          }
+        },
+        "section": {
+          "elementOrder": ["icon-sound", "icon-muted"],
+          "definitions": {
+            "icon-sound": {
+              "preset": "video-controls-mute",
+              "showWhen": "assetUnmuted"
+            },
+            "icon-muted": {
+              "preset": "video-controls-unmute",
+              "showWhen": "assetMuted"
+            }
+          }
+        }
+      },
+      "volume-slider": {
+        "preset": "video-controls-volume"
+      }
+    }
+  }
+}

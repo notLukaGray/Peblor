@@ -12,6 +12,20 @@ describe("collectInitialPageResourceHints", () => {
     expect(hints[0]?.url).toBe("/img/hero.webp");
   });
 
+  it("keeps media aliases stable when normalizing preload urls", () => {
+    const hints = collectInitialPageResourceHints({
+      resolvedSections: [
+        {
+          type: "contentBlock",
+          elements: [
+            { type: "elementImage", src: "/api/media/work/hero.webp?w=800&q=75&format=webp" },
+          ],
+        },
+      ],
+    });
+    expect(hints[0]?.url).toBe("/api/media/work/hero.webp?width=800&quality=75&format=webp");
+  });
+
   it("collects poster from elementVideo", () => {
     const hints = collectInitialPageResourceHints({
       resolvedSections: [

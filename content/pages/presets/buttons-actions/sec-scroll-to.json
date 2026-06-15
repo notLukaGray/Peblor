@@ -1,0 +1,96 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "entrancePreset": "slideUp",
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "scroll-buttons", "scroll-target-hint"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "scrollTo"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Buttons that smoothly scroll to a specific section on the page. Useful for table of contents, back-to-top, and skip links."
+    },
+    "scroll-buttons": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "align": "center",
+      "distribute": "center",
+      "gap": "1rem",
+      "section": {
+        "elementOrder": [
+          "scroll-to-hero",
+          "scroll-to-modal",
+          "scroll-to-theme",
+          "scroll-to-embedded"
+        ],
+        "definitions": {
+          "scroll-to-hero": {
+            "preset": "btn-primary",
+            "label": "Scroll to Hero",
+            "action": "scrollTo",
+            "actionPayload": {
+              "id": "hero",
+              "behavior": "smooth",
+              "block": "start",
+              "offset": 0
+            },
+            "wrapperBorderRadius": "10px"
+          },
+          "scroll-to-modal": {
+            "preset": "btn-squircle",
+            "label": "Scroll to Modal",
+            "action": "scrollTo",
+            "actionPayload": {
+              "id": "sec-modal",
+              "behavior": "smooth",
+              "block": "start",
+              "offset": 0
+            },
+            "wrapperBorderRadius": "10px",
+            "wrapperPadding": "0.7rem 1.5rem"
+          },
+          "scroll-to-theme": {
+            "preset": "btn-ghost",
+            "label": "Scroll to Theme",
+            "action": "scrollTo",
+            "actionPayload": {
+              "id": "sec-set-theme",
+              "behavior": "smooth",
+              "block": "start",
+              "offset": 0
+            },
+            "wrapperBorderRadius": "10px"
+          },
+          "scroll-to-embedded": {
+            "preset": "btn-ghost",
+            "label": "Back to Top",
+            "action": "scrollTo",
+            "actionPayload": {
+              "id": "hero",
+              "behavior": "smooth",
+              "block": "start",
+              "offset": 0
+            },
+            "wrapperBorderRadius": "10px"
+          }
+        }
+      }
+    },
+    "scroll-target-hint": {
+      "type": "elementBody",
+      "level": 5,
+      "text": "Hint: Each scrollTo button targets a section ID. Click them to navigate around this page. The \"Back to Top\" button scrolls to the hero section.",
+      "color": "color-mix(in oklab, var(--pb-on-secondary) 38%, transparent)",
+      "wordWrap": true,
+      "selfAlign": "center",
+      "padding": "1rem 0 0"
+    }
+  },
+  "id": "sec-scroll-to"
+}

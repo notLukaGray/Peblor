@@ -1,6 +1,6 @@
 {
   "type": "contentBlock",
-  "flexDirection": "column",
+  "flow": "column",
   "gap": "1rem",
   "reorderable": true,
   "reorderAxis": "y",

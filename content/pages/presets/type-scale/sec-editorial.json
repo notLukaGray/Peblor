@@ -1,0 +1,130 @@
+{
+  "type": "contentBlock",
+  "flow": "column",
+  "align": "start",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "1000px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "0 0 10rem",
+    "md": "0 0 14rem"
+  },
+  "gap": "3rem",
+  "height": "hug",
+  "motionTiming": {
+    "staggerChildren": 0.1,
+    "trigger": "onFirstVisible"
+  },
+  "elementOrder": ["sec-label", "editorial-cols"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "How They Compose"
+    },
+    "editorial-cols": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "gap": "2rem",
+      "width": "100%",
+      "motionTiming": {
+        "staggerChildren": 0.1,
+        "trigger": "onFirstVisible"
+      },
+      "section": {
+        "elementOrder": ["col1", "col2", "col3"],
+        "definitions": {
+          "col1": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.6rem",
+            "flex": "1 1 220px",
+            "motionTiming": {
+              "entrancePreset": "fade",
+              "trigger": "onFirstVisible"
+            },
+            "section": {
+              "elementOrder": ["k", "h", "b"],
+              "definitions": {
+                "k": {
+                  "preset": "type-kicker-badge",
+                  "text": "Article Card"
+                },
+                "h": {
+                  "preset": "type-h4-card",
+                  "text": "Typography as a living system"
+                },
+                "b": {
+                  "preset": "type-body-standard",
+                  "text": "Card unit — clear hierarchy with compact supporting text."
+                }
+              }
+            }
+          },
+          "col2": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.6rem",
+            "flex": "1 1 220px",
+            "motionTiming": {
+              "entrancePreset": "fade",
+              "trigger": "onFirstVisible"
+            },
+            "section": {
+              "elementOrder": ["m", "h2", "l"],
+              "definitions": {
+                "m": {
+                  "preset": "type-h5-meta",
+                  "text": "Section Unit"
+                },
+                "h2": {
+                  "preset": "type-h2-section",
+                  "text": "Compose for continuity"
+                },
+                "l": {
+                  "preset": "type-body-lead",
+                  "text": "Lead copy anchors each section and connects narrative flow."
+                }
+              }
+            }
+          },
+          "col3": {
+            "type": "elementGroup",
+            "display": "flex",
+            "flow": "column",
+            "gap": "0.6rem",
+            "flex": "1 1 220px",
+            "motionTiming": {
+              "entrancePreset": "fade",
+              "trigger": "onFirstVisible"
+            },
+            "section": {
+              "elementOrder": ["mono", "heroh", "fine"],
+              "definitions": {
+                "mono": {
+                  "preset": "type-body-mono",
+                  "text": "stat · callout"
+                },
+                "heroh": {
+                  "preset": "type-h1-display",
+                  "text": "72%",
+                  "width": "100%"
+                },
+                "fine": {
+                  "preset": "type-body-fine",
+                  "text": "Callout unit — display scale with utility metadata."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

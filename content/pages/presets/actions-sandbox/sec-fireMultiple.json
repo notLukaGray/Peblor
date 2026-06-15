@@ -1,0 +1,87 @@
+{
+  "preset": "demo-section",
+  "motionTiming": {
+    "entrancePreset": "fade"
+  },
+  "elementOrder": ["sec-label", "sec-desc", "demo-buttons", "sequence-indicator"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "fireMultiple — Action Chains"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "The fireMultiple action chains several actions in sequence with an optional delay between each. This button fires setVariable, copyToClipboard, and setTheme together."
+    },
+    "demo-buttons": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "row",
+      "wrap": "wrap",
+      "gap": "0.75rem",
+      "section": {
+        "elementOrder": ["btn-launch"],
+        "definitions": {
+          "btn-launch": {
+            "preset": "btn-primary",
+            "label": "Launch Sequence",
+            "action": "fireMultiple",
+            "actionPayload": {
+              "actions": [
+                {
+                  "type": "setVariable",
+                  "payload": {
+                    "key": "sequenceStatus",
+                    "value": "launched"
+                  }
+                },
+                {
+                  "type": "copyToClipboard",
+                  "payload": {
+                    "text": "Actions chain complete — all three actions fired."
+                  }
+                },
+                {
+                  "type": "setVariable",
+                  "payload": {
+                    "key": "copyState",
+                    "value": "copied"
+                  }
+                },
+                {
+                  "type": "setTheme",
+                  "payload": {
+                    "mode": "toggle"
+                  }
+                }
+              ],
+              "mode": "sequence",
+              "delayBetween": 300
+            },
+            "wrapperBorderRadius": "10px"
+          }
+        }
+      }
+    },
+    "sequence-indicator": {
+      "preset": "ui-indicator-panel",
+      "visibleWhen": {
+        "variable": "sequenceStatus",
+        "operator": "equals",
+        "value": "launched"
+      },
+      "section": {
+        "elementOrder": ["sequence-text"],
+        "definitions": {
+          "sequence-text": {
+            "type": "elementBody",
+            "level": 4,
+            "text": "Sequence launched! Theme toggled, clipboard set, and variables updated.",
+            "color": "var(--pb-on-secondary)"
+          }
+        }
+      }
+    }
+  },
+  "id": "sec-fireMultiple"
+}

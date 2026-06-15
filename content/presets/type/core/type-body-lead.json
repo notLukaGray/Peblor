@@ -1,0 +1,15 @@
+{
+  "type": "elementBody",
+  "level": 1,
+  "color": "color-mix(in oklab, var(--pb-on-secondary) 80%, transparent)",
+  "wordWrap": true,
+  "width": {
+    "base": "100%",
+    "md": "72%"
+  },
+  "motionTiming": {
+    "entrancePreset": "fade",
+    "trigger": "onFirstVisible"
+  },
+  "text": ""
+}

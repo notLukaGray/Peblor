@@ -48,7 +48,8 @@ async function scanDir(dir: string, relativeSegments: string[]): Promise<PageEnt
   let children: string[];
   try {
     children = await sortedReaddir(dir);
-  } catch {
+  } catch (err) {
+    console.warn("[pb-core] Failed to read directory for page discovery", dir, err);
     return entries;
   }
 
@@ -71,7 +72,8 @@ async function scanDir(dir: string, relativeSegments: string[]): Promise<PageEnt
     let stat: fs.Stats;
     try {
       stat = await fs.promises.stat(childPath);
-    } catch {
+    } catch (err) {
+      console.warn("[pb-core] Failed to stat child path during page discovery", childPath, err);
       continue;
     }
     if (!stat.isDirectory()) continue;
@@ -94,7 +96,8 @@ export async function discoverAllPages(): Promise<PageEntry[]> {
   if (!isDev && cachedPages !== null) return cachedPages;
   try {
     await fs.promises.access(PAGE_DATA_DIR);
-  } catch {
+  } catch (err) {
+    console.warn("[pb-core] PAGE_DATA_DIR not accessible for page discovery", PAGE_DATA_DIR, err);
     cachedPages = [];
     return cachedPages;
   }
@@ -135,7 +138,8 @@ export async function resolvePagePath(slugSegments: string[]): Promise<string | 
     ]);
     if (!realResolved.startsWith(realBase + path.sep) && realResolved !== realBase) return null;
     return realResolved;
-  } catch {
+  } catch (err) {
+    console.warn("[pb-core] Failed to resolve page path", slugSegments, err);
     return null;
   }
 }

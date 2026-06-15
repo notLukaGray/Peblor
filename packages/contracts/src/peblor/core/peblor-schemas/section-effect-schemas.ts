@@ -1,31 +1,12 @@
 import { z } from "zod";
-import { themeStringSchema } from "./schema-primitives";
-
-const booleanishSchema = z.preprocess((value) => {
-  if (typeof value === "string") {
-    const normalized = value.trim().toLowerCase();
-    if (
-      normalized === "true" ||
-      normalized === "1" ||
-      normalized === "yes" ||
-      normalized === "on"
-    ) {
-      return true;
-    }
-    if (
-      normalized === "false" ||
-      normalized === "0" ||
-      normalized === "no" ||
-      normalized === "off"
-    ) {
-      return false;
-    }
-  }
-  return value;
-}, z.boolean());
+import {
+  booleanishSchema,
+  themeStringOrGradientSchema,
+  themeStringSchema,
+} from "./schema-primitives";
 
 export const dividerLayerSchema = z.object({
-  fill: themeStringSchema.optional(),
+  fill: themeStringOrGradientSchema.optional(),
   blendMode: z.string().optional(),
   opacity: z.number().optional(),
 });
@@ -53,14 +34,31 @@ export const glassEffectSchema = z.object({
   mode: z.enum(["standard", "polar", "prominent", "shader"]).optional(),
   overLight: z.boolean().optional(),
   mouseFollow: z.boolean().optional(),
-  // --- Figma-computed derived fields (stored for developer reference) ---
-  // withLiquidGlassDefaults populates these; they survive Zod so devs can read them in JSON.
-  // Not directly wired to physics params — use the Figma-semantic fields above for overrides.
+  /**
+   * --- Figma-computed derived fields (DEPRECATED — not wired to runtime) ---
+   * These fields are exported by the Figma plugin (`withLiquidGlassDefaults`) and
+   * stored in JSON for developer reference / round-trip fidelity.
+   *
+   * @deprecated None of these fields are read by SectionGlassEffect.tsx or GlassFilter.tsx.
+   * The runtime derives its physics parameters exclusively from the Figma-semantic fields
+   * (lightIntensity, refraction, frost, dispersion, splay) and the developer-facing physics
+   * overrides (refractiveIndex, blur, scaleRatio, specularOpacity, specularSaturation,
+   * magnifyingScale, bezelType, bezelWidth, glassThickness). Use those instead.
+   *
+   * These fields are kept (not removed) to avoid content fallout — Figma exports may write them.
+   * If they need runtime semantics in the future, wire them explicitly in SectionGlassEffect.tsx.
+   */
+  /** @deprecated Not wired to runtime — use `blur` physics override instead. */
   displacementScale: z.number().min(0).optional(),
+  /** @deprecated Not wired to runtime — use `blur` physics override instead. */
   blurAmount: z.number().min(0).optional(),
+  /** @deprecated Not wired to runtime — use `specularSaturation` physics override instead. */
   saturation: z.number().min(0).optional(),
+  /** @deprecated Not wired to runtime — use `specularSaturation` or dispersion fields instead. */
   aberrationIntensity: z.number().min(0).optional(),
+  /** @deprecated Not wired to runtime — no replacement (physics are derived from refraction/frost/dispersion). */
   elasticity: z.number().min(0).max(1).optional(),
+  /** @deprecated Not wired to runtime — specular highlights are controlled via specularOpacity. */
   reflection: z.number().min(0).max(1).optional(),
   // --- Physics overrides (developer-facing; take precedence over Figma fields) ---
   bezelType: z.enum(["convex_circle", "convex_squircle", "concave", "lip"]).optional(),

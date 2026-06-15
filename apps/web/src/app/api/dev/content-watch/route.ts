@@ -1,10 +1,9 @@
 import path from "path";
 import chokidar, { type FSWatcher } from "chokidar";
+
+export const runtime = "nodejs";
 import { regenerateProtectedSlugsFile } from "@/core/lib/generate-protected-slugs";
 import { devApiDisabledResponse, isDevApiEnabled } from "@/core/lib/dev-api-enabled";
-
-export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
 
 /** Timestamp when any file under content last changed; updated by watcher. */
 let lastContentChange = 0;
@@ -49,8 +48,8 @@ function initWatcher(abortSignal?: AbortSignal) {
 function scheduleSlugRegen() {
   if (slugRegenTimer) clearTimeout(slugRegenTimer);
   slugRegenTimer = setTimeout(() => {
-    void regenerateProtectedSlugsFile().catch(() => {
-      // Silently ignore — slug regen is dev-only convenience
+    void regenerateProtectedSlugsFile().catch((err) => {
+      console.warn("[web] Failed to regenerate protected slugs file (dev-only convenience)", err);
     });
   }, 1000);
 }

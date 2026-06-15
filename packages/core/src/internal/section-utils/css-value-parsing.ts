@@ -15,7 +15,8 @@ export function getDefaultParseCssContext(isVertical: boolean): ParseCssContext 
       viewportHeight: window.innerHeight,
       isVertical,
     };
-  } catch {
+  } catch (err) {
+    console.warn("[pb-core] Failed to get default CSS context", err);
     return null;
   }
 }

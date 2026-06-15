@@ -1,0 +1,21 @@
+{
+  "type": "elementVector",
+  "viewBox": "0 0 22 25",
+  "shapes": [
+    {
+      "type": "path",
+      "d": "M21.3803 11.4276C22.2066 11.9042 22.2066 13.0958 21.3803 13.5724L1.85916 24.8323C1.03286 25.3089 0 24.7131 0 23.7599V1.24011C0 0.286895 1.03286 -0.308865 1.85916 0.167744L21.3803 11.4276Z",
+      "fill": "icon"
+    }
+  ],
+  "colors": {
+    "icon": "#FFFFFF",
+    "icon-hover": "rgba(255,255,255,0.85)"
+  },
+  "link": {
+    "hoverFill": "icon-hover",
+    "vectorTransition": "0.15s"
+  },
+  "width": "13px",
+  "height": "15px"
+}

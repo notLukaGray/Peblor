@@ -1,0 +1,18 @@
+{
+  "type": "elementLink",
+  "copyType": "body",
+  "level": 4,
+  "linkDefault": "color-mix(in oklab, var(--pb-on-secondary) 65%, transparent)",
+  "linkHover": "var(--pb-on-secondary)",
+  "linkTransition": ".15s",
+  "href": "#",
+  "label": "View all",
+  "motion": {
+    "onHover": {
+      "x": 4
+    },
+    "transition": {
+      "duration": 0.15
+    }
+  }
+}

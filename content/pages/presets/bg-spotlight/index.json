@@ -1,0 +1,19 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "bg-spotlight — Preset Demo",
+  "description": "Pointer-driven radial spotlight that follows the mouse",
+  "presets": ["demo", "bg"],
+  "sectionOrder": ["nav-header", "hero"],
+  "bgKey": "bg-spotlight",
+  "scroll": {
+    "smooth": false,
+    "lockBody": true,
+    "scrollX": "hidden",
+    "scrollY": "hidden"
+  },
+  "definitions": {
+    "bg-spotlight": {
+      "preset": "bg-spotlight"
+    }
+  }
+}

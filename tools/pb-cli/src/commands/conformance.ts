@@ -32,7 +32,8 @@ function getValueAtPath(root: unknown, pathExpr: string): unknown {
 function formatExpected(expected: unknown): string {
   try {
     return JSON.stringify(expected);
-  } catch {
+  } catch (err) {
+    console.warn("[pb-cli] Failed to stringify expected value", err);
     return String(expected);
   }
 }

@@ -1,0 +1,60 @@
+{
+  "preset": "composition-column-4up-lattice",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "1100px",
+  "selfAlign": "center",
+  "padding": {
+    "base": "0 0 8rem",
+    "md": "0 0 12rem"
+  },
+  "definitions": {
+    "card-a": {
+      "section": {
+        "definitions": {
+          "body": {
+            "text": "A long-form operational narrative that intentionally stretches this card and tests whether adjacent cards maintain clean vertical rhythm when one column carries significantly more copy than the others in the same row."
+          }
+        }
+      }
+    },
+    "card-b": {
+      "section": {
+        "definitions": {
+          "title": {
+            "text": "Cross-team Handovers"
+          },
+          "body": {
+            "text": "Shared ownership notes, acceptance criteria, and release timing."
+          }
+        }
+      }
+    },
+    "card-c": {
+      "section": {
+        "definitions": {
+          "title": {
+            "text": "Observability Debt"
+          },
+          "body": {
+            "text": "Instrument gaps before they compound into hidden outages."
+          }
+        }
+      }
+    },
+    "card-d": {
+      "section": {
+        "definitions": {
+          "title": {
+            "text": "Support Signals"
+          },
+          "body": {
+            "text": "Escalation tags grouped by severity and customer impact."
+          }
+        }
+      }
+    }
+  }
+}

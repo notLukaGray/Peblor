@@ -1,0 +1,35 @@
+{
+  "preset": "composition-flow-media-caption",
+  "width": {
+    "base": "92%",
+    "md": "72%"
+  },
+  "maxWidth": "900px",
+  "selfAlign": "center",
+  "definitions": {
+    "media": {
+      "src": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1400&q=80&auto=format&fit=crop",
+      "alt": "Team collaborating around a large table"
+    },
+    "meta": {
+      "section": {
+        "definitions": {
+          "tag": {
+            "text": "Workshop"
+          },
+          "date": {
+            "text": "Field Notes · Spring 2026"
+          }
+        }
+      }
+    },
+    "caption": {
+      "text": "Long-form caption stress test: even with a fuller narrative that includes context, location, and outcome details, the single-flow pattern maintains readable measure and clear hierarchy beneath the media frame.",
+      "width": "100%"
+    }
+  },
+  "marginBottom": {
+    "base": "4rem",
+    "md": "8rem"
+  }
+}

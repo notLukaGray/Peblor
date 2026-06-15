@@ -1,0 +1,23 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Column · Mixed Span · Irregular Rhythm"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Composition Column Mixed Spans"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "Non-uniform spans and assignments proving peblor can support irregular composition systems.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  },
+  "align": "start"
+}

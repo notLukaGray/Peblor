@@ -3,6 +3,7 @@ import type {
   SectionViewportTriggerOptions,
   ViewportTriggerState,
 } from "./viewport-trigger-types";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 export function normalizeTriggerConfig(
   options: SectionViewportTriggerOptions
@@ -48,7 +49,9 @@ export function getViewportObserverThresholds(
   hasViewportProgress: boolean,
   threshold: number
 ): number | number[] {
-  // 21 thresholds (every 5%) is sufficient — entry.intersectionRatio gives the exact value
+  // N thresholds (every 5% by default) is sufficient — entry.intersectionRatio gives the exact value
   // regardless of threshold granularity, so 101 steps add observer overhead for no gain.
-  return hasViewportProgress ? Array.from({ length: 21 }, (_, i) => i / 20) : threshold;
+  // Step count comes from globals.uiViewportThresholdSteps (default 21, config: ui.triggers.viewportThresholdSteps).
+  const steps = globals.uiViewportThresholdSteps;
+  return hasViewportProgress ? Array.from({ length: steps }, (_, i) => i / (steps - 1)) : threshold;
 }

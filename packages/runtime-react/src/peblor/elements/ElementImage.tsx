@@ -5,15 +5,15 @@ import { TransitionLink } from "./Shared/TransitionLink";
 import { useState, useCallback, useMemo, useRef } from "react";
 import type { ElementBlock } from "@pb/contracts/peblor/core/peblor-schemas";
 import { useBrowserData } from "@pb/runtime-react/core/hooks/use-browser-data";
-import { resolveResponsiveValue } from "@pb/runtime-react/core/lib/responsive-value";
+import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
 import { useDeviceType } from "@pb/runtime-react/core/providers/device-type-provider";
 import { computeElementImagePresentation } from "./ElementImage/element-image-presentation";
 import { firePeblorAction } from "@/peblor/triggers";
 import { SectionGlassEffect } from "@/peblor/section/stack/SectionGlassEffect";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
-import { resolveThemeStyleObject, resolveThemeValueDeep } from "@/peblor/theme/theme-string";
-import { coerceSectionEffects } from "@/peblor/elements/ElementModule/element-module-style-utils";
+import { lowerThemeStyleObject } from "@/peblor/theme/theme-string";
+import { useElementEffects } from "@/peblor/elements/Shared/use-element-effects";
 import type { CSSProperties } from "react";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 const ELEMENT_IMAGE_INTERACTION_HANDLERS_NONE: Record<string, never> = {};
 
@@ -26,13 +26,13 @@ export function ElementImage({
   height,
   borderRadius,
   constraints,
-  align,
+  selfAlign,
   alignY,
   marginTop,
   marginBottom,
   marginLeft,
   marginRight,
-  zIndex,
+  layer,
   objectFit = "cover",
   objectPosition,
   imageCrop,
@@ -51,33 +51,27 @@ export function ElementImage({
   blendMode,
   boxShadow,
   filter,
-  backdropFilter,
-  overflow,
+  bgBlur,
+  scroll,
   hidden,
   priority,
   loading,
   decoding,
   srcSet,
   sizes,
+  blurDataURL,
   aria,
   tabIndex,
   role,
   interactions,
 }: Props) {
-  const themeMode = usePeblorThemeMode();
   const [hasError, setHasError] = useState(false);
   const [fallbackToNativeImg, setFallbackToNativeImg] = useState(false);
   const figureRef = useRef<HTMLElement | null>(null);
-  const resolvedEffects = useMemo(
-    () => resolveThemeValueDeep(effects, themeMode) as typeof effects,
-    [effects, themeMode]
-  );
-  const resolvedWrapperStyle = resolveThemeStyleObject(
-    wrapperStyle as Record<string, unknown> | undefined,
-    themeMode
+  const { resolvedEffects: imageEffects, hasGlassEffect } = useElementEffects(effects);
+  const resolvedWrapperStyle = lowerThemeStyleObject(
+    wrapperStyle as Record<string, unknown> | undefined
   ) as typeof wrapperStyle;
-  const imageEffects = useMemo(() => coerceSectionEffects(resolvedEffects), [resolvedEffects]);
-  const hasGlassEffect = (imageEffects ?? []).some((effect) => effect.type === "glass");
   const { isMobile } = useDeviceType();
   const browserData = useBrowserData();
   const resolvedAspectRatio = resolveResponsiveValue(aspectRatio, isMobile);
@@ -87,7 +81,9 @@ export function ElementImage({
       ? `${Math.round(browserData.viewportWidthPx)}px`
       : undefined;
   const resolvedSizes =
-    sizes ?? measuredViewportSizes ?? "(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px";
+    sizes ??
+    measuredViewportSizes ??
+    `(max-width: ${globals.uiBreakpointDesktopPx}px) 100vw, (max-width: 1200px) 80vw, 1200px`;
 
   const handleNativeImgError = useCallback(() => {
     setHasError(true);
@@ -120,13 +116,13 @@ export function ElementImage({
     height,
     borderRadius,
     constraints,
-    align,
+    selfAlign,
     alignY,
     marginTop,
     marginBottom,
     marginLeft,
     marginRight,
-    zIndex,
+    layer,
     objectFit: resolvedObjectFit,
     objectPosition,
     imageCrop,
@@ -139,14 +135,14 @@ export function ElementImage({
     link,
     aspectRatio: resolvedAspectRatio,
     figmaConstraints,
-    effects: resolvedEffects,
+    effects: imageEffects,
     wrapperStyle: resolvedWrapperStyle,
     opacity,
     blendMode,
     boxShadow,
     filter,
-    backdropFilter,
-    overflow,
+    bgBlur,
+    scroll,
     hidden,
   });
   const showError = hasError && hasSource;
@@ -221,7 +217,7 @@ export function ElementImage({
               loading={loading ?? (priority ? "eager" : "lazy")}
               decoding={decoding}
               srcSet={srcSet}
-              sizes={sizes ?? measuredViewportSizes}
+              sizes={resolvedSizes}
               fetchPriority={priority ? "high" : undefined}
               onError={handleNativeImgError}
               onLoad={handleImgLoad}
@@ -240,6 +236,8 @@ export function ElementImage({
               decoding={decoding}
               onError={handleNextImageError}
               onLoad={handleImgLoad}
+              placeholder={blurDataURL ? "blur" : "empty"}
+              blurDataURL={blurDataURL}
             />
           )}
         </span>

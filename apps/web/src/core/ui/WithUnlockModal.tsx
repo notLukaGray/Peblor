@@ -13,10 +13,20 @@ const ModalRenderer = dynamic(() =>
 const TABBABLE_SELECTOR =
   'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
+const PRIORITY_FOCUS_SELECTOR =
+  'input:not([disabled]):not([type="hidden"]), textarea:not([disabled]), select:not([disabled]), button:not([disabled])';
+
 function getTabbableElements(root: HTMLElement): HTMLElement[] {
   return Array.from(root.querySelectorAll<HTMLElement>(TABBABLE_SELECTOR)).filter(
     (el) => !el.hasAttribute("disabled") && el.getAttribute("aria-hidden") !== "true"
   );
+}
+
+function getPriorityFocusTarget(root: HTMLElement): HTMLElement | null {
+  const candidates = Array.from(root.querySelectorAll<HTMLElement>(PRIORITY_FOCUS_SELECTOR)).filter(
+    (el) => !el.hasAttribute("disabled") && el.getAttribute("aria-hidden") !== "true"
+  );
+  return candidates[0] ?? null;
 }
 
 type Props = {
@@ -65,6 +75,11 @@ export function WithUnlockModal({
     const frameId = window.requestAnimationFrame(() => {
       const root = document.getElementById(modalId);
       if (!(root instanceof HTMLElement)) return;
+      const priorityTarget = getPriorityFocusTarget(root);
+      if (priorityTarget) {
+        priorityTarget.focus({ preventScroll: true });
+        return;
+      }
       const tabbable = getTabbableElements(root);
       (tabbable[0] ?? root).focus({ preventScroll: true });
     });

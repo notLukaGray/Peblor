@@ -1,0 +1,18 @@
+{
+  "type": "elementGroup",
+  "width": "100%",
+  "height": "hug",
+  "display": "flex",
+  "flow": "row",
+  "align": "center",
+  "distribute": "between",
+  "gap": {
+    "base": "0.6rem",
+    "md": "1rem"
+  },
+  "padding": {
+    "base": "0.72rem 0",
+    "md": "0.95rem 0"
+  },
+  "scroll": "visible"
+}

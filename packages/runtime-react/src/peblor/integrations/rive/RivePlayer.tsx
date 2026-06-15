@@ -59,7 +59,6 @@ export function RivePlayer({
   onPause,
   onComplete,
   onLoop,
-  onStop,
   preserveAspectRatio,
 }: RivePlayerProps) {
   const { rive, RiveComponent } = useRive(
@@ -96,8 +95,8 @@ export function RivePlayer({
           : undefined;
         if (!input) continue;
         input.value = value;
-      } catch {
-        // Input may not exist in this artboard; silently skip.
+      } catch (err) {
+        console.warn("[pb-runtime-react] Failed to set Rive input", err);
       }
     }
   }, [rive, riveInputs, stateMachine]);
@@ -137,15 +136,6 @@ export function RivePlayer({
       rive.off(EventType.Loop, handler);
     };
   }, [rive, onLoop]);
-
-  useEffect(() => {
-    if (!rive || !onStop) return;
-    const handler = () => onStop();
-    rive.on(EventType.Stop, handler);
-    return () => {
-      rive.off(EventType.Stop, handler);
-    };
-  }, [rive, onStop]);
 
   return (
     <div

@@ -1,0 +1,33 @@
+{
+  "type": "revealSection",
+  "collapsedSize": {
+    "height": "4.5rem"
+  },
+  "expandAxis": "vertical",
+  "revealOnClick": true,
+  "toggleOnClick": true,
+  "initialRevealed": false,
+  "expandDurationMs": 320,
+  "collapseDurationMs": 320,
+  "transitionEasing": "easeOut",
+  "width": {
+    "base": "92%",
+    "md": "60%"
+  },
+  "selfAlign": "center",
+  "collapsedElements": [
+    {
+      "preset": "type-body-standard",
+      "text": "This is the teaser — just the first line. Click to expand and read the full text below..."
+    }
+  ],
+  "revealedElements": [
+    {
+      "preset": "type-rich-prose"
+    },
+    {
+      "preset": "type-link-nav",
+      "label": "Collapse ↑"
+    }
+  ]
+}

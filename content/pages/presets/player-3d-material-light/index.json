@@ -1,0 +1,21 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "3D Material & Light — Preset Demo",
+  "description": "PBR model under dramatic spot lighting. Solid scene background. Loads immediately.",
+  "presets": [
+    "demo",
+    "type/core",
+    "ui/link",
+    "type/motion",
+    "player/surface",
+    "bg",
+    "player/section"
+  ],
+  "bgKey": "bg-players",
+  "sectionOrder": ["nav-header", "hero", "sec-player"],
+  "definitions": {
+    "bg-players": {
+      "preset": "bg-players"
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["sec-label", "proof-row"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Proof + Testimonial"
+    },
+    "proof-row": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": {
+        "base": "column",
+        "md": "row"
+      },
+      "gap": "1.5rem",
+      "width": "100%",
+      "height": "hug",
+      "align": "stretch",
+      "section": {
+        "elementOrder": ["proof", "testimonial"],
+        "definitions": {
+          "proof": {
+            "preset": "card-proof-block",
+            "width": {
+              "base": "100%",
+              "md": "calc(60% - 0.75rem)"
+            },
+            "flex": {
+              "base": "1 1 100%",
+              "md": "1 1 calc(60% - 0.75rem)"
+            }
+          },
+          "testimonial": {
+            "preset": "card-testimonial-person",
+            "width": {
+              "base": "100%",
+              "md": "calc(40% - 0.75rem)"
+            },
+            "flex": {
+              "base": "1 1 100%",
+              "md": "1 1 calc(40% - 0.75rem)"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["hero-eyebrow", "hero-title", "hero-description"],
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Flow · Wrap Stress · Density"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Composition Flow Tag Cloud"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "High-density wrapped items to test spacing, readability, and touch behavior under content pressure.",
+      "width": {
+        "base": "100%",
+        "md": "72%"
+      }
+    }
+  },
+  "align": "start"
+}

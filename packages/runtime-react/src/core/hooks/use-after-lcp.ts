@@ -36,8 +36,8 @@ function fireAll() {
     for (const fn of snapshot) {
       try {
         fn();
-      } catch {
-        /* ignore stale listener */
+      } catch (err) {
+        console.warn("[pb-runtime-react] Stale LCP listener threw", err);
       }
     }
   });
@@ -58,8 +58,11 @@ function startWatch(fallbackMs: number) {
       });
       observer.observe({ type: "largest-contentful-paint", buffered: true });
     }
-  } catch {
-    /* rely on fallback / load */
+  } catch (err) {
+    console.warn(
+      "[pb-runtime-react] PerformanceObserver creation failed (falling back to load)",
+      err
+    );
   }
 
   loadListener = () => fireAll();

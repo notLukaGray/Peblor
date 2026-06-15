@@ -8,7 +8,6 @@ type ThemeProviderProps = {
   defaultTheme?: string;
   forcedTheme?: string;
   enableSystem?: boolean;
-  disableTransitionOnChange?: boolean;
   storageKey?: string;
 };
 
@@ -42,9 +41,13 @@ function applyTheme(attribute: "class" | "data-theme", theme: "light" | "dark"):
   if (attribute === "class") {
     document.documentElement.classList.remove("light", "dark");
     document.documentElement.classList.add(theme);
-    return;
+  } else {
+    document.documentElement.setAttribute(attribute, theme);
   }
-  document.documentElement.setAttribute(attribute, theme);
+  // Sync the theme to a cookie so the root layout can read it server-side on the
+  // next navigation, setting the correct class on <html> before first paint without
+  // needing a blocking inline script.
+  document.cookie = `theme=${theme};path=/;max-age=31536000;SameSite=Lax`;
 }
 
 export function ThemeProvider({
@@ -53,7 +56,6 @@ export function ThemeProvider({
   defaultTheme = "dark",
   forcedTheme,
   enableSystem = true,
-  disableTransitionOnChange: _disableTransitionOnChange,
   storageKey = STORAGE_KEY,
 }: ThemeProviderProps) {
   React.useLayoutEffect(() => {

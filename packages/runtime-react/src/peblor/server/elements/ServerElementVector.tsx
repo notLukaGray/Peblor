@@ -1,6 +1,11 @@
 import type { CSSProperties } from "react";
 import type { ElementBlock, VectorShape } from "@pb/contracts/types";
-import { getElementLayoutStyle, getElementTransformStyle } from "@pb/core/layout";
+import type { ServerElementComponentProps } from "../server-element-types";
+import {
+  getElementLayoutStyle,
+  getElementTransformStyle,
+  stripResponsiveLayoutKeys,
+} from "@pb/core/layout";
 import {
   renderVectorDefs,
   renderVectorFillOnlyLayers,
@@ -22,12 +27,12 @@ export function ServerElementVector({
   strokeGroup,
   width,
   height,
-  align,
+  selfAlign,
   marginTop,
   marginBottom,
   marginLeft,
   marginRight,
-  zIndex,
+  layer,
   constraints,
   effects,
   wrapperStyle,
@@ -35,34 +40,45 @@ export function ServerElementVector({
   blendMode,
   boxShadow,
   filter,
-  backdropFilter,
-  overflow,
+  bgBlur,
+  scroll,
   hidden,
   rotate,
   flipHorizontal = false,
   flipVertical = false,
   link,
-}: Props) {
-  const layoutStyle = getElementLayoutStyle({
-    width,
-    height,
-    align,
-    marginTop,
-    marginBottom,
-    marginLeft,
-    marginRight,
-    zIndex,
-    constraints,
-    effects,
-    wrapperStyle,
-    opacity,
-    blendMode,
-    boxShadow,
-    filter,
-    backdropFilter,
-    overflow,
-    hidden,
-  });
+  stateStyleClass,
+  responsiveStyleClass,
+  responsiveLayoutKeys,
+}: Props &
+  Pick<
+    ServerElementComponentProps,
+    "stateStyleClass" | "responsiveStyleClass" | "responsiveLayoutKeys"
+  >) {
+  const layoutInput = stripResponsiveLayoutKeys(
+    {
+      width,
+      height,
+      selfAlign,
+      marginTop,
+      marginBottom,
+      marginLeft,
+      marginRight,
+      layer,
+      constraints,
+      effects,
+      wrapperStyle,
+      opacity,
+      blendMode,
+      boxShadow,
+      filter,
+      bgBlur,
+      scroll,
+      hidden,
+    },
+    responsiveStyleClass ? responsiveLayoutKeys : undefined
+  );
+  const layoutStyle = getElementLayoutStyle(layoutInput);
   const innerStyle: CSSProperties = {
     width: "100%",
     height: "100%",
@@ -75,7 +91,7 @@ export function ServerElementVector({
   };
   const allGradients = Array.isArray(gradients) ? gradients : [];
   const resolve = (ref: Parameters<typeof resolvePaint>[0]) =>
-    resolvePaint(ref, colors, allGradients, "light");
+    resolvePaint(ref, colors, allGradients);
   const pathShapes = (Array.isArray(shapes) ? shapes : []).filter(
     (shape): shape is VectorShape & { type: "path"; d: string } =>
       shape != null && shape.type === "path" && shape.d != null && String(shape.d).trim() !== ""
@@ -106,7 +122,7 @@ export function ServerElementVector({
       role="img"
       aria-label={ariaLabel?.trim() || "Vector graphic"}
     >
-      {renderVectorDefs(hasDefs, allGradients, "light")}
+      {renderVectorDefs(hasDefs, allGradients)}
       {strokeGroup ? renderVectorStrokeGroupLayers(ctx) : renderVectorFillOnlyLayers(ctx)}
     </svg>
   ) : (
@@ -133,8 +149,11 @@ export function ServerElementVector({
   );
 
   return (
-    <figure className="shrink-0 m-0" style={layoutStyle}>
+    <div
+      className={["shrink-0 m-0", stateStyleClass, responsiveStyleClass].filter(Boolean).join(" ")}
+      style={layoutStyle}
+    >
       <div style={innerStyle}>{content}</div>
-    </figure>
+    </div>
   );
 }

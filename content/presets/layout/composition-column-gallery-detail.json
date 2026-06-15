@@ -1,0 +1,121 @@
+{
+  "type": "sectionColumn",
+  "columns": {
+    "base": 1,
+    "md": 2
+  },
+  "columnWidths": {
+    "base": [1],
+    "md": [0.5, 1]
+  },
+  "columnGaps": {
+    "base": "1.5rem",
+    "md": "2.5rem"
+  },
+  "columnAssignments": {
+    "gallery": 0,
+    "detail": 1
+  },
+  "contentWidth": "100%",
+  "contentHeight": "hug",
+  "elementOrder": ["gallery", "detail"],
+  "gridMode": "grid",
+  "gridAutoRows": "auto",
+  "definitions": {
+    "gallery": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "1.25rem",
+      "height": "hug",
+      "padding": "0",
+      "section": {
+        "elementOrder": ["card-a", "card-b", "card-c"],
+        "definitions": {
+          "card-a": {
+            "preset": "card-shell-basic",
+            "section": {
+              "elementOrder": ["title", "body"],
+              "definitions": {
+                "title": {
+                  "preset": "type-h4-card",
+                  "text": "Thumbnail A"
+                },
+                "body": {
+                  "preset": "type-body-fine",
+                  "text": "Preview metadata."
+                }
+              }
+            }
+          },
+          "card-b": {
+            "preset": "card-shell-basic",
+            "section": {
+              "elementOrder": ["title", "body"],
+              "definitions": {
+                "title": {
+                  "preset": "type-h4-card",
+                  "text": "Thumbnail B"
+                },
+                "body": {
+                  "preset": "type-body-fine",
+                  "text": "Preview metadata."
+                }
+              }
+            }
+          },
+          "card-c": {
+            "preset": "card-shell-basic",
+            "section": {
+              "elementOrder": ["title", "body"],
+              "definitions": {
+                "title": {
+                  "preset": "type-h4-card",
+                  "text": "Thumbnail C"
+                },
+                "body": {
+                  "preset": "type-body-fine",
+                  "text": "Preview metadata."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "detail": {
+      "type": "elementGroup",
+      "display": "flex",
+      "flow": "column",
+      "gap": "1.25rem",
+      "height": "hug",
+      "fill": "color-mix(in oklab, var(--pb-on-secondary) 5%, transparent)",
+      "padding": {
+        "base": "1.5rem",
+        "md": "1.75rem"
+      },
+      "borderRadius": "16px",
+      "wrapperStyle": {
+        "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 10%, transparent)"
+      },
+      "section": {
+        "elementOrder": ["panel-title", "panel-desc", "panel-cta"],
+        "definitions": {
+          "panel-title": {
+            "preset": "type-h4-card",
+            "text": "Detail pane"
+          },
+          "panel-desc": {
+            "preset": "type-body-standard",
+            "text": "Selected artifact details and action path in a dedicated pane."
+          },
+          "panel-cta": {
+            "preset": "type-link-nav",
+            "label": "Inspect ->",
+            "href": "#"
+          }
+        }
+      }
+    }
+  }
+}

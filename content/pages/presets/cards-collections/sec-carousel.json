@@ -1,0 +1,17 @@
+{
+  "preset": "demo-section",
+  "elementOrder": ["sec-label", "sec-desc", "carousel"],
+  "definitions": {
+    "sec-label": {
+      "preset": "type-h3-label",
+      "text": "Card Carousel"
+    },
+    "sec-desc": {
+      "preset": "type-body-fine",
+      "text": "Horizontal infinite scroll carousel. Click or drag to advance. Inactive cards scale and fade. Loops indefinitely."
+    },
+    "carousel": {
+      "preset": "card-carousel-basic"
+    }
+  }
+}

@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { NavigationProvider } from "@pb/runtime-react/core/navigation-context";
-import { PageTransition } from "@/core/ui/PageTransition";
 
 const NavigationOverlay = dynamic(
   () => import("@/core/ui/NavigationOverlay").then((m) => m.NavigationOverlay),
@@ -22,8 +21,12 @@ export function AppLayout({ children }: AppLayoutProps) {
       >
         Skip to main content
       </a>
-      <main id="main-content" className="min-h-dvh w-full min-w-0 flex flex-col bg-background">
-        <PageTransition>{children}</PageTransition>
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="min-h-dvh w-full min-w-0 flex flex-col bg-background outline-none"
+      >
+        {children}
       </main>
       <NavigationOverlay />
     </NavigationProvider>

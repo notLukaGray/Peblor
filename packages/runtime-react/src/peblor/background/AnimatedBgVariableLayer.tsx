@@ -1,11 +1,20 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useInsertionEffect, useId, useMemo } from "react";
 import type { CSSProperties } from "react";
-import { motion } from "@/peblor/integrations/framer-motion/animations";
-import { useBgLayerMotion } from "@/peblor/integrations/framer-motion/use-bg-layer-motion";
+import { m } from "@/peblor/integrations/framer-motion/animations";
+import {
+  useBgLayerParallax,
+  useBgLayerScrollMotions,
+} from "@/peblor/integrations/framer-motion/use-bg-layer-motion";
+import { useScrollContainerRef } from "@/peblor/section/position/use-scroll-container";
+import type {
+  BgParallaxMotion,
+  BgScrollMotion,
+} from "@/peblor/background/motion/bg-layer-motion-types";
 import { composeMotionDivProps } from "./motion/bg-layer-motion-compose";
 import type { BgLayerMotion } from "./motion/bg-layer-motion-types";
+import { partitionLayerMotions, loopMotionToCss } from "@pb/core/bg-loop-classify";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -39,6 +48,10 @@ const DEFAULT_BLEND = "normal";
  *  • parallax — backgroundPosition MotionValue driven by scroll
  *  • trigger — imperative FM animate() on custom window events
  *
+ * CSS-compilable loop animations (opacity, scale, rotate only) are compiled to
+ * @keyframes and injected via useInsertionEffect — zero Framer Motion overhead
+ * for those layers.
+ *
  * When no `motion` array is provided the layer renders as a plain `<div>` —
  * identical in output to the original BackgroundVariable layer.
  */
@@ -51,6 +64,43 @@ export function AnimatedBgVariableLayer({
   motion: motions,
 }: AnimatedBgVariableLayerProps) {
   const layerRef = useRef<HTMLDivElement | null>(null);
+  const uid = useId();
+
+  // Partition: CSS-compilable loops vs JS-required motions
+  const { cssLoops, jsMotions } = useMemo(
+    () =>
+      motions && motions.length > 0
+        ? partitionLayerMotions(motions)
+        : { cssLoops: [], jsMotions: [] },
+    [motions]
+  );
+
+  // Compile CSS loops to @keyframes — stable uid transform computed once per uid
+  const uidClean = useMemo(() => uid.replace(/:/g, ""), [uid]);
+  const cssAnimations = useMemo(
+    () => cssLoops.map((loop, i) => loopMotionToCss(loop, `${uidClean}-${i}`)),
+    [cssLoops, uidClean]
+  );
+  const cssKeyframesKey = useMemo(
+    () => cssAnimations.map((a) => a.keyframes).join(""),
+    [cssAnimations]
+  );
+
+  useInsertionEffect(() => {
+    if (cssAnimations.length === 0) return;
+    const styleEl = document.createElement("style");
+    styleEl.textContent = cssAnimations.map((a) => a.keyframes).join("\n");
+    document.head.appendChild(styleEl);
+    return () => {
+      document.head.removeChild(styleEl);
+    };
+  }, [cssKeyframesKey]);
+
+  // CSS animation value combines all compiled loops
+  const animationStyle =
+    cssAnimations.length > 0
+      ? { animation: cssAnimations.map((a) => a.animationValue).join(", ") }
+      : {};
 
   // Base CSS applied to every layer regardless of motion.
   const baseStyle: CSSProperties = {
@@ -59,6 +109,7 @@ export function AnimatedBgVariableLayer({
     opacity: opacity ?? 1,
     ...(backgroundSize ? { backgroundSize } : {}),
     ...(backgroundPosition ? { backgroundPosition } : {}),
+    ...animationStyle,
   };
 
   // ── Static layer (no motion) ───────────────────────────────────────
@@ -66,12 +117,19 @@ export function AnimatedBgVariableLayer({
     return <div className={LAYER_CLASS} style={baseStyle} />;
   }
 
+  // If no JS motions remain, render a plain div (zero Framer cost)
+  if (jsMotions.length === 0) {
+    return <div className={LAYER_CLASS} style={baseStyle} />;
+  }
+
   // ── Motion layer ───────────────────────────────────────────────────
-  return <MotionLayer layerRef={layerRef} baseStyle={baseStyle} motions={motions} />;
+  return <MotionLayer layerRef={layerRef} baseStyle={baseStyle} motions={jsMotions} />;
 }
 
-// ── Inner motion component ────────────────────────────────────────────────────
-// Split into a separate component so hooks are only called when motions exist.
+// ── Inner motion sub-components ──────────────────────────────────────────────
+// Split by motion type so per-type hooks (useScroll, etc.) are only called
+// when that motion type is actually configured. Avoids creating unnecessary
+// Framer Motion scroll subscriptions for unused motion types.
 
 type MotionLayerProps = {
   layerRef: React.RefObject<HTMLDivElement | null>;
@@ -79,29 +137,136 @@ type MotionLayerProps = {
   motions: BgLayerMotion[];
 };
 
+/**
+ * Renders the layer with parallax MotionValues. Only calls useScroll when
+ * parallax is configured, avoiding an unused Framer Motion scroll subscription.
+ */
+function ParallaxMotionLayer({
+  layerRef,
+  baseStyle,
+  motions,
+  parallaxMotion,
+}: MotionLayerProps & { parallaxMotion: BgParallaxMotion }) {
+  const containerRef = useScrollContainerRef();
+  const { parallaxX, parallaxY, axis } = useBgLayerParallax(parallaxMotion, containerRef);
+  const motionStyle: Record<string, unknown> = {};
+  if (axis === "x") motionStyle.backgroundPositionX = parallaxX;
+  else motionStyle.backgroundPositionY = parallaxY;
+
+  // Scroll motions (if any) — handled by a sibling sub-component
+  const scrollMotions = useMemo(
+    () => motions.filter((m): m is BgScrollMotion => m.type === "scroll"),
+    [motions]
+  );
+
+  return (
+    <ScrollMotionWrapper
+      scrollMotions={scrollMotions}
+      layerRef={layerRef}
+      containerRef={containerRef}
+    >
+      <MotionLayerInner
+        layerRef={layerRef}
+        baseStyle={{ ...baseStyle, ...motionStyle }}
+        motions={motions}
+        useMotionElement={true}
+      />
+    </ScrollMotionWrapper>
+  );
+}
+
+/**
+ * Always calls useBgLayerScrollMotions (hooks rules require unconditional calls).
+ * When scrollMotions is empty the hook is a no-op internally — the useMotionValueEvent
+ * callback guards on array length before processing.
+ */
+function ScrollMotionWrapper({
+  scrollMotions,
+  layerRef,
+  containerRef,
+  children,
+}: {
+  scrollMotions: BgScrollMotion[];
+  layerRef: React.RefObject<HTMLElement | null>;
+  containerRef: React.RefObject<HTMLElement | null> | null;
+  children: React.ReactNode;
+}) {
+  useBgLayerScrollMotions(scrollMotions, layerRef, containerRef);
+  return <>{children}</>;
+}
+
+/**
+ * Renders the layer with only pointer/trigger/loop/entrance motion (no parallax,
+ * no scroll). Zero useScroll calls when these are the only motion types.
+ */
+function PlainMotionLayer({ layerRef, baseStyle, motions }: MotionLayerProps) {
+  const containerRef = useScrollContainerRef();
+  const scrollMotions = useMemo(
+    () => motions.filter((m): m is BgScrollMotion => m.type === "scroll"),
+    [motions]
+  );
+  const useMotionElement = useMemo(
+    () =>
+      composeMotionDivProps(motions).needsMotionDiv || motions.some((m) => m.type === "parallax"),
+    [motions]
+  );
+
+  return (
+    <ScrollMotionWrapper
+      scrollMotions={scrollMotions}
+      layerRef={layerRef}
+      containerRef={containerRef}
+    >
+      <MotionLayerInner
+        layerRef={layerRef}
+        baseStyle={baseStyle}
+        motions={motions}
+        useMotionElement={useMotionElement}
+      />
+    </ScrollMotionWrapper>
+  );
+}
+
 function MotionLayer({ layerRef, baseStyle, motions }: MotionLayerProps) {
-  // ── Scroll / pointer / parallax / trigger hooks ───────────────────
-  // These write directly to the DOM (scroll, pointer, trigger) or return
-  // MotionValues for parallax — no React re-renders involved.
-  const { motionStyle } = useBgLayerMotion(motions, layerRef);
+  const parallaxMotion = useMemo(
+    () => motions.find((m): m is BgParallaxMotion => m.type === "parallax"),
+    [motions]
+  );
 
-  // ── Loop + entrance composition ────────────────────────────────────
-  // Merge all loop and entrance configs into a single set of FM motion.div props.
-  const { initial, animate, whileInView, transition, viewport, needsMotionDiv } =
-    composeMotionDivProps(motions);
+  if (parallaxMotion) {
+    return (
+      <ParallaxMotionLayer
+        layerRef={layerRef}
+        baseStyle={baseStyle}
+        motions={motions}
+        parallaxMotion={parallaxMotion}
+      />
+    );
+  }
 
-  // Whether this layer needs a motion.div at all.
-  // Parallax always needs one (MotionValue in style prop requires motion.*).
-  const hasParallax = motions.some((m) => m.type === "parallax");
-  const useMotionElement = needsMotionDiv || hasParallax;
+  return <PlainMotionLayer layerRef={layerRef} baseStyle={baseStyle} motions={motions} />;
+}
 
-  // Merge base style with parallax MotionValues.
-  // motionStyle is empty {} when no parallax is active.
-  const composedStyle = { ...baseStyle, ...motionStyle };
+type MotionLayerInnerProps = {
+  layerRef: React.RefObject<HTMLDivElement | null>;
+  baseStyle: CSSProperties;
+  motions: BgLayerMotion[];
+  useMotionElement: boolean;
+};
+
+function MotionLayerInner({
+  layerRef,
+  baseStyle,
+  motions,
+  useMotionElement,
+}: MotionLayerInnerProps) {
+  // Compose loop + entrance props (no useScroll — scroll/parallax are handled
+  // by wrapping sub-components).
+  const { initial, animate, whileInView, transition, viewport } = composeMotionDivProps(motions);
 
   // ── Plain div ─────────────────────────────────────────────────────
-  // Scroll / pointer / trigger work fine with a plain element — they write directly
-  // to the DOM via the ref. We only need motion.div for loop, entrance, and parallax.
+  // Pointer / trigger work fine with a plain element — they write directly
+  // to the DOM via the ref. We only need m.div for loop, entrance, and parallax.
   if (!useMotionElement) {
     return (
       <div
@@ -112,13 +277,13 @@ function MotionLayer({ layerRef, baseStyle, motions }: MotionLayerProps) {
     );
   }
 
-  // ── motion.div — shared props ─────────────────────────────────────
-  type MotionDivProps = React.ComponentProps<typeof motion.div>;
+  // ── m.div — shared props ─────────────────────────────────────
+  type MotionDivProps = React.ComponentProps<typeof m.div>;
 
   const sharedProps = {
     ref: layerRef,
     className: LAYER_CLASS,
-    style: composedStyle as MotionDivProps["style"],
+    style: baseStyle as MotionDivProps["style"],
     transition:
       Object.keys(transition).length > 0 ? (transition as MotionDivProps["transition"]) : undefined,
   } satisfies Partial<MotionDivProps>;
@@ -126,7 +291,7 @@ function MotionLayer({ layerRef, baseStyle, motions }: MotionLayerProps) {
   // ── onMount entrance or loop only ────────────────────────────────
   if (!whileInView) {
     return (
-      <motion.div
+      <m.div
         {...sharedProps}
         initial={
           Object.keys(initial).length > 0 ? (initial as MotionDivProps["initial"]) : undefined
@@ -142,7 +307,7 @@ function MotionLayer({ layerRef, baseStyle, motions }: MotionLayerProps) {
   // Loop props stay in `animate` (run continuously).
   // Entrance props live in `whileInView` (fire on viewport enter).
   return (
-    <motion.div
+    <m.div
       {...sharedProps}
       initial={Object.keys(initial).length > 0 ? (initial as MotionDivProps["initial"]) : undefined}
       animate={Object.keys(animate).length > 0 ? (animate as MotionDivProps["animate"]) : undefined}

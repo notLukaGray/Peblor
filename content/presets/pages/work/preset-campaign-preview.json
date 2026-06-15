@@ -1,0 +1,46 @@
+{
+  "preset": "work-preview-card",
+  "visibleWhen": {
+    "variable": "selectedProject",
+    "operator": "equals",
+    "value": "campaign"
+  },
+  "section": {
+    "elementOrder": ["preview-image-wrap", "preview-content"],
+    "definitions": {
+      "preview-image-wrap": {
+        "preset": "work-preview-image-wrap",
+        "section": {
+          "elementOrder": ["preview-image"],
+          "definitions": {
+            "preview-image": {
+              "preset": "work-preview-image",
+              "src": "work/project-campaign/hero-ad.webp"
+            }
+          }
+        }
+      },
+      "preview-content": {
+        "preset": "work-preview-content",
+        "section": {
+          "elementOrder": ["preview-title", "preview-desc", "preview-cta"],
+          "definitions": {
+            "preview-title": {
+              "preset": "work-preview-title",
+              "text": "Meridian \u2014 Campaign"
+            },
+            "preview-desc": {
+              "preset": "work-preview-desc",
+              "text": "Multi-channel brand campaign for Meridian Bank \u2014 art direction, OOH, digital, and social across six European markets."
+            },
+            "preview-cta": {
+              "preset": "work-preview-cta",
+              "label": "View project",
+              "href": "/work/project-campaign"
+            }
+          }
+        }
+      }
+    }
+  }
+}

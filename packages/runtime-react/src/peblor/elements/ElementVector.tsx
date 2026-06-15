@@ -4,7 +4,6 @@ import { forwardRef } from "react";
 import { ElementLayoutWrapper } from "./Shared/ElementLayoutWrapper";
 import { GraphicLinkWrapper } from "./Shared/GraphicLinkWrapper";
 import type { ElementVectorProps, VectorLayoutProps } from "./ElementVector/element-vector-types";
-import { usePeblorThemeMode } from "@/peblor/theme/use-peblor-theme-mode";
 import type { VectorShape } from "@pb/contracts/types";
 import { resolvePaint } from "./ElementVector/element-vector-paint";
 import { toVectorTransitionDuration } from "./ElementVector/element-vector-paint";
@@ -34,12 +33,12 @@ export const ElementVector = forwardRef<HTMLAnchorElement | HTMLDivElement, Elem
       strokeGroup,
       width,
       height,
-      align,
+      selfAlign,
       marginTop,
       marginBottom,
       marginLeft,
       marginRight,
-      zIndex,
+      layer,
       constraints,
       effects,
       wrapperStyle,
@@ -47,8 +46,8 @@ export const ElementVector = forwardRef<HTMLAnchorElement | HTMLDivElement, Elem
       blendMode,
       boxShadow,
       filter,
-      backdropFilter,
-      overflow,
+      bgBlur,
+      scroll,
       hidden,
       rotate,
       flipHorizontal = false,
@@ -58,16 +57,15 @@ export const ElementVector = forwardRef<HTMLAnchorElement | HTMLDivElement, Elem
     },
     ref
   ) => {
-    const themeMode = usePeblorThemeMode();
     const layout = {
       width,
       height,
-      align,
+      selfAlign,
       marginTop,
       marginBottom,
       marginLeft,
       marginRight,
-      zIndex,
+      layer,
       constraints,
       effects,
       wrapperStyle,
@@ -75,15 +73,15 @@ export const ElementVector = forwardRef<HTMLAnchorElement | HTMLDivElement, Elem
       blendMode,
       boxShadow,
       filter,
-      backdropFilter,
-      overflow,
+      bgBlur,
+      scroll,
       hidden,
     };
     const transform = { rotate, flipHorizontal, flipVertical };
 
     const allGradients = Array.isArray(gradients) ? gradients : [];
     const resolve = (ref: Parameters<typeof resolvePaint>[0]) =>
-      resolvePaint(ref, colors, allGradients, themeMode);
+      resolvePaint(ref, colors, allGradients);
 
     const vectorTransitionDuration = toVectorTransitionDuration(link?.vectorTransition);
     const fillStrokeTransitionStyle = vectorTransitionDuration
@@ -101,37 +99,8 @@ export const ElementVector = forwardRef<HTMLAnchorElement | HTMLDivElement, Elem
         s != null && s.type === "path" && s.d != null && String(s.d).trim() !== ""
     );
 
-    if (!viewBoxValid) {
-      return (
-        <ElementLayoutWrapper
-          layout={layout as VectorLayoutProps}
-          transform={transform}
-          interactions={interactions}
-        >
-          <GraphicLinkWrapper ref={ref} className="w-full h-full flex items-center justify-center">
-            <span className="text-muted-foreground text-sm" role="status">
-              Invalid vector: viewBox is required.
-            </span>
-          </GraphicLinkWrapper>
-        </ElementLayoutWrapper>
-      );
-    }
-
-    if (!shapesValid) {
-      return (
-        <ElementLayoutWrapper
-          layout={layout as VectorLayoutProps}
-          transform={transform}
-          interactions={interactions}
-        >
-          <GraphicLinkWrapper ref={ref} className="w-full h-full flex items-center justify-center">
-            <span className="text-muted-foreground text-sm" role="status">
-              No shapes.
-            </span>
-          </GraphicLinkWrapper>
-        </ElementLayoutWrapper>
-      );
-    }
+    if (!viewBoxValid) return null;
+    if (!shapesValid) return null;
 
     const renderSvg = (state: LinkState) => {
       const resolveFill = makeResolveFill(state, link, resolve);
@@ -171,7 +140,7 @@ export const ElementVector = forwardRef<HTMLAnchorElement | HTMLDivElement, Elem
           role="img"
           aria-label={ariaLabel?.trim() || "Vector graphic"}
         >
-          {renderVectorDefs(hasDefs, allGradients, themeMode)}
+          {renderVectorDefs(hasDefs, allGradients)}
           {strokeGroup ? renderVectorStrokeGroupLayers(ctx) : renderVectorFillOnlyLayers(ctx)}
         </svg>
       );

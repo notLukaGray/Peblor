@@ -70,6 +70,10 @@ const eslintConfig = defineConfig([
   },
 
   {
+    ignores: ["scripts/**/*.mjs"],
+  },
+
+  {
     files: [
       "src/peblor/elements/ElementImage.tsx",
       "apps/web/src/peblor/elements/ElementImage.tsx",
@@ -219,6 +223,9 @@ const eslintConfig = defineConfig([
     "tools/figma-widget/dist/**",
     // Vendor copy of liquidGL runtime
     "public/scripts/**",
+    // Browser-injected extraction scripts loaded as raw text via fs.readFileSync and
+    // evaluated in-page — top-level arrow function expression is the intended shape.
+    "tools/pb-cli/src/commands/steal/extraction-scripts/**",
   ]),
 ]);
 

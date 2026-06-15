@@ -37,14 +37,13 @@ export function useTextureMap(textures: Record<string, TextureDef> | undefined) 
     [textures]
   );
   const imageUrls = useMemo(() => {
-    if (!imageEntries.length) return [PLACEHOLDER_IMAGE];
     return imageEntries.map(([, v]) => {
       const source = (v as { source?: string }).source;
       const resolved = resolveModel3DAssetPath(source, { raw: true });
       return resolved !== "" ? resolved : PLACEHOLDER_IMAGE;
     });
   }, [imageEntries]);
-  const imageTextureList = useTexture(imageUrls);
+  const imageTextureList = useTexture(imageUrls.length > 0 ? imageUrls : [PLACEHOLDER_IMAGE]);
 
   const videoEntry = useMemo(
     () => (textures ? Object.entries(textures).find(([, v]) => v.type === "video") : null),

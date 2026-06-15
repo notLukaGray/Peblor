@@ -1,5 +1,5 @@
 import type { ThemeString, VectorGradient } from "@pb/contracts/peblor/core/peblor-schemas";
-import { type PeblorThemeMode, resolveThemeString } from "@/peblor/theme/theme-string";
+import { lowerThemeStringToCss } from "@/peblor/theme/theme-string";
 
 /**
  * Resolve a fill/stroke reference to an SVG paint value.
@@ -8,12 +8,11 @@ import { type PeblorThemeMode, resolveThemeString } from "@/peblor/theme/theme-s
 export function resolvePaint(
   ref: ThemeString | undefined,
   colors: Record<string, ThemeString> | undefined,
-  gradients: VectorGradient[],
-  themeMode: PeblorThemeMode
+  gradients: VectorGradient[]
 ): string | undefined {
-  const resolvedRef = resolveThemeString(ref, themeMode);
+  const resolvedRef = lowerThemeStringToCss(ref);
   if (resolvedRef == null || resolvedRef === "") return undefined;
-  if (colors?.[resolvedRef] != null) return resolveThemeString(colors[resolvedRef], themeMode);
+  if (colors?.[resolvedRef] != null) return lowerThemeStringToCss(colors[resolvedRef]);
   const hasGradient = gradients.some((g) => g?.id === resolvedRef);
   if (hasGradient) return `url(#${resolvedRef})`;
   if (resolvedRef.startsWith("#") || /^url\s*\(\s*#/.test(resolvedRef)) return resolvedRef;

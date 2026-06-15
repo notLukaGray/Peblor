@@ -1,0 +1,165 @@
+{
+  "type": "elementInfiniteScroll",
+  "scrollDirection": "horizontal",
+  "width": "100%",
+  "height": "hug",
+  "loop": true,
+  "initialIndex": 0,
+  "centerOnClick": true,
+  "wheelLockMs": 150,
+  "snapDurationMs": 380,
+  "activeScale": 1,
+  "inactiveScale": 0.9,
+  "activeOpacity": 1,
+  "inactiveOpacity": 0.6,
+  "display": "flex",
+  "flow": "row",
+  "gap": "1rem",
+  "padding": "0.5rem 0 1rem",
+  "scroll": "auto",
+  "section": {
+    "elementOrder": ["slide-a", "slide-b", "slide-c", "slide-d"],
+    "definitions": {
+      "slide-a": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "align": "start",
+        "gap": "0.9rem",
+        "width": {
+          "base": "min(280px, 80vw)",
+          "md": "300px"
+        },
+        "flex": "0 0 auto",
+        "padding": "1.25rem",
+        "borderRadius": "18px",
+        "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+        "wrapperStyle": {
+          "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+        },
+        "section": {
+          "elementOrder": ["kicker", "title", "body"],
+          "definitions": {
+            "kicker": {
+              "preset": "type-kicker-badge",
+              "text": "Card 01"
+            },
+            "title": {
+              "preset": "type-h4-card",
+              "text": "Carousel slide one"
+            },
+            "body": {
+              "preset": "type-body-fine",
+              "text": "Swipe or drag to scroll. Center-on-click snaps the selected card."
+            }
+          }
+        }
+      },
+      "slide-b": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "align": "start",
+        "gap": "0.9rem",
+        "width": {
+          "base": "min(280px, 80vw)",
+          "md": "300px"
+        },
+        "flex": "0 0 auto",
+        "padding": "1.25rem",
+        "borderRadius": "18px",
+        "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+        "wrapperStyle": {
+          "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+        },
+        "section": {
+          "elementOrder": ["kicker", "title", "body"],
+          "definitions": {
+            "kicker": {
+              "preset": "type-kicker-badge",
+              "text": "Card 02"
+            },
+            "title": {
+              "preset": "type-h4-card",
+              "text": "Carousel slide two"
+            },
+            "body": {
+              "preset": "type-body-fine",
+              "text": "Inactive cards scale down and fade. Active card is full opacity and scale."
+            }
+          }
+        }
+      },
+      "slide-c": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "align": "start",
+        "gap": "0.9rem",
+        "width": {
+          "base": "min(280px, 80vw)",
+          "md": "300px"
+        },
+        "flex": "0 0 auto",
+        "padding": "1.25rem",
+        "borderRadius": "18px",
+        "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+        "wrapperStyle": {
+          "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+        },
+        "section": {
+          "elementOrder": ["kicker", "title", "body"],
+          "definitions": {
+            "kicker": {
+              "preset": "type-kicker-badge",
+              "text": "Card 03"
+            },
+            "title": {
+              "preset": "type-h4-card",
+              "text": "Carousel slide three"
+            },
+            "body": {
+              "preset": "type-body-fine",
+              "text": "Use card-carousel-basic as a base for any horizontal card collection."
+            }
+          }
+        }
+      },
+      "slide-d": {
+        "type": "elementGroup",
+        "display": "flex",
+        "flow": "column",
+        "align": "start",
+        "gap": "0.9rem",
+        "width": {
+          "base": "min(280px, 80vw)",
+          "md": "300px"
+        },
+        "flex": "0 0 auto",
+        "padding": "1.25rem",
+        "borderRadius": "18px",
+        "fill": "color-mix(in oklab, var(--pb-on-secondary) 7%, transparent)",
+        "wrapperStyle": {
+          "border": "1px solid color-mix(in oklab, var(--pb-on-secondary) 12%, transparent)"
+        },
+        "section": {
+          "elementOrder": ["kicker", "title", "body"],
+          "definitions": {
+            "kicker": {
+              "preset": "type-kicker-badge",
+              "text": "Card 04"
+            },
+            "title": {
+              "preset": "type-h4-card",
+              "text": "Carousel slide four"
+            },
+            "body": {
+              "preset": "type-body-fine",
+              "text": "Loops infinitely. Works for portfolios, testimonials, and feature showcases."
+            }
+          }
+        }
+      }
+    }
+  }
+}

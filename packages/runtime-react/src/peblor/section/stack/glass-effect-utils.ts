@@ -3,6 +3,8 @@
  * Kept separate so SectionGlassEffect.tsx stays under 250 LOC.
  */
 
+import { clamp } from "../../elements/Shared/css-declaration-utils";
+
 export type GlassDimensions = {
   width: number;
   height: number;
@@ -105,10 +107,6 @@ export function parsePx(value: string | number | undefined, fallback = 0): numbe
     return Number.isFinite(n) ? n : fallback;
   }
   return fallback;
-}
-
-export function clamp(value: number, min: number, max: number): number {
-  return Math.min(Math.max(value, min), max);
 }
 
 export function parseLength(
@@ -227,11 +225,13 @@ function readComputedCornerRadii(style: CSSStyleDeclaration, fallback?: GlassCor
  */
 export function readGlassOverlaySyncedDimensions(
   host: HTMLElement,
-  overlay: HTMLElement
+  overlay: HTMLElement,
+  preMeasuredWidth?: number,
+  preMeasuredHeight?: number
 ): GlassDimensions {
-  const hostDims = readElementDimensions(host);
-  const w = overlay.clientWidth;
-  const h = overlay.clientHeight;
+  const hostDims = readElementDimensions(host, preMeasuredWidth, preMeasuredHeight);
+  const w = preMeasuredWidth ?? overlay.clientWidth;
+  const h = preMeasuredHeight ?? overlay.clientHeight;
   const style = window.getComputedStyle(overlay);
   const cornerRadii = readComputedCornerRadii(style, hostDims.cornerRadii);
   const radius = maxGlassCornerRadiusPx(cornerRadii);
@@ -248,8 +248,17 @@ export function readGlassOverlaySyncedDimensions(
   };
 }
 
-export function readElementDimensions(el: HTMLElement): GlassDimensions {
-  const rect = el.getBoundingClientRect();
+/**
+ * Read dimensions from an element. When `preMeasuredWidth` / `preMeasuredHeight` are
+ * provided (e.g. from ResizeObserverEntry.borderBoxSize), `getBoundingClientRect()` is
+ * skipped entirely -- avoiding forced layout. Border-radius still requires
+ * `getComputedStyle`, but this is a style recalc only (not a full layout).
+ */
+export function readElementDimensions(
+  el: HTMLElement,
+  preMeasuredWidth?: number,
+  preMeasuredHeight?: number
+): GlassDimensions {
   const style = window.getComputedStyle(el);
   const cornerRadii = readComputedCornerRadii(style);
   const radius = maxGlassCornerRadiusPx(cornerRadii);
@@ -258,18 +267,20 @@ export function readElementDimensions(el: HTMLElement): GlassDimensions {
   const computedWidth = parsePx(style.width);
   const computedHeight = parsePx(style.height);
   const widthSource =
+    (preMeasuredWidth != null && preMeasuredWidth > 0 ? preMeasuredWidth : undefined) ??
     (typeof computedWidth === "number" && computedWidth > 0 ? computedWidth : undefined) ??
     (el.clientWidth > 0 ? el.clientWidth : undefined) ??
     (el.offsetWidth > 0 ? el.offsetWidth : undefined) ??
-    rect.width;
+    undefined;
   const heightSource =
+    (preMeasuredHeight != null && preMeasuredHeight > 0 ? preMeasuredHeight : undefined) ??
     (typeof computedHeight === "number" && computedHeight > 0 ? computedHeight : undefined) ??
     (el.clientHeight > 0 ? el.clientHeight : undefined) ??
     (el.offsetHeight > 0 ? el.offsetHeight : undefined) ??
-    rect.height;
+    undefined;
   return {
-    width: Math.round(widthSource),
-    height: Math.round(heightSource),
+    width: Math.round(widthSource ?? 0),
+    height: Math.round(heightSource ?? 0),
     radius,
     cornerRadii,
   };

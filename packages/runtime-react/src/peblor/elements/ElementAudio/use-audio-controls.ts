@@ -53,7 +53,9 @@ export function useAudioControls({
     if (a.paused) {
       const promise = a.play();
       if (promise) {
-        promise.catch(() => {});
+        promise.catch((err) => {
+          console.warn("[pb-runtime-react] Audio play failed (autoplay policy)", err);
+        });
       }
     } else {
       a.pause();
@@ -136,7 +138,12 @@ export function useAudioControls({
 
   const onLoadedMetadata = useCallback(() => {
     const a = audioRef.current;
-    if (a) setDuration(a.duration);
+    if (a && Number.isFinite(a.duration)) setDuration(a.duration);
+  }, [audioRef, setDuration]);
+
+  const onDurationChange = useCallback(() => {
+    const a = audioRef.current;
+    if (a && Number.isFinite(a.duration)) setDuration(a.duration);
   }, [audioRef, setDuration]);
 
   return {
@@ -151,6 +158,7 @@ export function useAudioControls({
     toggleMute,
     onTimeUpdate,
     onLoadedMetadata,
+    onDurationChange,
     showControlsTemporarily,
     scheduleHide,
     cancelHide,

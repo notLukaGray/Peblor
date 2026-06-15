@@ -37,7 +37,20 @@ export class SectionErrorBoundary extends Component<Props, State> {
 
   render(): ReactNode {
     if (this.state.hasError) {
-      return this.props.fallback ?? null;
+      const fallback = this.props.fallback;
+      if (fallback != null) {
+        return (
+          <div role="alert" aria-live="assertive">
+            <span className="sr-only">An error occurred in this section</span>
+            {fallback}
+          </div>
+        );
+      }
+      return (
+        <div role="alert" aria-live="assertive" aria-atomic="true">
+          <span className="sr-only">An error occurred in this section</span>
+        </div>
+      );
     }
     return this.props.children;
   }
@@ -69,7 +82,13 @@ export class ElementErrorBoundary extends Component<ElementBoundaryProps, State>
   }
 
   render(): ReactNode {
-    if (this.state.hasError) return null;
+    if (this.state.hasError) {
+      return (
+        <div role="alert" aria-live="assertive" aria-atomic="true">
+          <span className="sr-only">An error occurred in this element</span>
+        </div>
+      );
+    }
     return this.props.children;
   }
 }

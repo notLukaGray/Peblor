@@ -1,0 +1,27 @@
+{
+  "preset": "demo-hero",
+  "maxWidth": "900px",
+  "padding": {
+    "base": "10rem 0 6rem",
+    "md": "12rem 0 8rem"
+  },
+  "gap": "1rem",
+  "definitions": {
+    "hero-eyebrow": {
+      "preset": "type-kicker-badge",
+      "text": "Pull Quote · Numbered List · Tag Row · Copy Block · Hero Copy · Reveal"
+    },
+    "hero-title": {
+      "preset": "type-h1-display",
+      "text": "Type Patterns"
+    },
+    "hero-description": {
+      "preset": "type-body-standard",
+      "text": "The compositional molecules agents reach for most — built as reusable preset groups, ready to steal and rewrite.",
+      "width": {
+        "base": "100%",
+        "md": "82%"
+      }
+    }
+  }
+}

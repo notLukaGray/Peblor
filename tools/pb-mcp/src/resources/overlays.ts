@@ -7,7 +7,8 @@ function listOverlayFiles(): Array<{ id: string; path: string }> {
   let entries: fs.Dirent[];
   try {
     entries = fs.readdirSync(OVERLAYS_DIR, { withFileTypes: true });
-  } catch {
+  } catch (err) {
+    console.warn("[pb-mcp] Failed to list overlays directory for resource", err);
     return [];
   }
   return entries

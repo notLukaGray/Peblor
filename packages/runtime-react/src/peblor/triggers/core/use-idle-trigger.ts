@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { firePeblorAction } from "@/peblor/triggers";
 import type { PeblorAction } from "@pb/contracts/types";
+import { globals } from "@pb/runtime-react/core/lib/globals";
 
 export type IdleTriggerDef = {
   /** Ms of inactivity before firing onIdle. Default 5000. */
@@ -13,10 +14,11 @@ export type IdleTriggerDef = {
 
 export function useIdleTrigger(triggers: IdleTriggerDef[]): void {
   const isIdleRef = useRef(false);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!triggers || triggers.length === 0) return;
+
+    const timeoutIds: ReturnType<typeof setTimeout>[] = [];
 
     const resetTimer = () => {
       if (isIdleRef.current) {
@@ -25,14 +27,16 @@ export function useIdleTrigger(triggers: IdleTriggerDef[]): void {
           if (def.onActive) firePeblorAction(def.onActive, "trigger");
         });
       }
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      const minIdleMs = Math.min(...triggers.map((t) => t.idleAfterMs ?? 5000));
-      timeoutRef.current = setTimeout(() => {
-        isIdleRef.current = true;
-        triggers.forEach((def) => {
+      timeoutIds.forEach(clearTimeout);
+      timeoutIds.length = 0;
+      triggers.forEach((def) => {
+        const delay = def.idleAfterMs ?? globals.uiIdleAfterMs;
+        const id = setTimeout(() => {
+          isIdleRef.current = true;
           if (def.onIdle) firePeblorAction(def.onIdle, "trigger");
-        });
-      }, minIdleMs);
+        }, delay);
+        timeoutIds.push(id);
+      });
     };
 
     const events = ["mousemove", "keydown", "pointerdown", "scroll", "touchstart"];
@@ -40,7 +44,7 @@ export function useIdleTrigger(triggers: IdleTriggerDef[]): void {
     resetTimer();
 
     return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutIds.forEach(clearTimeout);
       events.forEach((e) => window.removeEventListener(e, resetTimer));
     };
   }, [triggers]);

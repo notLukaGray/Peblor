@@ -6,7 +6,7 @@ import { useElementVideoStyles } from "./use-element-video-styles";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
-function Harness({ aspectRatio }: { aspectRatio: [string, string] }) {
+function Harness({ aspectRatio }: { aspectRatio: { base: string; md: string } }) {
   return (
     <DeviceTypeProvider>
       <Probe aspectRatio={aspectRatio} />
@@ -14,7 +14,7 @@ function Harness({ aspectRatio }: { aspectRatio: [string, string] }) {
   );
 }
 
-function Probe({ aspectRatio }: { aspectRatio: [string, string] }) {
+function Probe({ aspectRatio }: { aspectRatio: { base: string; md: string } }) {
   const styles = useElementVideoStyles({
     width: "100%",
     height: "hug",
@@ -46,7 +46,7 @@ async function renderHarness(isMobile: boolean): Promise<HTMLDivElement> {
   root = createRoot(host);
 
   await act(async () => {
-    root?.render(<Harness aspectRatio={["4 / 3", "16 / 9"]} />);
+    root?.render(<Harness aspectRatio={{ base: "4 / 3", md: "16 / 9" }} />);
   });
 
   const el = host.querySelector('[data-testid="container"]');

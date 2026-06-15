@@ -16,11 +16,17 @@ export function ClientPageRuntimeIsland({
   forcedTheme,
   serverIsMobile,
   scroll,
+  needsRuntimeEffects = true,
+  needsBreakpointProvider = true,
 }: {
   children: ReactNode;
   forcedTheme?: ForcedTheme;
   serverIsMobile?: boolean;
   scroll?: PageScrollConfig;
+  /** Only mount PeblorRuntimeEffects when the page has triggers/actions. Default true for back-compat. */
+  needsRuntimeEffects?: boolean;
+  /** Only wrap ServerBreakpointProvider when client/mixed blocks need useDeviceType(). Default true for back-compat. */
+  needsBreakpointProvider?: boolean;
 }) {
   useEffect(() => {
     if (forcedTheme !== "light" && forcedTheme !== "dark") return;
@@ -36,20 +42,25 @@ export function ClientPageRuntimeIsland({
   }, [forcedTheme]);
 
   const content =
-    serverIsMobile !== undefined ? (
+    needsBreakpointProvider && serverIsMobile !== undefined ? (
       <ServerBreakpointProvider isMobile={serverIsMobile}>{children}</ServerBreakpointProvider>
     ) : (
       children
     );
 
+  if (scroll != null) {
+    return (
+      <PageScrollProvider scroll={scroll}>
+        {needsRuntimeEffects && <PeblorRuntimeEffects />}
+        {content}
+      </PageScrollProvider>
+    );
+  }
+
   return (
     <>
-      <PeblorRuntimeEffects />
-      {scroll != null ? (
-        <PageScrollProvider scroll={scroll}>{content}</PageScrollProvider>
-      ) : (
-        content
-      )}
+      {needsRuntimeEffects && <PeblorRuntimeEffects />}
+      {content}
     </>
   );
 }
