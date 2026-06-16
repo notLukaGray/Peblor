@@ -21,8 +21,8 @@ function makeIo() {
 
 describe("runDoctor — CI checks integration", () => {
   it("runs CI checks for a valid page without emitting ci-check diagnostics", async () => {
-    // profile is a simple, well-formed page with no tags/filterConfig/projectGroups.
-    const pagePath = path.join(PAGE_DATA_DIR, "profile", "index.json");
+    // unlock is a simple, well-formed page with no tags/filterConfig/projectGroups.
+    const pagePath = path.join(PAGE_DATA_DIR, "unlock", "index.json");
     const { io, out, err } = makeIo();
     const code = await runDoctor([pagePath, "--json"], io as never);
 
@@ -35,7 +35,7 @@ describe("runDoctor — CI checks integration", () => {
 
   it("reports ci-checks diagnostic stage in output shape", async () => {
     // Verify the output always has a `diagnostics` array (even if empty).
-    const pagePath = path.join(PAGE_DATA_DIR, "profile", "index.json");
+    const pagePath = path.join(PAGE_DATA_DIR, "unlock", "index.json");
     const { io, out, err } = makeIo();
     await runDoctor([pagePath, "--json"], io as never);
 

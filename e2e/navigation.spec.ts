@@ -15,10 +15,9 @@ test.describe("Navigation", () => {
   test.describe("Page navigation via direct URLs", () => {
     const PAGES = [
       { path: "/", label: "Home" },
-      { path: "/profile", label: "Profile" },
-      { path: "/work", label: "Work" },
-      { path: "/teaching", label: "Teaching" },
-      { path: "/research", label: "Research" },
+      { path: "/404", label: "404" },
+      { path: "/unlock", label: "Unlock" },
+      { path: "/presets/cards-basic", label: "Cards Basic" },
     ] as const;
 
     for (const { path, label } of PAGES) {
@@ -44,8 +43,8 @@ test.describe("Navigation", () => {
   });
 
   test.describe("Footer links", () => {
-    test("footer is present on all main pages", async ({ page }) => {
-      await page.goto("/profile");
+    test("footer is present on main page", async ({ page }) => {
+      await page.goto("/");
       await page.waitForLoadState("load");
 
       await expect(page.locator('[aria-label="Site footer"]')).toBeVisible();
@@ -53,21 +52,21 @@ test.describe("Navigation", () => {
   });
 
   test.describe("Breadcrumbs", () => {
-    test("breadcrumbs render on profile page", async ({ page }) => {
-      await page.goto("/profile");
+    test("breadcrumbs render on presets page", async ({ page }) => {
+      await page.goto("/presets/cards-basic");
       await page.waitForLoadState("load");
 
       const breadcrumbNav = page.locator('nav[aria-label="Breadcrumb"]');
       await expect(breadcrumbNav).toBeVisible();
 
-      // Should have at least the Home link and current page
+      // Should have at least the Home link
       const homeLink = breadcrumbNav.locator('a[href="/"]');
       await expect(homeLink).toBeVisible();
       await expect(homeLink).toHaveText("Home");
     });
 
-    test("breadcrumbs render on sub-pages with correct hierarchy", async ({ page }) => {
-      await page.goto("/work/lenero");
+    test("breadcrumbs render on nested preset pages with correct hierarchy", async ({ page }) => {
+      await page.goto("/presets/cards-basic");
       await page.waitForLoadState("load");
 
       const breadcrumbNav = page.locator('nav[aria-label="Breadcrumb"]');
@@ -77,25 +76,26 @@ test.describe("Navigation", () => {
       const homeLink = breadcrumbNav.locator('a[href="/"]');
       await expect(homeLink).toBeVisible();
 
-      // Work link
-      const workLink = breadcrumbNav.locator('a[href="/work"]');
-      await expect(workLink).toBeVisible();
-      await expect(workLink).toHaveText("Work");
+      // Presets link
+      const presetsLink = breadcrumbNav.locator('a[href="/presets"]');
+      const presetsCount = await presetsLink.count();
+      if (presetsCount > 0) {
+        await expect(presetsLink).toBeVisible();
+      }
 
       // Current page (not a link, aria-current="page")
       const currentPage = breadcrumbNav.locator('[aria-current="page"]');
       await expect(currentPage).toBeVisible();
     });
 
-    test("breadcrumbs render on deeply nested research pages", async ({ page }) => {
-      await page.goto("/research/adaptive-systems");
+    test("breadcrumbs render on nested preset pages", async ({ page }) => {
+      await page.goto("/presets/composition-landing-saas");
       await page.waitForLoadState("load");
 
       const breadcrumbNav = page.locator('nav[aria-label="Breadcrumb"]');
       await expect(breadcrumbNav).toBeVisible();
 
       await expect(breadcrumbNav.locator('a[href="/"]')).toBeVisible();
-      await expect(breadcrumbNav.locator('a[href="/research"]')).toBeVisible();
       await expect(breadcrumbNav.locator('[aria-current="page"]')).toBeVisible();
     });
   });

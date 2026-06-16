@@ -1,0 +1,17 @@
+{
+  "contractVersion": "1.0.0",
+  "title": "Unlock",
+  "description": "Password-protected page unlock",
+  "sectionOrder": ["main"],
+  "definitions": {
+    "main": {
+      "type": "contentBlock",
+      "ariaLabel": "Unlock",
+      "width": "100%",
+      "height": "hug",
+      "selfAlign": "center",
+      "fill": "transparent",
+      "elements": []
+    }
+  }
+}

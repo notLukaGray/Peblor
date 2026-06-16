@@ -7,7 +7,7 @@
   "elementOrder": ["sec-label", "cards-row"],
   "definitions": {
     "sec-label": {
-      "preset": "type-h3-label",
+      "preset": "type-h2-section",
       "text": "CTA + Profile"
     },
     "cards-row": {

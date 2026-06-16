@@ -1,0 +1,47 @@
+{
+  "type": "contentBlock",
+  "id": "unlock_modal_subline",
+  "width": "100%",
+  "height": "hug",
+  "selfAlign": "center",
+  "fill": "transparent",
+  "gap": "0",
+  "flow": "column",
+  "elementOrder": ["unlock_modal_description", "email_link"],
+  "definitions": {
+    "unlock_modal_description": {
+      "type": "elementBody",
+      "id": "unlock_modal_description",
+      "level": 3,
+      "text": "I am not a fan of passwords. Lawyers are.",
+      "selfAlign": "center",
+      "textAlign": "center",
+      "width": "100%",
+      "wordWrap": true
+    },
+    "email_link": {
+      "type": "elementLink",
+      "id": "email_link",
+      "label": "Email me if you need access.",
+      "copyType": "body",
+      "level": 3,
+      "linkDefault": "accent",
+      "linkHover": "accent",
+      "motion": {
+        "onHover": {
+          "scale": 1.05
+        },
+        "transition": {
+          "duration": 0.2,
+          "ease": "easeOut"
+        }
+      },
+      "selfAlign": "center",
+      "textAlign": "center",
+      "width": "100%",
+      "wordWrap": true,
+      "marginBottom": "1rem",
+      "href": "mailto:notlukagray@gmail.com"
+    }
+  }
+}

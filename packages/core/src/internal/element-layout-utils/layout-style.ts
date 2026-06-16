@@ -263,6 +263,7 @@ export function normalizeLayoutInput(
     outline: resolveResponsiveValue(layout.outline, isMobile),
     transform: layout.transform,
     willChange: layout.willChange,
+    zIndex: layout.layer ?? undefined,
   } as ResolvedElementLayout;
 }
 
@@ -331,10 +332,9 @@ export function computeSizingStyle(resolved: ResolvedElementLayout): CSSProperti
 
 function computeFixedStyle(resolved: ResolvedElementLayout): CSSProperties {
   if (!resolved.fixed) return {};
-  return {
-    position: "fixed",
-    zIndex: resolved.zIndex ?? 20,
-  };
+  const style: CSSProperties = { position: "fixed" };
+  if (resolved.zIndex != null) style.zIndex = resolved.zIndex;
+  return style;
 }
 
 /**
@@ -374,7 +374,12 @@ function sanitizeWrapperStyle(value: unknown): CSSProperties {
   for (const [key, raw] of Object.entries(value as Record<string, unknown>)) {
     const resolved = lowerThemeStringToCss(raw);
     if (resolved !== undefined) {
-      (style as Record<string, string | number>)[key] = resolved;
+      // Translate peblor property names to CSS — bgBlur lives in wrapperStyle
+      // on some presets (e.g. preset-demo-nav-header sidebar-panel) and must
+      // become backdropFilter, otherwise the browser ignores it as an unknown
+      // CSS property.
+      const cssKey = key === "bgBlur" ? "backdropFilter" : key;
+      (style as Record<string, string | number>)[cssKey] = resolved;
     }
   }
   return style;

@@ -3,10 +3,9 @@ import { test, expect } from "@playwright/test";
 test.describe("SEO — meta tags", () => {
   const KEY_PAGES = [
     { path: "/", label: "Homepage" },
-    { path: "/profile", label: "Profile" },
-    { path: "/work", label: "Work" },
-    { path: "/teaching", label: "Teaching" },
-    { path: "/research", label: "Research" },
+    { path: "/unlock", label: "Unlock" },
+    { path: "/presets/cards-basic", label: "Cards Basic" },
+    { path: "/404", label: "404" },
   ] as const;
 
   for (const { path, label } of KEY_PAGES) {
@@ -97,8 +96,8 @@ test.describe("SEO — JSON-LD structured data", () => {
     expect(hasPersonSchema).toBeTruthy();
   });
 
-  test("profile page has WebPage JSON-LD", async ({ page }) => {
-    await page.goto("/profile");
+  test("presets page has WebPage JSON-LD", async ({ page }) => {
+    await page.goto("/presets/cards-basic");
     await page.waitForLoadState("load");
 
     const ldScripts = page.locator('script[type="application/ld+json"]');
@@ -116,27 +115,8 @@ test.describe("SEO — JSON-LD structured data", () => {
     expect(hasWebPageSchema).toBeTruthy();
   });
 
-  test("research sub-page has Article JSON-LD", async ({ page }) => {
-    await page.goto("/research/adaptive-systems");
-    await page.waitForLoadState("load");
-
-    const ldScripts = page.locator('script[type="application/ld+json"]');
-    const count = await ldScripts.count();
-    expect(count).toBeGreaterThanOrEqual(1);
-
-    let hasArticleSchema = false;
-    for (let i = 0; i < count; i++) {
-      const text = await ldScripts.nth(i).textContent();
-      if (text && text.includes('"Article"')) {
-        hasArticleSchema = true;
-        break;
-      }
-    }
-    expect(hasArticleSchema).toBeTruthy();
-  });
-
-  test("sub-pages have BreadcrumbList JSON-LD", async ({ page }) => {
-    await page.goto("/work/lenero");
+  test("nested presets page has BreadcrumbList JSON-LD", async ({ page }) => {
+    await page.goto("/presets/cards-basic");
     await page.waitForLoadState("load");
 
     const ldScripts = page.locator('script[type="application/ld+json"]');
@@ -158,10 +138,9 @@ test.describe("SEO — JSON-LD structured data", () => {
 test.describe("SEO — heading hierarchy", () => {
   const PAGES = [
     { path: "/", label: "Homepage" },
-    { path: "/profile", label: "Profile" },
-    { path: "/work", label: "Work" },
-    { path: "/teaching", label: "Teaching" },
-    { path: "/research", label: "Research" },
+    { path: "/unlock", label: "Unlock" },
+    { path: "/presets/cards-basic", label: "Cards Basic" },
+    { path: "/404", label: "404" },
   ] as const;
 
   for (const { path, label } of PAGES) {

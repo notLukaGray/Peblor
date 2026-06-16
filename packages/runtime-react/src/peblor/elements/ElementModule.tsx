@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+
 import { useDeviceType } from "@pb/runtime-react/core/providers/device-type-provider";
 import type { ElementBlock } from "@pb/contracts/types";
 import { getPbContentGuidelines } from "@pb/core/host";
@@ -68,6 +69,7 @@ export function ElementModuleGroup({
   wrap,
   flex,
   overflow,
+  scroll,
   marginTop,
   marginBottom,
   marginLeft,
@@ -77,6 +79,7 @@ export function ElementModuleGroup({
   figmaConstraints,
   borderRadius,
   wrapperStyle: groupWrapperStyle,
+  layer,
   borderGradient,
   effects,
   layoutChildren,
@@ -90,6 +93,7 @@ export function ElementModuleGroup({
   scrollStorageKey,
 }: Props & {
   overflow?: string;
+  scroll?: string;
   layoutChildren?: boolean;
   glassLayer?: "background" | "foreground";
   reorderable?: boolean;
@@ -136,16 +140,26 @@ export function ElementModuleGroup({
   const [disclosureOpen, setDisclosureOpen] = useState(() => !!disclosure?.initiallyOpen);
   const [userOverride, setUserOverride] = useState(false);
   const closeDisclosureTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  // Read stored disclosure state during render (not in an effect) so no
-  // setState-in-effect occurs. After the user interacts, userOverride takes
-  // precedence over the stored value. During SSR typeof window is undefined
-  // so the stored value is null and initiallyOpen is used.
-  const storedDisclosureValue =
-    typeof window !== "undefined" && !userOverride && disclosure?.storageKey
-      ? window.localStorage.getItem(disclosure.storageKey)
-      : null;
+  // When the disclosure hydrates from localStorage on mount, the state flips
+  // from initiallyOpen to the stored value — but that flip shouldn't animate
+  // because the user didn't trigger it.  We only enable animated transitions
+  // after the first explicit user toggle.
+  const [hasUserToggled, setHasUserToggled] = useState(false);
+  // Defer localStorage read to useEffect so the first client render matches
+  // the SSR output (always uses initiallyOpen). Without this, localStorage is
+  // available synchronously during render on the client, producing a different
+  // disclosureOpenForRender than the server → hydration mismatch.
+  // undefined = not yet read; null = read, key absent; string = read, value present
+  const [storedDisclosureValue, setStoredDisclosureValue] = useState<string | null | undefined>(
+    undefined
+  );
+  useEffect(() => {
+    if (!disclosure?.storageKey) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setStoredDisclosureValue(window.localStorage.getItem(disclosure.storageKey));
+  }, [disclosure?.storageKey]);
   const disclosureHydrated =
-    !disclosure?.storageKey || storedDisclosureValue !== null || userOverride;
+    !disclosure?.storageKey || storedDisclosureValue !== undefined || userOverride;
   const isOpen = userOverride
     ? disclosureOpen
     : storedDisclosureValue === "open"
@@ -154,9 +168,21 @@ export function ElementModuleGroup({
         ? false
         : disclosureOpen;
   const disclosureOpenForRender = disclosureHydrated ? isOpen : !!disclosure?.initiallyOpen;
-  const resolvedGroupWrapperStyle = lowerThemeStyleObject(
+  const rawGroupWrapperStyle = lowerThemeStyleObject(
     groupWrapperStyle as Record<string, unknown> | undefined
   ) as CSSProperties | undefined;
+  // bgBlur is a peblor property — translate to CSS backdropFilter so the
+  // browser actually applies it. Also emit the webkit-prefixed variant for
+  // Safari. (Unlike section-level bgBlur which flows through
+  // useSectionBaseStyles, wrapperStyle bypasses getElementLayoutStyle and
+  // must be handled inline.)
+  const resolvedGroupWrapperStyle: CSSProperties | undefined =
+    rawGroupWrapperStyle && "bgBlur" in rawGroupWrapperStyle
+      ? (() => {
+          const { bgBlur, ...rest } = rawGroupWrapperStyle;
+          return { ...rest, backdropFilter: bgBlur, WebkitBackdropFilter: bgBlur } as CSSProperties;
+        })()
+      : rawGroupWrapperStyle;
   const resolvedBorderGradient = lowerThemeValueDeep(borderGradient) as BorderGradient | undefined;
   const { resolvedEffects: groupEffects, hasGlassEffect } = useElementEffects(effects);
   const effectCssStyle = useMemo(
@@ -236,6 +262,7 @@ export function ElementModuleGroup({
       },
       selfAlign,
       fixed,
+      layer,
       marginTop,
       marginBottom,
       marginLeft,
@@ -325,7 +352,9 @@ export function ElementModuleGroup({
     ...framePaddingFallback,
     flexWrap: resolvedFlexWrap,
     ...(resolvedFlexValue ? { flex: resolvedFlexValue } : {}),
-    overflow: (overflow ?? (layoutChildren ? "visible" : "hidden")) as CSSProperties["overflow"],
+    overflow: (scroll ??
+      overflow ??
+      (layoutChildren ? "visible" : "hidden")) as CSSProperties["overflow"],
     ...(resolvedGroupWrapperStyle as CSSProperties),
   };
   const disclosureMode = disclosure?.mode ?? "tap";
@@ -336,9 +365,13 @@ export function ElementModuleGroup({
       : disclosure?.anchor === "center"
         ? "center center"
         : "left center";
+  // Allow overflow:'visible' on the disclosure wrapper so toggle tabs can hang
+  // outside the closed panel. All other overflow values (auto, scroll, hidden)
+  // must stay 'hidden' so the collapse/expand animation clips the content correctly.
+  const disclosureOverflow = scroll === "visible" || overflow === "visible" ? "visible" : "hidden";
   const disclosureStyle: CSSProperties | undefined = disclosure
     ? {
-        overflow: "hidden",
+        overflow: disclosureOverflow as CSSProperties["overflow"],
         transformOrigin: disclosureTransformOrigin,
       }
     : undefined;
@@ -361,9 +394,10 @@ export function ElementModuleGroup({
     ? {
         initial: false,
         animate: disclosureAnimate,
-        transition: disclosureHydrated
-          ? { duration: disclosureDurationMs / 1000, ease: [0.25, 0.1, 0.25, 1] }
-          : { duration: 0 },
+        transition:
+          disclosureHydrated && hasUserToggled
+            ? { duration: disclosureDurationMs / 1000, ease: [0.25, 0.1, 0.25, 1] }
+            : { duration: 0 },
       }
     : undefined;
   const groupStyle: CSSProperties = {
@@ -440,6 +474,7 @@ export function ElementModuleGroup({
   }, [clearDisclosureTimer, disclosure]);
 
   const toggleDisclosure = useCallback(() => {
+    setHasUserToggled(true);
     setUserOverride(true);
     clearDisclosureTimer();
     setDisclosureOpen((open) => !open);
@@ -473,6 +508,7 @@ export function ElementModuleGroup({
               !isFormControl &&
               (disclosureMode === "tap" || disclosureMode === "tapOrHover")
             ) {
+              setHasUserToggled(true);
               setUserOverride(true);
               clearDisclosureTimer();
               setDisclosureOpen((open) => !open);
@@ -484,6 +520,7 @@ export function ElementModuleGroup({
       disclosure || interactions?.onHoverEnter
         ? () => {
             if (disclosure && (disclosureMode === "hover" || disclosureMode === "tapOrHover")) {
+              setHasUserToggled(true);
               setUserOverride(true);
               clearDisclosureTimer();
               setDisclosureOpen(true);

@@ -4,10 +4,8 @@ import AxeBuilder from "@axe-core/playwright";
 test.describe("Accessibility — automated axe-core scans", () => {
   const PAGES = [
     { path: "/", label: "Homepage" },
-    { path: "/profile", label: "Profile" },
-    { path: "/work", label: "Work" },
-    { path: "/teaching", label: "Teaching" },
-    { path: "/research", label: "Research" },
+    { path: "/unlock", label: "Unlock" },
+    { path: "/presets/cards-basic", label: "Cards Basic" },
     { path: "/404", label: "404" },
   ] as const;
 

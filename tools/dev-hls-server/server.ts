@@ -1,6 +1,7 @@
-import { spawn, type ChildProcess } from "child_process";
+import { execSync, spawn, type ChildProcess } from "child_process";
 import fs from "fs/promises";
 import http from "http";
+import net from "net";
 import path from "path";
 
 const PORT = Number(process.env.DEV_HLS_PORT ?? 4319);
@@ -896,9 +897,68 @@ function shutdownMediaServer(signal: NodeJS.Signals): void {
 process.once("SIGINT", () => shutdownMediaServer("SIGINT"));
 process.once("SIGTERM", () => shutdownMediaServer("SIGTERM"));
 
-server.listen(PORT, HOST, () => {
+/** Kill any stale process already bound to PORT so the dev server can start cleanly. */
+function reclaimPort(): void {
+  try {
+    const pid = execSync(`lsof -ti :${PORT}`, { encoding: "utf8" }).trim();
+    if (!pid) return;
+    // lsof can return multiple PIDs (e.g. a child of the same server); kill all.
+    const pids = pid.split("\n").filter(Boolean);
+    for (const id of pids) {
+      // Never kill our own process.
+      if (Number(id) === process.pid) continue;
+      console.log(`[dev-tools-server] Port ${PORT} held by PID ${id} — reclaiming…`);
+      execSync(`kill -9 ${id}`, { stdio: "ignore" });
+    }
+  } catch {
+    // lsof exits non-zero when nothing is on the port — that's fine.
+  }
+}
+
+/** Probe whether PORT is free by briefly trying to listen on it. */
+function probePortFree(): Promise<boolean> {
+  return new Promise((resolve) => {
+    const probe = net.createServer();
+    probe.once("error", () => resolve(false));
+    probe.once("listening", () => {
+      probe.close(() => resolve(true));
+    });
+    probe.listen(PORT, HOST);
+  });
+}
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function listenWithReclaim(): Promise<void> {
+  if (await probePortFree()) {
+    // Port is free — start immediately.
+    server.listen(PORT, HOST, () => logStartup());
+    return;
+  }
+
+  console.log(`[dev-tools-server] Port ${PORT} is in use — reclaiming stale process…`);
+  reclaimPort();
+
+  // Wait up to 3 seconds for the OS to release the port.
+  for (let i = 0; i < 15; i++) {
+    await delay(200);
+    if (await probePortFree()) {
+      server.listen(PORT, HOST, () => logStartup());
+      return;
+    }
+  }
+
+  console.error(`[dev-tools-server] Port ${PORT} still in use after reclaim attempt. Giving up.`);
+  process.exit(1);
+}
+
+function logStartup(): void {
   console.log(`[dev-tools-server] Listening on http://${HOST}:${PORT}`);
   console.log(`[dev-tools-server] Media root: ${MEDIA_ROOT}`);
   console.log(`[dev-tools-server] HLS convert: POST ${HLS_CONVERT_PATH}`);
   console.log(`[dev-tools-server] HLS poster: POST ${HLS_POSTER_PATH}`);
-});
+}
+
+listenWithReclaim();

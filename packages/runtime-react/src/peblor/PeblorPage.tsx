@@ -132,10 +132,11 @@ export function PeblorPage({
         const s = section as SectionBlock & {
           fixedPosition?: string;
           zIndex?: number;
+          layer?: number;
           id?: string;
         };
         const fixedPosition = s.fixedPosition ?? "top";
-        const resolvedZIndex = s.zIndex ?? (fixedPosition === "top" ? 100 : 50);
+        const resolvedZIndex = s.zIndex ?? s.layer ?? (fixedPosition === "top" ? 100 : 50);
         const wrapperStyle: React.CSSProperties = {
           ...densityVars,
           position: "fixed",

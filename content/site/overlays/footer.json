@@ -1,0 +1,107 @@
+{
+  "type": "sectionColumn",
+  "id": "footer",
+  "ariaLabel": "Site footer",
+  "elementOrder": ["github", "docs", "cli", "mcp", "credit"],
+  "columns": 5,
+  "columnAssignments": {
+    "github": 0,
+    "docs": 1,
+    "cli": 2,
+    "mcp": 3,
+    "credit": 4
+  },
+  "fixed": true,
+  "fixedPosition": "bottom",
+  "fixedOffset": "0px",
+  "layer": 400,
+  "fill": "oklch(from var(--pb-secondary) l c h / 0.5)",
+  "columnGaps": "auto",
+  "contentWidth": "min(90%,500px)",
+  "width": "100%",
+  "selfAlign": "center",
+  "effects": [
+    {
+      "type": "glass",
+      "bezelType": "convex_squircle",
+      "bezelWidth": 60,
+      "glassThickness": 2,
+      "refractiveIndex": 1.5,
+      "blur": 5,
+      "scaleRatio": 0.1,
+      "specularOpacity": 0,
+      "specularSaturation": 5,
+      "magnifyingScale": 1,
+      "dropShadow": true
+    }
+  ],
+  "borderRadius": "30px 30px 0 0",
+  "padding": "10px 1rem",
+  "definitions": {
+    "github": {
+      "type": "elementLink",
+      "id": "github",
+      "label": "GitHub",
+      "href": "https://github.com/notLukaGray/Peblor",
+      "external": true,
+      "copyType": "body",
+      "variant": "nav",
+      "level": "6",
+      "linkDefault": "var(--pb-on-secondary)",
+      "linkHover": "var(--pb-link-hover)",
+      "linkActive": "var(--pb-link-active)"
+    },
+    "docs": {
+      "type": "elementLink",
+      "id": "docs",
+      "label": "Docs",
+      "href": "https://github.com/notLukaGray/Peblor#readme",
+      "external": true,
+      "copyType": "body",
+      "variant": "nav",
+      "level": "6",
+      "linkDefault": "var(--pb-on-secondary)",
+      "linkHover": "var(--pb-link-hover)",
+      "linkActive": "var(--pb-link-active)"
+    },
+    "cli": {
+      "type": "elementLink",
+      "id": "cli",
+      "label": "CLI",
+      "href": "https://github.com/notLukaGray/Peblor/blob/main/tools/pb-cli/README.md",
+      "external": true,
+      "copyType": "body",
+      "variant": "nav",
+      "level": "6",
+      "linkDefault": "var(--pb-on-secondary)",
+      "linkHover": "var(--pb-link-hover)",
+      "linkActive": "var(--pb-link-active)"
+    },
+    "mcp": {
+      "type": "elementLink",
+      "id": "mcp",
+      "label": "MCP",
+      "href": "https://github.com/notLukaGray/Peblor/blob/main/tools/pb-mcp/README.md",
+      "external": true,
+      "copyType": "body",
+      "variant": "nav",
+      "level": "6",
+      "linkDefault": "var(--pb-on-secondary)",
+      "linkHover": "var(--pb-link-hover)",
+      "linkActive": "var(--pb-link-active)"
+    },
+    "credit": {
+      "type": "elementLink",
+      "id": "credit",
+      "label": "Built with Peblor",
+      "href": "https://github.com/notLukaGray/Peblor",
+      "external": true,
+      "copyType": "body",
+      "variant": "nav",
+      "level": "6",
+      "linkDefault": "var(--pb-on-secondary)",
+      "linkHover": "var(--pb-link-hover)",
+      "linkActive": "var(--pb-link-active)"
+    }
+  }
+}

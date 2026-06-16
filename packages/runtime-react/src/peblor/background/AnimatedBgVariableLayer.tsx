@@ -4,6 +4,7 @@ import { useRef, useInsertionEffect, useId, useMemo } from "react";
 import type { CSSProperties } from "react";
 import { m } from "@/peblor/integrations/framer-motion/animations";
 import {
+  useBgLayerMotion,
   useBgLayerParallax,
   useBgLayerScrollMotions,
 } from "@/peblor/integrations/framer-motion/use-bg-layer-motion";
@@ -263,6 +264,16 @@ function MotionLayerInner({
   // Compose loop + entrance props (no useScroll — scroll/parallax are handled
   // by wrapping sub-components).
   const { initial, animate, whileInView, transition, viewport } = composeMotionDivProps(motions);
+
+  // Pointer + trigger motions write directly to the DOM via RAF / event
+  // listeners attached to layerRef. Parallax and scroll are already handled
+  // by ParallaxMotionLayer and ScrollMotionWrapper respectively; only pass
+  // what they don't cover.
+  const pointerAndTriggerMotions = useMemo(
+    () => motions.filter((m) => m.type === "pointer" || m.type === "trigger"),
+    [motions]
+  );
+  useBgLayerMotion(pointerAndTriggerMotions, layerRef);
 
   // ── Plain div ─────────────────────────────────────────────────────
   // Pointer / trigger work fine with a plain element — they write directly

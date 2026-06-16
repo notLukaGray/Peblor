@@ -1,9 +1,7 @@
 "use client";
 
 import React from "react";
-import { LazyMotion, Reorder } from "framer-motion";
-
-const loadDomMax = () => import("framer-motion").then((m) => m.domMax);
+import { Reorder } from "framer-motion";
 
 type ReorderGroupProps = {
   axis?: "x" | "y";
@@ -21,11 +19,9 @@ export function ReorderGroup({
   children,
 }: ReorderGroupProps) {
   return (
-    <LazyMotion features={loadDomMax}>
-      <Reorder.Group as="div" axis={axis} values={values} onReorder={onReorder} style={style}>
-        {children}
-      </Reorder.Group>
-    </LazyMotion>
+    <Reorder.Group as="div" axis={axis} values={values} onReorder={onReorder} style={style}>
+      {children}
+    </Reorder.Group>
   );
 }
 

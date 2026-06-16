@@ -1,13 +1,37 @@
 [
   {
     "family": "Urbanist",
+    "path": "/font/self-hosted/urbanist-latin-ext-variable.b8a7eec4.woff2",
+    "weight": 0,
+    "style": "normal"
+  },
+  {
+    "family": "Urbanist",
     "path": "/font/self-hosted/urbanist-latin-variable.aa575f0b.woff2",
     "weight": 0,
     "style": "normal"
   },
   {
     "family": "Vollkorn",
+    "path": "/font/self-hosted/vollkorn-latin-ext-variable.8fa09416.woff2",
+    "weight": 0,
+    "style": "normal"
+  },
+  {
+    "family": "Vollkorn",
     "path": "/font/self-hosted/vollkorn-latin-variable.2b391a84.woff2",
+    "weight": 0,
+    "style": "normal"
+  },
+  {
+    "family": "Intel One Mono",
+    "path": "/font/self-hosted/intel-one-mono-symbols2-variable.9833ef80.woff2",
+    "weight": 0,
+    "style": "normal"
+  },
+  {
+    "family": "Intel One Mono",
+    "path": "/font/self-hosted/intel-one-mono-latin-ext-variable.f106d28f.woff2",
     "weight": 0,
     "style": "normal"
   },

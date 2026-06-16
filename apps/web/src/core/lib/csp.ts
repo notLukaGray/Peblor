@@ -74,6 +74,10 @@ export function buildCsp(): string {
   // ── Image sources ───────────────────────────────────────────────────────
 
   const imgSrc = ["'self'", "data:", "blob:"];
+  if (isDev) {
+    // Dev: external images (Unsplash placeholders in presets, etc.)
+    imgSrc.push("https:");
+  }
   if (cdnHostname) {
     imgSrc.push(`https://${cdnHostname}`, "https://*.b-cdn.net");
   }
@@ -87,7 +91,8 @@ export function buildCsp(): string {
 
   const connectSrc = ["'self'"];
   if (isDev) {
-    connectSrc.push("ws:", "http://localhost:*");
+    // Dev: external fetches for Three.js GLTFLoader, lottie-web, Rive runtime
+    connectSrc.push("https:", "ws:", "http://localhost:*");
   }
   connectSrc.push("https://va.vercel-scripts.com", "https://vitals.vercel-insights.com");
   directives.push(`connect-src ${connectSrc.join(" ")}`);
@@ -95,6 +100,10 @@ export function buildCsp(): string {
   // ── Media sources (video, audio) ────────────────────────────────────────
 
   const mediaSrc = ["'self'", "data:", "blob:"];
+  if (isDev) {
+    // Dev: external video/audio from samplelib.com, wikimedia.org, etc.
+    mediaSrc.push("https:");
+  }
   if (cdnHostname) {
     mediaSrc.push(`https://${cdnHostname}`, "https://*.b-cdn.net");
   }

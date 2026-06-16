@@ -209,6 +209,12 @@ export async function GET(
       isTransformableImage(assetKey) ? parseImageParams(request) : undefined
     );
 
+    // When no CDN is configured getSignedCdnUrl returns a relative path (e.g. /key.webp).
+    // Node.js fetch requires absolute URLs, so skip the HEAD/HLS fetch and redirect directly.
+    if (!isAbsoluteUrl(cdnUrl)) {
+      return buildRedirectResponse(cdnUrl);
+    }
+
     if (isHlsPlaylist(assetKey)) {
       const cached = hlsCache.get(assetKey);
       if (cached && Date.now() < cached.expiresAt) {

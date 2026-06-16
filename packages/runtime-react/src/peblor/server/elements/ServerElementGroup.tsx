@@ -13,8 +13,6 @@ import {
   resolveFrameGapCss,
   resolveFrameRowGapCss,
   sectionEffectsToStyle,
-  stripResponsiveLayoutKeys,
-  SR_ONLY_STYLE,
 } from "@pb/core/layout";
 import {
   scaleRadiusForDensity,
@@ -22,7 +20,9 @@ import {
 } from "@pb/contracts/peblor/core/page-density";
 import { reconcileElementOrderWithDefinitions } from "@pb/core/modules";
 import { resolveResponsiveValue } from "@pb/core/lib/responsive-value";
-import { lowerThemeStyleObject } from "../../theme/theme-string";
+import { lowerThemeStyleObject, lowerThemeValueDeep } from "../../theme/theme-string";
+import { coerceSectionEffects } from "../../elements/ElementModule/element-module-style-utils";
+import type { SectionEffect } from "@pb/contracts/peblor/core/peblor-schemas";
 import { ServerElementRenderer } from "../ServerElementRenderer";
 
 type Props = Extract<ElementBlock, { type: "elementGroup" }>;
@@ -35,7 +35,7 @@ export function ServerElementGroup({
   minHeight,
   maxWidth,
   maxHeight,
-  display = "flex",
+  display,
   flow,
   align,
   distribute,
@@ -49,20 +49,22 @@ export function ServerElementGroup({
   paddingLeft,
   wrap,
   flex,
+  overflow,
   scroll,
-  hidden,
-  visuallyHidden,
   marginTop,
   marginBottom,
   marginLeft,
   marginRight,
-  margin,
   selfAlign,
+  fixed,
   figmaConstraints,
   borderRadius,
   wrapperStyle,
   effects,
   layoutChildren,
+  layer,
+  hidden,
+  visuallyHidden,
   flexShrink,
   flexGrow,
   flexBasis,
@@ -72,14 +74,15 @@ export function ServerElementGroup({
   stateStyleClass,
   responsiveStyleClass,
   responsiveNeedsContainer,
-  responsiveLayoutKeys,
 }: Props & {
   layoutChildren?: boolean;
   serverIsMobile?: boolean;
   stateStyleClass?: string;
   responsiveStyleClass?: string;
   responsiveNeedsContainer?: boolean;
-  responsiveLayoutKeys?: string[];
+  overflow?: string;
+  scroll?: string;
+  fixed?: unknown;
   minWidth?: unknown;
   minHeight?: unknown;
   maxWidth?: unknown;
@@ -95,123 +98,162 @@ export function ServerElementGroup({
       return child && typeof child === "object" && "type" in child ? (child as ElementBlock) : null;
     })
     .filter((child): child is ElementBlock => child != null);
+
+  // ── layoutStyle (aligned with ElementModuleGroup) ──────────────────────
   const layoutStyle = getElementLayoutStyle(
-    stripResponsiveLayoutKeys(
-      {
-        width,
-        height,
-        borderRadius,
-        constraints: {
-          ...(minWidth != null ? { minWidth: String(minWidth) } : {}),
-          ...(minHeight != null ? { minHeight: String(minHeight) } : {}),
-          ...(maxWidth != null ? { maxWidth: String(maxWidth) } : {}),
-          ...(maxHeight != null ? { maxHeight: String(maxHeight) } : {}),
-        },
-        selfAlign,
-        marginTop,
-        marginBottom,
-        marginLeft,
-        marginRight,
-        margin,
-        figmaConstraints,
+    {
+      width,
+      height,
+      borderRadius,
+      constraints: {
+        ...(minWidth != null ? { minWidth: String(minWidth) } : {}),
+        ...(minHeight != null ? { minHeight: String(minHeight) } : {}),
+        ...(maxWidth != null ? { maxWidth: String(maxWidth) } : {}),
+        ...(maxHeight != null ? { maxHeight: String(maxHeight) } : {}),
       },
-      responsiveStyleClass ? responsiveLayoutKeys : undefined
-    ),
+      selfAlign,
+      fixed,
+      layer,
+      marginTop,
+      marginBottom,
+      marginLeft,
+      marginRight,
+      figmaConstraints,
+      hidden,
+      visuallyHidden,
+      flexShrink,
+      flexGrow,
+      flexBasis,
+      order: flexOrder,
+      alignSelf,
+    },
     isMobile
   );
-  const resolvedFlexDirection =
-    (coalesceEmptyString(resolveResponsiveValue(flow, isMobile)) as
-      | CSSProperties["flexDirection"]
-      | undefined) ?? pbContentGuidelines.frameFlexDirectionDefault;
-  const resolvedAlignItems = normalizeFlexAlignItemsValue(
-    coalesceEmptyString(resolveResponsiveValue(align, isMobile)) ??
-      pbContentGuidelines.frameAlignItemsDefault
-  );
+
+  // ── Resolved values (aligned with ElementModuleGroup) ──────────────────
+  const resolvedFlexDirectionValue = resolveResponsiveValue(flow, isMobile);
+  const resolvedAlignItemsValue = resolveResponsiveValue(align, isMobile);
+  const resolvedJustifyContentValue = resolveResponsiveValue(distribute, isMobile);
   const resolvedGapValue = resolveResponsiveValue(gap, isMobile);
+  const resolvedPaddingValue = resolveResponsiveValue(padding, isMobile);
   const resolvedPaddingTop = resolveResponsiveValue(paddingTop, isMobile);
   const resolvedPaddingRight = resolveResponsiveValue(paddingRight, isMobile);
   const resolvedPaddingBottom = resolveResponsiveValue(paddingBottom, isMobile);
   const resolvedPaddingLeft = resolveResponsiveValue(paddingLeft, isMobile);
+  const resolvedFlexValue = resolveResponsiveValue(flex, isMobile);
+
+  const resolvedFlexDirection =
+    (coalesceEmptyString(resolvedFlexDirectionValue) as
+      | CSSProperties["flexDirection"]
+      | undefined) ?? pbContentGuidelines.frameFlexDirectionDefault;
+  const resolvedAlignItems = normalizeFlexAlignItemsValue(
+    coalesceEmptyString(resolvedAlignItemsValue) ?? pbContentGuidelines.frameAlignItemsDefault
+  );
+  const resolvedFlexWrap =
+    (coalesceEmptyString(wrap) as CSSProperties["flexWrap"] | undefined) ??
+    pbContentGuidelines.frameFlexWrapDefault;
+
+  const layoutRadius = layoutStyle.borderRadius;
+  const effectiveBorderRadius =
+    layoutRadius != null && String(layoutRadius).trim() !== ""
+      ? layoutRadius
+      : scaleRadiusForDensity(pbContentGuidelines.frameBorderRadiusDefault);
+
+  const resolvedFlexGap = resolveFrameGapCss(resolvedGapValue);
+  const resolvedRowGap = resolveFrameRowGapCss(
+    rowGap === undefined || rowGap === null ? rowGap : String(rowGap)
+  );
+  const resolvedColGap = resolveFrameColumnGapCss(
+    columnGap === undefined || columnGap === null ? columnGap : String(columnGap)
+  );
+  const overlapGap = peblorOverlapGapToCss(resolvedGapValue);
   const resolvedJustifyContent = peblorJustifyContentForGap(
     normalizeFlexJustifyContentValue(
-      coalesceEmptyString(resolveResponsiveValue(distribute, isMobile)) ??
+      coalesceEmptyString(resolvedJustifyContentValue) ??
         pbContentGuidelines.frameJustifyContentDefault
     ) as CSSProperties["justifyContent"] | undefined,
     resolvedGapValue
   );
+
   const hasExplicitPadding =
     padding != null ||
     paddingTop != null ||
     paddingRight != null ||
     paddingBottom != null ||
     paddingLeft != null;
-  const overlapGap = peblorOverlapGapToCss(resolvedGapValue);
-  const resolvedHidden = resolveResponsiveValue(hidden, isMobile);
-  const groupStyle: CSSProperties = {
+  const framePaddingFallback = !hasExplicitPadding
+    ? { padding: scaleSpaceShorthandForDensity(pbContentGuidelines.framePaddingDefault) }
+    : {};
+
+  // ── wrapperStyle with bgBlur (aligned with ElementModuleGroup) ────────
+  const rawGroupWrapperStyle = lowerThemeStyleObject(
+    wrapperStyle as Record<string, unknown> | undefined
+  ) as CSSProperties | undefined;
+  const resolvedGroupWrapperStyle: CSSProperties | undefined =
+    rawGroupWrapperStyle && "bgBlur" in rawGroupWrapperStyle
+      ? (() => {
+          const { bgBlur, ...rest } = rawGroupWrapperStyle;
+          return { ...rest, backdropFilter: bgBlur, WebkitBackdropFilter: bgBlur } as CSSProperties;
+        })()
+      : rawGroupWrapperStyle;
+
+  // ── Effects with glass filtering (aligned with useElementEffects) ─────
+  const resolvedEffects = lowerThemeValueDeep(effects) as typeof effects;
+  const coercedEffects = coerceSectionEffects(resolvedEffects);
+  const hasGlassEffect =
+    coercedEffects?.some((effect: SectionEffect) => effect.type === "glass") ?? false;
+  const effectCssStyle = sectionEffectsToStyle(
+    (coercedEffects ?? []).filter((effect) => effect.type !== "glass")
+  );
+
+  // ── groupStyleBase (aligned with ElementModuleGroup) ──────────────────
+  const groupStyleBase: CSSProperties = {
     ...layoutStyle,
-    borderRadius:
-      layoutStyle.borderRadius != null && String(layoutStyle.borderRadius).trim() !== ""
-        ? layoutStyle.borderRadius
-        : scaleRadiusForDensity(pbContentGuidelines.frameBorderRadiusDefault),
+    borderRadius: effectiveBorderRadius,
     display:
-      resolvedHidden === true
-        ? ("none" as const)
-        : ((resolveResponsiveValue(display, isMobile) ?? "flex") as CSSProperties["display"]),
+      layoutStyle.display ??
+      (resolveResponsiveValue(display, isMobile) as CSSProperties["display"]) ??
+      "flex",
     flexDirection: resolvedFlexDirection,
     alignItems: resolvedAlignItems,
     ...(resolvedJustifyContent ? { justifyContent: resolvedJustifyContent } : {}),
-    ...(resolveFrameGapCss(resolvedGapValue) != null
-      ? { gap: resolveFrameGapCss(resolvedGapValue) }
-      : {}),
-    ...(resolveFrameRowGapCss(rowGap == null ? rowGap : String(rowGap)) != null
-      ? { rowGap: resolveFrameRowGapCss(rowGap == null ? rowGap : String(rowGap)) }
-      : {}),
-    ...(resolveFrameColumnGapCss(columnGap == null ? columnGap : String(columnGap)) != null
-      ? { columnGap: resolveFrameColumnGapCss(columnGap == null ? columnGap : String(columnGap)) }
-      : {}),
-    ...(resolveResponsiveValue(padding, isMobile) != null
-      ? { padding: resolveResponsiveValue(padding, isMobile) }
-      : {}),
+    ...(resolvedFlexGap != null ? { gap: resolvedFlexGap } : {}),
+    ...(resolvedRowGap != null ? { rowGap: resolvedRowGap } : {}),
+    ...(resolvedColGap != null ? { columnGap: resolvedColGap } : {}),
+    ...(resolvedPaddingValue != null ? { padding: resolvedPaddingValue } : {}),
     ...(resolvedPaddingTop != null ? { paddingTop: resolvedPaddingTop } : {}),
     ...(resolvedPaddingRight != null ? { paddingRight: resolvedPaddingRight } : {}),
     ...(resolvedPaddingBottom != null ? { paddingBottom: resolvedPaddingBottom } : {}),
     ...(resolvedPaddingLeft != null ? { paddingLeft: resolvedPaddingLeft } : {}),
-    ...(!hasExplicitPadding
-      ? { padding: scaleSpaceShorthandForDensity(pbContentGuidelines.framePaddingDefault) }
-      : {}),
-    flexWrap:
-      (coalesceEmptyString(wrap) as CSSProperties["flexWrap"] | undefined) ??
-      pbContentGuidelines.frameFlexWrapDefault,
-    ...(resolveResponsiveValue(flex, isMobile)
-      ? { flex: resolveResponsiveValue(flex, isMobile) }
-      : {}),
-    ...(flexShrink != null ? { flexShrink } : {}),
-    ...(flexGrow != null ? { flexGrow } : {}),
-    ...(flexBasis != null ? { flexBasis: resolveResponsiveValue(flexBasis, isMobile) } : {}),
-    ...(flexOrder != null ? { order: flexOrder } : {}),
-    ...(alignSelf != null
-      ? { alignSelf: resolveResponsiveValue(alignSelf, isMobile) as CSSProperties["alignSelf"] }
-      : {}),
-    overflow: (scroll ?? (layoutChildren ? "visible" : "hidden")) as CSSProperties["overflow"],
-    ...sectionEffectsToStyle(effects as Parameters<typeof sectionEffectsToStyle>[0]),
-    ...(lowerThemeStyleObject(wrapperStyle as Record<string, unknown> | undefined) as
-      | CSSProperties
-      | undefined),
+    ...framePaddingFallback,
+    flexWrap: resolvedFlexWrap,
+    ...(resolvedFlexValue ? { flex: resolvedFlexValue } : {}),
+    overflow: (scroll ??
+      overflow ??
+      (layoutChildren ? "visible" : "hidden")) as CSSProperties["overflow"],
+    ...(resolvedGroupWrapperStyle as CSSProperties),
   };
 
-  const finalGroupStyle: CSSProperties = {
-    ...(visuallyHidden ? { ...groupStyle, ...SR_ONLY_STYLE } : groupStyle),
+  // ── groupStyle (aligned with ElementModuleGroup) ──────────────────────
+  const groupStyle: CSSProperties = {
+    ...groupStyleBase,
+    ...(hasGlassEffect && groupStyleBase.position == null ? { position: "relative" } : {}),
+    ...(effectCssStyle != null && Object.keys(effectCssStyle).length > 0 ? effectCssStyle : {}),
     ...(responsiveNeedsContainer ? { containerType: "inline-size" as const } : {}),
   };
+
+  // ── className (aligned with ElementModuleGroup) ───────────────────────
+  const rootClassName = [
+    resolvedFlexValue ? undefined : "shrink-0",
+    groupStyle.scrollbarWidth === "none" ? "scroll-container-hide-scrollbar" : undefined,
+    stateStyleClass,
+    responsiveStyleClass,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <div
-      style={finalGroupStyle}
-      className={
-        [finalGroupStyle.flex ? undefined : "shrink-0", stateStyleClass, responsiveStyleClass]
-          .filter(Boolean)
-          .join(" ") || undefined
-      }
-    >
+    <div style={groupStyle} className={rootClassName || undefined}>
       {blocks.map((block, index) => (
         <div
           key={generateElementKey(block, index)}

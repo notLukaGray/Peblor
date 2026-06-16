@@ -183,6 +183,17 @@ export function getSignedCdnUrl(
   expiresAtOverride?: number
 ): string {
   const { cdnTokenExpiryDays, cdnBase } = getCoreGlobals();
+
+  const encodedKey = encodePathPreservingSlashes(assetKey);
+  const base = cdnBase.replace(/\/+$/, "");
+  if (!base) {
+    // No CDN configured — return the asset key as a direct path. In dev
+    // or local-only deployments assets are served from /public/ or from
+    // external URLs that never enter this code path (isAssetKey returns
+    // false for https:// URLs).
+    return `/${encodedKey}`;
+  }
+
   let expiresAt: number;
   if (expiresAtOverride !== undefined) {
     expiresAt = expiresAtOverride;
@@ -194,18 +205,12 @@ export function getSignedCdnUrl(
     expiresAt = Math.ceil(targetExpiry / bucketSeconds) * bucketSeconds;
   }
 
-  const encodedKey = encodePathPreservingSlashes(assetKey);
   const signingPrefix = getSigningPathPrefixFromCdnBase(cdnBase);
   const pathForSigning = `${signingPrefix}/${encodedKey}`;
   const normalizedParams = normalizeImageTransformParams(extraParams);
 
   const parameterData = normalizedParams ? buildSortedParamString(normalizedParams) : "";
   const token = generateBunnyToken(pathForSigning, expiresAt, parameterData);
-
-  const base = cdnBase.replace(/\/+$/, "");
-  if (!base) {
-    throw new Error("CDN base URL is not configured.");
-  }
   if (!token) {
     if (getSigningMode() === "private") {
       throw new Error(

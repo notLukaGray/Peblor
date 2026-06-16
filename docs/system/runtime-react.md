@@ -1,146 +1,164 @@
-# runtime-react: Turning JSON into pixels
+# runtime-react: How JSON Becomes a Web Page
 
-By the time the pipeline's done with a page, you've got a fully resolved blob of data. All the presets are merged in, elements are inlined, entrance motions are expanded, CDN URLs are signed. It's a complete, self-contained description of what the page should look like. But it's still just data. Somebody has to turn it into actual DOM elements.
+By the time the pipeline is done with a page, you've got a fully resolved blob of data. Presets are merged in. Elements are inlined. Entrance motions are expanded. CDN URLs are signed. It's a complete, self-contained description of what the page should look like.
 
-That's what `packages/runtime-react` is for. It's a pure renderer. It has no hardcoded content, no business logic, no opinions about what your site should look like. It takes the resolved JSON and walks the tree, dispatching each block to the right React component based on its type string. That's basically the whole job.
+But it's still just data. Somebody has to turn it into actual pixels on a screen.
 
-The entry point is `PeblorRenderer` at `packages/runtime-react/src/peblor/PeblorRenderer.tsx`. It's a client component (marked `"use client"`) because it handles scroll events, hover interactions, and animation playback. But the server does as much as possible before handing off — more on that later.
+That's what runtime-react does. It's a pure renderer with no hardcoded content, no business logic, and no opinions about what your site should look like. It takes the resolved JSON, walks the tree, and dispatches each block to the right React component based on its type string. That is essentially the whole job.
 
-## The big picture: type-string dispatch
+## The dispatch system: a very fancy lookup table
 
-Most frameworks use dependency injection or some kind of registry pattern to wire up components. You decorate a class, register a provider, add an entry to a factory. Peblor does none of that. It uses a plain old JavaScript object mapping type strings to React components.
+Most frameworks use dependency injection, registry patterns, or decorators to wire up components. You register a provider, add an entry to a factory, annotate a class. Peblor does none of that. It uses a plain JavaScript object mapping type strings to React components.
 
-Open `packages/runtime-react/src/peblor/section/index.ts` and you'll see the `SECTION_COMPONENTS` map. Open `packages/runtime-react/src/peblor/elements/index.ts` and you'll see `ELEMENT_COMPONENTS`. Both are `Record<string, Component>` — that's it. The renderer does `SECTION_COMPONENTS[section.type]` and gets back the right component. No decorators, no providers, no framework ceremony.
+```ts
+const SECTION_COMPONENTS: Record<string, ComponentType> = {
+  contentBlock: memo(SectionContentBlock),
+  scrollContainer: memo(ScrollContainerSection),
+  sectionColumn: memo(SectionColumn),
+  // ... etc
+};
+```
 
-This matters for a few reasons. First, you can open the file and see every registered type in one glance. There's no indirection. Second, adding a new type means adding one entry to this map — you don't need to understand a DI system. Third, tree-shaking works naturally because the imports are right there at the top of the file. If a component isn't imported, it doesn't exist in the bundle.
+That's it. The renderer reaches into this map with `SECTION_COMPONENTS[section.type]`, gets back a component, and renders it. No decorators. No providers. No ceremony.
+
+This matters for three reasons. First, you can open a single file and see every registered type at a glance. Zero indirection. Second, adding a new type means adding one entry to a map. You don't need to understand a dependency injection framework to extend the renderer. Third, tree-shaking works effortlessly. If a component isn't imported at the top of the file, it doesn't make it into the bundle.
+
+The same pattern applies at every level. Section types have `SECTION_COMPONENTS`. Element types have `ELEMENT_COMPONENTS`. Background types have `BG_COMPONENTS`. The same pattern, repeated at three granularities. The renderer never needs to know what it's rendering. It just looks up a string and calls the result.
 
 ## Section components: the first dispatch
 
-Section types live in `packages/runtime-react/src/peblor/section/index.ts`. There are seven of them, each with a component in the `SECTION_COMPONENTS` map:
+Eight section types are registered, each wrapping a section of the page. Think of them as layout containers with specific jobs.
 
-- **contentBlock** — the workhorse. A vertical stack of elements, wrapped in a container. Handles padding, background fills, and responsive column layouts.
-- **sectionColumn** — lays children out horizontally. Handles column ratios, gutters, and responsive stacking on mobile.
-- **scrollContainer** — a full-viewport scrollable area, often used for horizontal scroll sections or parallax-driven layouts.
-- **sectionTrigger** — a section that doesn't render visible content but fires trigger actions when it enters the viewport. Think analytics events or background transitions on scroll.
-- **formBlock** — renders form elements with validation, submission handling, and state management.
-- **revealSection** — a section that starts hidden and reveals on scroll, often used for dramatic entrances.
-- **divider** — purely visual: a horizontal rule, a shape divider, or a spacer between sections.
+- **contentBlock** — the workhorse. A vertical stack of elements with padding, backgrounds, and responsive column layouts. Most sections on a typical page are this type.
+- **sectionColumn** — lays children out horizontally. Handles column ratios, gutters, and the inevitable stack-on-mobile collapse.
+- **scrollContainer** — a full-viewport scrollable area. Powers horizontal scroll sections and parallax-driven layouts.
+- **sectionTrigger** — renders nothing visible. It fires trigger actions (analytics events, background transitions) when it scrolls into view. A ghost section.
+- **pageTrigger** — fires once when the page mounts. Useful for bootstrapping state or firing an initial analytics event.
+- **formBlock** — renders form elements with validation, submission, and state management. Probably the most opinionated section type.
+- **revealSection** — starts hidden and animates in on scroll. For dramatic entrances that make visitors go "ooh."
+- **divider** — purely visual. A horizontal rule, a shape divider, a spacer. Makes the design breathe.
 
-Each section component receives the expanded section data and is responsible for rendering its elements. They all delegate the element rendering to the same shared infrastructure — `SectionContentBlockElementList` and friends — so elements behave consistently regardless of which section type wraps them.
+Each section component receives the expanded data and is responsible for rendering its elements. They all delegate to the same shared element infrastructure, so elements behave consistently regardless of which section type wraps them.
 
-The section component files live in `packages/runtime-react/src/peblor/section/` and are all named with a `Section` prefix followed by the type name. If you're curious how `contentBlock` handles responsive column layouts, poke at `packages/runtime-react/src/peblor/section/SectionContentBlock.tsx`.
+If you're curious how responsive columns work, peek at `SectionContentBlock`. If you wonder how a ghost section fires triggers, look at `PageTrigger`. The naming throughout is intended to be obvious.
 
 ## Element components: the second dispatch
 
-Elements work exactly the same way but at a finer granularity. The `ELEMENT_COMPONENTS` map in `packages/runtime-react/src/peblor/elements/index.ts` has 25-plus entries. There are headings, body text, buttons, images, video players, audio players, spacer elements, dividers, 3D model viewers, Rive animations, Lottie animations, tabs, drag-and-drop zones, and more.
+Elements work exactly the same way but at a finer granularity. The `ELEMENT_COMPONENTS` map has thirty-one entries covering headings, body text, buttons, images, video players, audio players, spacers, dividers, 3D model viewers, Rive animations, Lottie animations, tabs, drag-and-drop zones, embeds, blockquotes, tables, code blocks, lists, and more.
 
-About four of these are lightweight enough to import statically — `elementHeading`, `elementBody`, `elementLink`, and `elementImage`. These are components that render simple DOM elements with no heavy dependencies. You want them in the main bundle because they appear on almost every page.
+Four of these are considered lightweight enough to import statically: `elementHeading`, `elementBody`, `elementLink`, and `elementImage`. These render simple DOM elements with no heavy dependencies, and they appear on almost every page. They belong in the main bundle.
 
-Everything else uses `next/dynamic`. Heavy components like `elementModel3D`, `elementRive`, `elementLottie`, `elementTabs`, and `elementDrag` each land in their own JavaScript chunk. They only load when a page actually uses that element type. SSR still renders the full HTML for these components — `ssr: true` is the default — so the layout never collapses while the JS downloads. The user sees the complete page immediately; interactivity just takes a moment longer to arrive for the 3D model on page three.
+The remaining twenty-seven use `next/dynamic` for code splitting. Each heavy component lands in its own JavaScript chunk and only loads when a page actually uses that element type. This includes video players, audio players, the 3D model viewer, Rive and Lottie animations, tabs, marquees, image comparators, tooltips, the drag system, scroll progress bars, form fields, counters, infinite scroll, embeds, SVGs, vectors, rich text, range inputs, and the module group system.
 
-The pattern for adding a dynamic import is always the same. You import the component file at the top of the elements index with `next/dynamic`, giving it a meaningful webpack chunk name. Then you add it to the `ELEMENT_COMPONENTS` record with its type string as the key. That's it. The dynamic import handles code splitting and lazy loading automatically.
+Three of these -- `elementModel3D`, `elementRive`, and `elementLottie` -- go further and disable SSR entirely with `ssr: false`. These render nothing on the server. The page loads with an empty slot, and the component hydrates in the browser. This avoids shipping a WebGL-powered animation framework to the server, which would be pointlessly expensive for content that won't be interactive until JavaScript loads anyway.
 
-## The render chain, layer by layer
+The rest of the dynamic imports keep SSR enabled (`ssr: true` by default), so the browser receives full HTML immediately. The user sees the complete page on first paint. Interactivity just takes a moment longer to arrive for components farther down the page.
 
-When `PeblorRenderer` mounts, it starts building the React tree from the outside in. Here's the full chain, and what each layer does.
+## The render chain, from outside in
 
-**PeblorRenderer** (`packages/runtime-react/src/peblor/PeblorRenderer.tsx`) is the top-level entry point. It receives the resolved page data including background config, sections, overlays, and the page's definition dictionary. On mount it calls `usePeblorTriggers` from `packages/runtime-react/src/peblor/hooks/use-peblor-triggers.ts`, a hook that wires up background transitions and section content overrides. This is where scroll-driven background changes and trigger sections get their behavior attached.
+When a page renders, the React tree builds from the outside in. Each layer adds something the layers below don't need to know about.
 
-**PeblorBackground** (`packages/runtime-react/src/peblor/PeblorBackground.tsx`) renders the current background. If the page has a background transition configured (say, scrolling through three color layers), this component handles the interpolation. Backgrounds are lazy-loaded via `next/dynamic` from `packages/runtime-react/src/peblor/background/index.ts`, same pattern as heavy elements. Five background types are registered: `backgroundImage`, `backgroundVideo`, `backgroundVariable`, `backgroundPattern`, and `backgroundTransition`.
+**PeblorRenderer** is the client-side entry point. It receives the resolved page data -- background config, sections, overlays, definitions, transitions -- and starts building. On mount it wires up the triggers system, which handles scroll-driven background transitions and section content overrides. This is where the page comes alive, behaviorally speaking.
 
-Then the sections render in display order. Each section gets wrapped in a **SectionErrorBoundary** (`packages/runtime-react/src/peblor/SectionErrorBoundary.tsx`). If anything inside the section throws, the boundary catches it and renders nothing for that section. The page keeps going.
+**PeblorBackground** renders the current background layer behind everything. If the page has a background transition (say, scrolling through three color layers), this component interpolates between them. If the page has a static image or video, it renders that. Backgrounds dispatch through their own `BG_COMPONENTS` map with five registered types: `backgroundImage`, `backgroundVideo`, `backgroundVariable`, `backgroundPattern`, and `backgroundTransition`. All five are dynamically imported.
 
-Inside the boundary, the section component is looked up from `SECTION_COMPONENTS` by its type string. A `contentBlock` section, for example, uses `SectionContentBlock` at `packages/runtime-react/src/peblor/section/SectionContentBlock.tsx`. The section component receives its expanded data and renders its elements through a shared element list component.
+**Section components** render in page order, each wrapped in a `SectionErrorBoundary`. If a section throws during render, the boundary catches it, logs the error with the section key so you can debug it, and renders nothing for that section. The rest of the page -- the background, the header, every other section -- keeps working. One broken section does not take down the entire page.
 
-Each element goes through its own sub-chain inside `ElementRenderer` at `packages/runtime-react/src/peblor/elements/Shared/ElementRenderer.tsx`. This is the central dispatch for all elements and it handles theme resolution, motion configuration, visibility conditions, and responsive breakpoint selection in one pass. The sub-chain looks like this:
+**ElementRenderer** handles individual element dispatch with all the trimmings: responsive prop resolution, live variable bindings, visibility conditions, motion configuration, entrance animations, exit animations, gesture motion, and border gradient overlays. The order matters:
 
-1. **ElementErrorBoundary** — catches failures in a single element so the rest of the section survives. A broken image component doesn't take down the entire content block, just that one slot.
-2. **ElementEntranceWrapper** — handles entrance animations. The expanded JSON contains a pre-computed `motionTiming.resolvedEntranceMotion` object with keyframes, timing, easing, and viewport trigger settings. This wrapper passes them to framer-motion's `motion.div` with `initial` and `animate` props.
-3. **ElementExitWrapper** — handles exit and presence animations via framer-motion's `AnimatePresence`. Elements with an `exitPreset` or `motionTiming.exitPreset` get wrapped so they animate out when removed from the tree. Configurable presence modes control how multiple exiting elements sequence.
-4. **MotionFromJson** — takes the raw JSON motion object from the element data and translates it directly to framer-motion props. This covers gesture motion: `whileHover`, `whileTap`, `whileFocus`, `whileInView`, plus continuous `animate` and layout animations. The important thing is that the element data just has a `motion` field with JSON in it, and this wrapper makes it work — no element component ever imports framer-motion directly.
-5. The element component itself, looked up from `ELEMENT_COMPONENTS` by its type string.
+1. **Resolve the element** -- responsive props are resolved against the current viewport. Entrance timing, motion config, and wrapper styles are pre-computed. This is the data prep layer.
 
-This layered approach means every element gets entrance animations, exit animations, gesture motion, and error isolation automatically. An element component only needs to handle its own rendering — it doesn't know about motion, boundaries, or theme resolution. That's all handled by the wrappers upstream.
+2. **Check variable bindings** -- if the element has `visibleWhen` conditions or variable bindings, those are evaluated against the current runtime state. Elements can subscribe to specific variables and only re-render when those change.
 
-## Server components: shipping less JavaScript
+3. **Check visibility** -- if the element should not be visible right now (because a condition isn't met), it renders nothing. This is how content can appear and disappear based on analytics state or user interactions without imperative code.
 
-Not every section on a page needs to be interactive. A section with static text, an image, and no entrance animations doesn't need to hydrate in the browser. It can render entirely on the server and never ship a byte of JavaScript to the client.
+4. **Look up the component** -- `ELEMENT_COMPONENTS[resolvedBlock.type]` gets the right React component. If the type isn't registered, it throws. Better a loud crash during development than a silent blank spot on the page.
 
-The package exports a server component entry at `packages/runtime-react/src/server.ts`. This provides `PeblorServerPage` and `PeblorServerRenderer`, which run during SSR and SSG. They analyze the page's block capabilities at `packages/runtime-react/src/peblor/analyze/block-capabilities.ts` to determine which sections need client-side hydration and which can remain server-only.
+5. **Wrap for entrance animation** -- if the element has entrance timing, an `ElementEntranceWrapper` handles the animation. The expanded JSON contains a pre-computed motion configuration with keyframes, timing, easing, and viewport trigger settings. This wrapper passes them to framer-motion's `motion.div` with `initial` and `animate` props. Elements can animate once on first visibility, or replay every time they enter the viewport.
 
-The analysis is straightforward: a section that has no interactive features (no triggers, no motion, no variable subscriptions, no form inputs) gets a low hydration priority. A section with entrance animations, gesture handlers, or variable subscriptions gets a high priority. The server renderer assigns these priorities and wraps only the necessary parts in client islands.
+6. **Wrap for gesture motion** -- if the element has hover, tap, focus, or drag animations but no entrance timing, a `MotionFromJson` wrapper handles those. This takes the raw JSON motion object from the element data and maps it directly to framer-motion props. `motion.whileHover.scale` becomes `whileHover={{ scale: ... }}`. The mapping is mechanical and straightforward.
 
-This is the "server does the work; the browser does the fun" philosophy. The server renders the full HTML. The browser only hydrates the parts that need JavaScript. If you're building a mostly-static marketing site, the vast majority of your page never hydrates. The JavaScript you do ship is proportional to the interactivity on the page, not the size of the page.
+7. **Wrap for exit animation** -- if the element has an exit preset or exit motion, an `ElementExitWrapper` handles animations when the element leaves the DOM. This uses framer-motion's `AnimatePresence` so exiting elements animate out smoothly before being removed.
 
-The server entry also re-exports `PeblorPage` at `packages/runtime-react/src/peblor/PeblorPage.tsx`, which handles the full page shell. That includes overlays (header, footer, navigation — sorted by `position` field), density CSS variables, forced theme application, and the scroll container shell. The overlays themselves follow the same pattern: they're sections rendered through the same dispatch system, just positioned by the page shell rather than the section order.
+8. **Handle dimension-animating gestures** -- if a gesture animates width or height, the motion wrapper takes ownership of the dimensions and the inner component fills 100%. This prevents the component and the animation from fighting each other.
+
+The important architectural insight: an element component never imports framer-motion. It never knows about motion, boundaries, or theme resolution. Those are all handled by wrappers upstream. The element component just renders its content. Everything else is someone else's problem.
+
+## Server rendering: shipping less JavaScript
+
+Not every section needs JavaScript in the browser. A section with static text and an image and no entrance animations can render entirely on the server and never ship a byte of client code.
+
+The server analysis classifies each section and element into one of two buckets: **static** (renders fine on the server, no hydration needed) and **always-client** (needs browser APIs for interactivity). The classification is granular. A `contentBlock` section with no triggers, no motion, and no variable subscriptions is static. The same section with a single entrance animation becomes a client island. The analysis propagates: if a parent section has a client-child, the parent becomes client too.
+
+Sixteen element types are considered static-capable: headings, body text, rich text, links, images, spacers, dividers, groups, vectors, counters, embeds, lists, blockquotes, tables, code blocks, and buttons (mostly -- buttons with vector refs but no fallback fill get pulled client-side).
+
+The remaining element types are always client. Video, audio, 3D, Rive, Lottie, infinite scroll, range inputs, input fields, video time displays, quality selectors, scroll progress bars, marquees, image comparators, tabs, tooltips, and form fields all need the browser to function.
+
+For sections, only `divider`, `contentBlock`, and `sectionColumn` can render on the server. `scrollContainer`, `sectionTrigger`, `pageTrigger`, `formBlock`, and `revealSection` always need client hydration.
+
+The server renderer handles the seam between static and client content with **mixed-content islands**. A `contentBlock` with eight elements where two need client JavaScript doesn't render the entire section as a client island. It renders the six static elements on the server and wraps only the two interactive ones in client islands. The result is less JavaScript shipped, faster page loads, and a smaller carbon footprint. Every byte that doesn't cross the wire was a conscious choice, not an accident.
+
+Pages with zero interactive content -- no triggers, no motion, no variable subscriptions, no forced theme -- render with zero client JavaScript. The HTML is pre-built at build time. The browser downloads it, parses it, and the user sees the page immediately with no hydration step, no framework initialization, nothing. Just HTML and CSS, the way the web used to work.
 
 ## Error boundaries: failing gracefully
 
-Content authors make mistakes. A JSON field gets the wrong type, a reference points to a definition that doesn't exist, a component throws because a value it expected isn't there. These things happen. The question is whether one mistake takes down the whole page.
+Content authors make mistakes. A JSON field gets the wrong type. A reference points to a definition that doesn't exist. A component throws because a value it expected is suddenly absent. These things happen. The question is whether one mistake takes down the whole page.
 
-Two error boundaries provide isolation at different granularities, both defined in `packages/runtime-react/src/peblor/SectionErrorBoundary.tsx`.
+Two error boundaries, both class components, provide isolation. They're the only class components in the entire codebase. React error boundaries require `componentDidCatch`, which hooks can't provide. It's the one place the codebase breaks its own conventions, and it's entirely justified.
 
-**SectionErrorBoundary** wraps every section. If a section's component throws during render, the boundary catches it, logs the error along with the section key for debugging, and renders nothing for that section. The rest of the page — the background, the header, the footer, every other section — continues to work normally.
+**SectionErrorBoundary** wraps every section. If a section throws, the boundary catches it, logs the error with the section key for debugging, and renders nothing for that section. The page continues. The background, the header, the footer, every other section -- all still work.
 
-**ElementErrorBoundary** wraps individual elements inside sections. This is finer-grained. If an image element renders a URL that 404s and the component throws, that one element slot renders nothing. The heading above it and the button below it in the same content block keep working.
+**ElementErrorBoundary** wraps individual elements inside sections. This is finer-grained. If an image component throws, that single element slot renders nothing. The heading above it and the button below it keep working. A broken element doesn't drain the entire content block.
 
-Both boundaries are class components. They're the only class components in the entire codebase. React error boundaries require `componentDidCatch`, which hooks can't provide. It's the one place where the codebase breaks its own conventions, and it's entirely justified.
+Both boundaries render a visually hidden alert for screen readers so assistive technology knows content failed to load, even if sighted users don't see it.
 
 ## Motion wrappers: from JSON to animation
 
-Three wrapper layers transform JSON motion data into framer-motion behavior. Each handles a different kind of animation.
+Three wrappers transform JSON motion data into framer-motion behavior. Each handles a different kind of animation, and each receives pre-computed data from the pipeline's expand stage.
 
-**ElementEntranceWrapper** handles entrance animations — the "how does this element appear when it first comes into view." The expanded JSON contains a `motionTiming.resolvedEntranceMotion` object. The server already computed the keyframes, timing, easing curve, and viewport trigger settings during the expand stage. The wrapper just passes these to framer-motion's `motion.div` with `initial` and `animate` props. It also handles viewport triggers: `onFirstVisible` (animate once when the element scrolls into view, then never again) and `onEveryVisible` (replay the animation every time the element enters the viewport).
+**ElementEntranceWrapper** handles how elements appear when they enter the viewport. The expanded JSON contains a `motionTiming.resolvedEntranceMotion` object with keyframes, timing, easing, and viewport trigger settings already computed by the server. The wrapper just passes these to framer-motion's `motion.div` with `initial` and `animate` props. Two viewport trigger modes exist: `onFirstVisible` animates once when the element scrolls into view, then never again. `onEveryVisible` replays the animation every time the element enters the viewport.
 
-**ElementExitWrapper** handles exit and presence animations — "what happens when this element leaves the DOM." It uses framer-motion's `AnimatePresence`. Elements with an `exitPreset` or `motionTiming.exitPreset` get wrapped so they animate out smoothly when removed from the tree. Configurable presence modes (`sync`, `wait`, `popLayout`) control how multiple exiting elements sequence.
+**ElementExitWrapper** handles how elements leave the DOM. It uses framer-motion's `AnimatePresence`. Elements with an exit preset get wrapped so they animate out smoothly when removed from the tree. Configurable presence modes (`sync`, `wait`, `popLayout`) control how multiple exiting elements sequence.
 
-**MotionFromJson** at `packages/runtime-react/src/peblor/integrations/framer-motion/motion-from-json.tsx` handles gesture motion: `whileHover`, `whileTap`, `whileFocus`, `whileInView`, plus continuous `animate` and layout animations. It takes the raw JSON motion object from the element data and maps it directly to framer-motion props. The mapping is mechanical — it reads the JSON structure and produces the corresponding framer-motion prop structure. If the element has `motion.whileHover.scale`, the wrapper produces `whileHover={{ scale: ... }}`.
+**MotionFromJson** handles gesture motion: `whileHover`, `whileTap`, `whileFocus`, `whileInView`, plus continuous `animate` and layout animations. It takes the raw JSON motion object from the element data and maps it directly to framer-motion props. The mapping is entirely mechanical -- read the JSON structure, produce the corresponding framer-motion prop structure. It can render as `m.div`, `m.span`, `m.section`, or any other HTML tag. When no motion is configured, it falls back to plain `<div>` with zero overhead.
 
-The framer-motion integration lives in `packages/runtime-react/src/peblor/integrations/framer-motion/`. The file `packages/runtime-react/src/peblor/integrations/framer-motion/index.ts` re-exports everything from this folder. This is the only place framer-motion is imported across the entire peblor runtime. Everything else works through the abstractions these wrappers provide. If you ever wanted to swap framer-motion for a different animation library, you'd change exactly this directory and nothing else.
+The framer-motion integration is strictly centralized in a single directory. This is the only place framer-motion is imported across the entire peblor runtime. If you ever wanted to swap framer-motion for a different animation library, you would change exactly this directory. Not a single other file would need modification.
 
-Background motion (parallax, pointer-follow, scroll-driven transitions) is handled separately through `useBgLayerMotion` at `packages/runtime-react/src/peblor/integrations/framer-motion/use-bg-layer-motion.ts`. Backgrounds have their own motion layer because they're not elements and they don't go through the element render chain.
+Background motion -- parallax, pointer-follow, scroll-driven transitions -- is handled separately through `useBgLayerMotion`. Backgrounds have their own motion layer because they live outside the element render chain and operate at the page level.
 
-## Analytics-driven visibility
+## Overlays: the header, footer, and everything around the page
 
-Elements can be conditionally visible based on runtime state. The `visibleWhen` field in the element JSON specifies a condition — a variable check, essentially. The `ElementRenderer` evaluates these conditions using `evaluateConditions` from the contracts package. If the condition isn't met, the element renders nothing.
+Global overlays like the header and footer are rendered separately from the main page content. They're sections too, rendered through the same dispatch system, but with different positioning.
 
-This is how analytics-driven content visibility works. You configure the condition in JSON, and the renderer handles the rest. No imperative code, no hardcoded logic, no magic.
+When `PeblorPage` mounts, it sorts overlay sections by their `position` field. Top-positioned overlays (headers, top bars) come first. Bottom-positioned overlays (footers) come last. Each overlay gets its own `PeblorRenderer` instance and renders as a fixed-position div. They're completely independent of the main page renderer.
 
-The variable store at `packages/runtime-react/src/peblor/runtime/peblor-variable-store.ts` tracks runtime variables set by triggers. Elements subscribe to only the variables their `visibleWhen` references, so unrelated `setVariable` calls don't trigger unnecessary re-renders. This is a simple subscription model — each element registers which variables it cares about, and only those variables cause a re-render when they change.
+This separation means overlays can be interactive without forcing the entire page to hydrate. The header can have a hamburger menu and search bar while the main content remains static. It also means an error in the main content can't take down the navigation.
+
+The overlay sections strip their `fixed`, `fixedPosition`, and `fixedOffset` fields before rendering, since PeblorPage handles their positioning at the shell level. This keeps the rendering path simple: overlays are just sections that happen to be pinned to the edges of the viewport.
+
+## The variable store: state without ceremony
+
+Trigger actions like `setVariable`, `appendToArray`, `mergeVariable`, and `deleteVariable` all read and write to a central variable store powered by Zustand. Elements can subscribe to specific variables so unrelated `setVariable` calls don't trigger unnecessary re-renders.
+
+The subscription model is simple: each element registers which variables its `visibleWhen` condition and `bindings` reference. Only those variables cause a re-render when they change. The store also supports nested dot-path access, array manipulation, and conditional removal.
+
+The store is deliberately not persisted. Every route change clears it. This keeps state management predictable: what happens on a page stays on that page.
 
 ## Adding a new element type
 
-This is the most common thing you'll do when extending the platform. Here's the full walkthrough.
+This is the most common thing you'll do when extending the platform. Five steps, two of which are often optional.
 
-**Step one: add the schema variant.** Go to `packages/contracts/src/` (look for the element block schemas file, likely `element-block-schemas.ts`). Add a new variant to the discriminated union. The variant uses the pattern `z.object({ type: z.literal("elementYourNewType") })` extended with whatever fields your element needs. Required fields, optional fields, motion support — it's all part of the Zod schema definition. The variant name gets added to the discriminated union, which is the top-level union type the validators use.
+**One: add the schema variant.** Go to the contracts package and add a new variant to the discriminated union of element types. The variant follows the pattern of a `z.object` with `type: z.literal("elementYourNewType")` extended with whatever fields your element needs.
 
-**Step two: add builder defaults (if needed).** If your new element type needs default values for things like variant, size, or aspect ratio, add them in `packages/core/src/internal/defaults/pb-builder-defaults.ts`. These defaults come from the host config, which is the injectable configuration object the consumer app provides. If you skip this step, the expand stage won't fill in defaults for fields the element leaves unspecified.
+**Two: add builder defaults (optional).** If your element needs default values for variant, size, or aspect ratio, add them in the host config. The expand stage reads these and fills in unspecified fields. Skip this if your element doesn't need defaults.
 
-**Step three: add expand logic (if needed).** Most element types don't need custom expand logic — the standard expansion (inline presets, resolve definitions, apply defaults) covers them. But if your element type has special resolution requirements (like module inlining or custom trigger resolution), hook into `packages/core/src/internal/peblor-expand/`.
+**Three: add expand logic (optional).** Most elements don't need custom expand logic. The standard expansion -- inline presets, resolve definitions, apply defaults -- covers them. If your element has special resolution requirements like module inlining or custom trigger resolution, hook into the expand stage.
 
-**Step four: create the component file.** Create your component in `packages/runtime-react/src/peblor/elements/`. The file should export a React component. If your element is heavy (3D, animation, media player), use `next/dynamic` in the elements index to lazy-load it. If it's lightweight (heading, body text, spacer), import it statically.
+**Four: create the component file.** Write your React component and place it in the elements directory. If it's heavy, use `next/dynamic` for lazy loading. If it's lightweight (heading, spacer, divider), import it statically.
 
-**Step five: register in the map.** Add your type string and component to `ELEMENT_COMPONENTS` in `packages/runtime-react/src/peblor/elements/index.ts`. That's the final connection. The renderer will now dispatch elements with your type string to your component automatically.
+**Five: register in the map.** Add your type string and component to `ELEMENT_COMPONENTS`. That's the final connection point. The renderer will now dispatch elements with your type string to your component automatically.
 
-That's it. Five steps, and steps two and three are often optional. The pattern is the same for every element type. There's no registry decorator, no provider setup, no dependency injection to configure.
-
-## Key files
-
-- `packages/runtime-react/src/peblor/PeblorRenderer.tsx` — top-level renderer, entry point for the React tree
-- `packages/runtime-react/src/peblor/section/index.ts` — section component registry (`SECTION_COMPONENTS`)
-- `packages/runtime-react/src/peblor/elements/index.ts` — element component registry (`ELEMENT_COMPONENTS`) with dynamic imports
-- `packages/runtime-react/src/peblor/elements/Shared/ElementRenderer.tsx` — central element dispatch with motion wrapping
-- `packages/runtime-react/src/peblor/SectionErrorBoundary.tsx` — section and element error boundaries
-- `packages/runtime-react/src/peblor/PeblorPage.tsx` — page shell with overlays, density, forced theme
-- `packages/runtime-react/src/peblor/PeblorBackground.tsx` — background rendering and transitions
-- `packages/runtime-react/src/peblor/background/index.ts` — background component registry (lazy-loaded)
-- `packages/runtime-react/src/peblor/integrations/framer-motion/index.ts` — framer-motion integration, the only framer-motion import point
-- `packages/runtime-react/src/peblor/integrations/framer-motion/motion-from-json.tsx` — JSON-to-framer-motion prop translation
-- `packages/runtime-react/src/peblor/integrations/framer-motion/element-exit-wrapper.tsx` — exit/presence animation wrapper
-- `packages/runtime-react/src/peblor/hooks/use-peblor-triggers.ts` — background transitions and section overrides
-- `packages/runtime-react/src/peblor/analyze/block-capabilities.ts` — server/client split analysis
-- `packages/runtime-react/src/peblor/runtime/peblor-variable-store.ts` — runtime variable store for triggers
-- `packages/runtime-react/src/server.ts` — server component entry point
+That's it. No registry decorator. No provider setup. No dependency injection configuration. Five steps, and two are often optional.
 
 ---
 

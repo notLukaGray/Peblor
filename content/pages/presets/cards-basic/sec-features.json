@@ -3,7 +3,7 @@
   "elementOrder": ["sec-label", "cards-row"],
   "definitions": {
     "sec-label": {
-      "preset": "type-h3-label",
+      "preset": "type-h2-section",
       "text": "Feature Cards"
     },
     "cards-row": {
@@ -22,7 +22,8 @@
                 },
                 "title": {
                   "preset": "type-h4-card",
-                  "text": "Composable card surfaces"
+                  "text": "Composable card surfaces",
+                  "level": 3
                 },
                 "body": {
                   "preset": "type-body-standard",
@@ -30,7 +31,7 @@
                 },
                 "link": {
                   "preset": "type-link-nav",
-                  "label": "Explore →",
+                  "label": "Explore \u2192",
                   "href": "#"
                 }
               }
@@ -47,7 +48,8 @@
                 },
                 "title": {
                   "preset": "type-h4-card",
-                  "text": "Hover lift out of the box"
+                  "text": "Hover lift out of the box",
+                  "level": 3
                 },
                 "body": {
                   "preset": "type-body-standard",
@@ -55,7 +57,7 @@
                 },
                 "link": {
                   "preset": "type-link-nav",
-                  "label": "Explore →",
+                  "label": "Explore \u2192",
                   "href": "#"
                 }
               }
@@ -72,7 +74,8 @@
                 },
                 "title": {
                   "preset": "type-h4-card",
-                  "text": "Theme-aware by default"
+                  "text": "Theme-aware by default",
+                  "level": 3
                 },
                 "body": {
                   "preset": "type-body-standard",
@@ -80,7 +83,7 @@
                 },
                 "link": {
                   "preset": "type-link-nav",
-                  "label": "Explore →",
+                  "label": "Explore \u2192",
                   "href": "#"
                 }
               }

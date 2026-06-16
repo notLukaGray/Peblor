@@ -51,17 +51,17 @@ describe("resolveSectionFiles", () => {
 
 describe("deriveSlugSegments", () => {
   it("returns slug segments for a valid page index path", () => {
-    const pagePath = path.join(PAGE_DATA_DIR, "work", "some-project", "index.json");
-    expect(deriveSlugSegments(pagePath)).toEqual(["work", "some-project"]);
+    const pagePath = path.join(PAGE_DATA_DIR, "presets", "cards-basic", "index.json");
+    expect(deriveSlugSegments(pagePath)).toEqual(["presets", "cards-basic"]);
   });
 
   it("returns single segment for a top-level page", () => {
-    const pagePath = path.join(PAGE_DATA_DIR, "profile", "index.json");
-    expect(deriveSlugSegments(pagePath)).toEqual(["profile"]);
+    const pagePath = path.join(PAGE_DATA_DIR, "unlock", "index.json");
+    expect(deriveSlugSegments(pagePath)).toEqual(["unlock"]);
   });
 
   it("returns null for sidecar section fragments (non-index JSON)", () => {
-    const sidecar = path.join(PAGE_DATA_DIR, "work", "hero.json");
+    const sidecar = path.join(PAGE_DATA_DIR, "404", "hero.json");
     expect(deriveSlugSegments(sidecar)).toBeNull();
   });
 
@@ -80,9 +80,9 @@ describe("deriveSlugSegments", () => {
 
 describe("runDoctor — load mode", () => {
   it("uses strict-load for a real page under content/pages/", async () => {
-    const profilePage = path.join(PAGE_DATA_DIR, "profile", "index.json");
+    const unlockPage = path.join(PAGE_DATA_DIR, "unlock", "index.json");
     const { io, out } = makeIo();
-    const code = await runDoctor([profilePage, "--json"], io as never);
+    const code = await runDoctor([unlockPage, "--json"], io as never);
 
     expect(code).toBe(0);
     const payload = out[0] as {
@@ -128,9 +128,9 @@ describe("runDoctor — load mode", () => {
 
 describe("runDoctor — skipped stages", () => {
   it("marks stages after --stage load as skipped, not failed", async () => {
-    const profilePage = path.join(PAGE_DATA_DIR, "profile", "index.json");
+    const unlockPage = path.join(PAGE_DATA_DIR, "unlock", "index.json");
     const { io, out } = makeIo();
-    await runDoctor([profilePage, "--stage", "load", "--json"], io as never);
+    await runDoctor([unlockPage, "--stage", "load", "--json"], io as never);
 
     const payload = out[0] as {
       stages: Record<
@@ -153,9 +153,9 @@ describe("runDoctor — skipped stages", () => {
   });
 
   it("marks stages after --stage validate as skipped", async () => {
-    const profilePage = path.join(PAGE_DATA_DIR, "profile", "index.json");
+    const unlockPage = path.join(PAGE_DATA_DIR, "unlock", "index.json");
     const { io, out } = makeIo();
-    await runDoctor([profilePage, "--stage", "validate", "--json"], io as never);
+    await runDoctor([unlockPage, "--stage", "validate", "--json"], io as never);
 
     const payload = out[0] as {
       stages: Record<string, { ok: boolean; details?: { skipped?: boolean } }>;

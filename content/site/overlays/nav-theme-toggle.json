@@ -1,0 +1,71 @@
+{
+  "type": "sectionColumn",
+  "id": "nav-theme-toggle",
+  "ariaLabel": "Theme toggle",
+  "fixed": true,
+  "fixedPosition": "top",
+  "fixedOffset": "0px",
+  "layer": 501,
+  "width": "0",
+  "contentWidth": "0",
+  "height": "0",
+  "selfAlign": "right",
+  "marginTop": "0",
+  "marginRight": "0",
+  "marginBottom": "0",
+  "marginLeft": "0",
+  "elementOrder": ["theme-toggle"],
+  "columnAssignments": {
+    "theme-toggle": 0
+  },
+  "columnGaps": "auto",
+  "columns": 1,
+  "definitions": {
+    "theme-toggle": {
+      "type": "elementVector",
+      "id": "theme-toggle",
+      "viewBox": "0 0 24 24",
+      "width": "22px",
+      "height": "22px",
+      "selfAlign": "end",
+      "marginLeft": "0",
+      "marginRight": "0",
+      "wrapperStyle": {
+        "position": "fixed",
+        "right": "10px",
+        "top": "calc(env(safe-area-inset-top, 0px) + 10px)",
+        "layer": 102
+      },
+      "interactions": {
+        "onClick": {
+          "type": "setTheme",
+          "payload": {
+            "mode": "toggle"
+          }
+        }
+      },
+      "colors": {
+        "theme-toggle-primary": "var(--pb-on-secondary)",
+        "theme-toggle-transparent": "rgba(0,0,0,0)"
+      },
+      "strokeGroup": {
+        "stroke": "theme-toggle-primary",
+        "strokeWidth": 1.5,
+        "strokeLinejoin": "round",
+        "strokeLinecap": "round"
+      },
+      "shapes": [
+        {
+          "type": "path",
+          "d": "M12 3a9 9 0 1 1 0 18a9 9 0 0 1 0-18Z",
+          "fill": "theme-toggle-transparent"
+        },
+        {
+          "type": "path",
+          "d": "M3 12a9 9 0 0 0 18 0Z",
+          "fill": "theme-toggle-primary"
+        }
+      ]
+    }
+  }
+}

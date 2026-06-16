@@ -116,7 +116,7 @@
               },
               "secondary": {
                 "label": "See all composition demos ->",
-                "href": "/presets"
+                "href": "/"
               }
             }
           }

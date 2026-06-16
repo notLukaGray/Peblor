@@ -1,6 +1,7 @@
 import { validateAssetKey } from "../lib/cdn-asset-server";
 import { normalizeImageTransformParams } from "../lib/cdn-image-params";
 import { buildProxyUrl } from "../lib/proxy-url";
+import { getCoreGlobals } from "../lib/globals";
 import { resolveBgBlockUrls } from "./peblor-blocks";
 import type { bgBlock, PeblorDefinitionBlock, SectionBlock } from "@pb/contracts";
 import { BG_BLOCK_TYPE_STRINGS } from "@pb/contracts";
@@ -53,6 +54,10 @@ export function buildRawBgDefinitions(
 
 function buildProxyUrlMapServer(refs: string[]): Map<string, string> {
   const m = new Map<string, string>();
+  const { cdnBase } = getCoreGlobals();
+  // When no CDN is configured (dev, local-only), skip proxy URL generation
+  // entirely — assets use their original refs as direct URLs.
+  if (!cdnBase) return m;
   for (const ref of refs) {
     const valid = validateAssetKey(ref);
     if (valid) m.set(ref, buildProxyUrl(valid));

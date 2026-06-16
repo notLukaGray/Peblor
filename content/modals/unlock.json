@@ -1,0 +1,28 @@
+{
+  "id": "unlock",
+  "title": "Unlock",
+  "transition": {
+    "enterDurationMs": 420,
+    "exitDurationMs": 240,
+    "easing": "easeOut"
+  },
+  "motion": {
+    "from": {
+      "opacity": 0,
+      "scale": 0.965
+    },
+    "to": {
+      "opacity": 1,
+      "scale": 1
+    },
+    "leave": {
+      "opacity": 0,
+      "scale": 0.98
+    },
+    "transition": {
+      "duration": 0.42,
+      "ease": "easeOut"
+    }
+  },
+  "sectionOrder": ["unlock_modal_intro", "unlock_modal_subline", "unlock_modal_form"]
+}

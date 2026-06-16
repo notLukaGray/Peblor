@@ -1,11 +1,10 @@
 {
   "type": "contentBlock",
   "fill": "transparent",
-  "height": "hug",
-  "scroll": "visible",
+  "height": "0px",
+  "overflow": "visible",
   "align": "start",
   "distribute": "start",
-  "flow": "column",
   "width": "100%",
   "elementOrder": ["sidebar-shell"],
   "definitions": {
@@ -21,7 +20,7 @@
       "width": "304px",
       "height": "100vh",
       "scroll": "visible",
-      "layer": 200,
+      "layer": 500,
       "wrapperStyle": {
         "top": "0",
         "left": "-280px",
@@ -186,7 +185,7 @@
                       "brand-link": {
                         "type": "elementLink",
                         "label": "Preset Kit",
-                        "href": "/presets",
+                        "href": "/",
                         "copyType": "body",
                         "level": 4,
                         "linkDefault": {

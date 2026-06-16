@@ -217,7 +217,7 @@ function checkBuildManifest(nextDir: string): boolean {
   }
 
   // Check for expected pages
-  const expectedPages = ["/", "/work", "/profile", "/teaching", "/research"];
+  const expectedPages = ["/", "/404", "/unlock"];
   const pages = manifest.pages ?? {};
   const missingPages = expectedPages.filter(
     (p) => !pages[p] && !Object.keys(pages).some((k) => k === p)

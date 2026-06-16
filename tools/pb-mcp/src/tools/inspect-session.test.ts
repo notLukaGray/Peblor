@@ -13,7 +13,7 @@ import {
 
 describe("inspect_session", () => {
   it("returns summary metadata (default format) with schema-only validation", async () => {
-    const opened = (await openPageSession.run({ route: "/profile" })) as {
+    const opened = (await openPageSession.run({ route: "/unlock" })) as {
       sessionId: string;
     };
 
@@ -34,7 +34,7 @@ describe("inspect_session", () => {
       };
 
       expect(result.sessionId).toBe(opened.sessionId);
-      expect(result.route).toBe("/profile");
+      expect(result.route).toBe("/unlock");
       expect(typeof result.filePath).toBe("string");
       expect(result.patchCount).toBe(0);
       expect(result.validationMode).toBe("schema-only");
@@ -51,7 +51,7 @@ describe("inspect_session", () => {
   });
 
   it("format: full returns complete pageJson", async () => {
-    const opened = (await openPageSession.run({ route: "/profile" })) as {
+    const opened = (await openPageSession.run({ route: "/unlock" })) as {
       sessionId: string;
     };
 
@@ -70,7 +70,7 @@ describe("inspect_session", () => {
   });
 
   it("reflects patches in patchCount and changedPaths", async () => {
-    const opened = (await openPageSession.run({ route: "/profile" })) as {
+    const opened = (await openPageSession.run({ route: "/unlock" })) as {
       sessionId: string;
     };
 
@@ -102,7 +102,7 @@ describe("inspect_session", () => {
 
 describe("session_diff", () => {
   it("returns empty changes for a fresh session", async () => {
-    const opened = (await openPageSession.run({ route: "/profile" })) as {
+    const opened = (await openPageSession.run({ route: "/unlock" })) as {
       sessionId: string;
     };
     try {
@@ -120,7 +120,7 @@ describe("session_diff", () => {
   });
 
   it("reports a replace op after a title patch", async () => {
-    const opened = (await openPageSession.run({ route: "/profile" })) as {
+    const opened = (await openPageSession.run({ route: "/unlock" })) as {
       sessionId: string;
     };
     try {
@@ -154,7 +154,7 @@ describe("session_diff", () => {
 
 describe("get_session_value / set_session_value", () => {
   it("get_session_value returns the value at a top-level path", async () => {
-    const opened = (await openPageSession.run({ route: "/profile" })) as {
+    const opened = (await openPageSession.run({ route: "/unlock" })) as {
       sessionId: string;
     };
     try {
@@ -171,7 +171,7 @@ describe("get_session_value / set_session_value", () => {
   });
 
   it("set_session_value updates a top-level field and increments patchCount", async () => {
-    const opened = (await openPageSession.run({ route: "/profile" })) as {
+    const opened = (await openPageSession.run({ route: "/unlock" })) as {
       sessionId: string;
     };
     try {
@@ -204,7 +204,7 @@ describe("get_session_value / set_session_value", () => {
   });
 
   it("get_session_value throws for a non-existent path", async () => {
-    const opened = (await openPageSession.run({ route: "/profile" })) as {
+    const opened = (await openPageSession.run({ route: "/unlock" })) as {
       sessionId: string;
     };
     try {
@@ -217,7 +217,7 @@ describe("get_session_value / set_session_value", () => {
   });
 
   it("set_session_value is undoable", async () => {
-    const opened = (await openPageSession.run({ route: "/profile" })) as {
+    const opened = (await openPageSession.run({ route: "/unlock" })) as {
       sessionId: string;
     };
     const { undoPageSession } = await import("./page-session.js");

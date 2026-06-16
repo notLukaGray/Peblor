@@ -74,7 +74,7 @@ export function Model3DScene({
       style={{ width: "100%", height: "100%" }}
       dpr={renderProfile.dpr}
       gl={renderProfile.gl}
-      frameloop="demand"
+      frameloop="always"
       camera={{ position: [0, 0, 1], fov: 50 }}
     >
       <Suspense fallback={null}>

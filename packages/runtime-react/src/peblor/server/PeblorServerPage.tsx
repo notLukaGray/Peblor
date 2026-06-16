@@ -163,6 +163,7 @@ export async function PeblorServerPage({
           const overlay = section as SectionBlock & {
             fixedPosition?: string;
             zIndex?: number;
+            layer?: number;
             id?: string;
           };
           const fixedPosition = overlay.fixedPosition ?? "top";
@@ -171,7 +172,7 @@ export async function PeblorServerPage({
             position: "fixed",
             left: 0,
             right: 0,
-            zIndex: overlay.zIndex ?? (fixedPosition === "top" ? 100 : 50),
+            zIndex: overlay.zIndex ?? overlay.layer ?? (fixedPosition === "top" ? 100 : 50),
             pointerEvents: "none",
             ...(fixedPosition === "bottom" ? { bottom: 0 } : { top: 0 }),
           };

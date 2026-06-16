@@ -1,0 +1,3 @@
+{
+  "load": ["video/control", "player/shell", "player/control"]
+}

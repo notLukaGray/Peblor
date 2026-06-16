@@ -111,9 +111,16 @@ export const MotionFromJson = forwardRef<HTMLElement, MotionFromJsonProps>(
 
     const motionProps: Record<string, unknown> = {
       ...motionOnly,
+      // initial must always be set — even to undefined — so it overrides any
+      // user-supplied motionOnly.initial (e.g. false) that would tell Framer
+      // Motion to skip the SSR-rendered state and jump straight to animate,
+      // causing a hydration mismatch. Peblor controls initial state through
+      // initialVariant / motionOnly.from, never through raw motion.initial.
       initial: initialVariant ?? motionOnly.from,
-      animate: animateWithOverride,
-      exit: exitVariant ?? motionOnly.leave,
+      ...(animateWithOverride !== undefined ? { animate: animateWithOverride } : {}),
+      ...(exitVariant !== undefined || motionOnly.leave !== undefined
+        ? { exit: exitVariant ?? motionOnly.leave }
+        : {}),
       // Translate peblor gesture keys to framer-motion while* props
       whileHover: onHover,
       whileTap: onPress,

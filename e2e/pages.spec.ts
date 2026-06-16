@@ -25,10 +25,10 @@ test.describe("Key pages", () => {
 
   const CORE_PAGES = [
     { path: "/", label: "Homepage" },
-    { path: "/profile", label: "Profile" },
-    { path: "/work", label: "Work" },
-    { path: "/teaching", label: "Teaching" },
-    { path: "/research", label: "Research" },
+    { path: "/404", label: "404" },
+    { path: "/unlock", label: "Unlock" },
+    { path: "/presets/cards-basic", label: "Cards Basic" },
+    { path: "/presets/bg-solid", label: "BG Solid" },
   ] as const;
 
   for (const { path, label } of CORE_PAGES) {
@@ -86,78 +86,21 @@ test.describe("Key pages", () => {
     });
   });
 
-  test.describe("Research sub-pages", () => {
-    const RESEARCH_PAGES = [
-      "/research/adaptive-systems",
-      "/research/affective-color",
-      "/research/generative-identity",
-      "/research/gesture-language",
-      "/research/motion-cognition",
-      "/research/multimodal-attention",
-      "/research/perception-rhythm",
-      "/research/sonic-interaction",
-      "/research/spatial-ui",
-      "/research/temporal-typography",
+  test.describe("Preset sub-pages", () => {
+    const PRESET_PAGES = [
+      "/presets/cards-basic",
+      "/presets/cards-collections",
+      "/presets/cards-media",
+      "/presets/cards-stats",
+      "/presets/bg-solid",
+      "/presets/bg-aurora",
+      "/presets/bg-vibrant",
+      "/presets/type-scale",
+      "/presets/composition-landing-saas",
+      "/presets/composition-portfolio",
     ] as const;
 
-    for (const path of RESEARCH_PAGES) {
-      test(`${path} loads with main element and no errors`, async ({ page }) => {
-        await page.goto(path);
-        await page.waitForLoadState("load");
-
-        const main = page.locator("main");
-        await expect(main).toBeVisible();
-        expect(await page.locator("h1").count()).toBeGreaterThanOrEqual(1);
-        assertNoErrors(page);
-      });
-    }
-  });
-
-  test.describe("Teaching sub-pages", () => {
-    const TEACHING_PAGES = [
-      "/teaching/brand-thinking",
-      "/teaching/creative-coding",
-      "/teaching/interaction-design",
-      "/teaching/motion-fundamentals",
-      "/teaching/portfolio-studio",
-      "/teaching/sound-for-screen",
-      "/teaching/systems-thinking",
-      "/teaching/type-systems",
-      "/teaching/ux-research",
-      "/teaching/visual-language",
-    ] as const;
-
-    for (const path of TEACHING_PAGES) {
-      test(`${path} loads with main element and no errors`, async ({ page }) => {
-        await page.goto(path);
-        await page.waitForLoadState("load");
-
-        const main = page.locator("main");
-        await expect(main).toBeVisible();
-        expect(await page.locator("h1").count()).toBeGreaterThanOrEqual(1);
-        assertNoErrors(page);
-      });
-    }
-  });
-
-  test.describe("Work sub-pages", () => {
-    const WORK_PAGES = [
-      "/work/lenero",
-      "/work/project-brand",
-      "/work/project-campaign",
-      "/work/project-cinematic",
-      "/work/project-editorial",
-      "/work/project-exhibition",
-      "/work/project-immersive",
-      "/work/project-motion",
-      "/work/project-photography",
-      "/work/project-process",
-      "/work/project-spinach-tiff",
-      "/work/project-systems",
-      "/work/the-barn",
-    ] as const;
-
-    for (const path of WORK_PAGES) {
+    for (const path of PRESET_PAGES) {
       test(`${path} loads with main element and no errors`, async ({ page }) => {
         await page.goto(path);
         await page.waitForLoadState("load");

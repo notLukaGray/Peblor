@@ -1,6 +1,6 @@
 {
   "type": "elementHeading",
-  "level": 4,
+  "level": 3,
   "color": "var(--pb-on-secondary)",
   "wordWrap": true,
   "width": "100%",

@@ -6,8 +6,8 @@
  * Strategy:
  *   - Pre-render top-level navigation links on hover/focus (`eagerness: "moderate"`)
  *     so the user gets instant navigations when they click.
- *   - Pre-fetch `/work` immediately (`eagerness: "immediate"`) — it is the primary
- *     call-to-action landing page and the most likely next navigation from any page.
+ *   - Pre-render top-level pages on hover/focus so the user gets instant
+ *     navigations when they click.
  *
  * The rules are static and baked into the HTML at build time (SSG). No client
  * JavaScript is needed to enable speculation — the browser parses the inline script
@@ -39,15 +39,8 @@ export function SpeculationRules({ nonce }: { nonce?: string }) {
     prerender: [
       {
         source: "list",
-        urls: ["/", "/work", "/teaching", "/research", "/profile"],
+        urls: ["/"],
         eagerness: "moderate",
-      },
-    ],
-    prefetch: [
-      {
-        source: "list",
-        urls: ["/work"],
-        eagerness: "immediate",
       },
     ],
   };

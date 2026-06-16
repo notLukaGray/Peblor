@@ -40,5 +40,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules", ".dead", "tools", "packages", "temp"]
+  "exclude": ["node_modules", ".dead", "tools", "packages", "temp", "apps/studio", "scripts"]
 }

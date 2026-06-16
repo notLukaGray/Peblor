@@ -3,7 +3,7 @@
   "elementOrder": ["sec-label", "sec-desc", "cards-row"],
   "definitions": {
     "sec-label": {
-      "preset": "type-h3-label",
+      "preset": "type-h2-section",
       "text": "Card Variants"
     },
     "sec-desc": {

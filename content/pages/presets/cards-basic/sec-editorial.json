@@ -3,7 +3,7 @@
   "elementOrder": ["sec-label", "cards-row"],
   "definitions": {
     "sec-label": {
-      "preset": "type-h3-label",
+      "preset": "type-h2-section",
       "text": "Article Previews"
     },
     "cards-row": {
@@ -14,21 +14,23 @@
           "article-1": {
             "preset": "card-article-preview",
             "section": {
-              "elementOrder": ["meta", "divider", "title", "excerpt", "link"],
+              "elementOrder": ["title", "meta", "divider", "excerpt", "link"],
               "definitions": {
+                "title": {
+                  "preset": "type-h4-card",
+                  "text": "The case for fewer components",
+                  "level": 3
+                },
                 "meta": {
                   "preset": "type-h5-meta",
-                  "text": "Essay · 06 min"
+                  "text": "Essay \u00b7 06 min",
+                  "level": 4
                 },
                 "divider": {
                   "type": "elementDivider",
                   "width": "100%",
                   "height": "1px",
                   "fill": "color-mix(in oklab, var(--pb-on-secondary) 14%, transparent)"
-                },
-                "title": {
-                  "preset": "type-h4-card",
-                  "text": "The case for fewer components"
                 },
                 "excerpt": {
                   "preset": "type-body-fine",
@@ -45,21 +47,23 @@
           "article-2": {
             "preset": "card-article-preview",
             "section": {
-              "elementOrder": ["meta", "divider", "title", "excerpt", "link"],
+              "elementOrder": ["title", "meta", "divider", "excerpt", "link"],
               "definitions": {
+                "title": {
+                  "preset": "type-h4-card",
+                  "text": "Motion as communication",
+                  "level": 3
+                },
                 "meta": {
                   "preset": "type-h5-meta",
-                  "text": "Craft · 04 min"
+                  "text": "Craft \u00b7 04 min",
+                  "level": 4
                 },
                 "divider": {
                   "type": "elementDivider",
                   "width": "100%",
                   "height": "1px",
                   "fill": "color-mix(in oklab, var(--pb-on-secondary) 14%, transparent)"
-                },
-                "title": {
-                  "preset": "type-h4-card",
-                  "text": "Motion as communication"
                 },
                 "excerpt": {
                   "preset": "type-body-fine",
@@ -76,21 +80,17 @@
           "article-3": {
             "preset": "card-article-preview",
             "section": {
-              "elementOrder": ["meta", "divider", "title", "excerpt", "link"],
+              "elementOrder": ["title", "meta", "divider", "excerpt", "link"],
               "definitions": {
-                "meta": {
-                  "preset": "type-h5-meta",
-                  "text": "Process · 08 min"
-                },
-                "divider": {
-                  "type": "elementDivider",
-                  "width": "100%",
-                  "height": "1px",
-                  "fill": "color-mix(in oklab, var(--pb-on-secondary) 14%, transparent)"
-                },
                 "title": {
                   "preset": "type-h4-card",
-                  "text": "Type as architecture"
+                  "text": "Type as architecture",
+                  "level": 3
+                },
+                "meta": {
+                  "preset": "type-h5-meta",
+                  "text": "Process \u00b7 08 min",
+                  "level": 4
                 },
                 "excerpt": {
                   "preset": "type-body-fine",

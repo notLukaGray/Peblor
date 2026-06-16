@@ -153,6 +153,7 @@ export function MixedElementGroupIsland({
   order,
   alignSelf,
   glassLayer = "background",
+  layer,
   children,
 }: MixedElementGroupIslandProps) {
   const pbContentGuidelines = getPbContentGuidelines();
@@ -196,6 +197,7 @@ export function MixedElementGroupIsland({
         ...(maxHeight != null ? { maxHeight: String(maxHeight) } : {}),
       },
       selfAlign,
+      layer,
       marginTop,
       marginBottom,
       marginLeft,

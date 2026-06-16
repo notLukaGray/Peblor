@@ -1,228 +1,250 @@
-# The content pipeline
+# Inside the core pipeline
 
-This is the most important package in the platform. `@pb/core` is the five-stage pipeline that takes JSON files from `content/pages/` and produces browser-ready page data. It has zero React or Next.js dependencies. The renderer could be swapped for anything tomorrow -- Vue, Svelte, a PDF generator, a command-line page previewer -- and everything before that swap stays exactly the same.
+This is the guts of Peblor. The `@pb/core` package is a framework-agnostic content pipeline that turns JSON files into browser-ready page data. Zero React. Zero Next.js. Three thousand lines of TypeScript that don't know or care what happens after they produce their final data structure. You could swap the renderer for Vue, Svelte, a PDF generator, a smoke signal array — and everything before that swap stays exactly the same.
 
-The pipeline is the product. Everything else -- the React renderer, the CLI, the MCP server -- is infrastructure built around it.
+The pipeline is the product. The React renderer, the CLI, the MCP server — they're all infrastructure built around it.
 
-## The orchestrator
+---
 
-The entry point to the whole thing is `getPeblorPropsAsync` at `packages/core/src/index.ts`. You give it a page slug like `"/about"` and it gives you back a fully resolved `PeblorPageProps` object ready for rendering. Internally, it composes two functions:
+## The conductor: `getPeblorPropsAsync`
 
-- **`getPageAsync`** -- handles the LOAD and EXPAND stages. Takes a slug, resolves presets, validates the page, expands references into concrete objects, applies defaults.
-- **`getPeblorPropsFromPage`** -- handles element defaults (the second defaults pass that needs section context), entrance motion resolution, asset resolution, and overlay loading. Takes the expanded page from `getPageAsync` and finishes the job.
+The entire pipeline starts here. You give it a slug (`"/about"`), it gives you back a `PeblorPageProps` object with everything a renderer needs: resolved sections, signed CDN URLs, entrance motion keyframes, overlays, modals. One function call, five pipeline stages, a few hundred lines of orchestration.
 
-This split exists so callers can inspect or transform the mid-pipeline data before final resolution. A common use case is tag filtering -- you might load a page, look at its tags, decide the user shouldn't see certain sections, remove them from the section order, and then pass the modified page to the second stage. The split means you can do that without duplicating any pipeline work.
+What makes this interesting is the **two-phase split**. The orchestrator doesn't run all five stages in one monolithic function. It divides the work:
 
-The function signatures and return types are all in `packages/core/src/index.ts`. The orchestrator doesn't hide complexity -- it sequences pure functions in a clear order, and that order is visible in the source.
+```
+getPageAsync(slug)                → ResolvedPageWithDefinitions
+getPeblorPropsFromPage(page, slug) → PeblorPageProps
+```
 
-## Stage 1: LOAD
+The first function handles LOAD and EXPAND — getting JSON off disk, chasing preset references, inlining elements, and returning a mid-pipeline object. The second function handles everything after that: element defaults, entrance motion resolution, CDN URL signing, overlay and modal loading.
 
-**Where it happens:** `packages/core/src/internal/peblor-load.ts` and everything in `packages/core/src/internal/load/`.
+The split exists so callers can **intercept the mid-pipeline result**. The most common use case is tag filtering: load a page, inspect its tags, decide the user shouldn't see certain sections, remove them, then pass the modified result to the second stage. Without the split, you'd have to either duplicate the loading and expansion work or build a hacky post-processing system. With the split, you just modify the section array and call the next function.
 
-**What goes in:** A page slug (like `"/about"`).
+`getPeblorPropsAsync` itself is just composition:
 
-**What comes out:** A fully hydrated `ResolvedPageWithDefinitions` object. Every `preset` string has been replaced with concrete fields. Sidecar section files have been inlined. Global modules have been merged. The output is a single self-contained object that the rest of the pipeline can operate on without touching the filesystem again.
+```typescript
+async function getPeblorPropsAsync(slug, options) {
+  const page = await getPageAsync(slug, options);
+  return getPeblorPropsFromPage(page, slug, options);
+}
+```
 
-**Why this stage exists:** A page JSON file references things outside itself -- presets, sidecar sections, global modules. None of those references are valid JSON. The load stage resolves every external reference so that everything downstream works with a complete, standalone object.
+It's not hiding complexity. It's sequencing pure functions in a clear order, and that order is visible in the source.
 
-### How it works
+---
 
-The loader does four things, and it does them in parallel because they all read from disk independently:
+## What flows between the stages
 
-**Discover and read.** The slug is resolved to a file path under `content/pages/`. Path traversal attacks are checked at `packages/core/src/internal/peblor-paths.ts` -- the loader won't follow `../` references outside the content directory. Discovery logic lives at `packages/core/src/internal/load/peblor-discover-pages.ts`. The page's `index.json` is read and parsed into a raw `Peblor` object.
+The pipeline passes around a small set of data structures. Understanding these is more important than memorizing file paths.
 
-**Load definitions with sidecar hydration.** The page's `definitions` dictionary is read. Some sections may be stored in sidecar files -- individual JSON files alongside the page's `index.json` rather than inline in the main file. The hydrator at `packages/core/src/internal/load/peblor-load-definitions.ts` discovers sidecar files by convention: a section key like `"hero"` can be defined in `index.json` directly, or in a file called `hero.section.json` in the same directory. If both exist, the inline version wins. Sidecar files are what keep page files manageable when sections get large.
+**`Peblor`** — the raw parsed JSON. Section order, definitions (flat dictionary), metadata, presets. This is what comes off disk. Nothing has been resolved yet. Preset references are still strings.
 
-**Load presets.** Preset JSON files live under `content/presets/`, organized into category directories (bg, element, motion, section, trigger, and more). The loader at `packages/core/src/internal/load/peblor-load-presets.ts` discovers every `.json` file recursively and merges them into a single flat namespace. Each file becomes exactly one key in a global preset dictionary. This is why preset keys must be globally unique across all files -- two files with the same key would collide silently. The console warns when a collision happens, but there's no guard beyond that.
+**`ResolvedPageWithDefinitions`** — the output of `getPageAsync`. Every preset string has been chased down and merged. Sidecar section files have been inlined. Global module configs have been merged. Elements are still referenced by key strings in `elementOrder` arrays — they haven't been inlined yet. But the definitions dictionary is complete and self-contained. No filesystem access needed from here on.
 
-**Resolve preset references.** With definitions and presets both loaded, the resolver at `packages/core/src/internal/peblor-presets.ts` walks every definition block and shallow-merges any referenced preset onto it. The merge uses JSON merge patch semantics from RFC 7396: preset values are the baseline, and any fields on the referencing definition override them. This is recursive -- a preset can reference another preset, which can reference another, and so on. The recursion depth is bounded, and circular references are detected. If preset A references preset B which references preset A, the resolver detects the loop and produces a structured diagnostic rather than entering an infinite loop.
+**`{ bg, sections }`** — the output of `expandPeblor`. The background block is resolved (or null). Sections are flat arrays with concrete element objects inlined. This is the last structure that's still "pure JSON" — no defaults applied, no motions resolved, no URLs signed.
 
-**Merge global modules.** Module configurations from `content/modules/` are merged into definitions. These are self-contained player configs for video and audio -- key bindings, gesture regions, feedback chrome, slot layouts. All data, no code. The merge happens at `packages/core/src/internal/load/peblor-load-definitions.ts`.
+**`PeblorPageProps`** — the final output. Everything is resolved. Defaults are filled in. Motion presets are expanded to keyframe objects. Asset URLs are signed CDN paths. Overlays and modals are loaded and attached. The renderer never needs to look anything up or compute anything. It just dispatches.
 
-The output of the load stage is a `ResolvedPageWithDefinitions` where every reference has been chased down and inlined. The object is self-contained, self-validating, and ready for the next stage.
+The key insight: **each stage adds information the previous stage couldn't have known**. Load doesn't know about defaults because defaults come from the host config, not the page data. Expand doesn't sign URLs because signing needs environment variables available at render time. The pipeline is split exactly at the natural boundaries where new information sources enter the system.
 
-### Edge cases in the load stage
+---
 
-- **Missing preset:** If a definition references a preset that doesn't exist, the loader produces a diagnostic with the preset key and the definition path. The page doesn't hard-crash -- it continues loading with the missing preset fields as undefined, and the missing reference is reported so the author can fix it.
+## The actual stage sequence
 
-- **Missing sidecar file:** If a sidecar file is expected but doesn't exist, it's silently skipped. The section key simply won't be present in definitions, and the validation stage will catch the missing reference.
+If you trace through `getPeblorPropsAsync`, here's what actually happens in order:
 
-- **Circular presets:** Detected and diagnosed, not infinitely looped. The diagnostic tells you which preset keys are involved.
+### 1. LOAD (inside `loadPeblorByPathAsync`)
 
-- **Empty presets directory:** Treated as "no presets available." The namespace is empty, and any preset references will produce missing-preset diagnostics.
+The slug gets validated against a regex that rejects path traversal — `../` tricks don't work here. The page's `index.json` is read. Then, sequentially:
 
-## Stage 2: VALIDATE
+- **Definitions are extracted** from the page JSON. Sidecar files (`hero.section.json` alongside `index.json`) are discovered and inlined. Inline definitions take priority over sidecar files.
+- **Presets are loaded** from `content/presets/`. Every JSON file in the referenced preset directories becomes a key in a flat dictionary. If two files have the same key, one silently wins with a console warning.
+- **Preset references are resolved** by walking every definition block and deep-merging any referenced preset onto it. The merge is deep, not shallow — nested definitions dictionaries in element group sections are merged recursively. Circular references are detected and produce a structured diagnostic instead of an infinite loop.
+- **Global modules are merged** — video player and audio player configs from `content/modules/` get folded into definitions.
 
-**Where it happens:** `packages/core/src/index.ts` -- the `validatePage` and `validatePageAsync` functions.
+This sequence is sequential, not parallel. Presets need to be in memory before they can be resolved. Definitions need to be loaded before modules can be merged. The load stage doesn't parallelize because there's nothing to parallelize — each step depends on the previous one.
 
-**What goes in:** The hydrated `ResolvedPageWithDefinitions` object from stage 1.
+### 2. VALIDATE (inside `validatePeblor`)
 
-**What comes out:** Either the parsed object with types inferred by Zod, or a list of `PeblorDiagnostic` objects describing what's wrong. It never throws.
+Zod 4's `safeParse` against `peblorSchema` from `@pb/contracts`. Never throws. Returns either the parsed object with types inferred, or a list of `PeblorDiagnostic` objects.
 
-**Why this stage exists:** JSON has no type system. A string field that should be a number, a missing required key, a reference to a definition that doesn't exist -- these are all silent failures in raw JSON. Validation catches them before they reach the renderer, and it catches them with messages that tell the content author exactly what to fix.
+The validation checks three layers:
 
-### How it works
+- **Page shape** — section order is an array of strings, definitions is a dictionary, metadata fields have the right types
+- **Type rules** — each section and element type has its own required fields. A `sectionColumn` without `columnDefinitions` fails. An `elementImage` without `src` fails.
+- **Cross-references** — every key in `sectionOrder` must exist in `definitions`. Every key in `elementOrder` must point to an element definition, not a section or background. The cross-reference checks use Zod's `superRefine` mechanism, which runs after the basic type checks pass.
 
-Validation uses Zod 4's `safeParse` exclusively. Not `parse`, which throws on failure. `safeParse` always returns a result object with either the parsed data or a list of issues. This means validation is always safe to call, always returns structured diagnostics, and never requires a try/catch.
+There are two validation paths. `validatePage` (sync) works with inline presets only — fast for unit tests. `validatePageAsync` (async) loads global presets from disk first, mirroring the runtime pipeline. If you're validating a page that uses presets, use the async version.
 
-A valid page produces a result with `valid: true` and an empty diagnostics array. An invalid page produces a result with `valid: false` and an array of `PeblorDiagnostic` objects.
+### 3. EXPAND (inside `expandPeblor`)
 
-Each diagnostic contains:
+This is where indirection becomes data. The page stores elements as named keys in `definitions` and references them by string in `elementOrder`. The expand stage converts all those string references into actual objects.
 
-- **code** -- a machine-readable error code like `PB_SCHEMA_ISSUE`, `PB_VALIDATION_ERROR`, or `PB_REFERENCE_ERROR`
-- **severity** -- `"error"`, `"warning"`, or `"info"`
-- **path** -- a JSON pointer to the problem location, like `$.definitions.hero.type`
-- **message** -- what's wrong and what value was received, in plain English
+It does this by iterating the display order — which concatenates `sectionOrder` with any trigger section references — and for each section:
 
-The schema used for validation is `peblorSchema` from `@pb/contracts`. It validates:
+1. Looks up the background via `bgKey`. If the key doesn't exist or doesn't point to a background type, the page gets no background. Null, not a silent fallback.
+2. Resolves the section's `elementOrder` (which can be a plain array or a responsive object with separate `mobile`/`desktop` variants) against the definitions dictionary. Each key is looked up, type-checked, and placed into the section's elements array.
+3. Applies element IDs and module configs via `applyElementIdsAndModules` — elements get namespaced IDs, and elements with a `module` string get their module configuration inlined.
+4. Namespaces column sections so child elements in multi-column layouts have unique reference keys.
+5. Resolves trigger action payloads — any action payloads that reference definition keys get those references chased down.
 
-- **Page shape:** `sectionOrder` must be an array of strings, `definitions` must be a dictionary of definition blocks, metadata fields must be the right types.
-- **Section type rules:** Each section type (`contentBlock`, `sectionColumn`, etc.) has its own required and optional fields. A `sectionColumn` without `columnDefinitions` fails. A `divider` with an `elementOrder` array fails (dividers can't have elements).
-- **Element type rules:** Each element type (`elementHeading`, `elementBody`, etc.) has distinct field requirements. An `elementImage` without `src` fails. An `elementButton` without `text` or `icon` fails.
-- **Cross-reference validation:** The superRefine on the page schema checks that every key in `sectionOrder` exists in `definitions`, and that every key in each section's `elementOrder` resolves to an element definition (not a section or background).
+Missing element keys are skipped with a diagnostic. The section still renders with whatever elements could be resolved. The pipeline is designed to degrade gracefully, not crash on the first missing reference.
 
-There are two validation paths. The synchronous `validatePage` validates against the schema only -- it doesn't load presets. It's fast and useful for unit tests and quick checks where you already have a fully-resolved object. The async `validatePageAsync` also loads global presets from `content/presets/` before validating, which mirrors what the full runtime pipeline does. If you're validating a page that uses presets, use the async version.
+This is also where `buildPageForExpansion` is called, which promotes preset entries into definitions for any `sectionOrder` key that lacks an explicit inline definition. It's a last-resort fallback: if a section key appears in `sectionOrder` but has no definition, the loader checks if a preset with that key exists and uses it.
 
-### Edge cases in validation
+### 4. DEFAULTS + MOTION (inside `getPeblorPropsFromPage`)
 
-- **Empty page:** A page with no `sectionOrder` and no `definitions` is technically valid -- it would render as an empty page. The validation passes but linting might flag it.
-- **Orphaned definitions:** Definitions that aren't referenced by `sectionOrder` or any `elementOrder` pass validation but show up as warnings. They don't break the page, but they're dead code.
-- **Duplicate section keys:** If `sectionOrder` has the same key twice, the superRefine catches it and produces a diagnostic pointing to the duplicate entry.
-- **Wrong type in definition:** A section that references an element key in its `elementOrder` that actually points to a section definition in `definitions` -- the superRefine catches the type mismatch.
+After expansion, the pipeline applies element defaults, resolves entrance motions, precompiles rich text, and precompiles theme strings — all in **a single tree walk** via `transformElementsInSectionsCombined`.
 
-## Stage 3: EXPAND
+This is an important optimization. Each of these transforms needs to visit every element in the page. Doing them sequentially would mean N tree walks. Instead, the pipeline composes them into a single walk: for each element, apply defaults, then entrance motions, then exit motions, then rich text precompilation, then button loop CSS, then theme strings. One pass, six transforms, one tree walk.
 
-**Where it happens:** `packages/core/src/internal/peblor-expand.ts` and everything in `packages/core/src/internal/peblor-expand/`.
+The element transformer handles recursion into nested structures automatically: `elementGroup` and `elementInfiniteScroll` sections, `moduleConfig` slots, and `revealSection` branches. If you add a new element type that contains nested elements, you register it in `NESTED_SECTION_ELEMENT_TYPES` and the transformer picks it up — no per-transform changes needed.
 
-**What goes in:** A validated `ResolvedPageWithDefinitions` object from stage 2.
+The defaults system (`applyDefaultsToElement`) dispatches by element type. Each type has its own defaults function: headings get size defaults, images get aspect ratio defaults, buttons get style defaults. The defaults come from the injectable host config, not from hardcoded constants. A heading with no `variant` field gets its size from whatever the current brand has configured. Swap the host config, and every heading on every page looks different — no code changes.
 
-**What comes out:** A pair -- a resolved background block (or null) and a flat array of `SectionBlock` objects with all elements inlined, defaults applied, and entrance motions expanded.
+Entrance motion resolution (`resolveEntranceMotionForSingleElement`) converts named presets like `"fade"` or `"slideUp"` into concrete framer-motion keyframe objects: `initial`, `animate`, `exit`, `transition`, viewport trigger settings. All computed server-side. The client never looks up a motion preset by name.
 
-**Why this stage exists:** The page JSON stores elements as named keys in `definitions` and references them by string in `elementOrder`. That indirection is great for authoring -- you can reference the same element from multiple sections, reuse definitions across sections, and keep the page file modular. But the renderer needs concrete objects. It can't look up strings at render time. The expand stage converts all key references into actual data objects.
+### 5. RESOLVE (inside `resolvePeblorAssetsOnServer`)
 
-### How it works
+All asset references — image `src` fields, video `poster` fields, background fill `image` fields — are collected, validated, and signed. This is where raw paths like `"images/hero.jpg"` become fully qualified CDN URLs with authentication tokens.
 
-The expand function does seven things in sequence, each building on the results of the previous step:
+The resolver does five things:
 
-**1. Build the display order.** The page's `sectionOrder` array defines the primary render order. But trigger-based sections can also appear in response to scroll position or user interaction. The expander concatenates `sectionOrder` with any trigger sections and reduces them to a single ordered list. The ordering logic is in `peblor-expand.ts` -- it's a straightforward array concat with deduplication.
+- Collects every asset reference across sections, backgrounds, and background transitions
+- Signs each CDN URL with an HMAC token and expiration timestamp
+- Computes responsive image `srcSet` attributes based on container width estimates
+- Resolves theme-aware `{ light, dark }` values to CSS `light-dark()` functions
+- Builds a separate background definitions map for the scroll-driven background transition system
 
-**2. Resolve the background.** The page may have a `bgKey` field that points to a background definition in `definitions`. The expander looks it up and type-checks it against the known background types. If the key doesn't resolve, or resolves to something that isn't a background type, the page gets no background -- a clean null result. No silent fallback, no invisible background slot. Null means "render nothing here."
+After resolution, overlay sections are loaded (header, footer, nav) and any modals the page references are resolved. These are appended to the render output as separate structures — the page JSON never worries about chrome.
 
-**3. Inline elements.** For each section, the `elementOrder` array is resolved against the combined definitions dictionary. This happens at `packages/core/src/internal/peblor-expand/element-resolution.ts`. The `elementOrder` can be a plain array of key strings, or a responsive object with `mobile` and `desktop` variants for different breakpoints. Each key is looked up, type-checked to confirm it's an element (not a section or background), and placed into the section's `elements` array. String references become real element objects. If a key doesn't resolve, the expander skips it and reports a diagnostic -- the other elements still render.
+---
 
-**4. Apply module configs.** Elements with a `module` string reference get their module configuration inlined from the global module definitions. This happens inside `applyElementIdsAndModules` in the same element-resolution file. A video player element with `"module": "video-player"` gets its key bindings, gesture regions, and chrome configuration merged in from the `video-player` module definition in `content/modules/`.
+## Working with the cache
 
-**5. Resolve trigger payloads.** Trigger actions that reference definition keys in their payloads need those references chased down. For example, a `three.playAnimation` action might reference a 3D scene definition by key. The resolver at `packages/core/src/internal/peblor-expand/trigger-payload-resolution.ts` handles this. Column sections also get their child element namespaces applied at `packages/core/src/internal/peblor-expand/column-namespacing.ts`, which sets up the column-to-element mapping for multi-column layouts.
+The expand stage has an in-memory cache that's worth understanding because it affects how changes propagate.
 
-**6. Apply builder defaults.** This is the defaults system, and it's significant -- the file at `packages/core/src/internal/defaults/pb-builder-defaults.ts` is over 1,200 lines. Every element variant has a set of defaults that come from the host config, not from hardcoded constants. A heading with no `variant` field gets a default variant based on context. A button with no `style` field gets a default button style. An image with no `aspectRatio` gets a default aspect ratio. The defaults function at `packages/core/src/internal/peblor-apply-element-defaults.ts` walks every element, checks for missing fields, and fills them in from the host config. Different brands get different default looks by swapping the host config -- no component code changes needed.
+The cache keys by route plus a hash of source file modification times. On cache miss, the pipeline runs normally and stores the result. On cache hit (same route, same file hashes), the pipeline returns the cached result without touching disk.
 
-**7. Resolve entrance motions.** Motion presets like `"fade"` or `"slideUp"` are just strings in the page JSON. The resolver at `packages/core/src/internal/peblor-resolve-entrance-motions.ts` converts them into framer-motion keyframe objects with computed `initial`, `animate`, and `exit` props. Viewport triggers (`onFirstVisible`, `onEveryVisible`), transition durations, easing curves, and animation keyframes are all computed server-side at build time. The client never looks up a motion preset by name -- it receives the expanded keyframes directly. This means the client doesn't need to know what "fade" means; it just animates from opacity 0 to opacity 1. Loop animations -- like continuous background parallax or rotating elements -- are also resolved here.
+The hash only covers the page's own `index.json` and the preset files the page actually references — not every preset on disk. This means editing an unrelated preset doesn't invalidate every cached page.
 
-The output of the expand stage is a pair of values: a resolved background object (or null) and a flat array of `SectionBlock` objects. Every reference has been chased, every default applied, every motion preset expanded. The data is ready for asset resolution.
+In development mode, the cache switches to a 5-second TTL and skips file hashing entirely (because `statSync` on every preset directory blocks the event loop during HMR). Entries expire quickly enough that a hot reload picks up new changes within one refresh cycle.
 
-### Edge cases in the expand stage
+The cache is process-local and not persisted. Each server process warms its own cache. For SSG builds this doesn't matter — every page is rendered exactly once per build. For SSR with ISR, the cache fills on first request and stays warm for subsequent ones.
 
-- **Missing element key in elementOrder:** The expander reports a diagnostic and skips the missing key. The section still renders with whatever elements could be resolved.
-- **Preset override conflicts:** If a preset defines a motion animation and the local definition also defines motion, the local value wins (merge patch semantics). The override is silent -- no warning, no conflict resolution, just last-write-wins.
-- **Empty elementOrder:** A section with no elements renders as an empty container. This is valid for background-only sections or sections that are placeholders.
-- **Responsive elementOrder mismatch:** If `mobile` has elements that `desktop` doesn't (or vice versa), each breakpoint resolves independently. Missing keys in one breakpoint are non-fatal -- that breakpoint just gets fewer elements.
+---
 
-## Stage 4: RESOLVE
+## Adding to the pipeline
 
-**Where it happens:** `packages/core/src/internal/peblor-resolve-assets-server.ts`.
+The pipeline stages are composed as pure functions called in sequence. There is no plugin system for injecting custom stages into the middle. This is deliberate — it keeps the pipeline predictable. You always know what ran and in what order.
 
-**What goes in:** The expanded sections and background from stage 3.
+Extension points exist at the boundaries:
 
-**What comes out:** The same structure with all asset URLs signed, responsive image sizes computed, and theme strings resolved to CSS values.
+- **Before defaults/motion/assets:** The `transformSections` option on `getPeblorPropsFromPage` lets you modify the section array before the defaults/motion/asset passes. This is where tag filtering, A/B testing, or section reordering would go. You get the expanded sections, you transform them, the pipeline picks up the transformed result.
 
-**Why this stage exists:** Raw asset references like `"images/hero.jpg"` are not useful to a browser. They need to become fully qualified, signed CDN URLs that expire after a reasonable window. Images need responsive `srcSet` attributes so the browser can pick the right size for the viewport. Theme-aware values like `{ light: "#fff", dark: "#111" }` need to become CSS `light-dark()` functions. This is the stage that makes the data browser-ready, and it's the last stage that runs server-side.
+- **Host config:** The entire defaults system is injectable via `setPeblorHostConfig`. Every element type's default variant, every size, every style — all set from one config object at app startup.
 
-### How it works
+- **Element defaults:** To add defaults for a new element type, add a function to the dispatch map in `applyDefaultsToElement`. The type dispatched is the element's `type` string, which must also be registered in the contracts package's Zod union.
 
-The resolve stage walks every section, background, and background transition to do five things:
+- **After resolution:** The renderer is a separate package. Replace it entirely without touching `@pb/core`. This is the escape hatch for any rendering approach that doesn't involve React.
 
-**1. Collect asset references.** It builds a set of every asset key referenced across the entire page -- images, videos, background fills, background transition layers. The collection function is `collectPeblorAssetRefs` at `packages/core/src/internal/peblor-resolved-assets.ts`. It traverses the section tree, the background definitions, and any background transitions, extracting every `src`, `srcDark`, `poster`, and `fallback` field it finds.
+---
 
-**2. Sign CDN URLs.** Each raw asset key is validated against CDN patterns at `packages/core/src/lib/cdn-asset-server.ts` and signed through a proxy URL builder at `packages/core/src/lib/proxy-url.ts`. Signing adds an expiration timestamp and a signature that the CDN edge validates before serving the asset. This prevents hotlinking and limits the window in which a stolen URL is usable. The signing key and CDN base URL come from the environment, not from the page data.
+## Debugging a pipeline issue
 
-**3. Compute responsive image sizes.** Image elements receive responsive `srcSet` attributes. The resolver estimates container width from the section type and viewport width, then generates multiple image widths. An image in a full-width hero section gets different breakpoints than the same image in a narrow sidebar section. The browser picks the right width at render time based on the actual viewport. This means images are never larger than they need to be, and the server doesn't need to know the client's exact dimensions.
+When a page fails, the pipeline produces structured diagnostics — arrays of `PeblorDiagnostic` objects with a code, severity, JSON pointer path, and human-readable message. These are the first thing to check.
 
-**4. Resolve theme strings.** Background fills, border colors, text colors, and any other property with a `{ light, dark }` value object get resolved to CSS `light-dark()` functions. The resolution happens inside `lowerBackgroundThemeFillsToCss` and related functions in the resolve-assets-server file. The result is a single CSS value that the browser interprets based on the user's color scheme preference. No class toggles, no media query switches in JavaScript, no flash-of-wrong-theme.
+Common failure modes and where to look:
 
-**5. Build the background definitions map.** Background definitions from the page's `definitions` dictionary are extracted, asset-resolved, and returned as a separate map. This map is what the runtime's background transition system uses during scroll-triggered background changes -- it needs all background definitions available in a single lookup structure so it can transition between them without additional network requests.
+| Symptom                                       | Likely stage | What to check                                                                                                                   |
+| --------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| Preset values not showing up                  | LOAD         | Is the preset key globally unique? Does the preset file exist in the right directory?                                           |
+| Missing elements in rendered page             | EXPAND       | Check `elementOrder` keys against `definitions`. Are the keys spelled right? Do they point to element types, not section types? |
+| Element looks wrong (wrong size, wrong style) | DEFAULTS     | Is the host config set at app startup? Does the element type have a defaults function registered?                               |
+| Animations don't play                         | MOTION       | Is the motion preset string valid? Does it exist in `content/framer-motion/`?                                                   |
+| Images don't load                             | RESOLVE      | Are the asset keys valid? Is the CDN base URL configured? Are environment variables set?                                        |
+| Page doesn't render at all                    | VALIDATE     | Run `validatePageAsync` directly. The diagnostics will tell you exactly what's wrong and where.                                 |
+| Overlay not showing                           | RESOLVE      | Check the page's `disableOverlays` array. Is the overlay listed there? Is the overlay file in `content/site/overlays/`?         |
 
-The resolve stage is also where `src` and `srcDark` pairs (for images that have different versions for light and dark mode) are consolidated into a single responsive structure. The client never has to choose which image source to use based on the theme -- the server pre-resolves that too.
+The diagnostics are designed for tooling, not just humans. The `path` field uses JSON pointer syntax (`$.definitions.hero.type`), which editors and CI systems can parse and use to highlight the exact location of the problem.
 
-## Stage 5: RENDER (delegated to runtime-react)
+---
 
-The final stage isn't in `@pb/core` -- it lives in `@pb/runtime-react`. The renderer receives `PeblorPageProps` and produces a React tree. This doc covers only what's relevant to understanding the pipeline boundary.
+## Testing patterns
 
-The key design choices in the renderer:
+Tests use Vitest with happy-dom. The pattern is straightforward: construct a minimum viable page object, run it through the pipeline stage you're testing, assert on the output.
 
-- Dispatch is a plain `Record<string, Component>` lookup. Sections register in `SECTION_COMPONENTS` at `packages/runtime-react/src/peblor/section/index.ts`. Elements register in `ELEMENT_COMPONENTS` at `packages/runtime-react/src/peblor/elements/index.ts`. No dependency injection, no registry pattern, no decorators. Just a map.
-- Heavy components (3D, Rive, Lottie, tabs, drag) use `next/dynamic()` for code splitting. The initial bundle doesn't include them.
-- Error boundaries exist at the section level and the element level. A broken element doesn't take down the section. A broken section doesn't take down the page.
-- The renderer is a client component (`"use client"`) because it handles browser APIs and interaction. Everything upstream is server-side.
+```typescript
+// A minimal page needs just enough structure to exercise the code path.
+const page: Peblor = {
+  slug: "test",
+  title: "Test",
+  sectionOrder: ["hero"],
+  definitions: {
+    hero: { type: "contentBlock", elements: [] },
+  },
+};
+const { sections } = expandPeblor(page);
+expect(sections).toHaveLength(1);
+```
 
-For full renderer details, see the runtime-react doc at [runtime-react.md](runtime-react.md).
+The test files mock nothing that isn't a side effect. The pipeline functions are pure data transformations, so there's nothing to mock. File I/O tests use real temp directories with `fs.writeFileSync` + `fs.unlinkSync` in try/finally blocks. There are no mock filesystem libraries.
 
-## The host-config system
+Key test files and what they cover:
 
-Every brand-specific default in the system is injectable through the host config. The function `setPeblorHostConfig` at `packages/core/src/internal/adapters/host-config.ts` accepts a partial config object and merges it into the running defaults. Call it once at app startup, and the pipeline uses those defaults for every page it processes.
+- **`peblor-load.test.ts`** — slug validation (path traversal rejection), page discovery, preset loading, sidecar hydration. Tests that `loadPeblorAsync("..")` returns null.
+- **`peblor-expand.test.ts`** — background resolution, element inlining, trigger payload URL resolution, invalid section order entries, empty element orders.
+- **`peblor-apply-element-defaults.test.ts`** — per-type default application. Tests that an elementImage without `aspectRatio` gets one. Tests that an elementButton without `style` gets one.
+- **`peblor-resolve-entrance-motions.test.ts`** — motion preset resolution, viewport trigger settings, loop animation merging.
+- **`peblor-resolve-assets-server.test.ts`** — CDN URL signing, responsive srcSet computation, theme string resolution. Also tests immutability (that the resolver doesn't mutate its inputs).
+- **`peblor-presets.test.ts`** — circular reference detection, deep merge behavior, missing preset handling.
+- **`expand-cache.test.ts`** (tested implicitly through the load/expand tests) — cache hit/miss, hash invalidation.
 
-The host config contains two major sections:
+The integration test pattern chains stages together:
 
-**pbBuilderDefaults** -- variant-level defaults for every element type. This file at `packages/core/src/internal/defaults/pb-builder-defaults.ts` is over 1,200 lines. It defines defaults for:
+```typescript
+const result = validatePage(page);
+expect(result.valid).toBe(true);
+expect(result.page).not.toBeNull();
 
-- Heading sizes for every variant (h1, h2, h3, h4, h5, h6, display, subtitle, caption)
-- Button styles (default, accent, ghost, text, icon) with their respective padding, border radius, font weight, and color tokens
-- Image aspect ratios for different layout modes (cover, contain, fill)
-- Video player chrome (show/hide controls, autoplay behavior, loop behavior)
-- Spacer heights for different breakpoints
-- Input field styles (border, padding, background, font)
-- Audio player layout variants
-- 3D scene defaults (camera position, lighting setup)
-- And more -- each element type that has visual variants has defaults here
+const { bg, sections } = expandPeblor(result.page!);
+// ... assert on expanded structure
+```
 
-The defaults are not hardcoded constants scattered through component files. They live in one file, they're loaded from one config, and they can be swapped for an entirely different set by a different consumer app.
+---
 
-**pbContentGuidelines** -- higher-level rules that govern content behavior beyond individual element variants. Defined at `packages/core/src/internal/defaults/pb-guidelines-expand.ts`. This includes things like default text alignment, font style bindings, and responsive behavior rules that span multiple element types.
+## The host config
 
-The demo consumer in `apps/web` provides its own host config at `src/app/theme/pb-content-guidelines-config.ts` and injects it at startup via `setPeblorHostConfig()`. A different consumer app -- say, for a different brand or a different site -- would provide different values. The pipeline code never changes. The brand config changes.
+Every element default in the system is injectable through `setPeblorHostConfig`. This is how Peblor stays brand-agnostic: a different consumer app provides different defaults, and every page rendered through that app picks them up automatically.
 
-This is how the platform stays brand-agnostic. If a heading has no `variant` field, the host config decides what size it should be. If a button has no `style` field, the host config decides its appearance. The pipeline doesn't have opinions about what looks good. It only knows how to apply the opinions it's given.
+The host config has two sections:
 
-## The MIGRATE path
+**`pbBuilderDefaults`** — variant-level defaults for every element type. Split across four files under `internal/defaults/`: types (~350 lines), values (~540 lines), animation helpers (~590 lines), and a barrel re-export. Total about 1,550 lines of type definitions and default value factories. This covers heading sizes, button styles, image aspect ratios, video chrome, spacer heights, input field styles, 3D scene defaults — everything a content author might omit.
 
-Schema version upgrades are handled by `migratePage` at `packages/core/src/index.ts`. It checks the page's `contractVersion` field, determines what transforms need to run, stamps the current version, and validates the result.
+**`pbContentGuidelines`** — higher-level rules: default text alignment, frame spacing, button padding, border radius. These apply across element types rather than to individual variants.
 
-The function takes a `fromVersion` and `toVersion` and returns an object with the migrated page, the list of applied transforms, and any diagnostics produced during migration.
+The demo consumer in `apps/web` provides its own host config at startup. A different brand swaps the whole config. The pipeline code never changes.
 
-Currently the migration path covers the transition from 0.x to 1.0.0. The transform is minimal -- stamp the contract version and inject an asset base URL if one is missing. There's a `noopFallback` function that handles unknown version-pairs by returning the page unchanged with an info-level diagnostic.
+---
 
-Real structural migration -- field renames, shape changes, data transformations -- would be added as explicit version-pair handler functions. The migration framework supports it, but no one has needed it yet. When a breaking schema change happens, this is where the conversion logic goes.
+## The migrate path
 
-## Plugin architecture
+Schema version upgrades live in `migratePage`. It checks the page's `contractVersion`, determines what transforms to apply, stamps the new version, and validates the result.
 
-The pipeline stages are composed as pure functions called in sequence by the orchestrator. There is no plugin system for injecting custom stages into the middle of the pipeline. This is deliberate. Extension points exist at the boundaries, not in the middle:
+Currently the only migration path covers 0.x to 1.0.0: stamp the contract version and optionally inject an `assetBaseUrl`. The migration infrastructure supports arbitrary version-pair handlers — if a future schema change renames a field or restructures a definition shape, this is where the conversion logic goes.
 
-- **Before expand:** The `transformSections` option on `getPeblorPropsFromPage` lets callers modify the section array between the EXPAND and DEFAULTS/MOTION/ASSETS passes. This is how a consumer app could implement tag-based section filtering or A/B testing of section layouts without modifying pipeline internals.
+There's a `noopFallback` (the "identity" transform when `fromVersion === toVersion`) and an error path when no handler exists for the requested version pair. The migration system is designed to be non-destructive: it produces a new object rather than mutating the input, and it validates the output before returning it.
 
-- **Host config:** The entire defaults system is injectable through `setPeblorHostConfig`. This is how brands customize appearance, responsive behavior, and content guidelines without touching pipeline code.
+---
 
-- **After resolve:** The renderer is a separate package (`@pb/runtime-react`). You could replace it entirely -- with a different framework, a static HTML generator, a PDF renderer -- without touching `@pb/core`.
+## The plugin architecture (or lack thereof)
 
-- **Import/export:** The extensions package (`@pb/extensions`) defines plugin interfaces for importing from external sources (Figma, CMS) and exporting to external targets (CMS, static files). These operate on complete pages, not pipeline internals. More in the [extensions doc](sdk-extensions-catalog.md).
+There is no plugin system for injecting custom stages into the pipeline. This is intentional, and it's worth understanding why.
 
-This design is intentional. Adding extension hooks inside the pipeline would make it harder to reason about what happens in what order. The pipeline is kept simple and predictable: load, validate, expand, resolve, render. Each stage does exactly one thing, and no stage can be intercepted or reordered by external code. When you're debugging a rendering issue, you know the pipeline ran its five stages in order, and the bug is in one of them.
+Every extension hook adds complexity. Every interception point makes the pipeline harder to reason about. The Peblor pipeline keeps extension at the boundaries rather than in the middle: transform callbacks, host config, and a replaceable renderer. That's it.
 
-## Caching
-
-The expand stage has an in-memory cache at `packages/core/src/internal/expand-cache.ts`. It hashes the page source files (the page JSON, sidecar sections, and presets) and caches the expanded result by slug plus hash. On subsequent requests for the same page, if none of the source files have changed, the cache returns the previously expanded result.
-
-The cache is invalidated when any source file for that page changes -- the page JSON, any sidecar section file, or any preset the page references. The hash is recomputed on every request, so cache invalidation is automatic. There's no TTL-based expiration, no manual cache-busting, no stale-data window.
-
-The cache is purely an optimization for SSR and build-time rendering. It's not persisted across process restarts -- when the server restarts, the cache starts empty. It's also process-local, so in a multi-process deployment each process has its own cache. This is fine because the cache is fast to warm up (a few hundred milliseconds per page) and the hit rate is high for pages rendered frequently.
+The result is a pipeline you can trace through from beginning to end without wondering "did a plugin modify this?" When you're debugging a rendering issue, you know the pipeline ran exactly five stages in exactly this order, and the bug is in one of them.
 
 ---
 

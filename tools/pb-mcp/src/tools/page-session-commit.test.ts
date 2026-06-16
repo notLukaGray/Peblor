@@ -4,10 +4,10 @@ import { describe, expect, it, afterEach } from "vitest";
 import { openPageSession, commitPageSession, closePageSession } from "./page-session.js";
 import { PAGE_DATA_DIR } from "@pb/core/loader";
 
-// This test writes to a real page file then restores it. We use "profile" as the
+// This test writes to a real page file then restores it. We use "unlock" as the
 // simplest page (single index.json, no sidecar sections, few presets).
-const TEST_ROUTE = "/profile";
-const TEST_FILE = path.join(PAGE_DATA_DIR, "profile", "index.json");
+const TEST_ROUTE = "/unlock";
+const TEST_FILE = path.join(PAGE_DATA_DIR, "unlock", "index.json");
 
 describe("commit_page_session — strict-load gating", () => {
   // Each test opens and closes its own session. Track any leftover sessions for cleanup.

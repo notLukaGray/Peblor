@@ -1,5 +1,5 @@
 "use client";
 
 // Layout projection hooks (useInstantLayoutTransition, useInstantTransition, useResetProjection)
-// are intentionally not re-exported here. They require the domMax feature bundle, and the
-// codebase uses domAnimation globally. Currently no consumer needs them.
+// are now available — the codebase loads domMax globally (switched from domAnimation to support
+// Reorder drag). Export them here if a consumer needs them.

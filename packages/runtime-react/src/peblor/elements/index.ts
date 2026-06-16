@@ -66,13 +66,13 @@ const ElementInfiniteScroll = dynamic(() =>
   import("./ElementInfiniteScroll").then((mod) => mod.ElementInfiniteScroll)
 ) as unknown as ComponentType<ElementBlock>;
 
-const ElementModel3D = dynamic(() =>
-  import("./Element3D").then((mod) => mod.ElementModel3D)
-) as unknown as ComponentType<ElementBlock>;
+const ElementModel3D = dynamic(() => import("./Element3D").then((mod) => mod.ElementModel3D), {
+  ssr: false,
+}) as unknown as ComponentType<ElementBlock>;
 
-const ElementRive = dynamic(() =>
-  import("./ElementRive").then((mod) => mod.ElementRive)
-) as unknown as ComponentType<ElementBlock>;
+const ElementRive = dynamic(() => import("./ElementRive").then((mod) => mod.ElementRive), {
+  ssr: false,
+}) as unknown as ComponentType<ElementBlock>;
 
 const ElementFormField = dynamic(() =>
   import("./ElementFormField").then((mod) => mod.ElementFormField)
@@ -102,9 +102,9 @@ const ElementTooltip = dynamic(() =>
   import("./ElementTooltip").then((mod) => mod.ElementTooltip)
 ) as unknown as ComponentType<ElementBlock>;
 
-const ElementLottie = dynamic(() =>
-  import("./ElementLottie").then((mod) => mod.ElementLottie)
-) as unknown as ComponentType<ElementBlock>;
+const ElementLottie = dynamic(() => import("./ElementLottie").then((mod) => mod.ElementLottie), {
+  ssr: false,
+}) as unknown as ComponentType<ElementBlock>;
 
 const ElementDrag = dynamic(() =>
   import("./ElementDrag").then((mod) => mod.ElementDrag)
