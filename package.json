@@ -110,7 +110,7 @@
     "happy-dom": "^20.9.0",
     "husky": "^9.1.7",
     "knip": "^6.10.0",
-    "lint-staged": "^16.4.0",
+    "lint-staged": "^17.0.7",
     "patch-package": "^8.0.1",
     "postcss": "^8.5.13",
     "prettier": "^3.8.3",
