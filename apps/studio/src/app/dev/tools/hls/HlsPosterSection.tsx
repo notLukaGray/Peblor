@@ -3,7 +3,7 @@ import type { RefObject } from "react";
 import type Hls from "hls.js";
 import { Field, controlClassName, type HlsCodec } from "./hls-tools-ui";
 
-const HLS_PREVIEW_ORDER: HlsCodec[] = ["x264", "x265"];
+const HLS_PREVIEW_ORDER: HlsCodec[] = ["x264", "x265", "webm"];
 
 type PosterSectionProps = {
   outputDir: string;
@@ -86,7 +86,9 @@ export function HlsPosterSection({
     const selected = new Set(selectedCodecs);
     const previewCodec = HLS_PREVIEW_ORDER.find((codec) => selected.has(codec));
     if (!previewCodec) return "";
-    const params = new URLSearchParams({ dir: outputDir, file: `${previewCodec}/master.m3u8` });
+    const file =
+      previewCodec === "webm" ? `${previewCodec}/video.webm` : `${previewCodec}/master.m3u8`;
+    const params = new URLSearchParams({ dir: outputDir, file });
     return `/api/dev/local-hls-preview?${params.toString()}`;
   }, [outputDir, selectedCodecs]);
   const hasPreview = conversionComplete && previewSrc !== "";

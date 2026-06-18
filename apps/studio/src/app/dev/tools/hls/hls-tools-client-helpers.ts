@@ -1,15 +1,17 @@
 import type { HlsCodec } from "./hls-tools-ui";
 
-const CODEC_ORDER: HlsCodec[] = ["vp9", "x265", "x264"];
+const CODEC_ORDER: HlsCodec[] = ["vp9", "webm", "x265", "x264"];
 
 const SOURCE_TYPES: Record<HlsCodec, string> = {
   vp9: 'video/webm; codecs="vp09.00.51.08"',
+  webm: 'video/webm; codecs="vp9"',
   x265: 'application/vnd.apple.mpegurl; codecs="hvc1.1.6.L123.B0,mp4a.40.2"',
   x264: 'application/vnd.apple.mpegurl; codecs="avc1.64001f,mp4a.40.2"',
 };
 
 const SOURCE_LABELS: Record<HlsCodec, string> = {
   vp9: "VP9 DASH",
+  webm: "VP9 WebM",
   x265: "x265 HLS",
   x264: "x264 HLS fallback",
 };
@@ -23,10 +25,16 @@ function folderValue(assetFolder: string): string {
   return assetFolder.trim().replace(/^\/+|\/+$/g, "");
 }
 
+function manifestFor(codec: HlsCodec): string {
+  if (codec === "vp9") return "manifest.mpd";
+  if (codec === "webm") return "video.webm";
+  return "master.m3u8";
+}
+
 export function buildSrcSnippet(assetFolder: string, codecs: HlsCodec[]): string {
   const folder = folderValue(assetFolder);
   const primaryCodec = orderedCodecs(codecs)[0] ?? "vp9";
-  const manifest = primaryCodec === "vp9" ? "manifest.mpd" : "master.m3u8";
+  const manifest = manifestFor(primaryCodec);
   return folder ? `${folder}/${primaryCodec}/${manifest}` : "";
 }
 
@@ -35,7 +43,7 @@ export function buildElementSnippet(assetFolder: string, codecs: HlsCodec[]): st
   if (!folder) return "";
 
   const sources = orderedCodecs(codecs).map((codec) => ({
-    src: `${folder}/${codec}/${codec === "vp9" ? "manifest.mpd" : "master.m3u8"}`,
+    src: `${folder}/${codec}/${manifestFor(codec)}`,
     type: SOURCE_TYPES[codec],
     label: SOURCE_LABELS[codec],
   }));

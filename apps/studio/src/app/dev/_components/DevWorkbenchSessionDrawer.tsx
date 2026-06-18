@@ -38,6 +38,22 @@ export function DevWorkbenchSessionDrawer({ onResetSection, onTotalReset }: Prop
   const importRef = useRef<HTMLInputElement>(null);
   const flashTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Light / dark toggle — reads current class from DOM on init (avoids cascading
+  // render from setState-in-effect). Storage key matches root layout + DevRouteTheme.
+  const [theme, setTheme] = useState<"light" | "dark">(() =>
+    typeof document !== "undefined" && document.documentElement.classList.contains("dark")
+      ? "dark"
+      : "light"
+  );
+  const toggleTheme = useCallback(() => {
+    const next = theme === "dark" ? "light" : "dark";
+    document.documentElement.classList.remove("light", "dark");
+    document.documentElement.classList.add(next);
+    localStorage.setItem("peblor-studio-theme", next);
+    document.cookie = `theme=${next};path=/;max-age=31536000;SameSite=Lax`;
+    setTheme(next);
+  }, [theme]);
+
   const showFlash = useCallback((next: Flash) => {
     if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
     setFlash(next);
@@ -225,6 +241,20 @@ export function DevWorkbenchSessionDrawer({ onResetSection, onTotalReset }: Prop
             </button>
             <button type="button" onClick={onResetAll} className={btnDestructive}>
               Total reset
+            </button>
+          </div>
+
+          {/* Theme */}
+          <div className="flex items-center gap-2 border-t border-border/50 pt-2.5">
+            <span className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground/60">
+              Theme
+            </span>
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="inline-flex items-center rounded border border-border px-2 py-1 text-[11px] font-mono text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
+            >
+              {theme === "dark" ? "Light" : "Dark"}
             </button>
           </div>
 

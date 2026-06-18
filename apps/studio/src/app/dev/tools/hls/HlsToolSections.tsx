@@ -108,7 +108,7 @@ export function HlsConversionOptions({
           <p className="font-mono text-[11px] uppercase tracking-wide text-muted-foreground">
             Codec outputs
           </p>
-          <div className="grid gap-2 md:grid-cols-3">
+          <div className="grid gap-2 md:grid-cols-4">
             {HLS_CODEC_OPTIONS.map((codec) => (
               <label
                 key={codec.value}
@@ -127,8 +127,8 @@ export function HlsConversionOptions({
             ))}
           </div>
           <p className="text-[11px] leading-relaxed text-muted-foreground/70">
-            Playback order: VP9 → x265 → x264. The runtime picks the first source the browser
-            supports. VP9 exports as WebM DASH; x265 and x264 as HLS.
+            Playback order: VP9 DASH → VP9 WebM → x265 → x264. The runtime picks the first source
+            the browser supports. VP9 exports as WebM (DASH or single-file); x265 and x264 as HLS.
           </p>
         </div>
 

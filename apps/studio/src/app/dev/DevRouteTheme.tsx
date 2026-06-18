@@ -3,16 +3,17 @@
 import { ThemeProvider } from "@/core/providers/theme-provider";
 
 /**
- * `/dev` tools read better on a light shell; keep them visually separate from the site default
- * (`layout.tsx` still defaults the marketing app to dark).
+ * `/dev` tools default to a light shell. The user can toggle via the Session
+ * drawer — we use the same storage key as the root layout so the choice
+ * persists across dev routes.
  */
 export function DevRouteTheme({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider
       attribute="class"
-      forcedTheme="light"
+      defaultTheme="light"
       enableSystem={false}
-      storageKey="peblor-dev-route-theme"
+      storageKey="peblor-studio-theme"
     >
       {children}
     </ThemeProvider>

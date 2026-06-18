@@ -27,6 +27,7 @@ import {
   responsiveGridModeSchema,
 } from "./section-style-and-column-schemas";
 
+import { responsiveValueSchema } from "./responsive-value-schemas";
 import {
   jsonNullishOptional,
   responsiveBooleanSchema,
@@ -38,6 +39,12 @@ import { analyticsConfigSchema } from "../../../analytics/schemas";
 
 const contentBlockWithElementOrderSchema = baseSectionPropsSchema.extend({
   type: z.literal("contentBlock"),
+  flow: responsiveValueSchema(
+    z.enum(["row", "column", "row-reverse", "column-reverse"])
+  ).optional(),
+  align: jsonNullishOptional(responsiveStringSchema),
+  distribute: jsonNullishOptional(responsiveStringSchema),
+  wrap: responsiveValueSchema(z.enum(["nowrap", "wrap", "wrap-reverse"])).optional(),
   flexDirection: responsiveStringSchema.optional(),
   flexWrap: responsiveStringSchema.optional(),
   gap: responsiveStringSchema.optional(),
@@ -53,6 +60,8 @@ const contentBlockWithElementOrderSchema = baseSectionPropsSchema.extend({
 
 const scrollContainerWithElementOrderSchema = baseSectionPropsSchema.extend({
   type: z.literal("scrollContainer"),
+  scrollDirection: jsonNullishOptional(z.enum(["horizontal", "vertical", "both"])),
+  scrollSnapType: scrollSnapTypeEnum.optional(),
   contentWidth: responsiveSectionContentSizeSchema.optional(),
   contentHeight: responsiveSectionContentSizeSchema.optional(),
   elementOrder: z.array(z.string()).optional(),
