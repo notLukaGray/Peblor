@@ -1,7 +1,7 @@
 export const DEFAULT_HEIGHTS = ["2160", "1080", "720", "480", "360"];
 export const DEFAULT_CODECS = ["vp9", "x264"] as const;
 
-export type HlsCodec = "vp9" | "x265" | "x264";
+export type HlsCodec = "vp9" | "webm" | "x265" | "x264";
 
 export const HLS_CODEC_OPTIONS: Array<{
   value: HlsCodec;
@@ -9,6 +9,7 @@ export const HLS_CODEC_OPTIONS: Array<{
   detail: string;
 }> = [
   { value: "vp9", label: "VP9", detail: "Primary when supported, WebM DASH" },
+  { value: "webm", label: "VP9 WebM", detail: "Single-file WebM, no DASH" },
   { value: "x265", label: "x265", detail: "HEVC option, fMP4 HLS" },
   { value: "x264", label: "x264", detail: "Compatibility fallback, TS HLS" },
 ];

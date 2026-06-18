@@ -29,8 +29,13 @@
       "@pb/core/*": ["../../packages/core/src/*"],
       "@pb/runtime-react/*": ["../../packages/runtime-react/src/*"],
       "@/*": ["./src/*"],
+      "@/bootstrap": ["../web/src/bootstrap.ts"],
       "@/app/theme/*": ["../web/src/app/theme/*"],
       "@/app/fonts/*": ["../web/src/app/fonts/*"],
+      "@/app/MotionFeatureProvider": ["../web/src/app/MotionFeatureProvider.tsx"],
+      "@/app/DevRuntimeClients": ["../web/src/app/DevRuntimeClients.tsx"],
+      "@/app/BrowserDataClient": ["../web/src/app/BrowserDataClient.tsx"],
+      "@/core/*": ["../web/src/core/*", "./src/core/*"],
       "@/core/lib/assert-dev": ["../web/src/core/lib/assert-dev"],
       "@/core/providers/theme-provider": ["../web/src/core/providers/theme-provider"],
       "@content/*": ["../../content/*"]

@@ -48,6 +48,7 @@
     "check:route-budgets": "tsx scripts/check-route-budgets.ts",
     "measure:client": "tsx scripts/measure-client-route-chunks.ts",
     "check:intent-proposal-cross": "tsx scripts/check-intent-proposal-cross.ts",
+    "dev:all": "concurrently -n web,studio -c cyan,green \"npm run web:dev\" \"npm -w @peblor/studio run dev\"",
     "dev:tools": "npm -w tools/dev-hls-server run start",
     "dev:hls": "npm run dev:tools",
     "web:dev": "npm run dev --workspace @nlg-site/web",
