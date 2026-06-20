@@ -130,7 +130,7 @@ export function PeblorServerRenderer({
       data-pb-server-renderer="static"
     >
       {renderServerBackground(resolvedBg, bgDefinitions, transitions)}
-      <div style={{ position: "relative", zIndex: globals.zIndexContent }}>
+      <div>
         {resolvedSections.map((section, index) => (
           <ServerSectionRenderer
             key={generateSectionKey(section, index)}

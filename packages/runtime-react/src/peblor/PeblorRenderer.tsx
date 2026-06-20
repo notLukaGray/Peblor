@@ -10,7 +10,6 @@ import { usePeblorTriggers } from "@/peblor/hooks/use-peblor-triggers";
 import { ServerBreakpointProvider } from "@pb/runtime-react/core/providers/device-type-provider";
 import { PeblorBackground } from "./PeblorBackground";
 import { SectionErrorBoundary } from "./SectionErrorBoundary";
-import { globals } from "@pb/runtime-react/core/lib/globals";
 
 /** Stable spread targets: avoid allocating a fresh `{ _isFirstSection: … }` per section per render. */
 const SECTION_EXTRA_PROPS_NONE = {};
@@ -95,7 +94,7 @@ export function PeblorRenderer({
         setActiveTransitionIds={setActiveTransitionIds}
         setReversingTransitionIds={setReversingTransitionIds}
       />
-      <div style={{ position: "relative", zIndex: globals.zIndexContent }}>
+      <div>
         {sections.map((section, i) => {
           const SectionComponent = SECTION_COMPONENTS[section.type];
           const key = generateSectionKey(section, i);

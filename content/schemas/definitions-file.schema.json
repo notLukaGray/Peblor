@@ -3258,6 +3258,186 @@
                 "additionalProperties": false
               },
               "type": { "type": "string", "const": "contentBlock" },
+              "flow": {
+                "anyOf": [
+                  { "type": "string", "enum": ["row", "column", "row-reverse", "column-reverse"] },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "base": {
+                        "type": "string",
+                        "enum": ["row", "column", "row-reverse", "column-reverse"]
+                      },
+                      "sm": {
+                        "type": "string",
+                        "enum": ["row", "column", "row-reverse", "column-reverse"]
+                      },
+                      "md": {
+                        "type": "string",
+                        "enum": ["row", "column", "row-reverse", "column-reverse"]
+                      },
+                      "lg": {
+                        "type": "string",
+                        "enum": ["row", "column", "row-reverse", "column-reverse"]
+                      },
+                      "xl": {
+                        "type": "string",
+                        "enum": ["row", "column", "row-reverse", "column-reverse"]
+                      },
+                      "2xl": {
+                        "type": "string",
+                        "enum": ["row", "column", "row-reverse", "column-reverse"]
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "@container": {
+                        "type": "object",
+                        "properties": {
+                          "base": {
+                            "type": "string",
+                            "enum": ["row", "column", "row-reverse", "column-reverse"]
+                          },
+                          "sm": {
+                            "type": "string",
+                            "enum": ["row", "column", "row-reverse", "column-reverse"]
+                          },
+                          "md": {
+                            "type": "string",
+                            "enum": ["row", "column", "row-reverse", "column-reverse"]
+                          },
+                          "lg": {
+                            "type": "string",
+                            "enum": ["row", "column", "row-reverse", "column-reverse"]
+                          },
+                          "xl": {
+                            "type": "string",
+                            "enum": ["row", "column", "row-reverse", "column-reverse"]
+                          },
+                          "2xl": {
+                            "type": "string",
+                            "enum": ["row", "column", "row-reverse", "column-reverse"]
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": ["@container"],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "align": {
+                "anyOf": [
+                  { "type": "string" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "base": { "type": "string" },
+                      "sm": { "type": "string" },
+                      "md": { "type": "string" },
+                      "lg": { "type": "string" },
+                      "xl": { "type": "string" },
+                      "2xl": { "type": "string" }
+                    },
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "@container": {
+                        "type": "object",
+                        "properties": {
+                          "base": { "type": "string" },
+                          "sm": { "type": "string" },
+                          "md": { "type": "string" },
+                          "lg": { "type": "string" },
+                          "xl": { "type": "string" },
+                          "2xl": { "type": "string" }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": ["@container"],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "distribute": {
+                "anyOf": [
+                  { "type": "string" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "base": { "type": "string" },
+                      "sm": { "type": "string" },
+                      "md": { "type": "string" },
+                      "lg": { "type": "string" },
+                      "xl": { "type": "string" },
+                      "2xl": { "type": "string" }
+                    },
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "@container": {
+                        "type": "object",
+                        "properties": {
+                          "base": { "type": "string" },
+                          "sm": { "type": "string" },
+                          "md": { "type": "string" },
+                          "lg": { "type": "string" },
+                          "xl": { "type": "string" },
+                          "2xl": { "type": "string" }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": ["@container"],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "wrap": {
+                "anyOf": [
+                  { "type": "string", "enum": ["nowrap", "wrap", "wrap-reverse"] },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "base": { "type": "string", "enum": ["nowrap", "wrap", "wrap-reverse"] },
+                      "sm": { "type": "string", "enum": ["nowrap", "wrap", "wrap-reverse"] },
+                      "md": { "type": "string", "enum": ["nowrap", "wrap", "wrap-reverse"] },
+                      "lg": { "type": "string", "enum": ["nowrap", "wrap", "wrap-reverse"] },
+                      "xl": { "type": "string", "enum": ["nowrap", "wrap", "wrap-reverse"] },
+                      "2xl": { "type": "string", "enum": ["nowrap", "wrap", "wrap-reverse"] }
+                    },
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "@container": {
+                        "type": "object",
+                        "properties": {
+                          "base": { "type": "string", "enum": ["nowrap", "wrap", "wrap-reverse"] },
+                          "sm": { "type": "string", "enum": ["nowrap", "wrap", "wrap-reverse"] },
+                          "md": { "type": "string", "enum": ["nowrap", "wrap", "wrap-reverse"] },
+                          "lg": { "type": "string", "enum": ["nowrap", "wrap", "wrap-reverse"] },
+                          "xl": { "type": "string", "enum": ["nowrap", "wrap", "wrap-reverse"] },
+                          "2xl": { "type": "string", "enum": ["nowrap", "wrap", "wrap-reverse"] }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": ["@container"],
+                    "additionalProperties": false
+                  }
+                ]
+              },
               "flexDirection": {
                 "anyOf": [
                   { "type": "string" },
@@ -6998,6 +7178,19 @@
                 "additionalProperties": false
               },
               "type": { "type": "string", "const": "scrollContainer" },
+              "scrollDirection": { "type": "string", "enum": ["horizontal", "vertical", "both"] },
+              "scrollSnapType": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "x mandatory",
+                  "y mandatory",
+                  "both mandatory",
+                  "x proximity",
+                  "y proximity",
+                  "both proximity"
+                ]
+              },
               "contentWidth": {
                 "anyOf": [
                   {
