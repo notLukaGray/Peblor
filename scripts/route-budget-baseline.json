@@ -1,25 +1,17 @@
 {
   "version": 1,
-  "generatedAt": "2026-06-13T21:33:11.743Z",
+  "generatedAt": "2026-06-20T20:10:25.028Z",
   "routes": {
     "/": {
-      "bytes": 433936,
-      "chunkCount": 13
-    },
-    "/[...slug]": {
-      "bytes": 400730,
-      "chunkCount": 14
-    },
-    "/stolen/[...slug]": {
-      "bytes": 400018,
-      "chunkCount": 13
-    },
-    "/style-guide": {
-      "bytes": 368201,
+      "bytes": 366922,
       "chunkCount": 11
     },
+    "/[...slug]": {
+      "bytes": 397580,
+      "chunkCount": 14
+    },
     "/unlock": {
-      "bytes": 391608,
+      "bytes": 389137,
       "chunkCount": 12
     }
   },
