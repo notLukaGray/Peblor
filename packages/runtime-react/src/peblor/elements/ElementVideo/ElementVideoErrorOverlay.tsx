@@ -1,5 +1,6 @@
 import type { VideoErrorKind } from "./use-element-video-source";
 import { globals } from "@pb/runtime-react/core/lib/globals";
+import { isApprovedAssetUrl } from "@pb/runtime-react/core/lib/asset-host";
 
 const MESSAGES: Record<VideoErrorKind, { headline: string; detail: string }> = {
   unsupported: {
@@ -12,8 +13,17 @@ const MESSAGES: Record<VideoErrorKind, { headline: string; detail: string }> = {
   },
 };
 
-export function ElementVideoErrorOverlay({ errorKind }: { errorKind: VideoErrorKind }) {
-  const { headline, detail } = MESSAGES[errorKind];
+export function ElementVideoErrorOverlay({
+  errorKind,
+  src,
+}: {
+  errorKind: VideoErrorKind;
+  src?: string;
+}) {
+  const isThirdParty = errorKind === "fatal" && !isApprovedAssetUrl(src);
+  const { headline, detail } = isThirdParty
+    ? { headline: "Third-party asset", detail: "Please host on an approved CDN." }
+    : MESSAGES[errorKind];
 
   return (
     <span

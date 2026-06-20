@@ -37,6 +37,10 @@ import {
   getExitMotionFromPreset,
 } from "@pb/contracts/peblor/core/peblor-motion-defaults";
 import { MOTION_DEFAULTS } from "@pb/contracts/peblor/core/peblor-motion-defaults";
+import {
+  isApprovedAssetUrl,
+  THIRD_PARTY_ASSET_MESSAGE,
+} from "@pb/runtime-react/core/lib/asset-host";
 
 type Props = Extract<ElementBlock, { type: "elementModel3D" }> & {
   moduleConfig?: import("@pb/contracts/types").ModuleBlock;
@@ -185,6 +189,15 @@ export function ElementModel3D({
   }, [geometryUrls]);
 
   useModel3DPreload(geometryUrls, { eager: isHomepagePriority, enabled: isLoaded });
+  const [modelError, setModelError] = useState<string | null>(null);
+  const handleModelError = useCallback((url: string) => {
+    setModelError(url);
+  }, []);
+  const [prevGeometryUrls, setPrevGeometryUrls] = useState(geometryUrls);
+  if (geometryUrls !== prevGeometryUrls) {
+    setPrevGeometryUrls(geometryUrls);
+    setModelError(null);
+  }
   const [isVisible, setIsVisible] = useState(true);
   const [opacity, setOpacity] = useState(1);
   const [opacityTransitionMs, setOpacityTransitionMs] = useState(
@@ -270,6 +283,22 @@ export function ElementModel3D({
 
   if (!isLoaded) return null;
 
+  if (modelError) {
+    const message = isApprovedAssetUrl(modelError)
+      ? "3D model failed to load."
+      : THIRD_PARTY_ASSET_MESSAGE;
+    return (
+      <ElementLayoutWrapper layout={layout} interactions={interactions}>
+        <div
+          className="relative w-full h-full min-h-0 min-w-0 flex-1 flex items-center justify-center"
+          role="status"
+        >
+          <span className="text-muted-foreground text-sm">{message}</span>
+        </div>
+      </ElementLayoutWrapper>
+    );
+  }
+
   return (
     <ElementLayoutWrapper layout={layout} interactions={interactions}>
       <div
@@ -306,6 +335,7 @@ export function ElementModel3D({
             postProcessingCommand={postProcessingCommand}
             onNavigate={onNavigate}
             onReady={handleReady}
+            onModelError={handleModelError}
             isHomepagePriority={isHomepagePriority}
           />
         </MotionFromJson>

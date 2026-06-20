@@ -13,6 +13,7 @@ import {
 } from "three";
 import { resolveModel3DAssetPath, useTextureMap } from "./model3d-texture-map";
 import { LoadedModel } from "./model3d-loaded-model";
+import { Model3DErrorBoundary } from "./Model3DErrorBoundary";
 import { CameraEffects } from "./model3d-camera-effects";
 import { OrthoCameraFromBlock } from "./model3d-ortho-camera";
 import { SceneLights } from "./model3d-lights";
@@ -227,6 +228,7 @@ export function SceneContent({
   postProcessingCommand,
   onNavigate,
   onReady,
+  onModelError,
   isHomepagePriority: _isHomepagePriority = false,
 }: {
   block: Block;
@@ -239,6 +241,7 @@ export function SceneContent({
   postProcessingCommand: Model3DPostProcessingCommand | null;
   onNavigate?: (href: string) => void;
   onReady?: () => void;
+  onModelError?: (url: string, error: unknown) => void;
   isHomepagePriority?: boolean;
 }) {
   const { scene: sceneDef, textures, materials, models } = block;
@@ -464,36 +467,38 @@ export function SceneContent({
           materialCommand.instanceId === instanceId
             ? materialCommand
             : null;
+        const geometryUrl = resolveModel3DAssetPath(modelDef.geometry, { raw: true });
         return (
-          <LoadedModel
-            key={i}
-            geometryUrl={resolveModel3DAssetPath(modelDef.geometry, { raw: true })}
-            materialBindings={modelDef.materialBindings}
-            materials={materials}
-            textures={textures}
-            textureMap={textureMap}
-            videoReady={videoReady}
-            position={instance.position}
-            rotation={instance.rotation}
-            scale={instance.scale}
-            animationClip={anim?.clip}
-            animationLoop={anim?.loop}
-            animationPlayMode={anim?.playMode}
-            animationCommand={resolvedAnimationCommand}
-            transformCommand={resolvedTransformCommand}
-            materialCommand={resolvedMaterialCommand}
-            meshName={instance.meshName}
-            pointerDownAction={instance.onPointerDown as PeblorAction | undefined}
-            pointerUpAction={instance.onPointerUp as PeblorAction | undefined}
-            doubleClickAction={instance.onDoubleClick as PeblorAction | undefined}
-            pointerEnterAction={instance.onPointerEnter as PeblorAction | undefined}
-            pointerLeaveAction={instance.onPointerLeave as PeblorAction | undefined}
-            clickAction={instance.onClick as PeblorAction | undefined}
-            onAnimationComplete={instance.onAnimationComplete as PeblorAction | undefined}
-            href={instance.href}
-            onNavigate={onNavigate}
-            onReady={i === 0 ? onReady : undefined}
-          />
+          <Model3DErrorBoundary key={i} url={geometryUrl} onError={onModelError ?? (() => {})}>
+            <LoadedModel
+              geometryUrl={geometryUrl}
+              materialBindings={modelDef.materialBindings}
+              materials={materials}
+              textures={textures}
+              textureMap={textureMap}
+              videoReady={videoReady}
+              position={instance.position}
+              rotation={instance.rotation}
+              scale={instance.scale}
+              animationClip={anim?.clip}
+              animationLoop={anim?.loop}
+              animationPlayMode={anim?.playMode}
+              animationCommand={resolvedAnimationCommand}
+              transformCommand={resolvedTransformCommand}
+              materialCommand={resolvedMaterialCommand}
+              meshName={instance.meshName}
+              pointerDownAction={instance.onPointerDown as PeblorAction | undefined}
+              pointerUpAction={instance.onPointerUp as PeblorAction | undefined}
+              doubleClickAction={instance.onDoubleClick as PeblorAction | undefined}
+              pointerEnterAction={instance.onPointerEnter as PeblorAction | undefined}
+              pointerLeaveAction={instance.onPointerLeave as PeblorAction | undefined}
+              clickAction={instance.onClick as PeblorAction | undefined}
+              onAnimationComplete={instance.onAnimationComplete as PeblorAction | undefined}
+              href={instance.href}
+              onNavigate={onNavigate}
+              onReady={i === 0 ? onReady : undefined}
+            />
+          </Model3DErrorBoundary>
         );
       })}
 

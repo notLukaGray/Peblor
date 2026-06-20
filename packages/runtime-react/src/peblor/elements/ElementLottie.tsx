@@ -12,6 +12,10 @@ import {
 } from "@/peblor/triggers";
 import { subscribeToElementActions } from "@/peblor/triggers/action-bus";
 import { shouldApplyMediaTarget } from "@/peblor/triggers/target-matching";
+import {
+  isApprovedAssetUrl,
+  THIRD_PARTY_ASSET_MESSAGE,
+} from "@pb/runtime-react/core/lib/asset-host";
 
 type Props = Extract<ElementBlock, { type: "elementLottie" }>;
 
@@ -62,6 +66,7 @@ export function ElementLottie({
   const containerRef = useRef<HTMLDivElement>(null);
   const instanceRef = useRef<unknown>(null);
   const [loaded, setLoaded] = useState(false);
+  const [loadError, setLoadError] = useState(false);
 
   const lottieActionCallbacksRef = useRef<{
     onPlay?: Props["onPlay"];
@@ -114,6 +119,7 @@ export function ElementLottie({
     const container = containerRef.current;
     if (!container) return;
 
+    setLoadError(false);
     const opts = loadOptionsRef.current;
     const lottieListeners: Array<{ event: string; handler: (evt?: unknown) => void }> = [];
 
@@ -130,6 +136,12 @@ export function ElementLottie({
         },
       });
       instanceRef.current = anim;
+
+      const onDataFailed = () => {
+        if (!cancelled) setLoadError(true);
+      };
+      anim.addEventListener("data_failed", onDataFailed);
+      lottieListeners.push({ event: "data_failed", handler: onDataFailed });
 
       const onComplete = () => {
         opts.handleFire(lottieActionCallbacksRef.current.onComplete, { event: "complete" });
@@ -376,8 +388,16 @@ export function ElementLottie({
           aspectRatio: aspectRatio as string | undefined,
         }}
       >
-        {poster && !loaded && (
+        {poster && !loaded && !loadError && (
           <Image src={poster} alt="" fill sizes="100vw" className="object-cover" />
+        )}
+        {loadError && (
+          <span
+            className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm"
+            role="status"
+          >
+            {isApprovedAssetUrl(src) ? "Animation failed to load." : THIRD_PARTY_ASSET_MESSAGE}
+          </span>
         )}
       </div>
     </ElementLayoutWrapper>

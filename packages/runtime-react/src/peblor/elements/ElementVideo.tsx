@@ -570,7 +570,10 @@ export function ElementVideo({
                 visible={showPrePlayPoster}
               />
               {videoSourceState.errorKind && (
-                <ElementVideoErrorOverlay errorKind={videoSourceState.errorKind} />
+                <ElementVideoErrorOverlay
+                  errorKind={videoSourceState.errorKind}
+                  src={preferredSrc}
+                />
               )}
             </>
           ) : (

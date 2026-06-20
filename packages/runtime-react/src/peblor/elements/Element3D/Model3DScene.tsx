@@ -27,6 +27,7 @@ export type Model3DSceneProps = {
   postProcessingCommand: Model3DPostProcessingCommand | null;
   onNavigate?: (href: string) => void;
   onReady?: () => void;
+  onModelError?: (url: string, error: unknown) => void;
   isHomepagePriority?: boolean;
 };
 
@@ -41,6 +42,7 @@ export function Model3DScene({
   postProcessingCommand,
   onNavigate,
   onReady,
+  onModelError,
   isHomepagePriority = false,
 }: {
   block: Block;
@@ -53,6 +55,7 @@ export function Model3DScene({
   postProcessingCommand: Model3DPostProcessingCommand | null;
   onNavigate?: (href: string) => void;
   onReady?: () => void;
+  onModelError?: (url: string, error: unknown) => void;
   isHomepagePriority?: boolean;
 }) {
   const { isMobile } = useDeviceType();
@@ -74,7 +77,7 @@ export function Model3DScene({
       style={{ width: "100%", height: "100%" }}
       dpr={renderProfile.dpr}
       gl={renderProfile.gl}
-      frameloop="always"
+      frameloop="demand"
       camera={{ position: [0, 0, 1], fov: 50 }}
     >
       <Suspense fallback={null}>
@@ -89,6 +92,7 @@ export function Model3DScene({
           postProcessingCommand={postProcessingCommand}
           onNavigate={onNavigate}
           onReady={onReady}
+          onModelError={onModelError}
           isHomepagePriority={isHomepagePriority}
         />
       </Suspense>

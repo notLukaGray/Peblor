@@ -8,6 +8,10 @@ import { ElementLayoutWrapper } from "./Shared/ElementLayoutWrapper";
 import { RivePlayer, type Rive } from "@/peblor/integrations/rive";
 import { firePeblorAction } from "@/peblor/triggers";
 import { useRiveTriggerControls } from "./ElementRive/use-rive-trigger-controls";
+import {
+  isApprovedAssetUrl,
+  THIRD_PARTY_ASSET_MESSAGE,
+} from "@pb/runtime-react/core/lib/asset-host";
 
 type Props = Extract<ElementBlock, { type: "elementRive" }>;
 
@@ -56,6 +60,16 @@ export function ElementRive(props: Props) {
 
   const riveRef = useRef<Rive | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const [loadError, setLoadError] = useState(false);
+  const [prevSrc, setPrevSrc] = useState(src);
+  if (src !== prevSrc) {
+    setPrevSrc(src);
+    setLoadError(false);
+  }
+
+  const handleLoadError = useCallback(() => {
+    setLoadError(true);
+  }, []);
 
   const objectFitClass =
     objectFit === "contain"
@@ -183,26 +197,36 @@ export function ElementRive(props: Props) {
           aspectRatio: aspectRatio as string | undefined,
         }}
       >
-        {poster && !loaded && (
+        {poster && !loaded && !loadError && (
           <Image src={poster} alt="" fill sizes="100vw" className="object-cover" />
         )}
-        <RivePlayer
-          src={src}
-          artboard={artboard}
-          stateMachine={stateMachine}
-          autoplay={autoplay ?? true}
-          onStateChange={onStateChange ? handleStateChange : undefined}
-          riveRef={riveRef}
-          ariaLabel={ariaLabel}
-          className="absolute inset-0"
-          onPlay={onPlay ? handlePlay : undefined}
-          onPause={onPause ? handlePause : undefined}
-          onComplete={onComplete ? handleComplete : undefined}
-          onLoop={onLoop || typeof loop === "number" ? handleLoopWithCount : undefined}
-          onStop={onStop ? handleStop : undefined}
-          speed={speed}
-          preserveAspectRatio={preserveAspectRatio}
-        />
+        {loadError ? (
+          <span
+            className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm"
+            role="status"
+          >
+            {isApprovedAssetUrl(src) ? "Animation failed to load." : THIRD_PARTY_ASSET_MESSAGE}
+          </span>
+        ) : (
+          <RivePlayer
+            src={src}
+            artboard={artboard}
+            stateMachine={stateMachine}
+            autoplay={autoplay ?? true}
+            onStateChange={onStateChange ? handleStateChange : undefined}
+            riveRef={riveRef}
+            ariaLabel={ariaLabel}
+            className="absolute inset-0"
+            onPlay={onPlay ? handlePlay : undefined}
+            onPause={onPause ? handlePause : undefined}
+            onComplete={onComplete ? handleComplete : undefined}
+            onLoop={onLoop || typeof loop === "number" ? handleLoopWithCount : undefined}
+            onStop={onStop ? handleStop : undefined}
+            speed={speed}
+            preserveAspectRatio={preserveAspectRatio}
+            onLoadError={handleLoadError}
+          />
+        )}
       </div>
     </ElementLayoutWrapper>
   );

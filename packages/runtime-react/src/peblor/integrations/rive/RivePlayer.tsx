@@ -42,6 +42,8 @@ export type RivePlayerProps = {
   speed?: number;
   /** Preserve aspect ratio for the canvas (default "xMidYMid meet"). */
   preserveAspectRatio?: string;
+  /** Fire when the .riv file fails to load. */
+  onLoadError?: () => void;
 };
 
 export function RivePlayer({
@@ -60,6 +62,7 @@ export function RivePlayer({
   onComplete,
   onLoop,
   preserveAspectRatio,
+  onLoadError,
 }: RivePlayerProps) {
   const { rive, RiveComponent } = useRive(
     {
@@ -76,6 +79,7 @@ export function RivePlayer({
             }
           }
         : undefined,
+      onLoadError,
     },
     { shouldResizeCanvasToContainer: true }
   );

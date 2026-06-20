@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef, useMemo, useState, useCallback } from "react";
 import Image from "next/image";
 import type { ElementBlock, ModuleBlock } from "@pb/contracts/types";
 import type { PeblorAction } from "@pb/contracts/types";
@@ -21,6 +21,10 @@ import { PEBLOR_TRIGGER_EVENT, type PeblorTriggerDetail } from "@/peblor/trigger
 import { shouldApplyMediaTarget } from "@/peblor/triggers/target-matching";
 import { subscribeToElementActions } from "@/peblor/triggers/action-bus";
 import { globals } from "@pb/runtime-react/core/lib/globals";
+import {
+  isApprovedAssetUrl,
+  THIRD_PARTY_ASSET_MESSAGE,
+} from "@pb/runtime-react/core/lib/asset-host";
 
 type Props = Extract<ElementBlock, { type: "elementAudio" }> & {
   moduleConfig?: ModuleBlock;
@@ -65,6 +69,17 @@ export function ElementAudio({
 }: Props) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const state = useAudioPlayerState(!autoplay);
+  const [loadError, setLoadError] = useState(false);
+  const handleAudioError = useCallback(() => setLoadError(true), []);
+  const [prevSrc, setPrevSrc] = useState(src);
+  if (src !== prevSrc) {
+    setPrevSrc(src);
+    setLoadError(false);
+  }
+
+  const audioErrorMessage = isApprovedAssetUrl(src)
+    ? "Audio failed to load."
+    : THIRD_PARTY_ASSET_MESSAGE;
 
   const slotsInfo = resolveElementAudioSlots(moduleConfig as ModuleBlock | undefined);
   const withModule = moduleConfig && slotsInfo.useSectionSlots;
@@ -295,7 +310,16 @@ export function ElementAudio({
                 onTimeUpdate={controls.onTimeUpdate}
                 onLoadedMetadata={controls.onLoadedMetadata}
                 onDurationChange={controls.onDurationChange}
+                onError={handleAudioError}
               />
+              {loadError && (
+                <span
+                  className="absolute inset-0 z-[2] flex items-center justify-center text-muted-foreground text-sm"
+                  role="status"
+                >
+                  {audioErrorMessage}
+                </span>
+              )}
               {poster ? (
                 <div className="absolute inset-0 z-[1] overflow-hidden" aria-hidden>
                   <Image
@@ -365,7 +389,14 @@ export function ElementAudio({
                 onTimeUpdate={controls.onTimeUpdate}
                 onLoadedMetadata={controls.onLoadedMetadata}
                 onDurationChange={controls.onDurationChange}
+                onError={handleAudioError}
               />
+
+              {loadError && (
+                <span className="text-muted-foreground text-sm block" role="status">
+                  {audioErrorMessage}
+                </span>
+              )}
 
               {poster && (
                 <div

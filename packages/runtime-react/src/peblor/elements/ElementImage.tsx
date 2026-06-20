@@ -14,6 +14,10 @@ import { lowerThemeStyleObject } from "@/peblor/theme/theme-string";
 import { useElementEffects } from "@/peblor/elements/Shared/use-element-effects";
 import type { CSSProperties } from "react";
 import { globals } from "@pb/runtime-react/core/lib/globals";
+import {
+  isApprovedAssetUrl,
+  THIRD_PARTY_ASSET_MESSAGE,
+} from "@pb/runtime-react/core/lib/asset-host";
 
 const ELEMENT_IMAGE_INTERACTION_HANDLERS_NONE: Record<string, never> = {};
 
@@ -204,7 +208,7 @@ export function ElementImage({
       )}
       {hasSource && showError && (
         <span className="text-muted-foreground text-sm" role="status">
-          Image failed to load.
+          {isApprovedAssetUrl(src) ? "Image failed to load." : THIRD_PARTY_ASSET_MESSAGE}
         </span>
       )}
       {showImage && src && (
