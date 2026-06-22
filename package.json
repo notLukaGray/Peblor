@@ -74,7 +74,7 @@
     "@pb/contracts": "1.0.0",
     "@pb/core": "1.0.0",
     "next": "^16.2.4",
-    "zod": "4.4.2"
+    "zod": "4.4.3"
   },
   "overrides": {
     "next": {
