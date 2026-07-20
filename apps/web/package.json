@@ -31,7 +31,7 @@
     "list-assets": "tsx ../../scripts/list-peblor-assets.ts"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^16.2.4",
+    "@next/bundle-analyzer": "^16.2.10",
     "chokidar": "^5.0.0",
     "tsx": "^4.21.0"
   }
