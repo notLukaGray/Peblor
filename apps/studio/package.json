@@ -10,10 +10,10 @@
     "framer-motion": "^12.38.0",
     "hls.js": "^1.6.16",
     "next": "^16.2.4",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "three": "^0.184.0",
-    "zod": "4.4.2"
+    "zod": "4.4.3"
   },
   "scripts": {
     "dev": "set -a && [ -f ../../.env ] && . ../../.env || true && set +a && export ENABLE_DEV_API=\"${ENABLE_DEV_API:-1}\" && ../../node_modules/.bin/next dev --port 3001",
